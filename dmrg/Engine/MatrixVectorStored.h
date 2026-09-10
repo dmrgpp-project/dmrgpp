@@ -142,7 +142,7 @@ public:
 		matrixStored_.matrixVectorProduct(x, y);
 		const bool ldaggerL = model_.params().options.isSet("LdaggerL");
 		if (ldaggerL) {
-			SomeVectorType xx = x;
+			VectorType xx = x;
 			std::fill(x.begin(), x.end(), 0.);
 			transpose_.matrixVectorProduct(x, xx);
 		}

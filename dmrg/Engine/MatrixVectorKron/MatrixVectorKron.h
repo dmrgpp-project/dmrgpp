@@ -113,7 +113,7 @@ public:
 	                 const HamiltonianConnectionType&     hc,
 	                 const typename ModelHelperType::Aux& aux)
 	    : BaseType(hc, aux)
-	    : params_(checkedParams(model))
+	    , params_(checkedParams(model))
 	    , initKron_(model, hc, aux)
 	    , kronMatrix_(initKron_, "Hamiltonian")
 	    , time_(0, 0)
