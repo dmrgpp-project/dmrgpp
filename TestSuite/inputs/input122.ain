@@ -17,7 +17,7 @@ InfiniteLoopKeptStates=50;
 FiniteLoops=[
 [@auto, 100, 2],
 [@auto, 100, 2]];
-RepeatFiniteLoopsTimes=4;
+RepeatFiniteLoopsTimes=2;
 TargetElectronsUp=4;
 TargetElectronsDown=4;
 string P0="c'[3]*c[4]*|gs>+c'[5]*c[6]*|gs>";
