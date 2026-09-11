@@ -85,10 +85,10 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include <vector>
 
 namespace Dmrg {
-template <typename ComplexOrRealType_>
-class MatrixVectorStored final : public MatrixVectorBase<ComplexOrRealType_> {
+template <typename ComplexOrRealType_, typename TypesType_ = MatrixVectorTypes<ComplexOrRealType_>>
+class MatrixVectorStored final : public MatrixVectorBase<ComplexOrRealType_, TypesType_> {
 
-	using BaseType = MatrixVectorBase<ComplexOrRealType_>;
+	using BaseType = MatrixVectorBase<ComplexOrRealType_, TypesType_>;
 
 public:
 
@@ -103,6 +103,7 @@ public:
 	using VectorRealType            = typename PsimagLite::Vector<RealType>::Type;
 	using VectorType                = typename BaseType::VectorType;
 	using OptionsType               = typename ParametersType::OptionsType;
+	using MatrixSolverEnum          = typename ParametersType::MatrixSolverEnum;
 	using FullMatrixType            = PsimagLite::Matrix<ComplexOrRealType>;
 
 	MatrixVectorStored(const ModelType&                     model,
@@ -110,13 +111,19 @@ public:
 	                   const typename ModelHelperType::Aux& aux)
 	    : BaseType(hc, aux)
 	    , model_(model)
+	    , isLdaggerL_(validatedLdaggerL(model))
 	    , progress_("MatrixVectorStored")
 	{
 		const OptionsType& options     = model.params().options;
 		const bool         debugMatrix = options.isSet("debugmatrix");
 
 		matrixStored_.clear();
+
 		hc.fullHamiltonian(matrixStored_, aux, model.isHermitian());
+		if (isLdaggerL_) {
+			transposeConjugate(transpose_, matrixStored_);
+		}
+
 		PsimagLite::OstringStream                     msgg(std::cout.precision());
 		PsimagLite::OstringStream::OstringStreamType& msg  = msgg();
 		SizeType                                      rows = matrixStored_.rows();
@@ -129,22 +136,62 @@ public:
 			std::cerr << "WARNING: MatrixVectorStored being used for a large run!\n";
 	}
 
-	const SparseMatrixType& toCRS() const override { return matrixStored_; }
+	const SparseMatrixType& toCRS() const override
+	{
+		if (isLdaggerL_)
+			throw PsimagLite::RuntimeError(
+			    "MatrixVectorStored::toCRS is unavailable with LdaggerL\n");
+
+		return matrixStored_;
+	}
 
 	void matrixVectorProduct(VectorType& x, const VectorType& y) const override
 	{
-		matrixStored_.matrixVectorProduct(x, y);
+		if (!isLdaggerL_) {
+			matrixStored_.matrixVectorProduct(x, y);
+			return;
+		}
+
+		VectorType intermediate(y.size(), 0.0);
+		matrixStored_.matrixVectorProduct(intermediate, y);
+		transpose_.matrixVectorProduct(x, intermediate);
 	}
 
 	void fullDiag(VectorRealType& eigs, FullMatrixType& fm) const override
 	{
+		if (isLdaggerL_)
+			throw PsimagLite::RuntimeError(
+			    "MatrixVectorStored::fullDiag is unavailable with LdaggerL\n");
+
 		BaseType::fullDiag(eigs, fm, matrixStored_, model_.params().maxMatrixRankStored);
 	}
 
 private:
 
+	static bool validatedLdaggerL(const ModelType& model)
+	{
+		if (!model.params().options.isSet("LdaggerL"))
+			return false;
+
+		switch (model.params().matrix_solver_enum) {
+		case MatrixSolverEnum::LANCZOS:
+			return true;
+		case MatrixSolverEnum::DENSE:
+			throw PsimagLite::RuntimeError(
+			    "LdaggerL with MatrixVectorStored does not support MatrixSolver=Dense\n");
+		case MatrixSolverEnum::ARNOLDISAI:
+			throw PsimagLite::RuntimeError(
+			    "LdaggerL with MatrixVectorStored does not support MatrixSolver=ArnoldiSaI\n");
+		}
+
+		throw PsimagLite::RuntimeError(
+		    "LdaggerL with MatrixVectorStored supports only MatrixSolver=Lanczos\n");
+	}
+
 	const ModelType&              model_;
+	const bool                    isLdaggerL_;
 	SparseMatrixType              matrixStored_;
+	SparseMatrixType              transpose_;
 	PsimagLite::ProgressIndicator progress_;
 }; // class MatrixVectorStored
 } // namespace Dmrg

@@ -147,8 +147,10 @@ public:
 	                          InputValidatorType&      io,
 	                          const SuperGeometryType& geometry)
 	{
-		if (model_)
+		if (model_) {
+			validateModelOptions(solverParams, *model_);
 			return *model_;
+		}
 
 		PsimagLite::String hdf5fileIfAny = findHdf5FileIfAny(solverParams);
 
@@ -255,11 +257,20 @@ public:
 		}
 
 		model_->postCtor();
+		validateModelOptions(solverParams, *model_);
 
 		return *model_;
 	}
 
 private:
+
+	static void validateModelOptions(const SolverParamsType& solverParams,
+	                                 const ModelBaseType&    model)
+	{
+		if (solverParams.options.isSet("LdaggerL") && model.isHermitian())
+			throw PsimagLite::RuntimeError(
+			    "LdaggerL cannot be used with a Hermitian model\n");
+	}
 
 	std::string getExtension(const std::string& str) const
 	{
