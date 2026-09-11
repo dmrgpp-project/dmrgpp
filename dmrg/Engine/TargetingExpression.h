@@ -240,7 +240,9 @@ public:
 
 	void read(typename TargetingCommonType::IoInputType& io, PsimagLite::String prefix) override
 	{
-		this->common().readGSandNGSTs(io, prefix, "Expression");
+		VectorRealType pvectorTimes = pvectors_.times(this->common().aoe().tvs());
+		this->common().readGSandNGSTs(io, prefix, "Expression", &pvectorTimes);
+		pvectors_.setTimes(pvectorTimes);
 	}
 
 	void write(const typename PsimagLite::Vector<SizeType>::Type& block,
@@ -248,7 +250,8 @@ public:
 	           PsimagLite::String                                 prefix) const override
 	{
 		this->common().write(io, block, prefix);
-		this->common().writeNGSTs(io, prefix, block, "Expression");
+		const VectorRealType pvectorTimes = pvectors_.times(this->common().aoe().tvs());
+		this->common().writeNGSTs(io, prefix, block, "Expression", pvectorTimes);
 	}
 
 	bool hasTimeEvolution(const PsimagLite::GetBraOrKet& ket) const
@@ -259,7 +262,7 @@ public:
 	RealType getTimeForKet(const PsimagLite::GetBraOrKet& ket) const
 	{
 		if (ket.isPvector())
-			return timeEvolve_.getTimeForKet(ket.pIndex());
+			return pvectors_(ket.pIndex()).time();
 
 		if (ket.isRvector())
 			throw PsimagLite::RuntimeError("R vectors cannot be tested\n");
@@ -325,6 +328,7 @@ private:
 					VectorWithOffsetType_& v0 = this->tvNonConst(i);
 					v0                        = this->tv(x);
 					v0 *= tmp.term(0).ket().factor();
+					pvectors_.setTime(i, pvectors_(x).time());
 				} else {
 					std::cerr << "Ignoring self assignment P";
 					std::cerr << i << "=P" << x << "\n";
