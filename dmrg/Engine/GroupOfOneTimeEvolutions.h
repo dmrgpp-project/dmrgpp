@@ -21,12 +21,13 @@ template <typename PvectorsType> class GroupOfOneTimeEvolutions {
 		                 PsimagLite::String          srcKet,
 		                 SizeType                    disposition,
 		                 SizeType                    timeSteps,
+		                 RealType                    initialTime,
 		                 PvectorsType&               pVectors)
 		    : indices_(timeSteps)
 		    , srcKet_(srcKet)
 		    , disposition_(disposition)
 		    , timesWithoutAdvancement_(0)
-		    , time_(0)
+		    , time_(initialTime)
 		{
 			indices_[0] = firstIndex;
 			for (SizeType i = 1; i < timeSteps; ++i) {
@@ -36,7 +37,7 @@ template <typename PvectorsType> class GroupOfOneTimeEvolutions {
 					return "|P" + ttos(ind) + ">";
 				};
 
-				pVectors.createNew(src, RealType(0), lambda);
+				pVectors.createNew(src, initialTime, lambda);
 				if (i == timeSteps - 1)
 					pVectors.registerLastKrylovSlot(firstIndex, indices_[i]);
 			}

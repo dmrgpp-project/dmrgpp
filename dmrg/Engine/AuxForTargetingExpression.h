@@ -85,6 +85,24 @@ public:
 		return pVectors_.getCurrentVectorConst(braOrKet);
 	}
 
+	RealType getCurrentTime(PsimagLite::String braOrKet) const
+	{
+		PsimagLite::GetBraOrKet getBraOrKet(braOrKet);
+		if (!getBraOrKet.isPvector())
+			return RealType(0);
+
+		SizeType pIndex = getBraOrKet.pIndex();
+		if (getBraOrKet.isLastKrylov()) {
+			const int lastSlot = timeEvolve_.getLastIndex(pIndex);
+			if (lastSlot < 0)
+				err("getCurrentTime: no time evolution found for " + braOrKet
+				    + "\n");
+			pIndex = static_cast<SizeType>(lastSlot);
+		}
+
+		return pVectors_(pIndex).time();
+	}
+
 	PsimagLite::String createTemporaryVector(PsimagLite::String str) const
 	{
 		const SizeType n = tempVectors_.size();
