@@ -310,7 +310,8 @@ add_test(NAME input6020 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input6020.ain) # ene
 add_lowest_eigenvalue_check_test(output6020 input6020 -2.59474 runForinput6020.cout)
 add_test(NAME input6700 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input6700.ain) # energy -4.17889 we don't check this
 add_test(NAME input8900 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input8900.ain "<gs|sz_p|gs>") # none
-add_test(NAME input8901 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input8901.ain "<gs|sz|gs>") # none
+add_test(NAME input8901 COMMAND $<TARGET_FILE:dmrg> -f ${PATH_TO_INPUTS}/input8901.ain "<gs|sz|gs>") # none
+set_tests_properties(input8901 PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/input8901)
 
 set(_ldaggerl_input_text)
 file(READ ${PATH_TO_INPUTS}/input8902.ain _ldaggerl_input_text)
@@ -327,9 +328,9 @@ string(REPLACE "matrixvectorstored," "MatrixVectorOnTheFly," _ldaggerl_onthefly_
 set(_ldaggerl_onthefly_input_file ${CMAKE_CURRENT_BINARY_DIR}/input8902_ldaggerl_onthefly.ain)
 file(WRITE ${_ldaggerl_onthefly_input_file} "${_ldaggerl_onthefly_input}")
 
-set(_ldaggerl_test_names input8902 input8903 ldaggerl_hermitian_rejected ldaggerl_kron_rejected
-                         ldaggerl_onthefly_rejected)
-foreach(test_name IN LISTS _ldaggerl_test_names)
+set(_isolated_dmrg_test_names input8901 input8902 input8903 ldaggerl_hermitian_rejected ldaggerl_kron_rejected
+                              ldaggerl_onthefly_rejected)
+foreach(test_name IN LISTS _isolated_dmrg_test_names)
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${test_name})
 endforeach()
 
