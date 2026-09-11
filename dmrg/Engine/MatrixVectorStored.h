@@ -103,6 +103,7 @@ public:
 	using VectorRealType            = typename PsimagLite::Vector<RealType>::Type;
 	using VectorType                = typename BaseType::VectorType;
 	using OptionsType               = typename ParametersType::OptionsType;
+	using MatrixSolverEnum          = typename ParametersType::MatrixSolverEnum;
 	using FullMatrixType            = PsimagLite::Matrix<ComplexOrRealType>;
 
 	MatrixVectorStored(const ModelType&                     model,
@@ -110,7 +111,7 @@ public:
 	                   const typename ModelHelperType::Aux& aux)
 	    : BaseType(hc, aux)
 	    , model_(model)
-	    , isLdaggerL_(model.params().options.isSet("LdaggerL"))
+	    , isLdaggerL_(validatedLdaggerL(model))
 	    , progress_("MatrixVectorStored")
 	{
 		const OptionsType& options     = model.params().options;
@@ -135,24 +136,57 @@ public:
 			std::cerr << "WARNING: MatrixVectorStored being used for a large run!\n";
 	}
 
-	const SparseMatrixType& toCRS() const override { return matrixStored_; }
+	const SparseMatrixType& toCRS() const override
+	{
+		if (isLdaggerL_)
+			throw PsimagLite::RuntimeError(
+			    "MatrixVectorStored::toCRS is unavailable with LdaggerL\n");
+
+		return matrixStored_;
+	}
 
 	void matrixVectorProduct(VectorType& x, const VectorType& y) const override
 	{
-		matrixStored_.matrixVectorProduct(x, y);
-		if (isLdaggerL_) {
-			VectorType xx = x;
-			std::fill(x.begin(), x.end(), 0.);
-			transpose_.matrixVectorProduct(x, xx);
+		if (!isLdaggerL_) {
+			matrixStored_.matrixVectorProduct(x, y);
+			return;
 		}
+
+		VectorType intermediate(y.size(), 0.0);
+		matrixStored_.matrixVectorProduct(intermediate, y);
+		transpose_.matrixVectorProduct(x, intermediate);
 	}
 
 	void fullDiag(VectorRealType& eigs, FullMatrixType& fm) const override
 	{
+		if (isLdaggerL_)
+			throw PsimagLite::RuntimeError(
+			    "MatrixVectorStored::fullDiag is unavailable with LdaggerL\n");
+
 		BaseType::fullDiag(eigs, fm, matrixStored_, model_.params().maxMatrixRankStored);
 	}
 
 private:
+
+	static bool validatedLdaggerL(const ModelType& model)
+	{
+		if (!model.params().options.isSet("LdaggerL"))
+			return false;
+
+		switch (model.params().matrix_solver_enum) {
+		case MatrixSolverEnum::LANCZOS:
+			return true;
+		case MatrixSolverEnum::DENSE:
+			throw PsimagLite::RuntimeError(
+			    "LdaggerL with MatrixVectorStored does not support MatrixSolver=Dense\n");
+		case MatrixSolverEnum::ARNOLDISAI:
+			throw PsimagLite::RuntimeError(
+			    "LdaggerL with MatrixVectorStored does not support MatrixSolver=ArnoldiSaI\n");
+		}
+
+		throw PsimagLite::RuntimeError(
+		    "LdaggerL with MatrixVectorStored supports only MatrixSolver=Lanczos\n");
+	}
 
 	const ModelType&              model_;
 	const bool                    isLdaggerL_;

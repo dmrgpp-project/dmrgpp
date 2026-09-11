@@ -86,9 +86,13 @@ public:
 
 	//---------------------------------------------------------------------------//
 	/*!
-	 * \brief Apply the represented matrix to a vector
+	 * \brief Accumulate the effective operator applied to a vector
 	 *
-	 * \param[out] x Result of the matrix-vector product
+	 * In ordinary stored mode, this computes `x += A*y`. With `LdaggerL`,
+	 * the effective operation is `x += A^dagger*A*y`, evaluated through the
+	 * separately stored factors without materializing `A^dagger*A`.
+	 *
+	 * \param[in,out] x Accumulator for the matrix-vector product
 	 * \param[in]  y Input vector
 	 */
 	void matrixVectorProduct(VectorType& x, const VectorType& y) const
@@ -102,17 +106,25 @@ public:
 	 *
 	 * \param[out] eigs Eigenvalues in ascending order
 	 * \param[out] fm   Eigenvectors stored as columns
+	 *
+	 * 	hrows PsimagLite::RuntimeError if the selected implementation cannot
+	 *         explicitly diagonalize the effective operator. In particular,
+	 *         factorized `LdaggerL` mode does not materialize `A^dagger*A`.
 	 */
 	void fullDiag(VectorRealType& eigs, FullMatrixType& fm) const { ptr_->fullDiag(eigs, fm); }
 
 	//---------------------------------------------------------------------------//
 	/*!
-	 * \brief Return the explicitly stored sparse matrix
+	 * \brief Return an explicit sparse representation of the effective operator
+	 *
+	 * In ordinary `MatrixVectorStored` mode, this returns the stored matrix `A`.
+	 * In factorized `LdaggerL` mode, no explicit `A^dagger*A` matrix exists and
+	 * this operation throws.
 	 *
 	 * \returns A reference owned by the selected implementation
 	 *
 	 * 	hrows PsimagLite::RuntimeError if the selected implementation does not
-	 *         provide an explicit sparse matrix
+	 *         provide an explicit sparse matrix for the effective operator
 	 */
 	const SparseMatrixType& toCRS() const { return ptr_->toCRS(); }
 
