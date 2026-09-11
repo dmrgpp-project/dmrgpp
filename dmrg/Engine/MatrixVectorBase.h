@@ -86,11 +86,12 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include <vector>
 
 namespace Dmrg {
-template <typename ComplexOrRealType_> class MatrixVectorBase {
+template <typename ComplexOrRealType_, typename TypesType_ = MatrixVectorTypes<ComplexOrRealType_>>
+class MatrixVectorBase {
 
 public:
 
-	using TypesType         = MatrixVectorTypes<ComplexOrRealType_>;
+	using TypesType         = TypesType_;
 	using ModelType         = typename TypesType::ModelType;
 	using ModelHelperType   = typename TypesType::ModelHelperType;
 	using RealType          = typename TypesType::RealType;

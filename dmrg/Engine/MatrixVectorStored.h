@@ -85,10 +85,10 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include <vector>
 
 namespace Dmrg {
-template <typename ComplexOrRealType_>
-class MatrixVectorStored final : public MatrixVectorBase<ComplexOrRealType_> {
+template <typename ComplexOrRealType_, typename TypesType_ = MatrixVectorTypes<ComplexOrRealType_>>
+class MatrixVectorStored final : public MatrixVectorBase<ComplexOrRealType_, TypesType_> {
 
-	using BaseType = MatrixVectorBase<ComplexOrRealType_>;
+	using BaseType = MatrixVectorBase<ComplexOrRealType_, TypesType_>;
 
 public:
 
@@ -110,6 +110,7 @@ public:
 	                   const typename ModelHelperType::Aux& aux)
 	    : BaseType(hc, aux)
 	    , model_(model)
+	    , isLdaggerL_(model.params().options.isSet("LdaggerL"))
 	    , progress_("MatrixVectorStored")
 	{
 		const OptionsType& options     = model.params().options;
@@ -118,8 +119,7 @@ public:
 		matrixStored_.clear();
 
 		hc.fullHamiltonian(matrixStored_, aux, model.isHermitian());
-		const bool ldaggerL = model.params().options.isSet("LdaggerL");
-		if (ldaggerL) {
+		if (isLdaggerL_) {
 			transposeConjugate(transpose_, matrixStored_);
 		}
 
@@ -140,8 +140,7 @@ public:
 	void matrixVectorProduct(VectorType& x, const VectorType& y) const override
 	{
 		matrixStored_.matrixVectorProduct(x, y);
-		const bool ldaggerL = model_.params().options.isSet("LdaggerL");
-		if (ldaggerL) {
+		if (isLdaggerL_) {
 			VectorType xx = x;
 			std::fill(x.begin(), x.end(), 0.);
 			transpose_.matrixVectorProduct(x, xx);
@@ -156,6 +155,7 @@ public:
 private:
 
 	const ModelType&              model_;
+	const bool                    isLdaggerL_;
 	SparseMatrixType              matrixStored_;
 	SparseMatrixType              transpose_;
 	PsimagLite::ProgressIndicator progress_;
