@@ -244,6 +244,14 @@ add_test(NAME input123 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input123.ain -p 12
                                "<gs|P0>,<P0|P1>,<gs|c'|P2>,<gs|c'|P3>,<P2|P3>") # none
 add_test(NAME input124 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input124.ain -p 12 "<P1|nup|P1>") # none
 set_tests_properties(input124 PROPERTIES DEPENDS input123)
+add_insitu_gold_check_test(
+  output124_nup_P1
+  input124
+  runForinput124.cout
+  "<P1|nup|P1>"
+  ${PATH_TO_INPUTS}/input124_nup_P1_ref.txt
+  TOLERANCE
+  2e-5)
 add_test(NAME input126 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input126.ain) # energy -19.6759
 add_lowest_eigenvalue_check_test(output126 input126 -19.6759 runForinput126.cout)
 add_test(NAME input127 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input127.ain -p 12 "<gs|P0>") # none
