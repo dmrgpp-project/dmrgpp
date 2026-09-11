@@ -24,5 +24,3 @@ string P0=|P1>;
 string P1="TimeEvolve{tau=0.1,steps=5,advanceEach=6}*|P0>";
 GsWeight=0.2;
 OutputFile="data124";
-#ci dmrg arguments= -p 12 "<gs|P0>,<P0|P1>,<gs|c'|P2>,<gs|c'|P3>,<P2|P3>"
-#ci CollectBrakets 0
