@@ -127,6 +127,15 @@ public:
 		    block1,
 		    isLastCall);
 
+		const VectorSizeType& indices = oneTimeEvolution->indices();
+		assert(indices.size() == timeParams.timeSteps);
+		const RealType baseTime = oneTimeEvolution->time();
+		for (SizeType i = 0; i < indices.size(); ++i) {
+			// Keep this offset synchronized with Pvectors::initTimeVectors().
+			const RealType offset = i * timeParams.tau / (timeParams.timeSteps - 1);
+			auxPtr->pVectors().setTime(indices[i], baseTime + offset);
+		}
+
 		if (oneTimeEvolution->time() > 0) {
 			delete phi;
 			phi = nullptr;
