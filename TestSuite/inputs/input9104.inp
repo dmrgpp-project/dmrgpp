@@ -1,0 +1,30 @@
+##Ainur1.0
+
+# Restart-mapping check for per-P-vector physical-time metadata.
+# data9103 contains distinct nonzero times in target-vector slots 10, 3, and 1.
+# Preserve the mapped numerical vectors without starting a new time evolution.
+
+TotalNumberOfSites=6;
+NumberOfTerms=1;
+DegreesOfFreedom=1;
+GeometryKind=star;
+GeometryOptions=none;
+hubbardU=[2, 0., 0., 0., 0., 0.];
+Model=HubbardOneBand;
+SolverOptions=twositedmrg,geometryallinsystem,TargetingExpression,restart,usecomplex;
+Version=GSquench-unit-test;
+OutputFile=data9104;
+InfiniteLoopKeptStates=50;
+FiniteLoops=[
+    [@auto, 50, 2], [@auto, 50, 2]];
+TargetElectronsUp=3;
+TargetElectronsDown=3;
+dir0:Connectors=[0.5, 0.5, 0.5, 0.5, 0.5];
+potentialV=[0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0];
+RestartFilename=data9103;
+RestartMappingTvs=[10, 3, 1];
+string P0=|P0>;
+string P1=|P1>;
+string P2=|P2>;
+GsWeight=0.1;

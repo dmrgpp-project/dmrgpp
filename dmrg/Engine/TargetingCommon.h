@@ -261,6 +261,17 @@ public:
 		ts.write(io, prefix);
 	}
 
+	void writeNGSTs(PsimagLite::IoSelector::Out& io,
+	                PsimagLite::String           prefix,
+	                const VectorSizeType&        block,
+	                PsimagLite::String           name,
+	                const VectorRealType&        pvectorTimes) const
+	{
+		SizeType           site = block[0];
+		TimeSerializerType ts(currentTimeStep(), time(), site, aoe_, name, pvectorTimes);
+		ts.write(io, prefix);
+	}
+
 	void read(IoInputType& io, PsimagLite::String prefix)
 	{
 		const PsimagLite::String label
@@ -271,6 +282,14 @@ public:
 	}
 
 	void readGSandNGSTs(IoInputType& io, PsimagLite::String prefix, PsimagLite::String name)
+	{
+		readGSandNGSTs(io, prefix, name, nullptr);
+	}
+
+	void readGSandNGSTs(IoInputType&       io,
+	                    PsimagLite::String prefix,
+	                    PsimagLite::String name,
+	                    VectorRealType*    pvectorTimes)
 	{
 		read(io, prefix);
 
@@ -288,6 +307,26 @@ public:
 		const SizeType dstages = aoe_.stages().size(); // destination stages
 
 		const RestartStructType& checkpoint = targetHelper_.model().params().checkpoint;
+		const SizeType           rtvs       = ts.numberOfVectors(); // read tvs
+		const SizeType           dtvs       = aoe_.tvs(); // destination tvs
+
+		if (pvectorTimes && pvectorTimes->size() != dtvs)
+			err("TargetingCommon::readGSandNGSTs: P-vector time count differs from destination target-vector count\n");
+
+		for (SizeType i = 0; i < dtvs; ++i) {
+			const int j = checkpoint.mappingTvs(i);
+			if (j >= 0 && static_cast<SizeType>(j) >= rtvs) {
+				err("TargetingCommon::readGSandNGSTs: tvs mapping failed " + ttos(j)
+				    + " >= " + ttos(rtvs) + "\n");
+			}
+		}
+
+		if (pvectorTimes && !ts.hasPvectorTimes()) {
+			std::cerr
+			    << "WARNING: Checkpoint " << io.serializer().filename()
+			    << " predates per-P-vector time persistence; mapped P-vector times "
+			       "will be reset to zero.\n";
+		}
 
 		const SizeType dstagesOrZero = (checkpoint.mapStages()) ? dstages : 0;
 
@@ -297,9 +336,6 @@ public:
 
 		for (SizeType i = 0; i < dstagesOrZero; ++i)
 			aoe_.setStage(i, stages[i]);
-
-		SizeType rtvs = ts.numberOfVectors(); // read tvs
-		SizeType dtvs = aoe_.tvs(); // destination tvs
 
 		int tvForPsi = checkpoint.sourceTvForPsi();
 		if (tvForPsi >= 0) {
@@ -320,13 +356,11 @@ public:
 			const int j = checkpoint.mappingTvs(i);
 			if (j < 0)
 				continue;
-			const SizeType jj = j;
-			if (jj >= rtvs) {
-				err("TargetingCommon::readGSandNGSTs: tvs mapping failed " + ttos(j)
-				    + " >= " + ttos(rtvs) + "\n");
-			}
 
 			aoeNonConst.targetVectorsNonConst(i) = ts.vector(j);
+			if (pvectorTimes)
+				(*pvectorTimes)[i]
+				    = (ts.hasPvectorTimes()) ? ts.pvectorTime(j) : RealType(0);
 		}
 
 		bool     sameNgst  = isThisNgstSameAsPrevious(name, ts.name(), dtvs, rtvs);

@@ -1,0 +1,30 @@
+##Ainur1.0
+
+# Direct P-vector assignment after restart must copy physical time with the
+# numerical vector. P0 starts from source slot 10 (time 0.7), then becomes P1
+# (source slot 3, time 0.625).
+
+TotalNumberOfSites=6;
+NumberOfTerms=1;
+DegreesOfFreedom=1;
+GeometryKind=star;
+GeometryOptions=none;
+hubbardU=[2, 0., 0., 0., 0., 0.];
+Model=HubbardOneBand;
+SolverOptions=twositedmrg,geometryallinsystem,TargetingExpression,restart,usecomplex;
+Version=GSquench-unit-test;
+OutputFile=data9106;
+InfiniteLoopKeptStates=50;
+FiniteLoops=[
+    [@auto, 50, 2], [@auto, 50, 2]];
+TargetElectronsUp=3;
+TargetElectronsDown=3;
+dir0:Connectors=[0.5, 0.5, 0.5, 0.5, 0.5];
+potentialV=[0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0];
+RestartFilename=data9103;
+RestartMappingTvs=[10, 3, 1];
+string P0=|P1>;
+string P1=|P1>;
+string P2=|P2>;
+GsWeight=0.1;
