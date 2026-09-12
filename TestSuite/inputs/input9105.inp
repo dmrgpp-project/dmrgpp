@@ -1,0 +1,28 @@
+##Ainur1.0
+
+# Restart-mapping check for skipped destinations and duplicate source mappings.
+
+TotalNumberOfSites=6;
+NumberOfTerms=1;
+DegreesOfFreedom=1;
+GeometryKind=star;
+GeometryOptions=none;
+hubbardU=[2, 0., 0., 0., 0., 0.];
+Model=HubbardOneBand;
+SolverOptions=twositedmrg,geometryallinsystem,TargetingExpression,restart,usecomplex;
+Version=GSquench-unit-test;
+OutputFile=data9105;
+InfiniteLoopKeptStates=50;
+FiniteLoops=[
+    [@auto, 50, 2], [@auto, 50, 2]];
+TargetElectronsUp=3;
+TargetElectronsDown=3;
+dir0:Connectors=[0.5, 0.5, 0.5, 0.5, 0.5];
+potentialV=[0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0];
+RestartFilename=data9103;
+RestartMappingTvs=[10, -1, 10];
+string P0=|P0>;
+string P1=|P1>;
+string P2=|P2>;
+GsWeight=0.1;
