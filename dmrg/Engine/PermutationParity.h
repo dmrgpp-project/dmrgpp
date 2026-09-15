@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright (c) 2026, UT-Battelle, LLC
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #ifndef DMRG_PERMUTATION_PARITY_H
 #define DMRG_PERMUTATION_PARITY_H
 
