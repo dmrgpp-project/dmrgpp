@@ -58,6 +58,10 @@ else()
 endif()
 
 include(GNUInstallDirs)
+install(
+  FILES LICENSE NOTICE THIRD_PARTY_NOTICES
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/licenses/dmrgpp)
+
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 if(APPLE)
   set(CMAKE_INSTALL_RPATH "@loader_path/../${CMAKE_INSTALL_LIBDIR}")
