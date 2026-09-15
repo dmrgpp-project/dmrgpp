@@ -973,7 +973,7 @@ TO BE ABLE TO PRODUCE DATA FOR THE OBSERVER.}
 
 \section*{LICENSE}
 \begin{verbatim}
-\ptexReadFile{../src/LICENSE}
+\ptexReadFile{../LICENSE}
 \end{verbatim}
 \bibliographystyle{plain}
 \bibliography{thesis}
