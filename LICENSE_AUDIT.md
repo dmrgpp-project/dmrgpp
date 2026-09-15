@@ -508,4 +508,4 @@ Catch2, Kokkos, and Kokkos Kernels are fetched dependencies; MPI, HDF5, Boost, T
 
 ## Task 2 disposition
 
-The tracked-source inventory and classification are complete. Bulk relicensing remains blocked on the three items listed under **Unresolved or incompatible; blocks migration**. `THIRD_PARTY_NOTICES` has been reconciled to the current tracked tree and records both compatible third-party terms and unresolved provenance.
+The tracked-source inventory and classification are complete. All identified blockers have been resolved by removal or independent replacement. `THIRD_PARTY_NOTICES` has been reconciled to the current tracked tree and records the compatible third-party terms that remain distributed.
