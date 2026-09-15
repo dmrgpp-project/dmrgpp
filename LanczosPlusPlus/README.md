@@ -1,9 +1,14 @@
 # Quick Start
 ## Licensing
 
-The full software license for LanczosPlusPlus++ version 1.0.0
-can be found in
-file [`LICENSE`](../LICENSE) in the repository root.
+LanczosPlusPlus first-party software is licensed under the GNU General Public
+License, version 3 or, at your option, any later version
+(`GPL-3.0-or-later`). See the root [`LICENSE`](../LICENSE) file. This software
+comes with absolutely no warranty; see the GNU General Public License for
+details. Institutional notices are in [`NOTICE`](../NOTICE), and terms for
+bundled third-party material are in
+[`THIRD_PARTY_NOTICES`](../THIRD_PARTY_NOTICES).
+
 LanczosPlusPlus is a free and open source implementation of the
 Lanczos algorithm for models of strongly correlated electrons.
 You are welcomed to use it and publish data
@@ -38,32 +43,6 @@ Publisher = {\url{https://g1257.github.com/dmrgPlusPlus}} }
 
 Building and Running Lanczos++
 TBW.
-
-## DISCLAIMER
-
-THE SOFTWARE IS SUPPLIED BY THE COPYRIGHT HOLDERS AND
-CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
-WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-COPYRIGHT OWNER, CONTRIBUTORS, UNITED STATES GOVERNMENT,
-OR THE UNITED STATES DEPARTMENT OF ENERGY BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
-OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
-DAMAGE.
-
-NEITHER THE UNITED STATES GOVERNMENT, NOR THE UNITED
-STATES DEPARTMENT OF ENERGY, NOR THE COPYRIGHT OWNER, NOR
-ANY OF THEIR EMPLOYEES, REPRESENTS THAT THE USE OF ANY
-INFORMATION, DATA, APPARATUS, PRODUCT, OR PROCESS
-DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
-
 
 ## Required Software
 
