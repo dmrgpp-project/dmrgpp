@@ -195,7 +195,7 @@ with
 
 \section*{LICENSE}
 \begin{Verbatim}
-\ptexReadFile{../LICENSE}
+\ptexReadFile{../../LICENSE}
 \end{Verbatim}
 \bibliographystyle{plain}
 \bibliography{thesis}
