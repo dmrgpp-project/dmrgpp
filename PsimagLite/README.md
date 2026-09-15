@@ -3,7 +3,7 @@
 
 ## Introduction
 
-PsimagLite is free software (see file LICENSE)
+PsimagLite is free software (see [`LICENSE`](../LICENSE) in the repository root).
 Parts might have its own License. See Parts of PsimagLite below.
 
 Please cite PsimagLite if you base any scientific

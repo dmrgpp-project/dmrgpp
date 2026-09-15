@@ -3,7 +3,7 @@
 
 The full software license for LanczosPlusPlus++ version 1.0.0
 can be found in
-file LICENSE.
+file [`LICENSE`](../LICENSE) in the repository root.
 LanczosPlusPlus is a free and open source implementation of the
 Lanczos algorithm for models of strongly correlated electrons.
 You are welcomed to use it and publish data
