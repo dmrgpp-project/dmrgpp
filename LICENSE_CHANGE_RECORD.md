@@ -3,8 +3,7 @@
 ## Approval
 
 The project owner confirmed on 2026-09-14 that UT-Battelle, L.L.C. has fully
-approved the relicensing described in
-[`LicenseChangePlan.md`](LicenseChangePlan.md) and remains the copyright holder
+approved the relicensing and remains the copyright holder
 for the covered first-party code.
 
 No public approval document or reference identifier was supplied for inclusion
@@ -62,8 +61,46 @@ The approved policy is to:
    incompatible with GPL-3.0-or-later until that material is removed, replaced,
    excluded from the covered distribution, or separately relicensed.
 
-## Implementation gate
+## Canonical source and verification summary
 
-The approval, component scope, and source-header policy decisions are resolved.
-Bulk relicensing remains gated on completion of the tracked-source provenance
-and compatibility audit in Task 2 of `LicenseChangePlan.md`.
+- Authoritative GPL text: <https://www.gnu.org/licenses/gpl-3.0.txt>
+- Observed SHA-256 for `LICENSE`:
+  `3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986`
+- The root `LICENSE` was verified byte-for-byte against a fresh authoritative
+  download.
+- The tracked-file fingerprint and SPDX audits found no stale first-party
+  declaration; all intended declarations use `GPL-3.0-or-later`.
+- All paths and representative source markers recorded in
+  `THIRD_PARTY_NOTICES` were verified.
+- Fresh Clang builds and runtime-banner checks passed for `dmrg`,
+  `toolboxdmrg`, and `lanczos`.
+- The configured full build, focused migration-related tests, manual generation,
+  path/dependency edge-case checks, and temporary staged installation passed.
+- The broader CTest run passed 275 of 277 tests. Two reproducible Nightly
+  numerical failures—`u0_gImpEqGcluster_dmrg_check` and
+  `neqGBEKFig3L3NearAtomic`—are in cincuenta/GBEK paths not changed by the
+  licensing migration and are recorded in the Task 8 result.
+- Independent automated reviews of the completed Task 8 changes passed after
+  all reported documentation-build defects were corrected. These reviews do
+  not substitute for the required human authority and component-maintainer
+  reviews.
+
+Detailed audit evidence is in `LICENSE_AUDIT.md`; task-by-task implementation
+and verification results are in `LicenseChangePlan.md`.
+
+## Final human-review gate
+
+Task 9 remains open. On 2026-09-15, the requester directed that the focused
+commit series be retained and that this consolidated review record be prepared,
+but that Task 9 remain pending for human review.
+
+Before landing the series, obtain and record:
+
+1. final review by the approving copyright-holder/legal authority identified
+   above; and
+2. final review by maintainers familiar with every included first-party
+   component: root DMRG++, `dmrg/`, `LanczosPlusPlus/`, `PsimagLite/`, and
+   `cincuenta/`.
+
+Do not mark Task 9 complete or land the migration until those reviews are
+confirmed. No final human-review approval is claimed by this record.
