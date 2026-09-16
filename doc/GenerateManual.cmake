@@ -7,10 +7,8 @@ foreach(required_variable IN ITEMS PERL_EXE DOC_SCRIPT MANUAL_INPUT DOC_ROOT OUT
   endif()
 endforeach()
 
-execute_process(
-  COMMAND "${PERL_EXE}" "${DOC_SCRIPT}" "${MANUAL_INPUT}" "${DOC_ROOT}" "${OUTPUT_DIR}"
-  INPUT_FILE "${SOURCE_LIST}"
-  COMMAND_ERROR_IS_FATAL ANY)
+execute_process(COMMAND "${PERL_EXE}" "${DOC_SCRIPT}" "${MANUAL_INPUT}" "${DOC_ROOT}" "${OUTPUT_DIR}"
+                INPUT_FILE "${SOURCE_LIST}" COMMAND_ERROR_IS_FATAL ANY)
 
 file(READ "${OUTPUT_DIR}/manual.tex" generated_manual)
 if(generated_manual MATCHES "ERROR: Label not found")

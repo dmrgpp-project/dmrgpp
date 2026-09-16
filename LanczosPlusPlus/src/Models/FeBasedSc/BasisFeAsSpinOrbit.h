@@ -3,7 +3,6 @@
 //
 // [Lanczos++, Version 1.0.0]
 
-
 #ifndef BASIS_FEASBASED_SPINORBIT_H
 #define BASIS_FEASBASED_SPINORBIT_H
 #include "../../Engine/BasisBase.h"

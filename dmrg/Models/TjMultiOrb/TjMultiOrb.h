@@ -4,7 +4,6 @@
 // [DMRG++, Version 2.0.0]
 // [by G.A., Oak Ridge National Laboratory]
 
-
 /** \ingroup DMRG */
 /*@{*/
 

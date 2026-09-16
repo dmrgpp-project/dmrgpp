@@ -3,7 +3,6 @@
 //
 // [Lanczos++, Version 1.0.0]
 
-
 #ifndef LANCZOS_IMMM_H
 #define LANCZOS_IMMM_H
 

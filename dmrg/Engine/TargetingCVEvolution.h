@@ -4,7 +4,6 @@
 // [DMRG++, Version 6.]
 // [by G.A., Oak Ridge National Laboratory]
 
-
 #ifndef TARGETING_CVEvolution_H
 #define TARGETING_CVEvolution_H
 
