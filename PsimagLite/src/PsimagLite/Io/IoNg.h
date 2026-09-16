@@ -4,7 +4,6 @@
 // [PsimagLite, Version 2.]
 // [by G.A., Oak Ridge National Laboratory]
 
-
 /** \ingroup PsimagLite */
 /*@{*/
 

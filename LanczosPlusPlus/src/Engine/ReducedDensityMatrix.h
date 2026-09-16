@@ -3,7 +3,6 @@
 //
 // [Lanczos++, Version 1]
 
-
 #ifndef LANCZOS_REDUCED_DM_H
 #define LANCZOS_REDUCED_DM_H
 #include <PsimagLite/Matrix.h>

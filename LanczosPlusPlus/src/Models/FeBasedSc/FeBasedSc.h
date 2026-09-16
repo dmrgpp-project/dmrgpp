@@ -4,7 +4,6 @@
 //
 // [Lanczos++, Version 1.0.0]
 
-
 #ifndef FEBASED_SC_H
 #define FEBASED_SC_H
 

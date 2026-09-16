@@ -4,7 +4,6 @@
 // [DMRG++, Version 5.]
 // [by G.A., Oak Ridge National Laboratory]
 
-
 #ifndef DMRG_TARGETING_METTS_H
 #define DMRG_TARGETING_METTS_H
 #include "ApplyOperatorLocal.h"

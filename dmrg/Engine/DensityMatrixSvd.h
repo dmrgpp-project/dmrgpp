@@ -4,7 +4,6 @@
 // [DMRG++, Version 4.]
 // [by G.A., Oak Ridge National Laboratory]
 
-
 #ifndef DENSITY_MATRIX_SVD_H
 #define DENSITY_MATRIX_SVD_H
 #include "DensityMatrixBase.h"

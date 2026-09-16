@@ -3,7 +3,6 @@
 //
 // [Lanczos++, Version 1.0.0]
 
-
 #ifndef BASIS_IMMM_H
 #define BASIS_IMMM_H
 #include "../../Engine/BasisBase.h"

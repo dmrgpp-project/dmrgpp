@@ -3,7 +3,6 @@
 //
 // [PsimagLite, Version 1.0.0]
 
-
 #ifndef RANDOM48_H
 #define RANDOM48_H
 #include "Vector.h"

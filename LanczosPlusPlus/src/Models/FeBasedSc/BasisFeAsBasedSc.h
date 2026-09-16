@@ -4,7 +4,6 @@
 //
 // [Lanczos++, Version 1.0.0]
 
-
 #ifndef BASIS_FEASBASED_SC_H
 #define BASIS_FEASBASED_SC_H
 #include "../../Engine/BasisBase.h"

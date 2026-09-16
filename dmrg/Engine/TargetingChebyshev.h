@@ -4,7 +4,6 @@
 // [DMRG++, Version 5.]
 // [by G.A., Oak Ridge National Laboratory]
 
-
 #ifndef TARGETING_CHEBYSHEV_H
 #define TARGETING_CHEBYSHEV_H
 

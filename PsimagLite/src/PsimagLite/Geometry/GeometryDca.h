@@ -3,7 +3,6 @@
 //
 // [PsimagLite, Version 1.0.0]
 
-
 #ifndef LANCZOS_GEOMETRY_DCA_H
 #define LANCZOS_GEOMETRY_DCA_H
 #include <PsimagLite/Io/IoNg.h>

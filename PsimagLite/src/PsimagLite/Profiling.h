@@ -3,7 +3,6 @@
 //
 // [PsimagLite, Version 1.0.0]
 
-
 // A class to profile a scope of code
 #ifndef PROFILING_H_
 #define PROFILING_H_

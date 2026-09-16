@@ -5,7 +5,6 @@
 // [PsimagLite, Version 0.0.1]
 // [by G.A., Oak Ridge National Laboratory]
 
-
 #ifndef SAMPLE_CRSMATRIX_HEADER_H
 #define SAMPLE_CRSMATRIX_HEADER_H
 

@@ -4,7 +4,6 @@
 // [LanczosPlusPlus, Version 1.0.0]
 // [by G.A., Oak Ridge National Laboratory]
 
-
 /** \ingroup LanczosPlusPlus */
 /*@{*/
 

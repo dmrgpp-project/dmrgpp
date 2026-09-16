@@ -4,7 +4,6 @@
 //
 // [Lanczos++, Version 1.0.0]
 
-
 #ifndef ENGINE_H_
 #define ENGINE_H_
 #include "DefaultSymmetry.h"

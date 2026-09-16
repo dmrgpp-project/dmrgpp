@@ -4,7 +4,6 @@
 //
 // [Lanczos++, Version 1.0.0]
 
-
 #ifndef PARTITIONS_H
 #define PARTITIONS_H
 #include <PsimagLite/BitManip.h>

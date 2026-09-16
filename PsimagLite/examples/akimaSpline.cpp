@@ -3,7 +3,6 @@
 //
 // [PsimagLite, Version 1.0.0]
 
-
 #include <PsimagLite/AkimaSpline.h>
 #include <PsimagLite/Concurrency.h>
 #include <PsimagLite/Vector.h>
