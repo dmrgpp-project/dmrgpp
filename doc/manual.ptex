@@ -330,10 +330,6 @@ The operator driver may be used to produce an operator by file.
 
 \section{The TestSuite}
 
-\section{Signals}
-
-\ptexPaste{RegisterSignals}
-
 \chapter{Developer's Guide}
 
 \section{Main Driver}
@@ -705,7 +701,6 @@ will be considered.
 
 \subsection{Truncation}
 \ptexPaste{Truncation}
-\ptexPaste{DiagOfDensityMatrix}
 
 \subsection{Lanczos Solver}\label{sec:lanczos}
 To diagonalize Hamiltonian $H$ we use the Lanczos
