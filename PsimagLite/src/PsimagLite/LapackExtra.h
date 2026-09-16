@@ -3,7 +3,6 @@
 //
 // [PsimagLite, Version 1.0.0]
 
-
 #ifndef LAPACK_H_
 #define LAPACK_H_
 #include <complex>

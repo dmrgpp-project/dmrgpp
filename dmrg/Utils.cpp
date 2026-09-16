@@ -4,7 +4,6 @@
 // [DMRG++, Version 5.]
 // [by G.A., Oak Ridge National Laboratory]
 
-
 #include "Utils.h"
 
 // Utility functions that are still needed

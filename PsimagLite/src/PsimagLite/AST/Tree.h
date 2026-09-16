@@ -3,7 +3,6 @@
 //
 // [PsimagLite, Version 2.]
 
-
 #ifndef PSI_TREE_H
 #define PSI_TREE_H
 #include "../PsimagLite.h"

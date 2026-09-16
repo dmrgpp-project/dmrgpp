@@ -4,7 +4,6 @@
 //
 // [Lanczos++, Version 1.0.0]
 
-
 #ifndef LANCZOS_MODEL_BASE_H
 #define LANCZOS_MODEL_BASE_H
 #include "BasisBase.h"

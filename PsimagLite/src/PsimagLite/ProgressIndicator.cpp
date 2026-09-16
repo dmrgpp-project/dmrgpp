@@ -4,7 +4,6 @@
 // [PsimagLite, Version 1.0.0]
 // [by G.A., Oak Ridge National Laboratory]
 
-
 /*! \file ProgressIndicator.cpp
  *
  *  This class handles output to a progress indicator (usually the terminal)

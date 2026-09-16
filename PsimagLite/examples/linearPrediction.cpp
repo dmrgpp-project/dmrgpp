@@ -3,7 +3,6 @@
 //
 // [PsimagLite, Version 1.0.0]
 
-
 #include <PsimagLite/Io/IoSimple.h>
 #include <PsimagLite/LinearPrediction.h>
 #include <cstdlib>

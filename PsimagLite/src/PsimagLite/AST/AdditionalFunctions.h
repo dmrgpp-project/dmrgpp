@@ -3,7 +3,6 @@
 //
 // [PsimagLite, Version 2.]
 
-
 #ifndef ADDITIONALFUNCTIONS_H
 #define ADDITIONALFUNCTIONS_H
 #include "Node.h"

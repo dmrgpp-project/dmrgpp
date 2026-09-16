@@ -4,7 +4,6 @@
 // [DMRG++, Version 5.]
 // [by G.A., Oak Ridge National Laboratory]
 
-
 /*! \file Operator.h
  *
  *  A class to represent an operator

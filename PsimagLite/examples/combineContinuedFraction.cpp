@@ -3,7 +3,6 @@
 //
 // [PsimagLite, Version 1.0.0]
 
-
 #include <PsimagLite/ContinuedFraction.h>
 #include <PsimagLite/ContinuedFractionCollection.h>
 #include <PsimagLite/Io/IoSimple.h>

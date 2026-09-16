@@ -3,7 +3,6 @@
 //
 // [Lanczos++, Version 1.0.0]
 
-
 #ifndef REFLECTION_SYMM_H
 #define REFLECTION_SYMM_H
 #include "LanczosGlobals.h"

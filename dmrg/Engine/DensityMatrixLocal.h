@@ -5,7 +5,6 @@
 // [DMRG++, Version 5.]
 // [by G.A., Oak Ridge National Laboratory]
 
-
 #ifndef DENSITY_MATRIX_LOCAL_H
 #define DENSITY_MATRIX_LOCAL_H
 #include "BlockDiagonalMatrix.h"

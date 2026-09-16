@@ -4,7 +4,6 @@
 //
 // [Lanczos++, Version 1.0.0]
 
-
 #ifndef BASIS_ONE_SPIN_FE_AS_H
 #define BASIS_ONE_SPIN_FE_AS_H
 #include "LabeledOperator.h"

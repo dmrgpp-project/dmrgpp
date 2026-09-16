@@ -4,7 +4,6 @@
 // [DMRG++, Version 5.]
 // [by G.A., Oak Ridge National Laboratory]
 
-
 #ifndef TARGETING_TIMESTEP_H
 #define TARGETING_TIMESTEP_H
 

@@ -3,7 +3,6 @@
 //
 // [Lanczos++, Version 1.0.0]
 
-
 #ifndef TRANSLATION_SYMM_H
 #define TRANSLATION_SYMM_H
 #include "LanczosGlobals.h"

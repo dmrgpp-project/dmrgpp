@@ -3,7 +3,6 @@
 //
 // [PsimagLite, Version 1.0.0]
 
-
 /** \ingroup PsimagLite */
 /*@{*/
 
