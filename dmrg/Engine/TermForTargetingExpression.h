@@ -157,17 +157,16 @@ public:
 			discardedTerms.push_back(i);
 
 			OneOperatorSpecType opspec(siteSplit.root);
-			std::string         ket_src = ket_.name();
-			ket_.multiply(tmp);
-			std::string   ket_dest = ket_.name();
-			OperatorType* op       = new OperatorType(
+			OperatorType*       op = new OperatorType(
                             aux_.pVectors().aoe().model().naturalOperator(opspec.label,
                                                                           0, // FIXME TODO SDHS Immm
                                                                           opspec.dof));
 			if (opspec.transpose)
 				op->transpose();
 
-			oneOperator(ket_dest, ket_src, *op, site);
+			KetType ket_before = ket_;
+			ket_.multiply(tmp);
+			applyOneExprOperator(ket_, ket_before, *op, site);
 
 			delete op;
 			op = 0;
@@ -218,15 +217,19 @@ private:
 
 	bool siteCanBeApplied(SizeType site) const { return (site == aux_.currentCoO()); }
 
-	void oneOperator(PsimagLite::String  destKet,
-	                 PsimagLite::String  srcKet,
-	                 const OperatorType& op,
-	                 SizeType            site)
+	void applyOneExprOperator(const KetType&      dest,
+	                          const KetType&      src,
+	                          const OperatorType& op,
+	                          SizeType            site)
 	{
 		assert(siteCanBeApplied(site));
-		const VectorWithOffsetType& srcVwo       = aux_.getCurrentVectorConst(srcKet);
-		PsimagLite::String          internalName = aux_.createTemporaryVector(destKet);
-		VectorWithOffsetType&       destVwo = aux_.getCurrentVectorNonConst(internalName);
+		// Get index for srcKet
+		int      src_ket_index = src.pIndex();
+		RealType src_time
+		    = (src_ket_index >= 0) ? aux_.pVectors()(src_ket_index).time() : 0.;
+		const VectorWithOffsetType& srcVwo = aux_.getCurrentVectorConst(src.name());
+		PsimagLite::String internalName = aux_.createTemporaryVector(dest.name(), src_time);
+		VectorWithOffsetType& destVwo   = aux_.getCurrentVectorNonConst(internalName);
 		applyInSitu(destVwo, srcVwo, site, op);
 	}
 

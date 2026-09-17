@@ -103,17 +103,42 @@ public:
 		return pVectors_(pIndex).time();
 	}
 
-	PsimagLite::String createTemporaryVector(PsimagLite::String str) const
+	// Temporary vectors -- START
+	SizeType numberOfTemporaries() const
+	{
+		assert(tempNames_.size() == tempVectors_.size());
+		assert(tempNames_.size() == tempTimes_.size());
+		return tempNames_.size();
+	}
+
+	PsimagLite::String createTemporaryVector(PsimagLite::String str, const RealType& time) const
 	{
 		const SizeType n = tempVectors_.size();
 		tempVectors_.push_back(VectorWithOffsetType());
 		tempNames_.push_back(str);
+		tempTimes_.push_back(time);
 		return "R" + ttos(n);
 	}
 
-	const VectorVectorWithOffsetType& tempVectors() const { return tempVectors_; }
+	const VectorWithOffsetType& tempVectors(SizeType i) const
+	{
+		assert(i < tempVectors_.size());
+		return tempVectors_[i];
+	}
 
-	const VectorStringType& tempNames() const { return tempNames_; }
+	const std::string& tempNames(SizeType i) const
+	{
+		assert(i < tempNames_.size());
+		return tempNames_[i];
+	}
+
+	RealType tempTimes(SizeType i) const
+	{
+		assert(i < tempTimes_.size());
+		return tempTimes_[i];
+	}
+
+	// Temporary vectors -- END
 
 private:
 
@@ -125,6 +150,7 @@ private:
 	SizeType                           pIndexOutput_;
 	mutable VectorVectorWithOffsetType tempVectors_;
 	mutable VectorStringType           tempNames_;
+	mutable std::vector<RealType>      tempTimes_;
 };
 
 }
