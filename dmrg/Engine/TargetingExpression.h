@@ -318,7 +318,7 @@ private:
 			tmp.finalize();
 
 			AlgebraType thispBefore(tmp);
-			finalize(aux.tempVectors(), aux.tempNames(), i, thispBefore);
+			finalize(aux, i, thispBefore);
 			PsimagLite::String thispAfter = pvectors_(i).lastName();
 
 			if (thispAfter == "DONE") {
@@ -363,12 +363,11 @@ private:
 			pvectors_.trimPvectors(allpvectors);
 	}
 
-	void finalize(const VectorVectorWithOffsetType& tempVectors,
-	              const VectorStringType&           tempNames,
-	              SizeType                          pVectorIndex,
-	              const AlgebraType&                tempExpr)
+	void finalize(const AuxForTargetingExpressionType& aux,
+	              SizeType                             pVectorIndex,
+	              const AlgebraType&                   tempExpr)
 	{
-		const SizeType ntemps = tempNames.size();
+		const SizeType ntemps = aux.numberOfTemporaries();
 
 		if (ntemps == 0)
 			return;
@@ -377,11 +376,12 @@ private:
 		VectorBoolType removed_(ntemps);
 		VectorSizeType tempToP(ntemps, 10000);
 		for (SizeType i = 0; i < ntemps; ++i) {
-			int x = pvectors_.findInOrigNames(tempNames[i]);
+			int x = pvectors_.findInOrigNames(aux.tempNames(i));
 			if (x < 0)
 				continue;
-			this->tvNonConst(x) = tempVectors[i];
-			pvectors_.setTime(x, pvectors_(pVectorIndex).time());
+			this->tvNonConst(x) = aux.tempVectors(i);
+			RealType time       = aux.tempTimes(i);
+			pvectors_.setTime(x, time);
 			pvectors_.setAsDone(x);
 			removed_[i] = true;
 			tempToP[i]  = x;
@@ -391,16 +391,16 @@ private:
 		for (SizeType i = 0; i < ntemps; ++i) {
 			if (removed_[i])
 				continue;
-			int x = pvectors_.findInAnyNames(tempNames[i]);
+			int x = pvectors_.findInAnyNames(aux.tempNames(i));
 			if (x >= 0)
 				continue;
-			auto lambda = [this, i, &tempToP, &tempNames](SizeType ind)
+			auto lambda = [this, i, &tempToP, &aux](SizeType ind)
 			{
 				tempToP[i] = ind;
-				return this->expandExpression(tempNames[i], tempToP);
+				return this->expandExpression(aux.tempNames(i), tempToP);
 			};
 
-			pvectors_.createNew(tempVectors[i], pvectors_(pVectorIndex).time(), lambda);
+			pvectors_.createNew(aux.tempVectors(i), aux.tempTimes(i), lambda);
 		}
 
 		AlgebraType newexpr(tempExpr);
