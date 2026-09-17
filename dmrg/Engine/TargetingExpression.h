@@ -321,6 +321,11 @@ private:
 			finalize(aux.tempVectors(), aux.tempNames(), i, thispBefore);
 			PsimagLite::String thispAfter = pvectors_(i).lastName();
 
+			if (thispAfter == "DONE") {
+				pvectors_.setAsDone(i);
+				continue;
+			}
+
 			int pIndexOrMinusOne = (tmp.size() == 1) ? tmp.term(0).pIndex() : -1;
 			if (pIndexOrMinusOne >= 0) {
 				SizeType x = pIndexOrMinusOne;
