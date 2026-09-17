@@ -36,7 +36,7 @@ template <typename PvectorsType> class GroupOfOneTimeEvolutions {
 					return "|P" + ttos(ind) + ">";
 				};
 
-				pVectors.createNew(src, lambda);
+				pVectors.createNew(src, RealType(0), lambda);
 				if (i == timeSteps - 1)
 					pVectors.registerLastKrylovSlot(firstIndex, indices_[i]);
 			}
