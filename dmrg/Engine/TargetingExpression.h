@@ -240,7 +240,9 @@ public:
 
 	void read(typename TargetingCommonType::IoInputType& io, PsimagLite::String prefix) override
 	{
-		this->common().readGSandNGSTs(io, prefix, "Expression");
+		VectorRealType pvectorTimes = pvectors_.times(this->common().aoe().tvs());
+		this->common().readGSandNGSTs(io, prefix, "Expression", &pvectorTimes);
+		pvectors_.setTimes(pvectorTimes);
 	}
 
 	void write(const typename PsimagLite::Vector<SizeType>::Type& block,
@@ -248,7 +250,8 @@ public:
 	           PsimagLite::String                                 prefix) const override
 	{
 		this->common().write(io, block, prefix);
-		this->common().writeNGSTs(io, prefix, block, "Expression");
+		const VectorRealType pvectorTimes = pvectors_.times(this->common().aoe().tvs());
+		this->common().writeNGSTs(io, prefix, block, "Expression", pvectorTimes);
 	}
 
 	bool hasTimeEvolution(const PsimagLite::GetBraOrKet& ket) const
@@ -259,7 +262,7 @@ public:
 	RealType getTimeForKet(const PsimagLite::GetBraOrKet& ket) const
 	{
 		if (ket.isPvector())
-			return timeEvolve_.getTimeForKet(ket.pIndex());
+			return pvectors_(ket.pIndex()).time();
 
 		if (ket.isRvector())
 			throw PsimagLite::RuntimeError("R vectors cannot be tested\n");
@@ -315,8 +318,13 @@ private:
 			tmp.finalize();
 
 			AlgebraType thispBefore(tmp);
-			finalize(aux.tempVectors(), aux.tempNames(), i, thispBefore);
+			finalize(aux, i, thispBefore);
 			PsimagLite::String thispAfter = pvectors_(i).lastName();
+
+			if (thispAfter == "DONE") {
+				pvectors_.setAsDone(i);
+				continue;
+			}
 
 			int pIndexOrMinusOne = (tmp.size() == 1) ? tmp.term(0).pIndex() : -1;
 			if (pIndexOrMinusOne >= 0) {
@@ -325,6 +333,7 @@ private:
 					VectorWithOffsetType_& v0 = this->tvNonConst(i);
 					v0                        = this->tv(x);
 					v0 *= tmp.term(0).ket().factor();
+					pvectors_.setTime(i, pvectors_(x).time());
 				} else {
 					std::cerr << "Ignoring self assignment P";
 					std::cerr << i << "=P" << x << "\n";
@@ -354,12 +363,11 @@ private:
 			pvectors_.trimPvectors(allpvectors);
 	}
 
-	void finalize(const VectorVectorWithOffsetType& tempVectors,
-	              const VectorStringType&           tempNames,
-	              SizeType                          pVectorIndex,
-	              const AlgebraType&                tempExpr)
+	void finalize(const AuxForTargetingExpressionType& aux,
+	              SizeType                             pVectorIndex,
+	              const AlgebraType&                   tempExpr)
 	{
-		const SizeType ntemps = tempNames.size();
+		const SizeType ntemps = aux.numberOfTemporaries();
 
 		if (ntemps == 0)
 			return;
@@ -368,10 +376,12 @@ private:
 		VectorBoolType removed_(ntemps);
 		VectorSizeType tempToP(ntemps, 10000);
 		for (SizeType i = 0; i < ntemps; ++i) {
-			int x = pvectors_.findInOrigNames(tempNames[i]);
+			int x = pvectors_.findInOrigNames(aux.tempNames(i));
 			if (x < 0)
 				continue;
-			this->tvNonConst(x) = tempVectors[i];
+			this->tvNonConst(x) = aux.tempVectors(i);
+			RealType time       = aux.tempTimes(i);
+			pvectors_.setTime(x, time);
 			pvectors_.setAsDone(x);
 			removed_[i] = true;
 			tempToP[i]  = x;
@@ -381,16 +391,16 @@ private:
 		for (SizeType i = 0; i < ntemps; ++i) {
 			if (removed_[i])
 				continue;
-			int x = pvectors_.findInAnyNames(tempNames[i]);
+			int x = pvectors_.findInAnyNames(aux.tempNames(i));
 			if (x >= 0)
 				continue;
-			auto lambda = [this, i, &tempToP, &tempNames](SizeType ind)
+			auto lambda = [this, i, &tempToP, &aux](SizeType ind)
 			{
 				tempToP[i] = ind;
-				return this->expandExpression(tempNames[i], tempToP);
+				return this->expandExpression(aux.tempNames(i), tempToP);
 			};
 
-			pvectors_.createNew(tempVectors[i], lambda);
+			pvectors_.createNew(aux.tempVectors(i), aux.tempTimes(i), lambda);
 		}
 
 		AlgebraType newexpr(tempExpr);
