@@ -71,6 +71,7 @@ public:
 
 		OneTimeEvolutionType* oneTimeEvolution
 		    = aux_.timeEvolve().findThisEvolution(firstIndex);
+		const bool isNewEvolution = (oneTimeEvolution == nullptr);
 
 		const VectorWithOffsetType* srcVwo = &aux_.getCurrentVectorConst(srcKet);
 		if (srcVwo->size() == 0 && !oneTimeEvolution)
@@ -93,12 +94,13 @@ public:
 		                                   timeParams.algo,
 		                                   timeParams.chebyTransform);
 
-		if (!oneTimeEvolution) {
+		if (isNewEvolution) {
 			oneTimeEvolution = new OneTimeEvolutionType(firstIndex,
 			                                            *srcVwo,
 			                                            srcKet,
 			                                            timeParams.disposition,
 			                                            timeParams.timeSteps,
+			                                            aux_.getCurrentTime(srcKet),
 			                                            aux_.pVectors());
 			aux_.timeEvolve().pushBack(oneTimeEvolution);
 		}
@@ -113,9 +115,9 @@ public:
 		const SizeType              last         = oneTimeEvolution->indices().size() - 1;
 		const SizeType              advanceOrNot = (timeHasAdvanced) ? last : 0;
 		const SizeType              firstOrLast = oneTimeEvolution->indices()[advanceOrNot];
-		const VectorWithOffsetType* phi         = (oneTimeEvolution->time() > 0)
-		            ? new VectorWithOffsetType(aux_.pVectors().aoe().targetVectors(firstOrLast))
-		            : srcVwo;
+		const VectorWithOffsetType* phi         = isNewEvolution
+		            ? srcVwo
+		            : new VectorWithOffsetType(aux_.pVectors().aoe().targetVectors(firstOrLast));
 
 		auxPtr->pVectors().aoeNonConst().calcTimeVectors(
 		    oneTimeEvolution->indices(),
@@ -127,7 +129,16 @@ public:
 		    block1,
 		    isLastCall);
 
-		if (oneTimeEvolution->time() > 0) {
+		const VectorSizeType& indices = oneTimeEvolution->indices();
+		assert(indices.size() == timeParams.timeSteps);
+		const RealType baseTime = oneTimeEvolution->time();
+		for (SizeType i = 0; i < indices.size(); ++i) {
+			// Keep this offset synchronized with Pvectors::initTimeVectors().
+			const RealType offset = i * timeParams.tau / (timeParams.timeSteps - 1);
+			auxPtr->pVectors().setTime(indices[i], baseTime + offset);
+		}
+
+		if (!isNewEvolution) {
 			delete phi;
 			phi = nullptr;
 		}
