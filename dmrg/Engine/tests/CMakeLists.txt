@@ -27,3 +27,8 @@ add_executable(test_MatrixVectorStored test_MatrixVectorStored.cpp)
 target_link_libraries(test_MatrixVectorStored PRIVATE Catch2::Catch2WithMain dmrgpp_utils psimaglite)
 target_include_directories(test_MatrixVectorStored PRIVATE ${CMAKE_SOURCE_DIR}/dmrg/Engine)
 catch_discover_tests(test_MatrixVectorStored)
+
+add_executable(bench_BatchedGemm bench_BatchedGemm.cpp)
+target_link_libraries(bench_BatchedGemm PRIVATE dmrgpp_utils psimaglite)
+target_include_directories(bench_BatchedGemm PRIVATE ${CMAKE_SOURCE_DIR}/dmrg/Engine
+                                                     ${CMAKE_SOURCE_DIR}/dmrg/Engine/MatrixVectorKron)
