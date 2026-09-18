@@ -73,16 +73,14 @@ private:
 
 	static const int ialign_ = 32;
 
-	// Pass 2 GEMMs have very few batches (one per patch, == npatches, which
-	// can be as low as single digits) but each has a very long contraction
-	// (k) dimension, so a single GEMM per patch leaves the GPU with far too
-	// few concurrent thread-blocks to reach good occupancy. We split the k
-	// dimension of each patch's GEMM into independent slices and accumulate
-	// their partial results directly into d_vout_ via atomic adds (see
-	// matrixVector()). This multiplies the number of pass-2 batches (and
-	// thus concurrent thread-blocks) without changing the per-GEMM output
-	// shape (so the favorable Blocked-algo memory access pattern is
-	// preserved).
+	// Pass 2 GEMMs have very few batches (one per patch, == npatches, which can be as low as
+	// single digits) but each has a very long contraction (k) dimension, so a single GEMM per
+	// patch leaves the GPU with far too few concurrent thread-blocks to reach good occupancy.
+	// We split the k dimension of each patch's GEMM into independent slices and accumulate
+	// their partial results directly into d_vout_ via atomic adds (see matrixVector()). This
+	// multiplies the number of pass-2 batches (and thus concurrent thread-blocks) without
+	// changing the per-GEMM output shape (so the favorable Blocked-algo memory access pattern
+	// is preserved).
 	//
 	// Splitting into a *fixed count* of chunks per patch under-performs when patches have very
 	// different k (contraction) sizes: every patch still gets the same number of chunks, so
@@ -91,45 +89,38 @@ private:
 	// wall-clock time is dominated by the few largest chunks. Instead we split by a *fixed
 	// column width* (kPass2ColChunk_): each patch gets ceil(k_ip / kPass2ColChunk_) chunks, so
 	// patches with larger k automatically get proportionally more (similarly-sized) chunks.
-	// This balances per-team work across the whole grid regardless of how
-	// unevenly k is distributed across patches.
+	// This balances per-team work across the whole grid regardless of how unevenly k is
+	// distributed across patches.
 	//
 	// Each chunk-team computes its partial result into a small *per-team* scratch buffer backed
 	// by Kokkos' global- memory scratch pool (level 1), whose total size is bounded by the
-	// number of *concurrently resident* teams (a small, GPU-occupancy-
-	// bounded constant) times the per-team scratch size -- NOT by the
-	// total number of chunks across the whole batch. The team then
-	// atomically adds its scratch buffer into d_vout_ (zeroed before
-	// Pass 2).
+	// number of *concurrently resident* teams (a small, GPU-occupancy-bounded constant) times
+	// the per-team scratch size -- NOT by the total number of chunks across the whole batch.
+	// The team then atomically adds its scratch buffer into d_vout_ (zeroed before Pass 2).
 	//
-	// However, a single patch's own output (m x n = rps[ip] * lps[ip]) can
-	// itself be very large for big systems (observed: a single patch's
-	// scratch requirement reached tens of GiB when multiplied across the
-	// GPU's many concurrently-resident teams). To keep the per-team
-	// scratch size bounded by a small constant regardless of problem size,
-	// we additionally tile each patch's (m x n) output into at most
-	// kPass2TileDim_ x kPass2TileDim_ blocks (in addition to the k-chunking
-	// above); output tiles/rows are independent (no reduction needed
-	// across tiles, only across k-chunks of the same tile), so this is a
-	// straightforward extra split, analogous to Pass 1's row-splitting.
+	// However, a single patch's own output (m x n = rps[ip] * lps[ip]) can itself be very large
+	// for big systems (observed: a single patch's scratch requirement reached tens of GiB when
+	// multiplied across the GPU's many concurrently-resident teams). To keep the per-team
+	// scratch size bounded by a small constant regardless of problem size, we additionally tile
+	// each patch's (m x n) output into at most kPass2TileDim_ x kPass2TileDim_ blocks (in
+	// addition to the k-chunking above); output tiles/rows are independent (no reduction needed
+	// across tiles, only across k-chunks of the same tile), so this is a straightforward extra
+	// split, analogous to Pass 1's row-splitting.
 
-	// The exact values have been tuned for a Grace Hopper 200 and the 345 test case.
-	// The bech_BatchedGemm executable can be used for tuning the values for different
+	// The exact values have been tuned for a Grace Hopper 200 and the 345 test case. The
+	// bench_BatchedGemm executable can be used for tuning the values for different
 	// architectures if necessary. It turned out that they were also suitable for a MI300A.
 	static const int kPass2ColChunk_ = 16;
 	static const int kPass2TileDim_  = 128;
 
-	// Pass 1 batches one GEMM per non-zero (ip, jp, k) connection triple, but
-	// the number of such triples (tens to low thousands, see setup_) is
-	// often far smaller than what's needed to fill a modern GPU with
-	// concurrent thread-blocks, even though many of those GEMMs have a
-	// sizeable number of output rows (m = rps[ip], which can range into the
-	// hundreds). Since output rows are fully independent (no reduction
-	// needed, unlike the k-split used for Pass 2), we split each triple's m
-	// dimension into row-blocks of at most kPass1RowChunk_ rows and emit one
-	// GEMM per row-block, multiplying the number of pass-1 teams for
-	// large-m triples while leaving small-m triples (m <= kPass1RowChunk_)
-	// unsplit.
+	// Pass 1 batches one GEMM per non-zero (ip, jp, k) connection triple, but the number of
+	// such triples (tens to low thousands, see setup_) is often far smaller than what's needed
+	// to fill a modern GPU with concurrent thread-blocks, even though many of those GEMMs have
+	// a sizeable number of output rows (m = rps[ip], which can range into the hundreds). Since
+	// output rows are fully independent (no reduction needed, unlike the k-split used for Pass
+	// 2), we split each triple's m dimension into row-blocks of at most kPass1RowChunk_ rows
+	// and emit one GEMM per row-block, multiplying the number of pass-1 teams for large-m
+	// triples while leaving small-m triples (m <= kPass1RowChunk_) unsplit.
 	static const int kPass1RowChunk_ = 16;
 
 public:
@@ -240,9 +231,7 @@ public:
 			// Fixed, compile-time-bounded per-team scratch size: every
 			// Pass 2 GEMM's output tile is at most kPass2TileDim_ x
 			// kPass2TileDim_ (see setup_()), so this does NOT grow with
-			// problem size, unlike an earlier version that sized the
-			// scratch by the (unbounded) largest single patch's full
-			// output.
+			// problem size.
 			constexpr size_t scratchBytesPerTeam = static_cast<size_t>(kPass2TileDim_)
 			    * kPass2TileDim_ * sizeof(KokkosScalar);
 
@@ -289,13 +278,13 @@ public:
 				    ScratchView C(member.team_scratch(1), ag.m, ag.n);
 
 				    // Pass 2 GEMMs have a very "thin" output (m, n are the
-				    // per-patch sizes) with a very long contraction
-				    // dimension k. The Blocked algorithm reuses loaded A/B
-				    // tiles across the register-blocked inner loop, which is
-				    // far more memory-bandwidth efficient for this thin/long
-				    // GEMM shape than assigning one thread per output
-				    // element (tried Unblocked: ~3x slower here because
-				    // every thread re-reads all of A/B from global memory).
+				    // per-patch sizes) with a very long contraction dimension k.
+				    // The Blocked algorithm reuses loaded A/B tiles across the
+				    // register-blocked inner loop, which is far more
+				    // memory-bandwidth efficient for this thin/long GEMM shape than
+				    // assigning one thread per output element (tried Unblocked: ~3x
+				    // slower here because every thread re-reads all of A/B from
+				    // global memory).
 				    KokkosBatched::TeamVectorGemm<
 				        MemberType,
 				        KokkosBatched::Trans::NoTranspose,
@@ -474,9 +463,7 @@ public:
 		// contraction dimension automatically get proportionally more
 		// (similarly-sized) chunks -- see kPass2ColChunk_ comment above.
 		// All chunks of the same patch/tile atomically accumulate into the
-		// same (m x n) region of d_vout_ (see matrixVector()), so unlike an
-		// earlier version of this scheme, patch output size is NOT
-		// multiplied by chunk count anywhere.
+		// same (m x n) region of d_vout_ (see matrixVector()).
 		VectorSizeType voutChunkCount(npatches, 0);
 		for (SizeType ip = 0; ip < npatches; ++ip) {
 			voutChunkCount[ip] = static_cast<SizeType>(
