@@ -127,6 +127,10 @@ add_test(NAME introspect0_0 COMMAND diff -q ${PATH_TO_INPUTS}/introspect_ref0.tx
 
 # For dmrg main executable
 
+add_test(NAME dmrg_version_output
+         COMMAND ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg> -DEXPECTED_VERSION=7.01 -P
+                 ${CMAKE_SOURCE_DIR}/TestSuite/checkVersionOutput.cmake)
+
 function(add_lowest_eigenvalue_check_test name dependent_name expected output_file)
   set(options SHOULD_FAIL)
   set(one_value_args TOLERANCE)
