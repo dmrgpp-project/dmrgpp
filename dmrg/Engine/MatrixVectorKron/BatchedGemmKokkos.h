@@ -84,38 +84,23 @@ private:
 	// shape (so the favorable Blocked-algo memory access pattern is
 	// preserved).
 	//
-	// Splitting into a *fixed count* of chunks per patch (tried first)
-	// under-performs badly when patches have very different k (contraction)
-	// sizes: every patch still gets the same number of chunks, so patches
-	// with large k get large (slow) chunks while patches with small k get
-	// tiny (fast) chunks. Since all chunks across all patches are launched
-	// in the same kernel, the wall-clock time is dominated by the few
-	// largest chunks while most thread-blocks finish almost instantly and
-	// leave the GPU idle (observed via ncu: waves/SM as low as 0.12-0.30,
-	// achieved occupancy 5-8%, despite ~56% theoretical occupancy).
-	//
-	// Instead we split by a *fixed column width* (kPass2ColChunk_): each
-	// patch gets ceil(k_ip / kPass2ColChunk_) chunks, so patches with larger
-	// k automatically get proportionally more (similarly-sized) chunks.
+	// Splitting into a *fixed count* of chunks per patch under-performs when patches have very
+	// different k (contraction) sizes: every patch still gets the same number of chunks, so
+	// patches with large k get large (slow) chunks while patches with small k get tiny (fast)
+	// chunks. Since all chunks across all patches are launched in the same kernel, the
+	// wall-clock time is dominated by the few largest chunks. Instead we split by a *fixed
+	// column width* (kPass2ColChunk_): each patch gets ceil(k_ip / kPass2ColChunk_) chunks, so
+	// patches with larger k automatically get proportionally more (similarly-sized) chunks.
 	// This balances per-team work across the whole grid regardless of how
 	// unevenly k is distributed across patches.
 	//
-	// Reduction strategy: an earlier version of this split-k scheme wrote
-	// each chunk's partial (m x n) result into its own private slice of a
-	// large global scratch buffer (sized chunks_per_patch * m * n, summed
-	// over all patches), then ran a separate reduction kernel to sum the
-	// slices into d_vout_. That scratch buffer's size grows with the
-	// *product* of (number of chunks) and (patch output size), both of
-	// which grow with system size -- for large problems (many kept states,
-	// many sites) this blew up to 100+ GiB and caused out-of-memory
-	// failures. Instead, each chunk-team now computes its partial result
-	// into a small *per-team* scratch buffer backed by Kokkos' global-
-	// memory scratch pool (level 1), whose total size is bounded by the
+	// Each chunk-team computes its partial result into a small *per-team* scratch buffer backed
+	// by Kokkos' global- memory scratch pool (level 1), whose total size is bounded by the
 	// number of *concurrently resident* teams (a small, GPU-occupancy-
 	// bounded constant) times the per-team scratch size -- NOT by the
 	// total number of chunks across the whole batch. The team then
 	// atomically adds its scratch buffer into d_vout_ (zeroed before
-	// Pass 2). This eliminates the chunk-count-dependent memory blowup.
+	// Pass 2).
 	//
 	// However, a single patch's own output (m x n = rps[ip] * lps[ip]) can
 	// itself be very large for big systems (observed: a single patch's
@@ -127,6 +112,10 @@ private:
 	// above); output tiles/rows are independent (no reduction needed
 	// across tiles, only across k-chunks of the same tile), so this is a
 	// straightforward extra split, analogous to Pass 1's row-splitting.
+
+	// The exact values have been tuned for a Grace Hopper 200 and the 345 test case.
+	// The bech_BatchedGemm executable can be used for tuning the values for different
+	// architectures if necessary. It turned out that they were also suitable for a MI300A.
 	static const int kPass2ColChunk_ = 16;
 	static const int kPass2TileDim_  = 128;
 
@@ -254,19 +243,21 @@ public:
 			// problem size, unlike an earlier version that sized the
 			// scratch by the (unbounded) largest single patch's full
 			// output.
-			constexpr size_t scratchBytesPerTeam
-			    = static_cast<size_t>(kPass2TileDim_) * kPass2TileDim_ * sizeof(KokkosScalar);
+			constexpr size_t scratchBytesPerTeam = static_cast<size_t>(kPass2TileDim_)
+			    * kPass2TileDim_ * sizeof(KokkosScalar);
 
 			using MemberType = typename Kokkos::TeamPolicy<ExecutionSpace>::member_type;
-			using ScratchView = Kokkos::View<KokkosScalar**,
-			                                 Kokkos::LayoutLeft,
-			                                 typename ExecutionSpace::scratch_memory_space,
-			                                 Kokkos::MemoryUnmanaged>;
+			using ScratchView
+			    = Kokkos::View<KokkosScalar**,
+			                   Kokkos::LayoutLeft,
+			                   typename ExecutionSpace::scratch_memory_space,
+			                   Kokkos::MemoryUnmanaged>;
 			Kokkos::parallel_for(
 			    "BatchedGemmKokkos_Pass2",
 			    Kokkos::TeamPolicy<ExecutionSpace>(
 			        exec, static_cast<int>(nbatch2_), Kokkos::AUTO, 8)
-			        .set_scratch_size(1, Kokkos::PerTeam(static_cast<int>(scratchBytesPerTeam))),
+			        .set_scratch_size(
+			            1, Kokkos::PerTeam(static_cast<int>(scratchBytesPerTeam))),
 			    KOKKOS_LAMBDA(const MemberType& member) {
 				    const int       i  = member.league_rank();
 				    const GemmArgs& ag = args(i);
@@ -325,13 +316,18 @@ public:
 				    // (see kPass2TileDim_ comment above).
 				    member.team_barrier();
 				    Kokkos::parallel_for(
-				        Kokkos::TeamThreadRange(member, ag.n), [&](const int j) {
+				        Kokkos::TeamThreadRange(member, ag.n),
+				        [&](const int j)
+				        {
 					        Kokkos::parallel_for(
 					            Kokkos::ThreadVectorRange(member, ag.m),
-					            [&](const int r) {
+					            [&](const int r)
+					            {
 						            Kokkos::atomic_add(
-						                &vout_dev(ag.c_off + r
-						                    + static_cast<long long>(j) * ag.ldc),
+						                &vout_dev(
+						                    ag.c_off + r
+						                    + static_cast<long long>(j)
+						                        * ag.ldc),
 						                C(r, j));
 					            });
 				        });
@@ -483,8 +479,8 @@ public:
 		// multiplied by chunk count anywhere.
 		VectorSizeType voutChunkCount(npatches, 0);
 		for (SizeType ip = 0; ip < npatches; ++ip) {
-			voutChunkCount[ip] = static_cast<SizeType>(std::max(
-			    1, iceil(static_cast<int>(AbatchCols[ip]), kPass2ColChunk_)));
+			voutChunkCount[ip] = static_cast<SizeType>(
+			    std::max(1, iceil(static_cast<int>(AbatchCols[ip]), kPass2ColChunk_)));
 		}
 
 		// Allocate device buffers early and create host mirrors for efficient H2D
@@ -639,41 +635,55 @@ public:
 				// still get emitted so that TeamVectorGemmInternal's
 				// beta==0 zero-fill produces a well-defined (zero) partial
 				// result to add.
-				const SizeType nChunks = voutChunkCount[ip];
-				const int chunkCols
-				    = iceil(totalCols, static_cast<int>(nChunks)); // columns per chunk
+				const SizeType nChunks   = voutChunkCount[ip];
+				const int      chunkCols = iceil(
+                                    totalCols, static_cast<int>(nChunks)); // columns per chunk
 				for (int r0 = 0; r0 < a2.m; r0 += kPass2TileDim_) {
 					const int mTile = std::min(kPass2TileDim_, a2.m - r0);
 					for (int c0 = 0; c0 < a2.n; c0 += kPass2TileDim_) {
-						const int nTile = std::min(kPass2TileDim_, a2.n - c0);
+						const int nTile
+						    = std::min(kPass2TileDim_, a2.n - c0);
 
 						long long colCursor = 0;
 						for (SizeType c = 0; c < nChunks; ++c) {
-							const int kc = std::max(0,
-							    std::min(chunkCols,
-							        totalCols - static_cast<int>(colCursor)));
-							// Clamp the column offset so pointer arithmetic
-							// never strays past this patch's allocated
-							// column range (kc==0 chunks still need a valid,
-							// in-bounds offset even though no data will be
-							// read/written there).
+							const int kc = std::max(
+							    0,
+							    std::min(
+							        chunkCols,
+							        totalCols
+							            - static_cast<int>(colCursor)));
+							// Clamp the column offset so pointer
+							// arithmetic never strays past this patch's
+							// allocated column range (kc==0 chunks
+							// still need a valid, in-bounds offset even
+							// though no data will be read/written
+							// there).
 							const long long colOff = std::min(
-							    colCursor, static_cast<long long>(totalCols));
+							    colCursor,
+							    static_cast<long long>(totalCols));
 
 							GemmArgs ac = a2;
 							ac.m        = mTile;
 							ac.n        = nTile;
 							ac.k        = kc;
-							ac.a_off    = static_cast<long long>(BXbatchOff[ip])
-							    + colOff * static_cast<long long>(ldB[ip]) + r0;
-							ac.b_off = static_cast<long long>(AbatchOff[ip])
-							    + colOff * static_cast<long long>(ldA[ip]) + c0;
+							ac.a_off
+							    = static_cast<long long>(BXbatchOff[ip])
+							    + colOff
+							        * static_cast<long long>(ldB[ip])
+							    + r0;
+							ac.b_off
+							    = static_cast<long long>(AbatchOff[ip])
+							    + colOff
+							        * static_cast<long long>(ldA[ip])
+							    + c0;
 							// ac.ldc keeps the FULL patch row count
-							// (a2.ldc = rps[ip], unchanged from above) --
-							// it is the real addressing stride into
-							// d_vout_, distinct from ac.m (this tile's row
-							// count) -- see matrixVector().
-							ac.c_off = static_cast<long long>(xyStart[ip]) + r0
+							// (a2.ldc = rps[ip], unchanged from above)
+							// -- it is the real addressing stride into
+							// d_vout_, distinct from ac.m (this tile's
+							// row count) -- see matrixVector().
+							ac.c_off
+							    = static_cast<long long>(xyStart[ip])
+							    + r0
 							    + static_cast<long long>(c0) * a2.ldc;
 							pass2_args.push_back(ac);
 
