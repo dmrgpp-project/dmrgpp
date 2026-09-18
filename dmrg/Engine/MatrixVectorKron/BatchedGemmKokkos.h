@@ -110,8 +110,8 @@ private:
 	// The exact values have been tuned for a Grace Hopper 200 and the 345 test case. The
 	// bench_BatchedGemm executable can be used for tuning the values for different
 	// architectures if necessary. It turned out that they were also suitable for a MI300A.
-	static const int kPass2ColChunk_ = 16;
-	static const int kPass2TileDim_  = 128;
+	static const int kPass2ColChunk_ = 32;
+	static const int kPass2TileDim_  = 64;
 
 	// Pass 1 batches one GEMM per non-zero (ip, jp, k) connection triple, but the number of
 	// such triples (tens to low thousands, see setup_) is often far smaller than what's needed
