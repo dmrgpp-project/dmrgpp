@@ -1,5 +1,7 @@
 #include "DmrgRunner.h"
 #include "MatrixVectorTypes.hpp"
+#include "Provenance.h"
+#include <PsimagLite/Concurrency.h>
 #include <type_traits>
 
 namespace Dmrg {
@@ -40,6 +42,11 @@ DmrgRunner<RealType>::DmrgRunner(const ApplicationType&    app,
 		}
 
 		dealWithConsoleOutput(cmd_line.logfile, cmd_line.unbuffered_output);
+
+		if (cmd_line.logfile != "-" && PsimagLite::Concurrency::root()) {
+			Provenance provenance;
+			std::cout << provenance;
+		}
 
 		constexpr bool PRINT_HEADER = true;
 		application_.base64encode(std::cout, data, PRINT_HEADER);
