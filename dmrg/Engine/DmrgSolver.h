@@ -80,6 +80,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #ifndef SOLVER_DMRG_HEADER_H
 #define SOLVER_DMRG_HEADER_H
 
+#include "../Version.h"
 #include "BasisTraits.hh"
 #include "Diagonalization.h"
 #include "DmrgSerializer.h"
@@ -181,6 +182,9 @@ public:
 		msg << "Turning the engine on";
 		progress_.printline(msgg, std::cout);
 		ioOut_.write(appInfo_, "ApplicationInfo");
+		PsimagLite::String dmrgVersion("v");
+		dmrgVersion += DMRGPP_VERSION;
+		ioOut_.write(dmrgVersion, "ApplicationInfo/DmrgVersion");
 
 		printFiniteLoops(std::cout);
 

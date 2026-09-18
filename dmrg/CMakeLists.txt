@@ -67,6 +67,7 @@ install(TARGETS dmrg observe toolboxdmrg omegas introspect RUNTIME DESTINATION $
 # Tests below for all executables
 
 set(PATH_TO_INPUTS ${CMAKE_CURRENT_SOURCE_DIR}/../TestSuite/inputs)
+find_program(H5DUMP_EXECUTABLE NAMES h5dump REQUIRED)
 
 if(DMRGPP_USE_MPI)
   function(add_mpi_test name nprocs executable)
@@ -226,6 +227,9 @@ add_test(NAME input73 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input73.ain) # energy 
 add_lowest_eigenvalue_check_test(output73 input73 -4.47214 runForinput73.cout)
 add_test(NAME input74 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input74.ain) # energy -0.707712
 add_lowest_eigenvalue_check_test(output74 input74 -0.707712 runForinput74.cout)
+add_test(NAME input74_dmrg_version COMMAND ${H5DUMP_EXECUTABLE} -r -d /Def/ApplicationInfo/DmrgVersion
+                                           ${CMAKE_CURRENT_BINARY_DIR}/data74.hd5)
+set_tests_properties(input74_dmrg_version PROPERTIES DEPENDS input74 PASS_REGULAR_EXPRESSION "\"v7.01\"")
 add_test(NAME input75 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input75.ain) # energy -2.80627
 add_lowest_eigenvalue_check_test(output75 input75 -2.80627 runForinput75.cout)
 add_test(NAME input76 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input76.ain) # energy -0.707712
