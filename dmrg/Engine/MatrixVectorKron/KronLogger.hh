@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <fstream>
+#include <limits>
 #include <optional>
 #include <vector>
 
@@ -45,6 +46,7 @@ public:
 	using SparseMatrixType        = typename InitKronType::SparseMatrixType;
 	using LeftRightSuperType      = typename InitKronType::LeftRightSuperType;
 	using VectorType              = typename InitKronType::VectorType;
+	using RealType                = typename ModelType::RealType;
 	using VectorWithOffsetType    = VectorWithOffsets<ComplexOrRealType>;
 	using ApplyOperatorType = ApplyOperatorLocal<LeftRightSuperType, VectorWithOffsetType>;
 	using MatrixMarketType  = MatrixMarket<ComplexOrRealType>;
@@ -125,7 +127,16 @@ public:
 			return;
 
 		*fout_ << "Vector\n";
+		const std::streamsize oldPrecision = fout_->precision();
+		if (!init_kron_.params().dumperOperator.empty())
+			fout_->precision(std::numeric_limits<RealType>::max_digits10);
 		*fout_ << v;
+		if (!init_kron_.params().dumperOperator.empty()) {
+			const ComplexOrRealType expectation = verifyLocalOperator(v);
+			*fout_ << "OperatorExpectation=" << PsimagLite::real(expectation) << " "
+			       << PsimagLite::imag(expectation) << "\n";
+		}
+		fout_->precision(oldPrecision);
 	}
 
 	/*!
@@ -304,6 +315,71 @@ private:
 		                    std::cout);
 	}
 
+	ComplexOrRealType verifyLocalOperator(const VectorType& kronVector)
+	{
+		const SizeType sectorSize = init_kron_.size(InitKronType::NEW);
+		if (sectorSize == 0 || kronVector.size() != sectorSize
+		    || localOperator_.rows() != sectorSize || localOperator_.cols() != sectorSize)
+			err("KronLogger: local-operator verification dimension mismatch\n");
+
+		const LeftRightSuperType& lrs           = init_kron_.lrs(InitKronType::NEW);
+		const auto                direction     = init_kron_.direction();
+		const ModelType&          model         = init_kron_.model();
+		const auto&               localOperator = model.naturalOperator(
+                    init_kron_.params().dumperOperator, localOperatorSite_, 0);
+		typename PsimagLite::Vector<bool>::Type oddElectrons;
+		model.findOddElectronsOfOneSite(oddElectrons, localOperatorSite_);
+		FermionSign       fermionSign(lrs.left(), oddElectrons);
+		ApplyOperatorType applyOperator(lrs, false);
+		const SizeType    sectorOffset  = init_kron_.offset(InitKronType::NEW);
+		const SizeType    sector        = lrs.super().findPartitionNumber(sectorOffset);
+		const SizeType    splitSize     = model.hilbertSize(localOperatorSite_);
+		const SizeType    numberOfSites = model.superGeometry().numberOfSites();
+		const auto        border
+		    = (localOperatorSite_ == 0 || localOperatorSite_ + 1 == numberOfSites)
+		    ? ApplyOperatorType::BORDER_YES
+		    : ApplyOperatorType::BORDER_NO;
+
+		const auto applyDirect = [&](const VectorType& input)
+		{
+			VectorType sectorVector;
+			init_kron_.kronToSector(sectorVector, input);
+			VectorWithOffsetType source;
+			source.set(sectorVector, sector, lrs.super());
+			VectorWithOffsetType destination;
+			applyOperator(destination,
+			              source,
+			              localOperator,
+			              fermionSign,
+			              splitSize,
+			              direction,
+			              border);
+
+			VectorType directSectorResult(sectorSize, 0);
+			destination.extract(directSectorResult, sector);
+			if (directSectorResult.empty())
+				directSectorResult.resize(sectorSize, 0);
+			VectorType directKronResult;
+			init_kron_.sectorToKron(directKronResult, directSectorResult);
+			return directKronResult;
+		};
+
+		const VectorType      directKronResult = applyDirect(kronVector);
+		std::vector<SizeType> sampleColumns    = { 0, sectorSize / 2, sectorSize - 1 };
+		std::sort(sampleColumns.begin(), sampleColumns.end());
+		sampleColumns.erase(std::unique(sampleColumns.begin(), sampleColumns.end()),
+		                    sampleColumns.end());
+		for (const SizeType col : sampleColumns) {
+			VectorType basisVector(sectorSize, 0);
+			basisVector[col]              = 1;
+			const VectorType directColumn = applyDirect(basisVector);
+			*fout_ << "OperatorDirectColumn=" << col << "\n";
+			*fout_ << directColumn;
+		}
+
+		return scalarProduct(kronVector, directKronResult);
+	}
+
 	void printLocalOperator(ProgramGlobals::DirectionEnum          direction,
 	                        typename ApplyOperatorType::BorderEnum border)
 	{
@@ -318,7 +394,10 @@ private:
 		*fout_ << "Border=" << (border == ApplyOperatorType::BORDER_YES) << "\n";
 		*fout_ << "MatrixAction=dest=O*src\n";
 		*fout_ << "MatrixFormat=matrix-market-coordinate\n";
+		const std::streamsize oldPrecision = fout_->precision();
+		fout_->precision(std::numeric_limits<RealType>::max_digits10);
 		MatrixMarketType(localOperator_).print(*fout_);
+		fout_->precision(oldPrecision);
 	}
 
 	void printMetadata(const std::string& message)

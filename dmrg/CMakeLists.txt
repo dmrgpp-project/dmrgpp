@@ -66,7 +66,26 @@ install(TARGETS dmrg observe toolboxdmrg omegas introspect RUNTIME DESTINATION $
 
 # Tests below for all executables
 
+add_executable(checkKronLocalOperator Engine/tests/checkKronLocalOperator.cpp)
+
 set(PATH_TO_INPUTS ${CMAKE_CURRENT_SOURCE_DIR}/../TestSuite/inputs)
+
+set(KRON_OPERATOR_TEST_WORKDIR ${CMAKE_CURRENT_BINARY_DIR}/input31_kron_operator)
+set(KRON_OPERATOR_TEST_INPUT ${KRON_OPERATOR_TEST_WORKDIR}/input31_kron_operator.ain)
+file(MAKE_DIRECTORY ${KRON_OPERATOR_TEST_WORKDIR})
+file(READ ${PATH_TO_INPUTS}/input31.ain kron_operator_test_contents)
+set(kron_operator_test_original "${kron_operator_test_contents}")
+string(REPLACE "OutputFile=\"data31\";" "OutputFile=\"data31_operator\";" kron_operator_test_contents
+               "${kron_operator_test_contents}")
+if(kron_operator_test_contents STREQUAL kron_operator_test_original)
+  message(FATAL_ERROR "Could not set the Task 6 Kron operator test output file")
+endif()
+string(APPEND kron_operator_test_contents "\nstring KroneckerDumperOperator=\"sz\";\n")
+file(WRITE ${KRON_OPERATOR_TEST_INPUT} "${kron_operator_test_contents}")
+set_property(
+  DIRECTORY
+  APPEND
+  PROPERTY CMAKE_CONFIGURE_DEPENDS ${PATH_TO_INPUTS}/input31.ain)
 
 if(DMRGPP_USE_MPI)
   function(add_mpi_test name nprocs executable)
@@ -207,6 +226,15 @@ add_test(NAME input31_kron_dumper COMMAND $<TARGET_FILE:checkTextAndNumbers> ${P
                                           ${CMAKE_CURRENT_BINARY_DIR}/kron_data31_0.txt 1e6 "--ignore-line-prefix=##")
 set_tests_properties(input31_kron_dumper PROPERTIES DEPENDS input31)
 add_lowest_eigenvalue_check_test(output31 input31 -3.37493 runForinput31.cout)
+add_test(
+  NAME input31_kron_operator
+  COMMAND
+    ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg> -DINPUT_FILE=${KRON_OPERATOR_TEST_INPUT}
+    -DWORKING_DIRECTORY=${KRON_OPERATOR_TEST_WORKDIR} -P
+    ${CMAKE_CURRENT_SOURCE_DIR}/Engine/tests/runKronLocalOperator.cmake)
+add_test(NAME input31_kron_operator_check COMMAND $<TARGET_FILE:checkKronLocalOperator>
+                                                  ${KRON_OPERATOR_TEST_WORKDIR}/kron_data31_operator_0.txt)
+set_tests_properties(input31_kron_operator_check PROPERTIES DEPENDS input31_kron_operator)
 add_test(NAME input32 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input32.ain) # energy -15.9931
 add_lowest_eigenvalue_check_test(output32 input32 -15.9931 runForinput32.cout)
 add_test(NAME input60 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input60.ain) # energy -21.7473
