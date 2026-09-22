@@ -155,8 +155,15 @@ public:
 	// -------------------
 	void copyIn(const VectorType& vout, const VectorType& vin)
 	{
-		VectorType& xout = xout_;
-		VectorType& yin  = yin_;
+		sectorToKron(xout_, vout);
+		sectorToKron(yin_, vin);
+	}
+
+	void sectorToKron(VectorType& kron, const VectorType& sector) const
+	{
+		const SizeType sectorSize = BaseType::size(BaseType::NEW);
+		assert(sector.size() == sectorSize);
+		kron.resize(sectorSize);
 
 		const VectorSizeType& permInverse
 		    = BaseType::lrs(BaseType::NEW).super().permutationInverse();
@@ -164,9 +171,11 @@ public:
 		    = BaseType::lrs(BaseType::NEW).left().hamiltonian().getCRS();
 		SizeType nl = leftH.rows();
 
-		SizeType offset       = BaseType::offset(BaseType::NEW);
-		SizeType npatches     = BaseType::patch(BaseType::NEW, GenIjPatchType::LEFT).size();
-		const BasisType& left = BaseType::lrs(BaseType::NEW).left();
+		SizeType offset   = BaseType::offset(BaseType::NEW);
+		SizeType npatches = BaseType::patch(BaseType::NEW, GenIjPatchType::LEFT).size();
+		assert(vstart_.size() == npatches + 1);
+		assert(vstart_[npatches] == sectorSize);
+		const BasisType& left  = BaseType::lrs(BaseType::NEW).left();
 		const BasisType& right = BaseType::lrs(BaseType::NEW).right();
 
 		for (SizeType ipatch = 0; ipatch < npatches; ++ipatch) {
@@ -208,20 +217,28 @@ public:
 
 					SizeType ip
 					    = vstart_[ipatch] + (iright + ileft * sizeRight);
-					assert(ip < yin.size());
+					assert(ip < kron.size());
 
-					assert((r >= offset) && ((r - offset) < vin.size()));
-					yin[ip]  = vin[r - offset];
-					xout[ip] = vout[r - offset];
+					assert((r >= offset) && ((r - offset) < sector.size()));
+					kron[ip] = sector[r - offset];
 				}
 			}
 		}
 	}
 
+	void kronToSector(VectorType& sector, const VectorType& kron) const
+	{
+		const SizeType sectorSize = BaseType::size(BaseType::NEW);
+		assert(kron.size() == sectorSize);
+		assert(vstart_.back() == sectorSize);
+		sector.resize(sectorSize);
+		BaseType::copyOut(sector, kron, vstart_);
+	}
+
 	// -------------------
 	// copy xout(:) to vout(:)
 	// -------------------
-	void copyOut(VectorType& vout) const { BaseType::copyOut(vout, xout_, vstart_); }
+	void copyOut(VectorType& vout) const { kronToSector(vout, xout_); }
 
 	const VectorType& yin() const { return yin_; }
 
