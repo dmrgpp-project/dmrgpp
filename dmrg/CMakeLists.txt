@@ -80,7 +80,10 @@ string(REPLACE "OutputFile=\"data31\";" "OutputFile=\"data31_operator\";" kron_o
 if(kron_operator_test_contents STREQUAL kron_operator_test_original)
   message(FATAL_ERROR "Could not set the Task 6 Kron operator test output file")
 endif()
-string(APPEND kron_operator_test_contents "\nstring KroneckerDumperOperator=\"sz\";\n")
+string(FIND "${kron_operator_test_contents}" "KroneckerDumperOperator=\"sz\";" kron_operator_test_label)
+if(kron_operator_test_label EQUAL -1)
+  message(FATAL_ERROR "The input31 regression must configure KroneckerDumperOperator=\"sz\"")
+endif()
 file(WRITE ${KRON_OPERATOR_TEST_INPUT} "${kron_operator_test_contents}")
 set_property(
   DIRECTORY
