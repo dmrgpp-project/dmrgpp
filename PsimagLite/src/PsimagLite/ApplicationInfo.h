@@ -125,16 +125,16 @@ public:
 		int    len  = 1024;
 		char*  name = new char[len];
 		int    ret  = gethostname(name, len);
-		String retString;
+		String ret_string;
 		if (ret != 0) {
-			retString = "UNKNOWN";
+			ret_string = "UNKNOWN";
 		} else {
-			retString = name;
+			ret_string = name;
 		}
 
 		delete[] name;
 
-		return retString;
+		return ret_string;
 	}
 
 	const RunIdType runId() const { return runId_; }

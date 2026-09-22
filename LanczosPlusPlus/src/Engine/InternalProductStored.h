@@ -96,7 +96,7 @@ public:
 	typedef typename ModelType::RealType                         RealType;
 	typedef typename ModelType::GeometryType                     GeometryType;
 	typedef typename GeometryType::ComplexOrRealType             ComplexOrRealType;
-	typedef ComplexOrRealType                                    value_type;
+	typedef ComplexOrRealType                                    ValueType;
 	typedef PsimagLite::Matrix<ComplexOrRealType>                MatrixType;
 	typedef typename PsimagLite::Vector<RealType>::Type          VectorRealType;
 	typedef typename PsimagLite::Vector<ComplexOrRealType>::Type VectorType;

@@ -97,11 +97,11 @@ public:
 	SizeType perfectIndex(WordType newKet, SizeType ispace, SizeType spinOfNew) const override
 	{
 		if (spinOfNew == SPIN_UP) {
-			SizeType oldIndex1 = ispace / basis1_.size();
-			return basis1_.perfectIndex(newKet) + oldIndex1 * basis1_.size();
+			SizeType old_index1 = ispace / basis1_.size();
+			return basis1_.perfectIndex(newKet) + old_index1 * basis1_.size();
 		}
-		SizeType oldIndex2 = ispace % basis2_.size();
-		return oldIndex2 + basis2_.perfectIndex(newKet) * basis2_.size();
+		SizeType old_index2 = ispace % basis2_.size();
+		return old_index2 + basis2_.perfectIndex(newKet) * basis2_.size();
 	}
 
 	SizeType perfectIndex(WordType ket1, WordType ket2) const override
@@ -226,11 +226,11 @@ public:
 
 	void print(std::ostream& os, typename BaseType::PrintEnum binaryOrDecimal) const override
 	{
-		bool isBinary = (binaryOrDecimal == BaseType::PRINT_BINARY);
+		bool is_binary = (binaryOrDecimal == BaseType::PRINT_BINARY);
 		os << "\tUp sector\n";
-		basis1_.print(os, isBinary);
+		basis1_.print(os, is_binary);
 		os << "\tDown sector\n";
-		basis2_.print(os, isBinary);
+		basis2_.print(os, is_binary);
 	}
 
 	bool getBra(WordType&, WordType, WordType, const LabeledOperator&, SizeType, SizeType)
@@ -246,21 +246,21 @@ private:
 	                           const LabeledOperator&               lOperator,
 	                           SizeType                             spin) const
 	{
-		int newPart1 = oldParts.first;
-		int newPart2 = oldParts.second;
+		int new_part1 = oldParts.first;
+		int new_part2 = oldParts.second;
 
 		if (spin == SPIN_UP)
-			newPart1 = basis1_.newPartCorCdagger(newPart1, lOperator);
+			new_part1 = basis1_.newPartCorCdagger(new_part1, lOperator);
 		else
-			newPart2 = basis2_.newPartCorCdagger(newPart2, lOperator);
+			new_part2 = basis2_.newPartCorCdagger(new_part2, lOperator);
 
-		if (newPart1 < 0 || newPart2 < 0)
+		if (new_part1 < 0 || new_part2 < 0)
 			return false;
 
-		if (newPart1 == 0 && newPart2 == 0)
+		if (new_part1 == 0 && new_part2 == 0)
 			return false;
-		newParts.first  = SizeType(newPart1);
-		newParts.second = SizeType(newPart2);
+		newParts.first  = SizeType(new_part1);
+		newParts.second = SizeType(new_part2);
 		return true;
 	}
 

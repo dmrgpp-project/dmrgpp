@@ -64,7 +64,7 @@ public:
 	void computeOneState(RealType&         eigenvalue,
 	                     VectorType&       eigenvector,
 	                     const VectorType& init_vector,
-	                     SizeType) final
+	                     SizeType)
 	{
 		std::vector<VectorType>   q;
 		Matrix<ComplexOrRealType> h;
@@ -140,7 +140,7 @@ public:
 	void computeAllStatesBelow(VectorRealType&   eigs,
 	                           VectorVectorType& zs,
 	                           const VectorType& init_v,
-	                           SizeType          nexcited) final
+	                           SizeType          nexcited)
 	{
 		if (nexcited != 1) {
 			throw RuntimeError("ArnoldiSaI::computeAllStatesBelow() only for g.s.\n");

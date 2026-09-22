@@ -64,10 +64,10 @@ public:
 		SizeType counter2 = 0;
 		for (SizeType na = 0; na <= npart; na++) {
 			SizeType                           nb = npart - na;
-			PsimagLite::Vector<WordType>::Type basisA, basisB;
-			fillPartialBasis(basisA, na);
-			fillPartialBasis(basisB, nb);
-			collateBasis(counter, counter2, basisA, basisB);
+			PsimagLite::Vector<WordType>::Type basis_a, basis_b;
+			fillPartialBasis(basis_a, na);
+			fillPartialBasis(basis_b, nb);
+			collateBasis(counter, counter2, basis_a, basis_b);
 		}
 	}
 
@@ -96,23 +96,23 @@ public:
 
 	SizeType getN(WordType ket, SizeType site, SizeType orb) const
 	{
-		WordType ketA = 0, ketB = 0;
-		uncollateKet(ketA, ketB, ket);
+		WordType ket_a = 0, ket_b = 0;
+		uncollateKet(ket_a, ket_b, ket);
 		if (orb == 0) {
-			WordType res = (ketA & LanczosGlobals::bitmask(site));
+			WordType res = (ket_a & LanczosGlobals::bitmask(site));
 			return (res > 0) ? 1 : 0;
 		}
-		WordType res2 = ketB & LanczosGlobals::bitmask(site);
+		WordType res2 = ket_b & LanczosGlobals::bitmask(site);
 		return (res2 > 0) ? 1 : 0;
 	}
 
 	SizeType getN(SizeType i, SizeType orb) const
 	{
-		WordType ketA = 0, ketB = 0;
-		uncollateKet(ketA, ketB, data_[i]);
+		WordType ket_a = 0, ket_b = 0;
+		uncollateKet(ket_a, ket_b, data_[i]);
 		if (orb == 0)
-			return PsimagLite::BitManip::count(ketA);
-		return PsimagLite::BitManip::count(ketB);
+			return PsimagLite::BitManip::count(ket_a);
+		return PsimagLite::BitManip::count(ket_b);
 	}
 
 	SizeType getN(SizeType) const { throw std::runtime_error("getN\n"); }
@@ -121,15 +121,15 @@ public:
 
 	int doSign(SizeType i, SizeType site, SizeType orb) const
 	{
-		WordType ketA = 0, ketB = 0;
-		uncollateKet(ketA, ketB, data_[i]);
+		WordType ket_a = 0, ket_b = 0;
+		uncollateKet(ket_a, ket_b, data_[i]);
 		if (orb == 0) {
-			return doSign(ketA, site);
+			return doSign(ket_a, site);
 		}
 
-		SizeType c   = PsimagLite::BitManip::count(ketA);
+		SizeType c   = PsimagLite::BitManip::count(ket_a);
 		int      ret = (c & 1) ? LanczosGlobals::FERMION_SIGN : 1;
-		return ret * doSign(ketB, site);
+		return ret * doSign(ket_b, site);
 	}
 
 	int doSign(WordType ket, SizeType i, SizeType orb1, SizeType j, SizeType orb2) const
@@ -160,25 +160,25 @@ public:
 
 	int doSignGf(WordType a, SizeType ind, SizeType orb) const
 	{
-		WordType ketA = 0, ketB = 0;
+		WordType ket_a = 0, ket_b = 0;
 
-		uncollateKet(ketA, ketB, a);
+		uncollateKet(ket_a, ket_b, a);
 
 		if (orb == 0)
-			return doSignGf(ketA, ind);
-		int s = (PsimagLite::BitManip::count(ketA) & 1) ? -1 : 1; // Parity of a
+			return doSignGf(ket_a, ind);
+		int s = (PsimagLite::BitManip::count(ket_a) & 1) ? -1 : 1; // Parity of a
 
-		return s * doSignGf(ketB, ind);
+		return s * doSignGf(ket_b, ind);
 	}
 
 	SizeType getNbyKet(SizeType ket) const
 	{
-		SizeType sum     = 0;
-		WordType ketCopy = ket;
-		while (ketCopy) {
-			if (ketCopy & 1)
+		SizeType sum      = 0;
+		WordType ket_copy = ket;
+		while (ket_copy) {
+			if (ket_copy & 1)
 				sum++;
-			ketCopy <<= 1;
+			ket_copy <<= 1;
 		}
 		return sum;
 	}
@@ -197,20 +197,20 @@ public:
 	            SizeType                   site,
 	            SizeType                   orb) const
 	{
-		WordType ketA = 0, ketB = 0;
-		uncollateKet(ketA, ketB, myword);
-		WordType braA = ketA;
-		WordType braB = ketB;
+		WordType ket_a = 0, ket_b = 0;
+		uncollateKet(ket_a, ket_b, myword);
+		WordType bra_a = ket_a;
+		WordType bra_b = ket_b;
 
 		if (orb == 0) {
-			if (!getBra(braA, ketA, lOperator, site))
+			if (!getBra(bra_a, ket_a, lOperator, site))
 				return false;
 		} else {
-			if (!getBra(braB, ketB, lOperator, site))
+			if (!getBra(bra_b, ket_b, lOperator, site))
 				return false;
 		}
 
-		bra = getCollatedKet(braA, braB);
+		bra = getCollatedKet(bra_a, bra_b);
 		return true;
 	}
 
@@ -358,23 +358,23 @@ private:
 
 	WordType getCollatedKet(WordType ketA, WordType ketB) const
 	{
-		WordType remA    = ketA;
-		WordType remB    = ketB;
+		WordType rem_a   = ketA;
+		WordType rem_b   = ketB;
 		SizeType counter = 0;
 		WordType ket     = 0;
 
-		while (remA || remB) {
-			SizeType bitA = (remA & 1);
-			SizeType bitB = (remB & 1);
-			if (bitA)
+		while (rem_a || rem_b) {
+			SizeType bit_a = (rem_a & 1);
+			SizeType bit_b = (rem_b & 1);
+			if (bit_a)
 				ket |= LanczosGlobals::bitmask(counter);
-			if (bitB)
+			if (bit_b)
 				ket |= LanczosGlobals::bitmask(counter + 1);
 			counter += 2;
-			if (remA)
-				remA >>= 1;
-			if (remB)
-				remB >>= 1;
+			if (rem_a)
+				rem_a >>= 1;
+			if (rem_b)
+				rem_b >>= 1;
 		}
 		return ket;
 	}
@@ -384,11 +384,11 @@ private:
 		SizeType counter = 0;
 		ketA = ketB = 0;
 		while (ket) {
-			SizeType bitA = (ket & 1);
-			SizeType bitB = (ket & 2);
-			if (bitA)
+			SizeType bit_a = (ket & 1);
+			SizeType bit_b = (ket & 2);
+			if (bit_a)
 				ketA |= LanczosGlobals::bitmask(counter);
-			if (bitB)
+			if (bit_b)
 				ketB |= LanczosGlobals::bitmask(counter);
 			counter++;
 			ket >>= 2;

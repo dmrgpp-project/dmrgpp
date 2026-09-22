@@ -158,10 +158,10 @@ private:
 	                   PsimagLite::String    operatorName,
 	                   const VectorSizeType& operatorOptions) const
 	{
-		SizeType            hilbertDest = basis.size();
-		SizeType            hilbertSrc  = basis_.size();
-		SizeType            nsite       = geometry_.numberOfSites();
-		LabeledOperatorType lOperator(LabeledOperatorType::Label::OPERATOR_C);
+		SizeType            hilbert_dest = basis.size();
+		SizeType            hilbert_src  = basis_.size();
+		SizeType            nsite        = geometry_.numberOfSites();
+		LabeledOperatorType l_operator(LabeledOperatorType::Label::OPERATOR_C);
 		if (operatorName != "c") {
 			PsimagLite::String str(__FILE__);
 			str += " " + ttos(__LINE__) + "\n";
@@ -186,16 +186,16 @@ private:
 		}
 
 		SizeType spin = operatorOptions[1];
-		matrix.resize(hilbertSrc, hilbertDest);
+		matrix.resize(hilbert_src, hilbert_dest);
 		matrix.setTo(0.0);
 		SizeType orb = 0;
 
-		for (SizeType ispace = 0; ispace < hilbertSrc; ispace++) {
+		for (SizeType ispace = 0; ispace < hilbert_src; ispace++) {
 			WordType ket1 = basis_(ispace, SPIN_UP);
 			WordType ket2 = basis_(ispace, SPIN_DOWN);
 			WordType bra  = ket1;
 			// assumes OPERATOR_C
-			bool b = basis.getBra(bra, ket1, ket2, lOperator, site, spin);
+			bool b = basis.getBra(bra, ket1, ket2, l_operator, site, spin);
 			if (!b)
 				continue;
 			SizeType index = basis.perfectIndex(bra, ket2);
@@ -209,23 +209,23 @@ private:
 	                           const LabeledOperatorType&           lOperator,
 	                           SizeType                             spin) const
 	{
-		int newPart1 = oldParts.first;
-		int newPart2 = oldParts.second;
-		int c        = (lOperator.id() == LabeledOperatorType::Label::OPERATOR_C) ? -1 : 1;
+		int new_part1 = oldParts.first;
+		int new_part2 = oldParts.second;
+		int c         = (lOperator.id() == LabeledOperatorType::Label::OPERATOR_C) ? -1 : 1;
 		if (spin == SPIN_UP)
-			newPart1 += c;
+			new_part1 += c;
 		else
-			newPart2 += c;
+			new_part2 += c;
 
-		if (newPart1 < 0 || newPart2 < 0)
+		if (new_part1 < 0 || new_part2 < 0)
 			return false;
 		SizeType nsite = geometry_.numberOfSites();
-		if (SizeType(newPart1) > nsite || SizeType(newPart2) > nsite)
+		if (SizeType(new_part1) > nsite || SizeType(new_part2) > nsite)
 			return false;
-		if (newPart1 == 0 && newPart2 == 0)
+		if (new_part1 == 0 && new_part2 == 0)
 			return false;
-		newParts.first  = SizeType(newPart1);
-		newParts.second = SizeType(newPart2);
+		newParts.first  = SizeType(new_part1);
+		newParts.second = SizeType(new_part2);
 		return true;
 	}
 
@@ -234,23 +234,23 @@ private:
 	                              const LabeledOperatorType&           lOperator,
 	                              SizeType) const
 	{
-		int newPart1 = oldParts.first;
-		int newPart2 = oldParts.second;
+		int new_part1 = oldParts.first;
+		int new_part2 = oldParts.second;
 
 		int c = (lOperator.id() == LabeledOperatorType::Label::OPERATOR_SPLUS) ? 1 : -1;
-		newPart1 += c;
-		newPart2 -= c;
+		new_part1 += c;
+		new_part2 -= c;
 
-		if (newPart1 < 0 || newPart2 < 0)
+		if (new_part1 < 0 || new_part2 < 0)
 			return false;
 
 		SizeType nsite = geometry_.numberOfSites();
-		if (static_cast<SizeType>(newPart1) > nsite
-		    || static_cast<SizeType>(newPart2) > nsite)
+		if (static_cast<SizeType>(new_part1) > nsite
+		    || static_cast<SizeType>(new_part2) > nsite)
 			return false;
 
-		newParts.first  = SizeType(newPart1);
-		newParts.second = SizeType(newPart2);
+		newParts.first  = SizeType(new_part1);
+		newParts.second = SizeType(new_part2);
 		return true;
 	}
 

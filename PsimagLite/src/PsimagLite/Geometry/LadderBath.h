@@ -187,8 +187,8 @@ public:
 		PairType x = (c1.first < 0) ? c2 : c1;
 		if (x.first < 0 || x.second < 0)
 			throw RuntimeError("Internal error in handle\n");
-		SizeType firstClusterSite = (clusterSize_ / 2) * bathSitesPerSite_;
-		x.first -= firstClusterSite;
+		SizeType first_cluster_site = (clusterSize_ / 2) * bathSitesPerSite_;
+		x.first -= first_cluster_site;
 
 		return x.first * bathSitesPerSite_ + x.second;
 	}
@@ -200,13 +200,13 @@ public:
 
 		// in the cluster
 		if (c1.first < 0) {
-			SizeType firstClusterSite = (clusterSize_ / 2) * bathSitesPerSite_;
-			SizeType siteNewCluster   = siteNew - firstClusterSite;
-			SizeType smaxCluster      = smax - firstClusterSite;
-			SizeType eminCluster      = emin - firstClusterSite;
-			SizeType siteSubs
-			    = ladder_->getSubstituteSite(smaxCluster, eminCluster, siteNewCluster);
-			return siteSubs + firstClusterSite;
+			SizeType first_cluster_site = (clusterSize_ / 2) * bathSitesPerSite_;
+			SizeType site_new_cluster   = siteNew - first_cluster_site;
+			SizeType smax_cluster       = smax - first_cluster_site;
+			SizeType emin_cluster       = emin - first_cluster_site;
+			SizeType site_subs          = ladder_->getSubstituteSite(
+                            smax_cluster, emin_cluster, site_new_cluster);
+			return site_subs + first_cluster_site;
 		}
 
 		String str(__FILE__);
@@ -230,20 +230,20 @@ private:
 	// of this bath site as a pair (c,b)
 	PairType getClusterSite(SizeType i) const
 	{
-		SizeType firstClusterSite  = (clusterSize_ / 2) * bathSitesPerSite_;
-		SizeType lastP1ClusterSite = firstClusterSite + clusterSize_;
-		if (i >= firstClusterSite && i < lastP1ClusterSite)
+		SizeType first_cluster_site   = (clusterSize_ / 2) * bathSitesPerSite_;
+		SizeType last_p1_cluster_site = first_cluster_site + clusterSize_;
+		if (i >= first_cluster_site && i < last_p1_cluster_site)
 			return PairType(-1, -1);
 
 		SizeType middle = linSize_ / 2;
 		SizeType cs     = clusterSize_ / 2;
 		// now i is in the bath:
 		if (i < middle) { // i is in the system
-			return PairType(i % cs + firstClusterSite, i / cs);
+			return PairType(i % cs + first_cluster_site, i / cs);
 		}
 		// is in the bath and in the environ:
-		SizeType iprime = i - lastP1ClusterSite;
-		SizeType offset = lastP1ClusterSite - cs;
+		SizeType iprime = i - last_p1_cluster_site;
+		SizeType offset = last_p1_cluster_site - cs;
 		return PairType(iprime % cs + offset, iprime / cs);
 	}
 
@@ -265,10 +265,10 @@ private:
 	// assumes i1 and i2 are in the cluster
 	bool fringeInCluster(SizeType i, SizeType smax, SizeType emin) const
 	{
-		SizeType firstClusterSite = (clusterSize_ / 2) * bathSitesPerSite_;
-		i -= firstClusterSite;
-		smax -= firstClusterSite;
-		emin -= firstClusterSite;
+		SizeType first_cluster_site = (clusterSize_ / 2) * bathSitesPerSite_;
+		i -= first_cluster_site;
+		smax -= first_cluster_site;
+		emin -= first_cluster_site;
 		return ladder_->fringe(i, smax, emin);
 	}
 
@@ -281,9 +281,9 @@ private:
 
 	void ladderize(SizeType& i1, SizeType& i2) const
 	{
-		SizeType firstClusterSite = (clusterSize_ / 2) * bathSitesPerSite_;
-		i1 -= firstClusterSite;
-		i2 -= firstClusterSite;
+		SizeType first_cluster_site = (clusterSize_ / 2) * bathSitesPerSite_;
+		i1 -= first_cluster_site;
+		i2 -= first_cluster_site;
 	}
 
 	SizeType    linSize_;

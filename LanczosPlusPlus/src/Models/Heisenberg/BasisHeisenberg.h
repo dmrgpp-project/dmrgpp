@@ -28,16 +28,16 @@ public:
 	{
 		SizeType sites = geometry_.numberOfSites();
 		LanczosGlobals::doBitmask(sites);
-		WordType searchTotal = 1;
+		WordType search_total = 1;
 		assert(twiceS > 0);
 		bits_ = 1 + static_cast<SizeType>(logBase2(twiceS + 1));
 		if (twiceS & 1)
 			bits_--;
-		searchTotal <<= (bits_ * sites);
+		search_total <<= (bits_ * sites);
 
 		WordType mask = getMask();
 
-		for (WordType lui = 0; lui < searchTotal; ++lui) {
+		for (WordType lui = 0; lui < search_total; ++lui) {
 			int tmp = mOf(lui, mask);
 			if (tmp < 0 || static_cast<SizeType>(tmp) != szPlusConst)
 				continue;
@@ -111,7 +111,7 @@ public:
 			return getBraIndexSplusSminus(ket1, ket2, lOperator, site, spin, orb);
 		}
 
-		return getBraIndex_(ket1, ket2, lOperator, site, spin, orb);
+		return getBraIndex(ket1, ket2, lOperator, site, spin, orb);
 	}
 
 	SizeType orbsPerSite(SizeType) const override { return 1; }
@@ -229,12 +229,12 @@ private:
 		return PairIntType(perfectIndex(bra, ket2), 1);
 	}
 
-	PairIntType getBraIndex_(WordType                   ket1,
-	                         WordType                   ket2,
-	                         const LabeledOperatorType& lOperator,
-	                         SizeType                   site,
-	                         SizeType                   spin,
-	                         SizeType                   orb) const
+	PairIntType getBraIndex(WordType                   ket1,
+	                        WordType                   ket2,
+	                        const LabeledOperatorType& lOperator,
+	                        SizeType                   site,
+	                        SizeType                   spin,
+	                        SizeType                   orb) const
 	{
 		if (twiceS_ != 1)
 			err("getBraIndex_: S=1/2 supported only\n");

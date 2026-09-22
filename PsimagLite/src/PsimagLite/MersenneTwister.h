@@ -17,14 +17,14 @@ public:
 
 	double operator()();
 
-	static unsigned max() { return keepLast32BitMask_; }
+	static unsigned max() { return keep_last32_bit_mask; }
 
 private:
 
-	static const unsigned N_                 = 624;
-	static const unsigned keepLast32BitMask_ = 4294967295; // 2^32 - 1
+	static const unsigned n                    = 624;
+	static const unsigned keep_last32_bit_mask = 4294967295; // 2^32 - 1
 	unsigned              index_;
-	unsigned              state_[N_];
+	unsigned              state_[n];
 	void                  generate();
 };
 

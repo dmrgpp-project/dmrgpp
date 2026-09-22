@@ -3,14 +3,14 @@
 #include <Kokkos_Profiling_ScopedRegion.hpp>
 
 template <typename ComplexOrRealType>
-void csr_matmul_post(char                                                       trans_A,
-                     const PsimagLite::CrsMatrix<ComplexOrRealType>&            a,
-                     const int                                                  nrow_Y,
-                     const int                                                  ncol_Y,
-                     const PsimagLite::MatrixNonOwned<const ComplexOrRealType>& yin,
-                     const int                                                  nrow_X,
-                     const int                                                  ncol_X,
-                     PsimagLite::MatrixNonOwned<ComplexOrRealType>&             xout)
+void csrMatmulPost(char                                                       trans_A,
+                   const PsimagLite::CrsMatrix<ComplexOrRealType>&            a,
+                   const int                                                  nrow_Y,
+                   const int                                                  ncol_Y,
+                   const PsimagLite::MatrixNonOwned<const ComplexOrRealType>& yin,
+                   const int                                                  nrow_X,
+                   const int                                                  ncol_X,
+                   PsimagLite::MatrixNonOwned<ComplexOrRealType>&             xout)
 {
 	Kokkos::Profiling::ScopedRegion region("PsimagLite::csr_matmul_post");
 	/*
@@ -30,13 +30,13 @@ void csr_matmul_post(char                                                       
 	 *  requires  (nrow_X == nrow_Y) && ( ncol_Y == nrow_A) && (ncol_X == ncol_A)
 	 * -------------------------------------------------------
 	 */
-	const bool is_complex      = PsimagLite::IsComplexNumber<ComplexOrRealType>::True;
-	const int  nrow_A          = a.rows();
-	int        isTranspose     = (trans_A == 'T') || (trans_A == 't');
-	int        isConjTranspose = (trans_A == 'C') || (trans_A == 'c');
-	int        isConj          = (trans_A == 'Z') || (trans_A == 'z');
+	const bool is_complex        = PsimagLite::IsComplexNumber<ComplexOrRealType>::True;
+	const int  nrow_a            = a.rows();
+	int        is_transpose      = (trans_A == 'T') || (trans_A == 't');
+	int        is_conj_transpose = (trans_A == 'C') || (trans_A == 'c');
+	int        is_conj           = (trans_A == 'Z') || (trans_A == 'z');
 
-	if (isTranspose || isConjTranspose) {
+	if (is_transpose || is_conj_transpose) {
 		/*
 		 *   ----------------------------------------------------------
 		 *   X(nrow_X,ncol_X) +=  Y(nrow_Y,ncol_Y) * transpose(A(nrow_A,ncol_A))
@@ -49,7 +49,7 @@ void csr_matmul_post(char                                                       
 		assert(static_cast<SizeType>(ncol_Y) == a.cols() && (ncol_X == nrow_A));
 
 		int ia = 0;
-		for (ia = 0; ia < nrow_A; ia++) {
+		for (ia = 0; ia < nrow_a; ia++) {
 			int istart = a.getRowPtr(ia);
 			int iend   = a.getRowPtr(ia + 1);
 			int k      = 0;
@@ -57,7 +57,7 @@ void csr_matmul_post(char                                                       
 				int               ja   = a.getCol(k);
 				ComplexOrRealType aij  = a.getValue(k);
 				ComplexOrRealType atji = aij;
-				if (is_complex && isConjTranspose) {
+				if (is_complex && is_conj_transpose) {
 					atji = PsimagLite::conj(atji);
 				};
 
@@ -81,14 +81,14 @@ void csr_matmul_post(char                                                       
 		assert(ncol_Y == nrow_A && static_cast<SizeType>(ncol_X) == a.cols());
 
 		int ia = 0;
-		for (ia = 0; ia < nrow_A; ia++) {
+		for (ia = 0; ia < nrow_a; ia++) {
 			int istart = a.getRowPtr(ia);
 			int iend   = a.getRowPtr(ia + 1);
 			int k      = 0;
 			for (k = istart; k < iend; k++) {
 				int               ja  = a.getCol(k);
 				ComplexOrRealType aij = a.getValue(k);
-				if (is_complex && isConj) {
+				if (is_complex && is_conj) {
 					aij = PsimagLite::conj(aij);
 				};
 

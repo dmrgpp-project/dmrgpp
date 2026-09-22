@@ -28,9 +28,9 @@ public:
 	{
 		if (jobz != 'A' && jobz != 'S') {
 			String msg("svd: jobz must be either A or S");
-			String jobzString = " ";
-			jobzString[0]     = jobz;
-			throw RuntimeError(msg + ", not " + jobzString + "\n");
+			String jobz_string = " ";
+			jobz_string[0]     = jobz;
+			throw RuntimeError(msg + ", not " + jobz_string + "\n");
 		}
 
 		int m   = a.rows();
@@ -75,8 +75,8 @@ public:
 			throw RuntimeError(str.c_str());
 		}
 
-		RealType lworkReal = PsimagLite::real(work[0]);
-		lwork              = static_cast<int>(lworkReal) + (m + n) * 256;
+		RealType lwork_real = PsimagLite::real(work[0]);
+		lwork               = static_cast<int>(lwork_real) + (m + n) * 256;
 		work.resize(lwork + 10);
 
 		// real work:

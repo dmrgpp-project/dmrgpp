@@ -7,292 +7,293 @@
 #include <catch2/catch_test_macros.hpp>
 #include <complex>
 
-template <typename T> void run_kron_checks()
+template <typename T> void runKronChecks()
 {
-	using RealT                   = typename PsimagLite::Real<T>::Type;
-	const RealT denseFlopDiscount = 0.2;
+	using RealT                     = typename PsimagLite::Real<T>::Type;
+	const RealT dense_flop_discount = 0.2;
 
-	static const bool    needsPrinting   = false;
-	const SizeType       gemmRnb         = 49;
-	const SizeType       threadsForGemmR = 1;
-	PsimagLite::GemmR<T> gemmR(needsPrinting, gemmRnb, threadsForGemmR);
+	static const bool    needs_printing     = false;
+	const SizeType       gemm_rnb           = 49;
+	const SizeType       threads_for_gemm_r = 1;
+	PsimagLite::GemmR<T> gemm_r(needs_printing, gemm_rnb, threads_for_gemm_r);
 
-	for (int thresholdB_idx = 0; thresholdB_idx <= 11; ++thresholdB_idx) {
-		double thresholdB = .1 * thresholdB_idx;
-		for (int thresholdA_idx = 0; thresholdA_idx <= 11; ++thresholdA_idx) {
-			double thresholdA = .1 * thresholdA_idx;
-			for (int ncol_A = 1; ncol_A <= 7; ncol_A += 3) {
-				for (int nrow_A = 1; nrow_A <= 7; nrow_A += 3) {
-					for (int ncol_B = 1; ncol_B <= 7; ncol_B += 3) {
-						for (int nrow_B = 1; nrow_B <= 10; nrow_B += 3) {
-							for (int itransA = 0; itransA <= 2;
-							     itransA++) {
-								for (int itransB = 0; itransB <= 2;
-								     itransB++) {
-									char transA = (itransA == 1)
+	for (int threshold_b_idx = 0; threshold_b_idx <= 11; ++threshold_b_idx) {
+		double threshold_b = .1 * threshold_b_idx;
+		for (int threshold_a_idx = 0; threshold_a_idx <= 11; ++threshold_a_idx) {
+			double threshold_a = .1 * threshold_a_idx;
+			for (int ncol_a = 1; ncol_a <= 7; ncol_a += 3) {
+				for (int nrow_a = 1; nrow_a <= 7; nrow_a += 3) {
+					for (int ncol_b = 1; ncol_b <= 7; ncol_b += 3) {
+						for (int nrow_b = 1; nrow_b <= 10; nrow_b += 3) {
+							for (int itrans_a = 0; itrans_a <= 2;
+							     itrans_a++) {
+								for (int itrans_b = 0;
+								     itrans_b <= 2;
+								     itrans_b++) {
+									char trans_a
+									    = (itrans_a == 1)
 									    ? 'T'
-									    : ((itransA == 2)
+									    : ((itrans_a == 2)
 									           ? 'C'
 									           : 'N');
-									char transB = (itransB == 1)
+									char trans_b
+									    = (itrans_b == 1)
 									    ? 'T'
-									    : ((itransB == 2)
+									    : ((itrans_b == 2)
 									           ? 'C'
 									           : 'N');
 
 									int imethod = 0;
 
-									int isTransA
-									    = (transA == 'T');
-									int isTransB
-									    = (transB == 'T');
-									int isConjTransA
-									    = (transA == 'C');
-									int isConjTransB
-									    = (transB == 'C');
+									int is_trans_a
+									    = (trans_a == 'T');
+									int is_trans_b
+									    = (trans_b == 'T');
+									int is_conj_trans_a
+									    = (trans_a == 'C');
+									int is_conj_trans_b
+									    = (trans_b == 'C');
 
 									int nrow_1
-									    = (isTransA
-									       || isConjTransA)
-									    ? ncol_A
-									    : nrow_A;
+									    = (is_trans_a
+									       || is_conj_trans_a)
+									    ? ncol_a
+									    : nrow_a;
 									int ncol_1
-									    = (isTransA
-									       || isConjTransA)
-									    ? nrow_A
-									    : ncol_A;
+									    = (is_trans_a
+									       || is_conj_trans_a)
+									    ? nrow_a
+									    : ncol_a;
 
 									int nrow_2
-									    = (isTransB
-									       || isConjTransB)
-									    ? ncol_B
-									    : nrow_B;
+									    = (is_trans_b
+									       || is_conj_trans_b)
+									    ? ncol_b
+									    : nrow_b;
 									int ncol_2
-									    = (isTransB
-									       || isConjTransB)
-									    ? nrow_B
-									    : ncol_B;
+									    = (is_trans_b
+									       || is_conj_trans_b)
+									    ? nrow_b
+									    : ncol_b;
 
-									int nrow_C
+									int nrow_c
 									    = nrow_1 * nrow_2;
-									int ncol_C
+									int ncol_c
 									    = ncol_1 * ncol_2;
 
-									int nrow_X = nrow_2;
-									int ncol_X = nrow_1;
+									int nrow_x = nrow_2;
+									int ncol_x = nrow_1;
 
-									int nrow_Y = ncol_2;
-									int ncol_Y = ncol_1;
+									int nrow_y = ncol_2;
+									int ncol_y = ncol_1;
 
-									PsimagLite::Matrix<T> a_(
-									    nrow_A, ncol_A);
-									PsimagLite::Matrix<T> b_(
-									    nrow_B, ncol_B);
+									PsimagLite::Matrix<T> a(
+									    nrow_a, ncol_a);
+									PsimagLite::Matrix<T> b(
+									    nrow_b, ncol_b);
 
-									PsimagLite::Matrix<T> y_(
-									    nrow_Y, ncol_Y);
+									PsimagLite::Matrix<T> y(
+									    nrow_y, ncol_y);
 									PsimagLite::MatrixNonOwned<
 									    const T>
-									    yRef(y_);
+									    y_ref(y);
 
-									PsimagLite::Matrix<T> x1_(
-									    nrow_X, ncol_X);
+									PsimagLite::Matrix<T> x1(
+									    nrow_x, ncol_x);
 									PsimagLite::MatrixNonOwned<
 									    T>
-									    x1Ref(x1_);
-									PsimagLite::Matrix<T> x2_(
-									    nrow_X, ncol_X);
+									    x1_ref(x1);
+									PsimagLite::Matrix<T> x2(
+									    nrow_x, ncol_x);
 									PsimagLite::MatrixNonOwned<
 									    T>
-									    x2Ref(x2_);
-									PsimagLite::Matrix<T> x3_(
-									    nrow_X, ncol_X);
+									    x2_ref(x2);
+									PsimagLite::Matrix<T> x3(
+									    nrow_x, ncol_x);
 									PsimagLite::MatrixNonOwned<
 									    T>
-									    x3Ref(x3_);
-									PsimagLite::Matrix<T> x4_(
-									    nrow_X, ncol_X);
+									    x3_ref(x3);
+									PsimagLite::Matrix<T> x4(
+									    nrow_x, ncol_x);
 									PsimagLite::MatrixNonOwned<
 									    T>
-									    x4Ref(x4_);
+									    x4_ref(x4);
 
-									PsimagLite::Matrix<T> sx1_(
-									    nrow_X, ncol_X);
+									PsimagLite::Matrix<T> sx1(
+									    nrow_x, ncol_x);
 									PsimagLite::MatrixNonOwned<
 									    T>
-									    sx1Ref(sx1_);
-									PsimagLite::Matrix<T> sx2_(
-									    nrow_X, ncol_X);
+									    sx1_ref(sx1);
+									PsimagLite::Matrix<T> sx2(
+									    nrow_x, ncol_x);
 									PsimagLite::MatrixNonOwned<
 									    T>
-									    sx2Ref(sx2_);
-									PsimagLite::Matrix<T> sx3_(
-									    nrow_X, ncol_X);
+									    sx2_ref(sx2);
+									PsimagLite::Matrix<T> sx3(
+									    nrow_x, ncol_x);
 									PsimagLite::MatrixNonOwned<
 									    T>
-									    sx3Ref(sx3_);
-									PsimagLite::Matrix<T> sx4_(
-									    nrow_X, ncol_X);
+									    sx3_ref(sx3);
+									PsimagLite::Matrix<T> sx4(
+									    nrow_x, ncol_x);
 									PsimagLite::MatrixNonOwned<
 									    T>
-									    sx4Ref(sx4_);
+									    sx4_ref(sx4);
 
-									if (thresholdA == 0) {
-										if (nrow_A
-										    == ncol_A) {
+									if (threshold_a == 0) {
+										if (nrow_a
+										    == ncol_a) {
 											den_eye(
-											    nrow_A,
-											    ncol_A,
-											    a_);
+											    nrow_a,
+											    ncol_a,
+											    a);
 											REQUIRE(
 											    den_is_eye(
-											        a_));
+											        a));
 											PsimagLite::
 											    CrsMatrix<
 											        T>
-											        a(a_);
+											        a(a);
 											REQUIRE(
 											    csr_is_eye(
 											        a));
 										} else {
 											den_zeros(
-											    nrow_A,
-											    ncol_A,
-											    a_);
+											    nrow_a,
+											    ncol_a,
+											    a);
 											REQUIRE(
 											    den_is_zeros(
-											        a_));
+											        a));
 											PsimagLite::
 											    CrsMatrix<
 											        T>
-											        a(a_);
+											        a(a);
 											REQUIRE(
 											    csr_is_zeros(
 											        a));
 										}
 									} else {
 										den_gen_matrix(
-										    nrow_A,
-										    ncol_A,
-										    thresholdA,
-										    a_);
+										    nrow_a,
+										    ncol_a,
+										    threshold_a,
+										    a);
 										PsimagLite::
 										    CrsMatrix<T>
-										        a(a_);
+										        a(a);
 										REQUIRE(
-										    den_is_eye(a_)
+										    den_is_eye(a)
 										    == csr_is_eye(
 										        a));
 										REQUIRE(
-										    den_is_zeros(a_)
+										    den_is_zeros(a)
 										    == csr_is_zeros(
 										        a));
 									}
 
-									if ((thresholdB == 0)
-									    && (nrow_B == ncol_B)) {
-										den_eye(nrow_B,
-										        ncol_B,
-										        b_);
+									if ((threshold_b == 0)
+									    && (nrow_b == ncol_b)) {
+										den_eye(nrow_b,
+										        ncol_b,
+										        b);
 										REQUIRE(
-										    den_is_eye(b_));
+										    den_is_eye(b));
 										PsimagLite::
 										    CrsMatrix<T>
-										        b(b_);
+										        b(b);
 										REQUIRE(
 										    csr_is_eye(b));
 									} else {
 										den_gen_matrix(
-										    nrow_B,
-										    ncol_B,
-										    thresholdB,
-										    b_);
+										    nrow_b,
+										    ncol_b,
+										    threshold_b,
+										    b);
 										PsimagLite::
 										    CrsMatrix<T>
-										        b(b_);
+										        b(b);
 										REQUIRE(
-										    den_is_eye(b_)
+										    den_is_eye(b)
 										    == csr_is_eye(
 										        b));
 										REQUIRE(
-										    den_is_zeros(b_)
+										    den_is_zeros(b)
 										    == csr_is_zeros(
 										        b));
 									}
 
-									den_gen_matrix(nrow_Y,
-									               ncol_Y,
-									               1.0,
-									               y_);
+									den_gen_matrix(
+									    nrow_y, ncol_y, 1.0, y);
 
 									den_zeros(
-									    nrow_X, ncol_X, x1_);
+									    nrow_x, ncol_x, x1);
 									den_zeros(
-									    nrow_X, ncol_X, x2_);
+									    nrow_x, ncol_x, x2);
 									den_zeros(
-									    nrow_X, ncol_X, x3_);
+									    nrow_x, ncol_x, x3);
 
 									den_zeros(
-									    nrow_X, ncol_X, sx1_);
+									    nrow_x, ncol_x, sx1);
 									den_zeros(
-									    nrow_X, ncol_X, sx2_);
+									    nrow_x, ncol_x, sx2);
 									den_zeros(
-									    nrow_X, ncol_X, sx3_);
+									    nrow_x, ncol_x, sx3);
 
 									imethod = 1;
 									den_kron_mult_method(
 									    imethod,
-									    transA,
-									    transB,
-									    a_,
-									    b_,
-									    yRef.getVector(),
+									    trans_a,
+									    trans_b,
+									    a,
+									    b,
+									    y_ref.getVector(),
 									    0,
-									    x1Ref.getVector(),
+									    x1_ref.getVector(),
 									    0,
-									    gemmR);
+									    gemm_r);
 
 									imethod = 2;
 									den_kron_mult_method(
 									    imethod,
-									    transA,
-									    transB,
-									    a_,
-									    b_,
-									    yRef.getVector(),
+									    trans_a,
+									    trans_b,
+									    a,
+									    b,
+									    y_ref.getVector(),
 									    0,
-									    x2Ref.getVector(),
+									    x2_ref.getVector(),
 									    0,
-									    gemmR);
+									    gemm_r);
 									imethod = 3;
 									den_kron_mult_method(
 									    imethod,
-									    transA,
-									    transB,
-									    a_,
-									    b_,
-									    yRef.getVector(),
+									    trans_a,
+									    trans_b,
+									    a,
+									    b,
+									    y_ref.getVector(),
 									    0,
-									    x3Ref.getVector(),
+									    x3_ref.getVector(),
 									    0,
-									    gemmR);
+									    gemm_r);
 
 									// ------------------
 									// form C = kron(A,B)
 									// ------------------
-									PsimagLite::Matrix<T> c_(
-									    nrow_C, ncol_C);
+									PsimagLite::Matrix<T> c(
+									    nrow_c, ncol_c);
 
 									den_kron_form_general(
-									    transA,
-									    transB,
-									    nrow_A,
-									    ncol_A,
-									    a_,
-									    nrow_B,
-									    ncol_B,
-									    b_,
-									    c_);
+									    trans_a,
+									    trans_b,
+									    nrow_a,
+									    ncol_a,
+									    a,
+									    nrow_b,
+									    ncol_b,
+									    b,
+									    c);
 
 									// -----------------------
 									// perform matrix-multiply
@@ -310,28 +311,29 @@ template <typename T> void run_kron_checks()
 										// column vectors
 										// ------------------------------
 										const int mm
-										    = nrow_X
-										    * ncol_X;
+										    = nrow_x
+										    * ncol_x;
 										const int nn = 1;
 										const int kk
-										    = ncol_C;
+										    = ncol_c;
 
 										const int ld1
-										    = nrow_C;
+										    = nrow_c;
 										const int ld2
-										    = nrow_Y
-										    * ncol_Y;
+										    = nrow_y
+										    * ncol_y;
 										const int ld3
-										    = nrow_X
-										    * ncol_X;
+										    = nrow_x
+										    * ncol_x;
 
-										const T* const pA
-										    = &(c_(0, 0));
-										const T* const pB = &(
-										    yRef.getVector()
-										        [0]);
-										T* pC = &(
-										    x4Ref
+										const T* const p_a
+										    = &(c(0, 0));
+										const T* const p_b = &(
+										    y_ref
+										        .getVector()
+										            [0]);
+										T* p_c = &(
+										    x4_ref
 										        .getVector()
 										            [0]);
 										psimag::BLAS::GEMM(
@@ -351,35 +353,39 @@ template <typename T> void run_kron_checks()
 									}
 
 									for (int jx = 0;
-									     jx < ncol_X;
+									     jx < ncol_x;
 									     ++jx) {
 										for (int ix = 0;
-										     ix < nrow_X;
+										     ix < nrow_x;
 										     ++ix) {
-											auto diff12 = std::abs(
-											    x1_(ix,
-											        jx)
-											    - x2_(
-											        ix,
-											        jx));
-											auto diff23 = std::abs(
-											    x2_(ix,
-											        jx)
-											    - x3_(
-											        ix,
-											        jx));
-											auto diff31 = std::abs(
-											    x3_(ix,
-											        jx)
-											    - x1_(
-											        ix,
-											        jx));
-											auto diff41 = std::abs(
-											    x4_(ix,
-											        jx)
-											    - x1_(
-											        ix,
-											        jx));
+											auto diff12
+											    = std::abs(
+											        x1(ix,
+											           jx)
+											        - x2(
+											            ix,
+											            jx));
+											auto diff23
+											    = std::abs(
+											        x2(ix,
+											           jx)
+											        - x3(
+											            ix,
+											            jx));
+											auto diff31
+											    = std::abs(
+											        x3(ix,
+											           jx)
+											        - x1(
+											            ix,
+											            jx));
+											auto diff41
+											    = std::abs(
+											        x4(ix,
+											           jx)
+											        - x1(
+											            ix,
+											            jx));
 											auto diffmax = std::max(
 											    diff41,
 											    std::max(
@@ -397,21 +403,21 @@ template <typename T> void run_kron_checks()
 											    > tol) {
 												INFO(
 												    "den: transA="
-												    << transA
+												    << trans_a
 												    << ", itransA "
-												    << itransA
+												    << itrans_a
 												    << " transB="
-												    << transB
+												    << trans_b
 												    << ", itransB "
-												    << itransB
+												    << itrans_b
 												    << " nrow_A "
-												    << nrow_A
+												    << nrow_a
 												    << " ncol_A "
-												    << ncol_A
+												    << ncol_a
 												    << " nrow_B "
-												    << nrow_B
+												    << nrow_b
 												    << " ncol_B "
-												    << ncol_B
+												    << ncol_b
 												    << '\n'
 												    << "ix "
 												    << ix
@@ -439,76 +445,76 @@ template <typename T> void run_kron_checks()
 									 * ------------------
 									 */
 									PsimagLite::CrsMatrix<T> a(
-									    a_);
-									REQUIRE(den_is_eye(a_)
+									    a);
+									REQUIRE(den_is_eye(a)
 									        == csr_is_eye(a));
-									REQUIRE(den_is_zeros(a_)
+									REQUIRE(den_is_zeros(a)
 									        == csr_is_zeros(a));
 									PsimagLite::CrsMatrix<T> b(
-									    b_);
-									REQUIRE(den_is_eye(b_)
+									    b);
+									REQUIRE(den_is_eye(b)
 									        == csr_is_eye(b));
-									REQUIRE(den_is_zeros(b_)
+									REQUIRE(den_is_zeros(b)
 									        == csr_is_zeros(b));
 
 									imethod = 1;
 									csr_kron_mult_method(
 									    imethod,
-									    transA,
-									    transB,
+									    trans_a,
+									    trans_b,
 									    a,
 
 									    b,
 
-									    yRef,
-									    sx1Ref);
+									    y_ref,
+									    sx1_ref);
 
 									imethod = 2;
 									csr_kron_mult_method(
 									    imethod,
-									    transA,
-									    transB,
+									    trans_a,
+									    trans_b,
 									    a,
 
 									    b,
 
-									    yRef,
-									    sx2Ref);
+									    y_ref,
+									    sx2_ref);
 
 									imethod = 3;
 									csr_kron_mult_method(
 									    imethod,
-									    transA,
-									    transB,
+									    trans_a,
+									    trans_b,
 									    a,
 
 									    b,
 
-									    yRef,
-									    sx3Ref);
+									    y_ref,
+									    sx3_ref);
 
 									for (int jx = 0;
-									     jx < ncol_X;
+									     jx < ncol_x;
 									     ++jx) {
 										for (int ix = 0;
-										     ix < nrow_X;
+										     ix < nrow_x;
 										     ++ix) {
 											auto diff1 = std::abs(
-											    x1_(ix,
-											        jx)
-											    - sx1_(
+											    x1(ix,
+											       jx)
+											    - sx1(
 											        ix,
 											        jx));
 											auto diff2 = std::abs(
-											    x2_(ix,
-											        jx)
-											    - sx2_(
+											    x2(ix,
+											       jx)
+											    - sx2(
 											        ix,
 											        jx));
 											auto diff3 = std::abs(
-											    x3_(ix,
-											        jx)
-											    - sx3_(
+											    x3(ix,
+											       jx)
+											    - sx3(
 											        ix,
 											        jx));
 											auto diffmax = std::max(
@@ -526,21 +532,21 @@ template <typename T> void run_kron_checks()
 											    > tol) {
 												INFO(
 												    "csr: transA="
-												    << transA
+												    << trans_a
 												    << ", itransA "
-												    << itransA
+												    << itrans_a
 												    << " transB="
-												    << transB
+												    << trans_b
 												    << ", itransB "
-												    << itransB
+												    << itrans_b
 												    << " nrow_A "
-												    << nrow_A
+												    << nrow_a
 												    << " ncol_A "
-												    << ncol_A
+												    << ncol_a
 												    << " nrow_B "
-												    << nrow_B
+												    << nrow_b
 												    << " ncol_B "
-												    << ncol_B
+												    << ncol_b
 												    << '\n'
 												    << "ix "
 												    << ix
@@ -567,44 +573,44 @@ template <typename T> void run_kron_checks()
 									 */
 
 									den_zeros(
-									    nrow_X, ncol_X, x1_);
+									    nrow_x, ncol_x, x1);
 									den_zeros(
-									    nrow_X, ncol_X, sx1_);
+									    nrow_x, ncol_x, sx1);
 
 									den_kron_mult_method(
 									    imethod,
-									    transA,
-									    transB,
-									    a_,
-									    b_,
-									    yRef.getVector(),
-									    0,
-									    x1Ref.getVector(),
-									    0,
-									    gemmR);
-
-									csr_kron_mult(
-									    transA,
-									    transB,
+									    trans_a,
+									    trans_b,
 									    a,
 									    b,
-									    yRef.getVector(),
+									    y_ref.getVector(),
 									    0,
-									    sx1Ref.getVector(),
+									    x1_ref.getVector(),
+									    0,
+									    gemm_r);
+
+									csr_kron_mult(
+									    trans_a,
+									    trans_b,
+									    a,
+									    b,
+									    y_ref.getVector(),
+									    0,
+									    sx1_ref.getVector(),
 									    0,
 									    RealT(
-									        denseFlopDiscount));
+									        dense_flop_discount));
 
 									for (int jx = 0;
-									     jx < ncol_X;
+									     jx < ncol_x;
 									     ++jx) {
 										for (int ix = 0;
-										     ix < nrow_X;
+										     ix < nrow_x;
 										     ++ix) {
 											auto diff = std::abs(
-											    x1_(ix,
-											        jx)
-											    - sx1_(
+											    x1(ix,
+											       jx)
+											    - sx1(
 											        ix,
 											        jx));
 											const double
@@ -617,13 +623,13 @@ template <typename T> void run_kron_checks()
 											    > tol) {
 												INFO(
 												    "nrow_A "
-												    << nrow_A
+												    << nrow_a
 												    << " ncol_A "
-												    << ncol_A
+												    << ncol_a
 												    << " nrow_B "
-												    << nrow_B
+												    << nrow_b
 												    << " ncol_B "
-												    << ncol_B
+												    << ncol_b
 												    << '\n'
 												    << "ix "
 												    << ix
@@ -647,34 +653,34 @@ template <typename T> void run_kron_checks()
 									 */
 
 									den_zeros(
-									    nrow_X, ncol_X, sx1_);
+									    nrow_x, ncol_x, sx1);
 									den_csr_kron_mult(
 
-									    transA,
-									    transB,
+									    trans_a,
+									    trans_b,
 
-									    a_,
+									    a,
 
 									    b,
 
-									    yRef.getVector(),
+									    y_ref.getVector(),
 									    0,
-									    sx1Ref.getVector(),
+									    sx1_ref.getVector(),
 									    0,
 									    RealT(
-									        denseFlopDiscount),
-									    gemmR);
+									        dense_flop_discount),
+									    gemm_r);
 
 									for (int jx = 0;
-									     jx < ncol_X;
+									     jx < ncol_x;
 									     ++jx) {
 										for (int ix = 0;
-										     ix < nrow_X;
+										     ix < nrow_x;
 										     ++ix) {
 											auto diff1 = std::abs(
-											    x1_(ix,
-											        jx)
-											    - sx1_(
+											    x1(ix,
+											       jx)
+											    - sx1(
 											        ix,
 											        jx));
 											auto diff2
@@ -696,17 +702,17 @@ template <typename T> void run_kron_checks()
 											    > tol) {
 												INFO(
 												    "den_csr: itransA "
-												    << itransA
+												    << itrans_a
 												    << "itransB "
-												    << itransB
+												    << itrans_b
 												    << " nrow_A "
-												    << nrow_A
+												    << nrow_a
 												    << " ncol_A "
-												    << ncol_A
+												    << ncol_a
 												    << " nrow_B "
-												    << nrow_B
+												    << nrow_b
 												    << " ncol_B "
-												    << ncol_B
+												    << ncol_b
 												    << '\n'
 												    << "ix "
 												    << ix
@@ -727,79 +733,79 @@ template <typename T> void run_kron_checks()
 									}
 
 									den_zeros(
-									    nrow_X, ncol_X, sx1_);
+									    nrow_x, ncol_x, sx1);
 									den_zeros(
-									    nrow_X, ncol_X, sx2_);
+									    nrow_x, ncol_x, sx2);
 									den_zeros(
-									    nrow_X, ncol_X, sx3_);
+									    nrow_x, ncol_x, sx3);
 
 									imethod = 1;
 									den_csr_kron_mult_method(
 									    imethod,
-									    transA,
-									    transB,
+									    trans_a,
+									    trans_b,
 
-									    a_,
+									    a,
 
 									    b,
 
-									    yRef.getVector(),
+									    y_ref.getVector(),
 									    0,
-									    sx1Ref.getVector(),
+									    sx1_ref.getVector(),
 									    0,
-									    gemmR);
+									    gemm_r);
 
 									imethod = 2;
 									den_csr_kron_mult_method(
 									    imethod,
-									    transA,
-									    transB,
+									    trans_a,
+									    trans_b,
 
-									    a_,
+									    a,
 
 									    b,
 
-									    yRef.getVector(),
+									    y_ref.getVector(),
 									    0,
-									    sx2Ref.getVector(),
+									    sx2_ref.getVector(),
 									    0,
-									    gemmR);
+									    gemm_r);
 
 									imethod = 3;
 									den_csr_kron_mult_method(
 									    imethod,
-									    transA,
-									    transB,
-									    a_,
+									    trans_a,
+									    trans_b,
+									    a,
 									    b,
-									    yRef.getVector(),
+									    y_ref.getVector(),
 									    0,
-									    sx3Ref.getVector(),
+									    sx3_ref.getVector(),
 									    0,
-									    gemmR);
+									    gemm_r);
 
 									for (int jx = 0;
-									     jx < ncol_X;
+									     jx < ncol_x;
 									     ++jx) {
 										for (int ix = 0;
-										     ix < nrow_X;
+										     ix < nrow_x;
 										     ++ix) {
 											auto diff1 = std::abs(
-											    x1_(ix,
-											        jx)
-											    - sx1_(
+											    x1(ix,
+											       jx)
+											    - sx1(
 											        ix,
 											        jx));
 											auto diff2 = std::abs(
-											    x2_(ix,
-											        jx)
-											    - sx2_(
+											    x2(ix,
+											       jx)
+											    - sx2(
 											        ix,
 											        jx));
 											auto diff3 = std::abs(
-											    x3_(ix,
-											        jx)
-											    - sx3_(
+											    x3(ix,
+											       jx)
+											    - sx3(
 											        ix,
 											        jx));
 											auto diffmax = std::max(
@@ -817,17 +823,17 @@ template <typename T> void run_kron_checks()
 											    > tol) {
 												INFO(
 												    "den_csr: itransA "
-												    << itransA
+												    << itrans_a
 												    << "itransB "
-												    << itransB
+												    << itrans_b
 												    << " nrow_A "
-												    << nrow_A
+												    << nrow_a
 												    << " ncol_A "
-												    << ncol_A
+												    << ncol_a
 												    << " nrow_B "
-												    << nrow_B
+												    << nrow_b
 												    << " ncol_B "
-												    << ncol_B
+												    << ncol_b
 												    << '\n'
 												    << "ix "
 												    << ix
@@ -854,31 +860,31 @@ template <typename T> void run_kron_checks()
 									 * -----------------------
 									 */
 									den_zeros(
-									    nrow_X, ncol_X, sx1_);
+									    nrow_x, ncol_x, sx1);
 
 									csr_den_kron_mult(
-									    transA,
-									    transB,
+									    trans_a,
+									    trans_b,
 									    a,
-									    b_,
-									    yRef.getVector(),
+									    b,
+									    y_ref.getVector(),
 									    0,
-									    sx1Ref.getVector(),
+									    sx1_ref.getVector(),
 									    0,
 									    RealT(
-									        denseFlopDiscount),
-									    gemmR);
+									        dense_flop_discount),
+									    gemm_r);
 
 									for (int jx = 0;
-									     jx < ncol_X;
+									     jx < ncol_x;
 									     ++jx) {
 										for (int ix = 0;
-										     ix < nrow_X;
+										     ix < nrow_x;
 										     ++ix) {
 											auto diff1 = std::abs(
-											    x1_(ix,
-											        jx)
-											    - sx1_(
+											    x1(ix,
+											       jx)
+											    - sx1(
 											        ix,
 											        jx));
 											auto diff2
@@ -900,17 +906,17 @@ template <typename T> void run_kron_checks()
 											    > tol) {
 												INFO(
 												    "den_csr: itransA "
-												    << itransA
+												    << itrans_a
 												    << "itransB "
-												    << itransB
+												    << itrans_b
 												    << " nrow_A "
-												    << nrow_A
+												    << nrow_a
 												    << " ncol_A "
-												    << ncol_A
+												    << ncol_a
 												    << " nrow_B "
-												    << nrow_B
+												    << nrow_b
 												    << " ncol_B "
-												    << ncol_B
+												    << ncol_b
 												    << '\n'
 												    << "ix "
 												    << ix
@@ -931,74 +937,74 @@ template <typename T> void run_kron_checks()
 									}
 
 									den_zeros(
-									    nrow_X, ncol_X, sx1_);
+									    nrow_x, ncol_x, sx1);
 									den_zeros(
-									    nrow_X, ncol_X, sx2_);
+									    nrow_x, ncol_x, sx2);
 									den_zeros(
-									    nrow_X, ncol_X, sx3_);
+									    nrow_x, ncol_x, sx3);
 
 									imethod              = 1;
 									const SizeType izero = 0;
 									csr_den_kron_mult_method(
 									    imethod,
-									    transA,
-									    transB,
+									    trans_a,
+									    trans_b,
 									    a,
-									    b_,
-									    yRef.getVector(),
+									    b,
+									    y_ref.getVector(),
 									    izero,
-									    sx1Ref.getVector(),
+									    sx1_ref.getVector(),
 									    izero,
-									    gemmR);
+									    gemm_r);
 
 									imethod = 2;
 									csr_den_kron_mult_method(
 									    imethod,
-									    transA,
-									    transB,
+									    trans_a,
+									    trans_b,
 									    a,
-									    b_,
-									    yRef.getVector(),
+									    b,
+									    y_ref.getVector(),
 									    izero,
-									    sx2Ref.getVector(),
+									    sx2_ref.getVector(),
 									    izero,
-									    gemmR);
+									    gemm_r);
 
 									imethod = 3;
 									csr_den_kron_mult_method(
 									    imethod,
-									    transA,
-									    transB,
+									    trans_a,
+									    trans_b,
 									    a,
-									    b_,
-									    yRef.getVector(),
+									    b,
+									    y_ref.getVector(),
 									    izero,
-									    sx3Ref.getVector(),
+									    sx3_ref.getVector(),
 									    izero,
-									    gemmR);
+									    gemm_r);
 
 									for (int jx = 0;
-									     jx < ncol_X;
+									     jx < ncol_x;
 									     ++jx) {
 										for (int ix = 0;
-										     ix < nrow_X;
+										     ix < nrow_x;
 										     ++ix) {
 											auto diff1 = std::abs(
-											    x1_(ix,
-											        jx)
-											    - sx1_(
+											    x1(ix,
+											       jx)
+											    - sx1(
 											        ix,
 											        jx));
 											auto diff2 = std::abs(
-											    x2_(ix,
-											        jx)
-											    - sx2_(
+											    x2(ix,
+											       jx)
+											    - sx2(
 											        ix,
 											        jx));
 											auto diff3 = std::abs(
-											    x3_(ix,
-											        jx)
-											    - sx3_(
+											    x3(ix,
+											       jx)
+											    - sx3(
 											        ix,
 											        jx));
 											auto diffmax = std::max(
@@ -1016,17 +1022,17 @@ template <typename T> void run_kron_checks()
 											    > tol) {
 												INFO(
 												    "den_csr: itransA "
-												    << itransA
+												    << itrans_a
 												    << "itransB "
-												    << itransB
+												    << itrans_b
 												    << " nrow_A "
-												    << nrow_A
+												    << nrow_a
 												    << " ncol_A "
-												    << ncol_A
+												    << ncol_a
 												    << " nrow_B "
-												    << nrow_B
+												    << nrow_b
 												    << " ncol_B "
-												    << ncol_B
+												    << ncol_b
 												    << '\n'
 												    << "ix "
 												    << ix
@@ -1055,9 +1061,9 @@ template <typename T> void run_kron_checks()
 	}
 }
 
-TEST_CASE("kron_mult_test1_double", "[kron][basic]") { run_kron_checks<double>(); }
+TEST_CASE("kron_mult_test1_double", "[kron][basic]") { runKronChecks<double>(); }
 
-TEST_CASE("kron_mult_test1_complex", "[kron][basic]") { run_kron_checks<std::complex<double>>(); }
+TEST_CASE("kron_mult_test1_complex", "[kron][basic]") { runKronChecks<std::complex<double>>(); }
 
 int main(int argc, char* argv[])
 {

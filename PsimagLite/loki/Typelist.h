@@ -109,14 +109,14 @@ namespace TL {
 	template <> struct Length<NullType> {
 		enum
 		{
-			value = 0
+			VALUE = 0
 		};
 	};
 
 	template <class T, class U> struct Length<Typelist<T, U>> {
 		enum
 		{
-			value = 1 + Length<U>::value
+			VALUE = 1 + Length<U>::value
 		};
 	};
 
@@ -180,14 +180,14 @@ namespace TL {
 	template <class T> struct IndexOf<NullType, T> {
 		enum
 		{
-			value = -1
+			VALUE = -1
 		};
 	};
 
 	template <class T, class Tail> struct IndexOf<Typelist<T, Tail>, T> {
 		enum
 		{
-			value = 0
+			VALUE = 0
 		};
 	};
 
@@ -196,14 +196,14 @@ namespace TL {
 
 		enum
 		{
-			temp = IndexOf<Tail, T>::value
+			TEMP = IndexOf<Tail, T>::VALUE
 		};
 
 	public:
 
 		enum
 		{
-			value = (temp == -1 ? -1 : 1 + temp)
+			VALUE = (TEMP == -1 ? -1 : 1 + TEMP)
 		};
 	};
 

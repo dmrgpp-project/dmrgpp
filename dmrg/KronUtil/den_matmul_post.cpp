@@ -3,17 +3,17 @@
 #include <Kokkos_Profiling_ScopedRegion.hpp>
 
 template <typename ComplexOrRealType>
-void den_matmul_post(const char                                                 trans_A,
-                     const int                                                  nrow_A,
-                     const int                                                  ncol_A,
-                     const PsimagLite::Matrix<ComplexOrRealType>&               a_,
-                     const int                                                  nrow_Y,
-                     const int                                                  ncol_Y,
-                     const PsimagLite::MatrixNonOwned<const ComplexOrRealType>& yin,
-                     const int                                                  nrow_X,
-                     const int                                                  ncol_X,
-                     PsimagLite::MatrixNonOwned<ComplexOrRealType>&             xout,
-                     PsimagLite::GemmR<ComplexOrRealType>&                      gemmR)
+void denMatmulPost(const char                                                 trans_A,
+                   const int                                                  nrow_A,
+                   const int                                                  ncol_A,
+                   const PsimagLite::Matrix<ComplexOrRealType>&               a_,
+                   const int                                                  nrow_Y,
+                   const int                                                  ncol_Y,
+                   const PsimagLite::MatrixNonOwned<const ComplexOrRealType>& yin,
+                   const int                                                  nrow_X,
+                   const int                                                  ncol_X,
+                   PsimagLite::MatrixNonOwned<ComplexOrRealType>&             xout,
+                   PsimagLite::GemmR<ComplexOrRealType>&                      gemmR)
 {
 	Kokkos::Profiling::ScopedRegion region("PsimagLite::den_matmul_post");
 
@@ -36,13 +36,13 @@ void den_matmul_post(const char                                                 
 	 * -------------------------------------------------------
 	 */
 
-	const bool is_complex      = PsimagLite::IsComplexNumber<ComplexOrRealType>::True;
-	int        isTranspose     = (trans_A == 'T') || (trans_A == 't');
-	int        isConjTranspose = (trans_A == 'C') || (trans_A == 'c');
+	const bool is_complex        = PsimagLite::IsComplexNumber<ComplexOrRealType>::True;
+	int        is_transpose      = (trans_A == 'T') || (trans_A == 't');
+	int        is_conj_transpose = (trans_A == 'C') || (trans_A == 'c');
 
 	const bool use_blas = true;
 
-	if (isTranspose || isConjTranspose) {
+	if (is_transpose || is_conj_transpose) {
 		/*
 		 *   ----------------------------------------------------------
 		 *   X(nrow_X,ncol_X) +=  Y(nrow_Y,ncol_Y) * transpose(A(nrow_A,ncol_A))
@@ -100,7 +100,7 @@ void den_matmul_post(const char                                                 
 						int               ia   = jx;
 						ComplexOrRealType aij  = a_(ia, ja);
 						ComplexOrRealType atji = aij;
-						if (is_complex && isConjTranspose) {
+						if (is_complex && is_conj_transpose) {
 							atji = PsimagLite::conj(atji);
 						};
 

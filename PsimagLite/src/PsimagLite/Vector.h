@@ -38,28 +38,28 @@ namespace PsimagLite {
 template <typename T1, typename T2> struct TypesEqual {
 	enum
 	{
-		True = false
+		TRUE = false
 	};
 };
 
 template <typename T> struct TypesEqual<T, T> {
 	enum
 	{
-		True = true
+		TRUE = true
 	};
 };
 
 template <typename T> struct IsInputLike {
 	enum
 	{
-		True = false
+		TRUE = false
 	};
 };
 
 template <typename T> struct IsOutputLike {
 	enum
 	{
-		True = false
+		TRUE = false
 	};
 };
 
@@ -68,7 +68,7 @@ public:
 
 	enum
 	{
-		True = false
+		TRUE = false
 	};
 };
 
@@ -77,7 +77,7 @@ public:
 
 	enum
 	{
-		True = true
+		TRUE = true
 	};
 };
 
@@ -145,7 +145,7 @@ template <typename T> struct IsClosureLike {
 
 	enum
 	{
-		True = false
+		TRUE = false
 	};
 };
 
@@ -153,7 +153,7 @@ template <typename T1, typename T2, int type> struct IsClosureLike<ClosureOperat
 
 	enum
 	{
-		True = true
+		TRUE = true
 	};
 };
 
@@ -530,7 +530,7 @@ public:
 
 	enum
 	{
-		True = false
+		TRUE = false
 	};
 };
 
@@ -539,7 +539,7 @@ public:
 
 	enum
 	{
-		True = true
+		TRUE = true
 	};
 };
 

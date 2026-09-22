@@ -77,8 +77,8 @@ int main(int argc, char* argv[])
 	IoSimple::In                                 io(file);
 	ContinuedFractionType                        cf(io);
 	typename ContinuedFractionType::PlotDataType v;
-	RealFrequencyRange<double>                   plotParams(wbegin, wstep, total, delta);
-	cf.plot(v, plotParams);
+	RealFrequencyRange<double>                   plot_params(wbegin, wstep, total, delta);
+	cf.plot(v, plot_params);
 	for (SizeType x = 0; x < v.size(); x++) {
 		std::cout << v[x].first << " " << PsimagLite::real(v[x].second);
 		std::cout << " " << PsimagLite::imag(v[x].second) << "\n";

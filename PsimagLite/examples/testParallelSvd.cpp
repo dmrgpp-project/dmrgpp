@@ -38,10 +38,10 @@ int main(int argc, char** argv)
 		throw PsimagLite::RuntimeError("USAGE: " + PsimagLite::String(argv[0])
 		                               + " total nthreadsOuter\n");
 
-	int total         = atoi(argv[1]);
-	int nthreadsOuter = atoi(argv[2]);
+	int total          = atoi(argv[1]);
+	int nthreads_outer = atoi(argv[2]);
 
-	PsimagLite::Concurrency concurrency(&argc, &argv, nthreadsOuter);
+	PsimagLite::Concurrency concurrency(&argc, &argv, nthreads_outer);
 
 	PsimagLite::Random48<RealType> rng(1234);
 
@@ -49,20 +49,20 @@ int main(int argc, char** argv)
 	{
 		SizeType                     lda = static_cast<SizeType>(rng() * 500) + 10;
 		SizeType                     cda = lda;
-		PsimagLite::Matrix<RealType> A(lda, cda);
+		PsimagLite::Matrix<RealType> a(lda, cda);
 
-		fillRandom(A, -10, 10, rng);
+		fillRandom(a, -10, 10, rng);
 
 		PsimagLite::Svd<RealType> svd;
 
 		PsimagLite::Vector<RealType>::Type s(lda);
 		PsimagLite::Matrix<RealType>       vt;
 
-		svd('A', A, s, vt);
+		svd('A', a, s, vt);
 	};
 
 	PsimagLite::CodeSectionParams csp = PsimagLite::Concurrency::codeSectionParams;
-	csp.npthreads                     = nthreadsOuter;
+	csp.npthreads                     = nthreads_outer;
 
 	PsimagLite::Parallelizer2<> parallelizer2(csp);
 	parallelizer2.parallelFor(0, total, lambda);

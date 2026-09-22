@@ -37,8 +37,8 @@ int main(int argc, char* argv[])
 	params.lotaMemory = true;
 
 	/* We create the solver object */
-	PsimagLite::LanczosSolver<PsimagLite::CrsMatrix<ComplexType>> lanczosSolver(msparse,
-	                                                                            params);
+	PsimagLite::LanczosSolver<PsimagLite::CrsMatrix<ComplexType>> lanczos_solver(msparse,
+	                                                                             params);
 
 	// This double will contain the lowest eigenvalue
 	double e = 0;
@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
 	// and eigenvector using Lanczos and starting
 	// from vector initial
 	// 0 means the lowest
-	lanczosSolver.computeOneState(e, z, initial, 0);
+	lanczos_solver.computeOneState(e, z, initial, 0);
 
 	// We print them for comparison and verification
 	std::cout << "energy=" << e << "\n";

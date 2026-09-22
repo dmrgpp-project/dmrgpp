@@ -232,28 +232,28 @@ public:
 		}
 
 		while (i < middle) {
-			typename Vector<SizeType>::Type tmpV(sitesPerBlock);
+			typename Vector<SizeType>::Type tmp_v(sitesPerBlock);
 			for (SizeType j = 0; j < sitesPerBlock; j++)
-				tmpV[j] = i + j;
-			X.push_back(tmpV);
+				tmp_v[j] = i + j;
+			X.push_back(tmp_v);
 			i += sitesPerBlock;
 		}
 
-		SizeType lastMiddle = linSize_ - sitesPerBlock;
-		while (i < lastMiddle) {
-			typename Vector<SizeType>::Type tmpV(sitesPerBlock);
-			typename Vector<SizeType>::Type tmpV2(sitesPerBlock);
+		SizeType last_middle = linSize_ - sitesPerBlock;
+		while (i < last_middle) {
+			typename Vector<SizeType>::Type tmp_v(sitesPerBlock);
+			typename Vector<SizeType>::Type tmp_v2(sitesPerBlock);
 			for (SizeType j = 0; j < sitesPerBlock; j++) {
 				SizeType jj = sitesPerBlock - 1 - j;
-				tmpV[j]     = (linSize_ - 1 - i - jj) + (middle - sitesPerBlock);
-				tmpV2[j]    = jj + i;
+				tmp_v[j]    = (linSize_ - 1 - i - jj) + (middle - sitesPerBlock);
+				tmp_v2[j]   = jj + i;
 				assert(tmpV[j] < linSize_);
 			}
 
 			if (allInSystem)
-				X.push_back(tmpV2);
+				X.push_back(tmp_v2);
 			else
-				Y.push_back(tmpV);
+				Y.push_back(tmp_v);
 			i += sitesPerBlock;
 		}
 
@@ -266,9 +266,9 @@ public:
 	SizeType maxConnections() const
 	{
 		SizeType result = 0;
-		for (SizeType termId = 0; termId < terms_.size(); ++termId)
-			if (terms_[termId]->maxConnections() > result)
-				result = terms_[termId]->maxConnections();
+		for (SizeType term_id = 0; term_id < terms_.size(); ++term_id)
+			if (terms_[term_id]->maxConnections() > result)
+				result = terms_[term_id]->maxConnections();
 		return result;
 	}
 

@@ -186,9 +186,9 @@ private:
 
 	std::pair<bool, Dir> connectedInternal(SizeType ii1, SizeType ii2) const
 	{
-		std::pair<bool, Dir> falseDir(false, DIR_X);
+		std::pair<bool, Dir> false_dir(false, DIR_X);
 		if (ii1 == ii2)
-			return falseDir;
+			return false_dir;
 
 		bool     normal = (ii1 < ii2);
 		SizeType i1     = (normal) ? ii1 : ii2;
@@ -211,7 +211,7 @@ private:
 		if (isDirectionZ(x1, y1, x2, y2))
 			return std::pair<bool, Dir>(true, DIR_Z);
 
-		return falseDir;
+		return false_dir;
 	}
 
 	void getCoordinates(SizeType& x, SizeType& y, SizeType i) const

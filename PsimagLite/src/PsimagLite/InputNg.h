@@ -428,7 +428,7 @@ public:
 		void saveBuffer(const String& buffer, SizeType whatchar)
 		{
 			String s(__FILE__);
-			String adjLabel = "";
+			String adj_label = "";
 			switch (state_) {
 			case IN_LABEL:
 				if (verbose_)
@@ -448,10 +448,10 @@ public:
 			case IN_VALUE_TEXT:
 				if (verbose_)
 					std::cout << "Read text value=" << buffer << "\n";
-				adjLabel = adjLabelForDuplicates(lastLabel_, mapStrStr_);
-				mapStrStr_[adjLabel] = buffer;
-				state_               = IN_LABEL;
-				inputCheck_.check(adjLabel, buffer, line_);
+				adj_label = adjLabelForDuplicates(lastLabel_, mapStrStr_);
+				mapStrStr_[adj_label] = buffer;
+				state_                = IN_LABEL;
+				inputCheck_.check(adj_label, buffer, line_);
 				break;
 			case IN_VALUE_NUMERIC:
 				if (verbose_)
@@ -496,32 +496,32 @@ public:
 				std::cerr << "Line=" << line_ << "\n";
 				throw RuntimeError(s.c_str());
 			}
-			SizeType adjExpected = atoi(numericVector_[0].c_str());
+			SizeType adj_expected = atoi(numericVector_[0].c_str());
 
 			if (!inputCheck_.check(lastLabel_, numericVector_, line_)
-			    && numericVector_.size() != adjExpected + 1) {
+			    && numericVector_.size() != adj_expected + 1) {
 				std::cout << " Number of numbers to follow is "
 				             "wrong, expected ";
-				std::cout << adjExpected << " got ";
+				std::cout << adj_expected << " got ";
 				std::cout << (numericVector_.size() - 1) << "\n";
 				std::cerr << "Line=" << line_ << "\n";
 				throw RuntimeError(s.c_str());
 			}
 
-			String adjLabel      = adjLabelForDuplicates(lastLabel_, mapStrVec_);
-			mapStrVec_[adjLabel] = numericVector_;
+			String adj_label      = adjLabelForDuplicates(lastLabel_, mapStrVec_);
+			mapStrVec_[adj_label] = numericVector_;
 		}
 
 		template <typename SomeMapType>
 		String adjLabelForDuplicates(const String& label, SomeMapType& mymap)
 		{
-			String rootLabel = findRootLabel(label);
-			int    x         = findLastOccurrence(rootLabel, mymap);
+			String root_label = findRootLabel(label);
+			int    x          = findLastOccurrence(root_label, mymap);
 			if (x < 0)
 				return label;
-			labelsForRemoval_.push_back(rootLabel);
+			labelsForRemoval_.push_back(root_label);
 			x++;
-			String newlabel = rootLabel + "@" + ttos(x);
+			String newlabel = root_label + "@" + ttos(x);
 			if (verbose_)
 				std::cerr << "NEWLABEL=*" << newlabel << "*\n";
 			return newlabel;

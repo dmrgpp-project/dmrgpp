@@ -92,90 +92,89 @@ namespace PsimagLite {
 class GslWrapper {
 public:
 
-	using gsl_integration_workspace = ::gsl_integration_workspace;
-	using gsl_function              = ::gsl_function;
-	using gsl_sf_result             = ::gsl_sf_result;
+	using GslIntegrationWorkspace = ::gsl_integration_workspace;
+	using GslFunction             = ::gsl_function;
+	using GslSfResult             = ::gsl_sf_result;
 
 	void printError(int status) const
 	{
 		std::cerr << "GslWrapper: error: " << gsl_strerror(status) << "\n";
 	}
 
-	gsl_error_handler_t* gsl_set_error_handler(gsl_error_handler_t* new_handler) const
+	gsl_error_handler_t* gslSetErrorHandler(gsl_error_handler_t* new_handler) const
 	{
 		return ::gsl_set_error_handler(new_handler);
 	}
 
-	gsl_integration_workspace* gsl_integration_workspace_alloc(SizeType n) const
+	GslIntegrationWorkspace* gslIntegrationWorkspaceAlloc(SizeType n) const
 	{
 		return ::gsl_integration_workspace_alloc(n);
 	}
 
-	void gsl_integration_workspace_free(gsl_integration_workspace* w) const
+	void gslIntegrationWorkspaceFree(GslIntegrationWorkspace* w) const
 	{
 		return ::gsl_integration_workspace_free(w);
 	}
 
-	int gsl_integration_qagi(gsl_function*              f,
-	                         double                     epsabs,
-	                         double                     epsrel,
-	                         size_t                     limit,
-	                         gsl_integration_workspace* workspace,
-	                         double*                    result,
-	                         double*                    abserr) const
+	int gslIntegrationQagi(GslFunction*             f,
+	                       double                   epsabs,
+	                       double                   epsrel,
+	                       size_t                   limit,
+	                       GslIntegrationWorkspace* workspace,
+	                       double*                  result,
+	                       double*                  abserr) const
 	{
 		return ::gsl_integration_qagi(f, epsabs, epsrel, limit, workspace, result, abserr);
 	}
 
-	int gsl_integration_qagiu(gsl_function*              f,
-	                          double                     a,
-	                          double                     epsabs,
-	                          double                     epsrel,
-	                          size_t                     limit,
-	                          gsl_integration_workspace* workspace,
-	                          double*                    result,
-	                          double*                    abserr) const
+	int gslIntegrationQagiu(GslFunction*             f,
+	                        double                   a,
+	                        double                   epsabs,
+	                        double                   epsrel,
+	                        size_t                   limit,
+	                        GslIntegrationWorkspace* workspace,
+	                        double*                  result,
+	                        double*                  abserr) const
 	{
 		return ::gsl_integration_qagiu(
 		    f, a, epsabs, epsrel, limit, workspace, result, abserr);
 	}
 
-	int gsl_integration_qagp(const gsl_function*        f,
-	                         double*                    pts,
-	                         SizeType                   npts,
-	                         double                     epsabs,
-	                         double                     epsrel,
-	                         SizeType                   limit,
-	                         gsl_integration_workspace* workspace,
-	                         double*                    result,
-	                         double*                    abserr) const
+	int gslIntegrationQagp(const GslFunction*       f,
+	                       double*                  pts,
+	                       SizeType                 npts,
+	                       double                   epsabs,
+	                       double                   epsrel,
+	                       SizeType                 limit,
+	                       GslIntegrationWorkspace* workspace,
+	                       double*                  result,
+	                       double*                  abserr) const
 	{
 		return ::gsl_integration_qagp(
 		    f, pts, npts, epsabs, epsrel, limit, workspace, result, abserr);
 	}
 
-	int gsl_integration_qag(const gsl_function*        f,
-	                        double                     a,
-	                        double                     b,
-	                        double                     epsabs,
-	                        double                     epsrel,
-	                        size_t                     limit,
-	                        int                        key,
-	                        gsl_integration_workspace* workspace,
-	                        double*                    result,
-	                        double*                    abserr) const
+	int gslIntegrationQag(const GslFunction*       f,
+	                      double                   a,
+	                      double                   b,
+	                      double                   epsabs,
+	                      double                   epsrel,
+	                      size_t                   limit,
+	                      int                      key,
+	                      GslIntegrationWorkspace* workspace,
+	                      double*                  result,
+	                      double*                  abserr) const
 	{
 		return ::gsl_integration_qag(
 		    f, a, b, epsabs, epsrel, limit, key, workspace, result, abserr);
 	}
 
-	int
-	gsl_sf_lngamma_complex_e(double zr, double zi, gsl_sf_result* lnr, gsl_sf_result* arg) const
+	int gslSfLngammaComplexE(double zr, double zi, GslSfResult* lnr, GslSfResult* arg) const
 	{
 		return ::gsl_sf_lngamma_complex_e(zr, zi, lnr, arg);
 	}
 
-	int gsl_sf_Ci_e(double x, gsl_sf_result* result) const { return ::gsl_sf_Ci_e(x, result); }
+	int gslSfCiE(double x, GslSfResult* result) const { return ::gsl_sf_Ci_e(x, result); }
 
 }; // class GslWrapper
 } // namespace PsimagLite

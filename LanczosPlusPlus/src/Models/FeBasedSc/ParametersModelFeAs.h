@@ -108,14 +108,14 @@ template <typename ComplexOrRealType> struct ParametersModelFeAs {
 		io.read(hubbardU, "hubbardU");
 		io.read(potentialV, "potentialV");
 
-		bool decayInInputFile = false;
+		bool decay_in_input_file = false;
 		try {
 			PsimagLite::String tmp;
 			io.readline(tmp, "Decay=");
-			decayInInputFile = true;
+			decay_in_input_file = true;
 		} catch (std::exception& e) { }
 
-		if (decayInInputFile) {
+		if (decay_in_input_file) {
 			PsimagLite::String str("Please use FeAsMode= instead of Decay=");
 			str += " in input file\n";
 			throw PsimagLite::RuntimeError(str);

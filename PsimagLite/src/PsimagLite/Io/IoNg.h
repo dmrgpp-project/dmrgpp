@@ -108,7 +108,7 @@ directly by doubling the size of the array into a single dataset.
 template <typename T> struct IsRootUnDelegated {
 	enum
 	{
-		True = Loki::TypeTraits<T>::isArith || IsVectorLike<T>::True || IsStackLike<T>::True
+		TRUE = Loki::TypeTraits<T>::isArith || IsVectorLike<T>::True || IsStackLike<T>::True
 		    || IsPairLike<T>::True || std::is_enum<T>::value || IsEnumClass<T>::value
 		    || IsStringLike<T>::True
 	};
@@ -312,14 +312,14 @@ public:
 template <> struct IsInputLike<IoNg::In> {
 	enum
 	{
-		True = true
+		TRUE = true
 	};
 };
 
 template <> struct IsOutputLike<IoNg::Out> {
 	enum
 	{
-		True = true
+		TRUE = true
 	};
 };
 

@@ -110,15 +110,15 @@ ComplexType findOmega(SizeType           ind,
 	if (mode == "real")
 		return ComplexType(ind * omegaStep + omegaInit, eps);
 	if (mode == "matsubara") {
-		SizeType totalOver2 = static_cast<SizeType>(total * 0.5);
+		SizeType total_over2 = static_cast<SizeType>(total * 0.5);
 		assert(beta > 0);
 		RealType factor = 2.0 * M_PI / beta;
-		if (ind < totalOver2) {
-			RealType tmp = (totalOver2 - ind);
+		if (ind < total_over2) {
+			RealType tmp = (total_over2 - ind);
 			return ComplexType(eps, -factor * tmp);
 		}
 
-		RealType tmp = (1 + ind) - totalOver2;
+		RealType tmp = (1 + ind) - total_over2;
 		return ComplexType(eps, factor * tmp);
 	}
 
@@ -143,13 +143,13 @@ int main(int argc, char** argv)
 	int                opt = 0;
 	PsimagLite::String file;
 	PsimagLite::String mode;
-	RealType           eps      = 0.1;
-	SizeType           total    = 0;
-	RealType           beta     = 0.0;
-	RealType           start    = 0;
-	RealType           step     = 0;
-	bool               hasStart = false;
-	bool               hasStep  = false;
+	RealType           eps       = 0.1;
+	SizeType           total     = 0;
+	RealType           beta      = 0.0;
+	RealType           start     = 0;
+	RealType           step      = 0;
+	bool               has_start = false;
+	bool               has_step  = false;
 	while ((opt = getopt(argc, argv, "f:t:m:e:b:s:S:")) != -1) {
 		switch (opt) {
 		case 'f':
@@ -168,12 +168,12 @@ int main(int argc, char** argv)
 			beta = atof(optarg);
 			break;
 		case 's':
-			step    = atof(optarg);
-			hasStep = true;
+			step     = atof(optarg);
+			has_step = true;
 			break;
 		case 'S':
-			start    = atof(optarg);
-			hasStart = true;
+			start     = atof(optarg);
+			has_start = true;
 			break;
 		default: /* '?' */
 			usage(argv[0]);
@@ -203,14 +203,14 @@ int main(int argc, char** argv)
 	RealType wabsmax = 0;
 	prune(e, w, emin, emax, wabsmax);
 
-	RealType omegaInit = (hasStart) ? start : emin;
-	RealType omegaStep = (emax - omegaInit) / (total - 1);
-	if (hasStep)
-		omegaStep = step;
+	RealType omega_init = (has_start) ? start : emin;
+	RealType omega_step = (emax - omega_init) / (total - 1);
+	if (has_step)
+		omega_step = step;
 	RealType factor = 1.0 / wabsmax;
 
 	for (SizeType i = 0; i < total; ++i) {
-		ComplexType z     = findOmega(i, total, omegaStep, omegaInit, eps, beta, mode);
+		ComplexType z     = findOmega(i, total, omega_step, omega_init, eps, beta, mode);
 		RealType    omega = (mode == "real") ? std::real(z) : std::imag(z);
 		ComplexType val   = lorentzian(z, e, w);
 		val *= factor;

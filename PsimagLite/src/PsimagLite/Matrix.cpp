@@ -31,17 +31,17 @@ void diag(Matrix<double>& m, Vector<double>::Type& eigs, char option)
 	eigs.resize(n);
 
 	// query:
-	dsyev_(&jobz, &uplo, &n, &(m(0, 0)), &lda, &(eigs[0]), &(work[0]), &lwork, &info);
+	dsyev(&jobz, &uplo, &n, &(m(0, 0)), &lda, &(eigs[0]), &(work[0]), &lwork, &info);
 	if (info != 0) {
 		std::cerr << "info=" << info << "\n";
 		throw RuntimeError("diag: dsyev_: failed with info!=0.\n");
 	}
 
-	const int NB = 256;
-	lwork        = std::max(1 + static_cast<int>(work[0]), (NB + 2) * n);
+	const int nb = 256;
+	lwork        = std::max(1 + static_cast<int>(work[0]), (nb + 2) * n);
 	work.resize(lwork);
 	// real work:
-	dsyev_(&jobz, &uplo, &n, &(m(0, 0)), &lda, &(eigs[0]), &(work[0]), &lwork, &info);
+	dsyev(&jobz, &uplo, &n, &(m(0, 0)), &lda, &(eigs[0]), &(work[0]), &lwork, &info);
 	if (info != 0) {
 		std::cerr << "info=" << info << "\n";
 		throw RuntimeError("diag: dsyev_: failed with info!=0.\n");
@@ -66,18 +66,18 @@ void diag(Matrix<std::complex<double>>& m, Vector<double>::Type& eigs, char opti
 	eigs.resize(n);
 
 	// query:
-	zheev_(
+	zheev(
 	    &jobz, &uplo, &n, &(m(0, 0)), &lda, &(eigs[0]), &(work[0]), &lwork, &(rwork[0]), &info);
 	if (info != 0) {
 		std::cerr << "info=" << info << "\n";
 		throw RuntimeError("diag: zheev_: failed with info!=0.\n");
 	}
 
-	const int NB = 256;
-	lwork        = std::max(1 + static_cast<int>(std::real(work[0])), (NB + 2) * n);
+	const int nb = 256;
+	lwork        = std::max(1 + static_cast<int>(std::real(work[0])), (nb + 2) * n);
 	work.resize(lwork);
 	// real work:
-	zheev_(
+	zheev(
 	    &jobz, &uplo, &n, &(m(0, 0)), &lda, &(eigs[0]), &(work[0]), &lwork, &(rwork[0]), &info);
 	if (info != 0) {
 		std::cerr << "info=" << info << "\n";
@@ -105,18 +105,18 @@ void diag(Matrix<float>& m, Vector<float>::Type& eigs, char option)
 	eigs.resize(n);
 
 	// query:
-	ssyev_(&jobz, &uplo, &n, &(m(0, 0)), &lda, &(eigs[0]), &(work[0]), &lwork, &info);
+	ssyev(&jobz, &uplo, &n, &(m(0, 0)), &lda, &(eigs[0]), &(work[0]), &lwork, &info);
 	if (info != 0) {
 		std::cerr << "info=" << info << "\n";
 		throw RuntimeError("diag: dsyev_: failed with info!=0.\n");
 	}
 
-	const int NB = 256;
-	lwork        = std::max(1 + static_cast<int>(work[0]), (NB + 2) * n);
+	const int nb = 256;
+	lwork        = std::max(1 + static_cast<int>(work[0]), (nb + 2) * n);
 	work.resize(lwork);
 
 	// real work:
-	ssyev_(&jobz, &uplo, &n, &(m(0, 0)), &lda, &(eigs[0]), &(work[0]), &lwork, &info);
+	ssyev(&jobz, &uplo, &n, &(m(0, 0)), &lda, &(eigs[0]), &(work[0]), &lwork, &info);
 	if (info != 0) {
 		std::cerr << "info=" << info << "\n";
 		throw RuntimeError("diag: dsyev_: failed with info!=0.\n");
@@ -140,19 +140,19 @@ void diag(Matrix<std::complex<float>>& m, Vector<float>::Type& eigs, char option
 	eigs.resize(n);
 
 	// query:
-	cheev_(
+	cheev(
 	    &jobz, &uplo, &n, &(m(0, 0)), &lda, &(eigs[0]), &(work[0]), &lwork, &(rwork[0]), &info);
 	if (info != 0) {
 		std::cerr << "info=" << info << "\n";
 		throw RuntimeError("diag: cheev_: failed with info!=0.\n");
 	}
 
-	const int NB = 256;
-	lwork        = std::max(1 + static_cast<int>(std::real(work[0])), (NB + 2) * n);
+	const int nb = 256;
+	lwork        = std::max(1 + static_cast<int>(std::real(work[0])), (nb + 2) * n);
 	work.resize(lwork);
 
 	// real work:
-	cheev_(
+	cheev(
 	    &jobz, &uplo, &n, &(m(0, 0)), &lda, &(eigs[0]), &(work[0]), &lwork, &(rwork[0]), &info);
 	if (info != 0) {
 		std::cerr << "info=" << info << "\n";
@@ -177,39 +177,39 @@ void geev(char                               jobvl,
 	std::vector<std::complex<double>> work(10, 0);
 	std::vector<double>               rwork(2 * n + 1, 0);
 	int                               lwork = -1;
-	zgeev_(&jobvl,
-	       &jobvr,
-	       &n,
-	       &(a(0, 0)),
-	       &lda,
-	       &(w[0]),
-	       &(vl(0, 0)),
-	       &ldvl,
-	       &(vr(0, 0)),
-	       &ldvr,
-	       &(work[0]),
-	       &lwork,
-	       &(rwork[0]),
-	       &info);
+	zgeev(&jobvl,
+	      &jobvr,
+	      &n,
+	      &(a(0, 0)),
+	      &lda,
+	      &(w[0]),
+	      &(vl(0, 0)),
+	      &ldvl,
+	      &(vr(0, 0)),
+	      &ldvr,
+	      &(work[0]),
+	      &lwork,
+	      &(rwork[0]),
+	      &info);
 
-	const int NB = 256;
-	lwork        = std::max(1 + static_cast<int>(std::real(work[0])), (NB + 2) * n);
+	const int nb = 256;
+	lwork        = std::max(1 + static_cast<int>(std::real(work[0])), (nb + 2) * n);
 	work.resize(lwork);
 
-	zgeev_(&jobvl,
-	       &jobvr,
-	       &n,
-	       &(a(0, 0)),
-	       &lda,
-	       &(w[0]),
-	       &(vl(0, 0)),
-	       &ldvl,
-	       &(vr(0, 0)),
-	       &ldvr,
-	       &(work[0]),
-	       &lwork,
-	       &(rwork[0]),
-	       &info);
+	zgeev(&jobvl,
+	      &jobvr,
+	      &n,
+	      &(a(0, 0)),
+	      &lda,
+	      &(w[0]),
+	      &(vl(0, 0)),
+	      &ldvl,
+	      &(vr(0, 0)),
+	      &ldvr,
+	      &(work[0]),
+	      &lwork,
+	      &(rwork[0]),
+	      &info);
 
 	checkBlasStatus(info, "zgeev_");
 }
@@ -235,41 +235,41 @@ void geev(char                               jobvl,
 	std::vector<double> work(10, 0);
 	std::vector<double> rwork(2 * n + 1, 0);
 	int                 lwork = -1;
-	dgeev_(&jobvl,
-	       &jobvr,
-	       &n,
-	       &(a(0, 0)),
-	       &lda,
-	       &(wr[0]),
-	       &(wi[0]),
-	       &(vl(0, 0)),
-	       &ldvl,
-	       &(vr(0, 0)),
-	       &ldvr,
-	       &(work[0]),
-	       &lwork,
-	       &(rwork[0]),
-	       &info);
+	dgeev(&jobvl,
+	      &jobvr,
+	      &n,
+	      &(a(0, 0)),
+	      &lda,
+	      &(wr[0]),
+	      &(wi[0]),
+	      &(vl(0, 0)),
+	      &ldvl,
+	      &(vr(0, 0)),
+	      &ldvr,
+	      &(work[0]),
+	      &lwork,
+	      &(rwork[0]),
+	      &info);
 
-	const int NB = 256;
-	lwork        = std::max(1 + static_cast<int>(std::real(work[0])), (NB + 2) * n);
+	const int nb = 256;
+	lwork        = std::max(1 + static_cast<int>(std::real(work[0])), (nb + 2) * n);
 	work.resize(lwork);
 
-	dgeev_(&jobvl,
-	       &jobvr,
-	       &n,
-	       &(a(0, 0)),
-	       &lda,
-	       &(wr[0]),
-	       &(wi[0]),
-	       &(vl(0, 0)),
-	       &ldvl,
-	       &(vr(0, 0)),
-	       &ldvr,
-	       &(work[0]),
-	       &lwork,
-	       &(rwork[0]),
-	       &info);
+	dgeev(&jobvl,
+	      &jobvr,
+	      &n,
+	      &(a(0, 0)),
+	      &lda,
+	      &(wr[0]),
+	      &(wi[0]),
+	      &(vl(0, 0)),
+	      &ldvl,
+	      &(vr(0, 0)),
+	      &ldvr,
+	      &(work[0]),
+	      &lwork,
+	      &(rwork[0]),
+	      &info);
 
 	checkBlasStatus(info, "dgeev_");
 

@@ -15,6 +15,6 @@ int main(int argc, char** argv)
 	PsimagLite::String predicate(argv[1]);
 
 	PsimagLite::replaceAll(predicate, "c", "5");
-	PsimagLite::PredicateAwesome<> pAwesome(predicate);
-	std::cout << pAwesome.isTrue("l", atoi(argv[2]));
+	PsimagLite::PredicateAwesome<> p_awesome(predicate);
+	std::cout << p_awesome.isTrue("l", atoi(argv[2]));
 }

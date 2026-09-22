@@ -127,7 +127,7 @@ struct PthreadFunctionStruct {
 };
 
 template <typename PthreadFunctionHolderType, typename LoadBalancerType>
-void* thread_function_wrapper(void* dummyPtr)
+void* threadFunctionWrapper(void* dummyPtr)
 {
 	PthreadFunctionStruct<PthreadFunctionHolderType, LoadBalancerType>* pfs
 	    = static_cast<PthreadFunctionStruct<PthreadFunctionHolderType, LoadBalancerType>*>(
@@ -142,13 +142,13 @@ void* thread_function_wrapper(void* dummyPtr)
 	if (s >= 0)
 		pfs->cpu = s;
 
-	SizeType blockSize = pfs->loadBalancer->blockSize(pfs->threadNum);
+	SizeType block_size = pfs->loadBalancer->blockSize(pfs->threadNum);
 
-	for (SizeType p = 0; p < blockSize; ++p) {
-		SizeType taskNumber = pfs->loadBalancer->taskNumber(pfs->threadNum, p);
-		if (taskNumber >= pfs->total)
+	for (SizeType p = 0; p < block_size; ++p) {
+		SizeType task_number = pfs->loadBalancer->taskNumber(pfs->threadNum, p);
+		if (task_number >= pfs->total)
 			break;
-		pfh->doTask(taskNumber, pfs->threadNum);
+		pfh->doTask(task_number, pfs->threadNum);
 	}
 
 	int retval = 0;
@@ -181,31 +181,31 @@ public:
 	// delegate
 	void loopCreate(PthreadFunctionHolderType& pfh)
 	{
-		LoadBalancerType* loadBalancer = new LoadBalancerType(pfh.tasks(), nthreads_);
-		loopCreate(pfh, *loadBalancer);
-		delete loadBalancer;
-		loadBalancer = 0;
+		LoadBalancerType* load_balancer = new LoadBalancerType(pfh.tasks(), nthreads_);
+		loopCreate(pfh, *load_balancer);
+		delete load_balancer;
+		load_balancer = 0;
 	}
 
 	// weights, no balancer ==> create balancer with weights ==> delegate
 	void loopCreate(PthreadFunctionHolderType& pfh, const VectorSizeType& weights)
 	{
-		LoadBalancerType* loadBalancer = new LoadBalancerType(weights, nthreads_);
-		loopCreate(pfh, *loadBalancer);
-		delete loadBalancer;
-		loadBalancer = 0;
+		LoadBalancerType* load_balancer = new LoadBalancerType(weights, nthreads_);
+		loopCreate(pfh, *load_balancer);
+		delete load_balancer;
+		load_balancer = 0;
 	}
 
 	// balancer (includes weights)
 	void loopCreate(PthreadFunctionHolderType& pfh, const LoadBalancerType& loadBalancer)
 	{
-		SizeType ntasks        = pfh.tasks();
-		SizeType actualThreads = std::min(nthreads_, ntasks);
+		SizeType ntasks         = pfh.tasks();
+		SizeType actual_threads = std::min(nthreads_, ntasks);
 		PthreadFunctionStruct<PthreadFunctionHolderType, LoadBalancerType>* pfs;
 		pfs                        = new PthreadFunctionStruct<PthreadFunctionHolderType,
-		                                                       LoadBalancerType>[actualThreads];
-		pthread_t*       thread_id = new pthread_t[actualThreads];
-		pthread_attr_t** attr      = new pthread_attr_t*[actualThreads];
+		                                                       LoadBalancerType>[actual_threads];
+		pthread_t*       thread_id = new pthread_t[actual_threads];
+		pthread_attr_t** attr      = new pthread_attr_t*[actual_threads];
 
 #ifndef __APPLE__
 		cpu_set_t cpuset;
@@ -223,12 +223,12 @@ public:
 		}
 #endif
 
-		for (SizeType j = 0; j < actualThreads; j++) {
+		for (SizeType j = 0; j < actual_threads; j++) {
 			pfs[j].pfh          = &pfh;
 			pfs[j].loadBalancer = &loadBalancer;
 			pfs[j].threadNum    = j;
 			pfs[j].total        = ntasks;
-			pfs[j].nthreads     = actualThreads;
+			pfs[j].nthreads     = actual_threads;
 
 			attr[j] = new pthread_attr_t;
 			int ret
@@ -258,14 +258,14 @@ public:
 			ret = pthread_create(
 			    &thread_id[j],
 			    attr[j],
-			    thread_function_wrapper<PthreadFunctionHolderType, LoadBalancerType>,
+			    threadFunctionWrapper<PthreadFunctionHolderType, LoadBalancerType>,
 			    &pfs[j]);
 			checkForError(ret);
 		}
 
-		for (SizeType j = 0; j < actualThreads; ++j)
+		for (SizeType j = 0; j < actual_threads; ++j)
 			pthread_join(thread_id[j], 0);
-		for (SizeType j = 0; j < actualThreads; ++j) {
+		for (SizeType j = 0; j < actual_threads; ++j) {
 			int ret = pthread_attr_destroy(attr[j]);
 			checkForError(ret);
 			delete attr[j];

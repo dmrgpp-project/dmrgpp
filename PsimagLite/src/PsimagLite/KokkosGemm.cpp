@@ -9,27 +9,27 @@
 #include "KokkosType.h"
 
 template <typename Scalar, typename IntegerForBlasType>
-inline void PsimagLite::kokkos_gemm(char               transa,
-                                    char               transb,
-                                    IntegerForBlasType m,
-                                    IntegerForBlasType n,
-                                    IntegerForBlasType k,
-                                    const Scalar&      alpha,
-                                    const Scalar*      A,
-                                    IntegerForBlasType lda,
-                                    const Scalar*      B,
-                                    IntegerForBlasType ldb,
-                                    const Scalar&      beta,
-                                    Scalar*            C,
-                                    IntegerForBlasType ldc)
+inline void PsimagLite::kokkosGemm(char               transa,
+                                   char               transb,
+                                   IntegerForBlasType m,
+                                   IntegerForBlasType n,
+                                   IntegerForBlasType k,
+                                   const Scalar&      alpha,
+                                   const Scalar*      A,
+                                   IntegerForBlasType lda,
+                                   const Scalar*      B,
+                                   IntegerForBlasType ldb,
+                                   const Scalar&      beta,
+                                   Scalar*            C,
+                                   IntegerForBlasType ldc)
 {
-	Kokkos::Profiling::ScopedRegion scoped_region("PsimagLite::kokkos_gemm");
-	int                             M      = static_cast<int>(m);
-	int                             N      = static_cast<int>(n);
-	int                             K      = static_cast<int>(k);
-	int                             ldaVal = static_cast<int>(lda);
-	int                             ldbVal = static_cast<int>(ldb);
-	int                             ldcVal = static_cast<int>(ldc);
+	Kokkos::Profiling::ScopedRegion scoped_region("PsimagLite::kokkosGemm");
+	int                             m       = static_cast<int>(m);
+	int                             n       = static_cast<int>(n);
+	int                             k       = static_cast<int>(k);
+	int                             lda_val = static_cast<int>(lda);
+	int                             ldb_val = static_cast<int>(ldb);
+	int                             ldc_val = static_cast<int>(ldc);
 
 	// Normalize trans flags
 	char ta = transa ? transa : 'N';
@@ -39,11 +39,11 @@ inline void PsimagLite::kokkos_gemm(char               transa,
 	if (tb >= 'a' && tb <= 'z')
 		tb = char(tb - 'a' + 'A');
 
-	int req_lda = (ta == 'N') ? std::max(1, M) : std::max(1, K);
-	int req_ldb = (tb == 'N') ? std::max(1, K) : std::max(1, N);
-	int req_ldc = std::max(1, M);
-	if (ldaVal < req_lda || ldbVal < req_ldb || ldcVal < req_ldc) {
-		throw std::runtime_error("kokkos_gemm: invalid leading dimension");
+	int req_lda = (ta == 'N') ? std::max(1, m) : std::max(1, k);
+	int req_ldb = (tb == 'N') ? std::max(1, k) : std::max(1, n);
+	int req_ldc = std::max(1, m);
+	if (lda_val < req_lda || ldb_val < req_ldb || ldc_val < req_ldc) {
+		throw std::runtime_error("kokkosGemm: invalid leading dimension");
 	}
 
 	// Determine Kokkos scalar type
@@ -53,8 +53,8 @@ inline void PsimagLite::kokkos_gemm(char               transa,
 	decltype(exec)::memory_space  mem;
 
 	// allow padded leading dimensions (ldaVal/ldbVal/ldcVal >= required)
-	if (ldaVal < req_lda || ldbVal < req_ldb || ldcVal < req_ldc) {
-		throw std::runtime_error("kokkos_gemm: invalid leading dimension");
+	if (lda_val < req_lda || ldb_val < req_ldb || ldc_val < req_ldc) {
+		throw std::runtime_error("kokkosGemm: invalid leading dimension");
 	}
 
 	using Pair = Kokkos::pair<int, int>;
@@ -65,50 +65,50 @@ inline void PsimagLite::kokkos_gemm(char               transa,
 	             Kokkos::LayoutLeft,
 	             Kokkos::HostSpace,
 	             Kokkos::MemoryUnmanaged>
-	     Aview_op(reinterpret_cast<const KokkosScalar*>(A), ldaVal, (ta == 'N' ? K : M));
-	auto Aop_device
-	    = Kokkos::create_mirror_view_and_copy(Kokkos::view_alloc(exec, mem), Aview_op);
-	auto Aop_logical = (ta == 'N') ? Kokkos::subview(Aop_device, Pair(0, M), Pair(0, K))
-	                               : Kokkos::subview(Aop_device, Pair(0, K), Pair(0, M));
+	     aview_op(reinterpret_cast<const KokkosScalar*>(A), lda_val, (ta == 'N' ? k : m));
+	auto aop_device
+	    = Kokkos::create_mirror_view_and_copy(Kokkos::view_alloc(exec, mem), aview_op);
+	auto aop_logical = (ta == 'N') ? Kokkos::subview(aop_device, Pair(0, m), Pair(0, k))
+	                               : Kokkos::subview(aop_device, Pair(0, k), Pair(0, m));
 
 	Kokkos::View<const KokkosScalar**,
 	             Kokkos::LayoutLeft,
 	             Kokkos::HostSpace,
 	             Kokkos::MemoryUnmanaged>
-	     Bview_op(reinterpret_cast<const KokkosScalar*>(B), ldbVal, (tb == 'N' ? N : K));
-	auto Bop_device
-	    = Kokkos::create_mirror_view_and_copy(Kokkos::view_alloc(exec, mem), Bview_op);
-	auto Bop_logical = (tb == 'N') ? Kokkos::subview(Bop_device, Pair(0, K), Pair(0, N))
-	                               : Kokkos::subview(Bop_device, Pair(0, N), Pair(0, K));
+	     bview_op(reinterpret_cast<const KokkosScalar*>(B), ldb_val, (tb == 'N' ? n : k));
+	auto bop_device
+	    = Kokkos::create_mirror_view_and_copy(Kokkos::view_alloc(exec, mem), bview_op);
+	auto bop_logical = (tb == 'N') ? Kokkos::subview(bop_device, Pair(0, k), Pair(0, n))
+	                               : Kokkos::subview(bop_device, Pair(0, n), Pair(0, k));
 
 	// Create C view that reflects storage with possible padding (ldcVal >= M)
 	Kokkos::View<KokkosScalar**, Kokkos::LayoutLeft, Kokkos::HostSpace, Kokkos::MemoryUnmanaged>
-	     Cview(reinterpret_cast<KokkosScalar*>(C), ldcVal, N);
-	auto Cop_device = Kokkos::create_mirror_view_and_copy(Kokkos::view_alloc(exec, mem), Cview);
-	auto Cop_logical = Kokkos::subview(Cop_device, Pair(0, M), Pair(0, N));
+	     cview(reinterpret_cast<KokkosScalar*>(C), ldc_val, n);
+	auto cop_device = Kokkos::create_mirror_view_and_copy(Kokkos::view_alloc(exec, mem), cview);
+	auto cop_logical = Kokkos::subview(cop_device, Pair(0, m), Pair(0, n));
 
-	const char transA2[2] = { ta, '\0' };
-	const char transB2[2] = { tb, '\0' };
+	const char trans_a2[2] = { ta, '\0' };
+	const char trans_b2[2] = { tb, '\0' };
 	KokkosBlas::gemm(
-	    exec, transA2, transB2, alpha, Aop_logical, Bop_logical, beta, Cop_logical);
-	Kokkos::deep_copy(exec, Cview, Cop_device);
+	    exec, trans_a2, trans_b2, alpha, aop_logical, bop_logical, beta, cop_logical);
+	Kokkos::deep_copy(exec, cview, cop_device);
 	exec.fence();
 }
 
 #define PSIMAGLITE_INSTANTIATE_KOKKOS_GEMM(SCALAR, INTEGER)                                        \
-	template void PsimagLite::kokkos_gemm(char          transa,                                \
-	                                      char          transb,                                \
-	                                      INTEGER       m,                                     \
-	                                      INTEGER       n,                                     \
-	                                      INTEGER       k,                                     \
-	                                      const SCALAR& alpha,                                 \
-	                                      const SCALAR* A,                                     \
-	                                      INTEGER       lda,                                   \
-	                                      const SCALAR* B,                                     \
-	                                      INTEGER       ldb,                                   \
-	                                      const SCALAR& beta,                                  \
-	                                      SCALAR*       C,                                     \
-	                                      INTEGER       ldc)
+	template void PsimagLite::kokkosGemm(char          transa,                                 \
+	                                     char          transb,                                 \
+	                                     INTEGER       m,                                      \
+	                                     INTEGER       n,                                      \
+	                                     INTEGER       k,                                      \
+	                                     const SCALAR& alpha,                                  \
+	                                     const SCALAR* A,                                      \
+	                                     INTEGER       lda,                                    \
+	                                     const SCALAR* B,                                      \
+	                                     INTEGER       ldb,                                    \
+	                                     const SCALAR& beta,                                   \
+	                                     SCALAR*       C,                                      \
+	                                     INTEGER       ldc)
 
 #ifndef PSI_BLAS_64
 PSIMAGLITE_INSTANTIATE_KOKKOS_GEMM(double, int);

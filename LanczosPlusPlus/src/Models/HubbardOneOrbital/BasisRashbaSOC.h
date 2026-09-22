@@ -38,14 +38,14 @@ public:
 		for (SizeType ndown = 0; ndown <= ne; ++ndown) {
 
 			const SizeType nup = ne - ndown;
-			BasisOneSpin   basisUp(nsite, nup);
-			BasisOneSpin   basisDown(nsite, ndown);
-			const SizeType sizeUp   = basisUp.size();
-			const SizeType sizeDown = basisDown.size();
-			for (SizeType i = 0; i < sizeUp; ++i) {
-				for (SizeType j = 0; j < sizeDown; ++j) {
+			BasisOneSpin   basis_up(nsite, nup);
+			BasisOneSpin   basis_down(nsite, ndown);
+			const SizeType size_up   = basis_up.size();
+			const SizeType size_down = basis_down.size();
+			for (SizeType i = 0; i < size_up; ++i) {
+				for (SizeType j = 0; j < size_down; ++j) {
 					assert(k < data_.size());
-					data_[k++] = PairWordType(basisUp[i], basisDown[j]);
+					data_[k++] = PairWordType(basis_up[i], basis_down[j]);
 				}
 			}
 		}

@@ -137,21 +137,21 @@ public:
 		if (ladder_.connected(i1, i2))
 			return true;
 
-		SizeType lx          = linSize_ / leg_;
-		bool     isPeriodicY = ladder_.isPeriodicY();
-		SizeType c1          = i1 / leg_;
-		SizeType c2          = i2 / leg_;
-		SizeType r1          = i1 % leg_;
-		SizeType r2          = i2 % leg_;
+		SizeType lx            = linSize_ / leg_;
+		bool     is_periodic_y = ladder_.isPeriodicY();
+		SizeType c1            = i1 / leg_;
+		SizeType c2            = i2 / leg_;
+		SizeType r1            = i1 % leg_;
+		SizeType r2            = i2 % leg_;
 
 		if (c1 == c2)
-			return this->neighbors(r1, r2, isPeriodicY, leg_);
+			return this->neighbors(r1, r2, is_periodic_y, leg_);
 
 		if (r1 == r2)
 			return this->neighbors(c1, c2, false, 0);
 
-		return (this->neighbors(r1, r2, isPeriodicY, leg_)
-		        && this->neighbors(c1, c2, isPeriodicY, lx));
+		return (this->neighbors(r1, r2, is_periodic_y, leg_)
+		        && this->neighbors(c1, c2, is_periodic_y, lx));
 	}
 
 	// assumes i1 and i2 are connected

@@ -135,8 +135,8 @@ public:
 
 		assert(aux.idof == SPECIFIC);
 
-		String connectors  = "Connectors";
-		String savedPrefix = io.prefix();
+		String connectors   = "Connectors";
+		String saved_prefix = io.prefix();
 		io.prefix() += "dir" + ttos(aux.dirId) + ":";
 
 		if (aux.orbitals > 1) {
@@ -144,8 +144,8 @@ public:
 				n = 1;
 			for (SizeType i = 0; i < n; i++) {
 				MatrixType m;
-				String     extraString = (n > 1 && io.version() > 2) ? ttos(i) : "";
-				io.read(m, connectors + extraString);
+				String extra_string = (n > 1 && io.version() > 2) ? ttos(i) : "";
+				io.read(m, connectors + extra_string);
 				dataMatrices_.push_back(m);
 				if (aux.orbitals != m.rows() || aux.orbitals != m.cols())
 					throw RuntimeError("Connectors must be matrices of "
@@ -161,7 +161,7 @@ public:
 			}
 		}
 
-		io.prefix() = savedPrefix;
+		io.prefix() = saved_prefix;
 	}
 
 	void write(PsimagLite::String label, IoSerializer& ioSerializer) const
@@ -193,8 +193,8 @@ public:
 
 		SizeType h = (constantValues()) ? 0 : geometryBase_->handle(i, j);
 
-		bool isMatrix = (aux_.orbitals > 1);
-		if (!isMatrix) {
+		bool is_matrix = (aux_.orbitals > 1);
+		if (!is_matrix) {
 			assert(dataNumbers_.size() > h);
 			return dataNumbers_[h];
 		}
@@ -210,8 +210,8 @@ public:
 
 		ComplexOrRealType tmp
 		    = (b) ? dataMatrices_[h](edof1, edof2) : dataMatrices_[h](edof2, edof1);
-		int signChange = geometryBase_->signChange(i, j);
-		return tmp * static_cast<RealType>(signChange);
+		int sign_change = geometryBase_->signChange(i, j);
+		return tmp * static_cast<RealType>(sign_change);
 	}
 
 	bool constantValues() const { return aux_.constantValues; }
@@ -230,9 +230,9 @@ public:
 		os << "#GeometryDirectionAuxiliary\n";
 		os << gd.aux_;
 
-		bool isMatrix = (gd.aux_.orbitals > 1 || gd.aux_.idof == SPECIFIC);
+		bool is_matrix = (gd.aux_.orbitals > 1 || gd.aux_.idof == SPECIFIC);
 
-		if (!isMatrix) {
+		if (!is_matrix) {
 			os << "#GeometryNumbersSize=" << gd.dataNumbers_.size() << "\n";
 			os << "#GeometryNumbers=";
 			for (SizeType i = 0; i < gd.dataNumbers_.size(); i++) {

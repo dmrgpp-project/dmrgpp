@@ -41,17 +41,17 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	ContinuedFractionCollectionType cfCollection(PsimagLite::FreqEnum::REAL);
+	ContinuedFractionCollectionType cf_collection(PsimagLite::FreqEnum::REAL);
 
 	String s = "#Avector";
 	for (int x = 1; x < argc; x++) {
 		IoSimple::In io(argv[x]);
 		io.advance(s, IoSimple::In::LAST_INSTANCE);
 		ContinuedFractionType cf(io);
-		cfCollection.push(cf);
+		cf_collection.push(cf);
 	}
 
-	IoSimple::Out ioOut(std::cout);
-	ioOut.setPrecision(12);
-	cfCollection.write(ioOut);
+	IoSimple::Out io_out(std::cout);
+	io_out.setPrecision(12);
+	cf_collection.write(io_out);
 }

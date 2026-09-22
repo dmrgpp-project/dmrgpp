@@ -1,17 +1,17 @@
 #include "util.h"
 
 template <typename ComplexOrRealType>
-void den_kron_submatrix(const int                                    nrow_A,
-                        const int                                    ncol_A,
-                        const PsimagLite::Matrix<ComplexOrRealType>& a_,
-                        const int                                    nrow_B,
-                        const int                                    ncol_B,
-                        const PsimagLite::Matrix<ComplexOrRealType>& b_,
-                        const int                                    nrindex,
-                        const int                                    ncindex,
-                        const PsimagLite::Vector<int>::Type&         rindex,
-                        const PsimagLite::Vector<int>::Type&         cindex,
-                        PsimagLite::Matrix<ComplexOrRealType>&       e_)
+void denKronSubmatrix(const int                                    nrow_A,
+                      const int                                    ncol_A,
+                      const PsimagLite::Matrix<ComplexOrRealType>& a_,
+                      const int                                    nrow_B,
+                      const int                                    ncol_B,
+                      const PsimagLite::Matrix<ComplexOrRealType>& b_,
+                      const int                                    nrindex,
+                      const int                                    ncindex,
+                      const PsimagLite::Vector<int>::Type&         rindex,
+                      const PsimagLite::Vector<int>::Type&         cindex,
+                      PsimagLite::Matrix<ComplexOrRealType>&       e_)
 {
 	/*
 	 * -------------------------------------------------
@@ -22,8 +22,8 @@ void den_kron_submatrix(const int                                    nrow_A,
 	 * assume A, B are in dense matrix format
 	 * -------------------------------------------------
 	 */
-	const int nrow_E = nrindex;
-	const int ncol_E = ncindex;
+	const int nrow_e = nrindex;
+	const int ncol_e = ncindex;
 
 	int ie = 0;
 	int je = 0;
@@ -57,8 +57,8 @@ void den_kron_submatrix(const int                                    nrow_A,
 	 * --------------------------------
 	 */
 
-	for (je = 0; je < ncol_E; je++) {
-		for (ie = 0; ie < nrow_E; ie++) {
+	for (je = 0; je < ncol_e; je++) {
+		for (ie = 0; ie < nrow_e; ie++) {
 			int ic = rindex[ie];
 			int jc = cindex[je];
 			/*

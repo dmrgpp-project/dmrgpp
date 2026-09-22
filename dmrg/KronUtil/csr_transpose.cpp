@@ -1,14 +1,14 @@
 #include "util.h"
 
 template <typename ComplexOrRealType>
-void csr_transpose(const int               nrow_A,
-                   const int               ncol_A,
-                   const int               arowptr[],
-                   const int               acol[],
-                   const ComplexOrRealType aval[],
-                   int                     atrowptr[],
-                   int                     atcol[],
-                   ComplexOrRealType       atval[])
+void csrTranspose(const int               nrow_A,
+                  const int               ncol_A,
+                  const int               arowptr[],
+                  const int               acol[],
+                  const ComplexOrRealType aval[],
+                  int                     atrowptr[],
+                  int                     atcol[],
+                  ComplexOrRealType       atval[])
 {
 	/*
 	 * --------------------------------------------------------
@@ -16,14 +16,14 @@ void csr_transpose(const int               nrow_A,
 	 * --------------------------------------------------------
 	 */
 
-	const int nrow_At = ncol_A;
+	const int nrow_at = ncol_A;
 
-	int* nnz_row_At = new int[nrow_At];
+	int* nnz_row_at = new int[nrow_at];
 
 	{
 		int iat = 0;
-		for (iat = 0; iat < nrow_At; iat++) {
-			nnz_row_At[iat] = 0;
+		for (iat = 0; iat < nrow_at; iat++) {
+			nnz_row_at[iat] = 0;
 		};
 	}
 
@@ -44,7 +44,7 @@ void csr_transpose(const int               nrow_A,
 				int ja  = acol[k];
 				int iat = ja;
 
-				nnz_row_At[iat] += 1;
+				nnz_row_at[iat] += 1;
 			};
 		};
 	}
@@ -57,12 +57,12 @@ void csr_transpose(const int               nrow_A,
 	{
 		int iat     = 0;
 		atrowptr[0] = 0;
-		for (iat = 0; iat < nrow_At; iat++) {
-			atrowptr[iat + 1] = atrowptr[iat] + nnz_row_At[iat];
+		for (iat = 0; iat < nrow_at; iat++) {
+			atrowptr[iat + 1] = atrowptr[iat] + nnz_row_at[iat];
 		};
 
-		for (iat = 0; iat < nrow_At; iat++) {
-			nnz_row_At[iat] = 0;
+		for (iat = 0; iat < nrow_at; iat++) {
+			nnz_row_at[iat] = 0;
 		};
 	}
 
@@ -84,14 +84,14 @@ void csr_transpose(const int               nrow_A,
 				int iat = ja;
 				int jat = ia;
 
-				int ipos    = atrowptr[iat] + nnz_row_At[iat];
+				int ipos    = atrowptr[iat] + nnz_row_at[iat];
 				atcol[ipos] = jat;
 				atval[ipos] = aij;
 
-				nnz_row_At[iat] += 1;
+				nnz_row_at[iat] += 1;
 			};
 		};
 	}
 
-	delete[] nnz_row_At;
+	delete[] nnz_row_at;
 }

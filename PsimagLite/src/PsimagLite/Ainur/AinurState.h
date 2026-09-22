@@ -19,7 +19,7 @@ public:
 	using VectorStringType = Vector<String>::Type;
 	using ComplexType      = std::complex<DoubleOrFloatType>;
 
-	struct myprint {
+	struct Myprint {
 		template <typename T> void operator()(const T& t) const
 		{
 			std::cout << " --------> " << t << '\n';
@@ -42,7 +42,7 @@ public:
 		//			err("Ainur::AinurState should be a
 		// singleton\n");
 
-		ZERO_CHAR_STRING_[0] = 0;
+		ZERO_CHAR_STRING[0] = 0;
 	}
 
 	void assign(String k, String v)
@@ -73,13 +73,13 @@ public:
 			d = d.substr(0, last - 1);
 		}
 
-		AinurVariable ainurVar({ key, v, d, "NORMAL" });
-		ainurVariables_.emplace_back(ainurVar);
+		AinurVariable ainur_var({ key, v, d, "NORMAL" });
+		ainurVariables_.emplace_back(ainur_var);
 
 		used_.push_back(u);
 	}
 
-	void declare(String d, String k) { declare(d, k, ZERO_CHAR_STRING_); }
+	void declare(String d, String k) { declare(d, k, ZERO_CHAR_STRING); }
 
 	void initMacros()
 	{
@@ -120,8 +120,9 @@ public:
 	{
 		SizeType n = ainurVariables_.size();
 		for (SizeType i = 0; i < n; ++i) {
-			const AinurVariable& ainurVar = ainurVariables_[i];
-			os << ainurVar.type << " " << ainurVar.key << " " << ainurVar.value << "\n";
+			const AinurVariable& ainur_var = ainurVariables_[i];
+			os << ainur_var.type << " " << ainur_var.key << " " << ainur_var.value
+			   << "\n";
 		}
 	}
 
@@ -136,9 +137,9 @@ public:
 		if (isEmptyValue(ainurVariables_[x].value))
 			err(errLabel(ERR_READ_NO_VALUE, label));
 
-		AinurConvert ainurConvert(ainurMacros_);
+		AinurConvert ainur_convert(ainurMacros_);
 
-		ainurConvert.convert(t, ainurVariables_[x]);
+		ainur_convert.convert(t, ainurVariables_[x]);
 
 		assert(static_cast<SizeType>(x) < used_.size());
 		used_[x]++;
@@ -151,8 +152,8 @@ public:
 			if (!used_[i])
 				continue;
 
-			const AinurVariable& ainurVar = ainurVariables_[i];
-			map[ainurVar.key]             = ainurVar.value;
+			const AinurVariable& ainur_var = ainurVariables_[i];
+			map[ainur_var.key]             = ainur_var.value;
 		}
 	}
 
@@ -211,31 +212,31 @@ private:
 		return it - ainurVariables_.begin();
 	}
 
-	static bool isEmptyValue(String s) { return (s.length() == 0 || s == ZERO_CHAR_STRING_); }
+	static bool isEmptyValue(String s) { return (s.length() == 0 || s == ZERO_CHAR_STRING); }
 
 	void installNativeMacros()
 	{
 		for (SizeType i = 0; i < ainurMacros_.total(); ++i) {
-			const AinurMacros::NativeMacro& nativeMacro = ainurMacros_.nativeMacro(i);
-			declare(nativeMacro.type, nativeMacro.name, nativeMacro.value);
+			const AinurMacros::NativeMacro& native_macro = ainurMacros_.nativeMacro(i);
+			declare(native_macro.type, native_macro.name, native_macro.value);
 		}
 	}
 
 	void expandMacrosRecursively()
 	{
-		static const SizeType avoidInfMax     = 100;
-		SizeType              avoidInfCounter = 0;
+		static const SizeType avoid_inf_max     = 100;
+		SizeType              avoid_inf_counter = 0;
 		while (expandMacros()) {
-			if (avoidInfCounter++ > avoidInfMax) {
-				err("Recursion limit of " + ttos(avoidInfMax) + " exceeded.\n");
+			if (avoid_inf_counter++ > avoid_inf_max) {
+				err("Recursion limit of " + ttos(avoid_inf_max) + " exceeded.\n");
 			}
 		}
 	}
 
 	bool expandMacros()
 	{
-		const SizeType n                       = ainurVariables_.size();
-		bool           atLeastOneValueHasMacro = false;
+		const SizeType n                            = ainurVariables_.size();
+		bool           at_least_one_value_has_macro = false;
 		for (SizeType i = 0; i < n; ++i) {
 			if (!used_[i])
 				continue;
@@ -249,21 +250,21 @@ private:
 				macro.second = ainurMacros_.procNativeMacro(macro.second);
 			}
 
-			ainurVariables_[i].value  = macro.second;
-			ainurVariables_[i].opaque = "MACRO";
-			atLeastOneValueHasMacro   = true;
+			ainurVariables_[i].value     = macro.second;
+			ainurVariables_[i].opaque    = "MACRO";
+			at_least_one_value_has_macro = true;
 		}
 
-		return atLeastOneValueHasMacro;
+		return at_least_one_value_has_macro;
 	}
 
 	// \[a-zA-Z]+
 	std::pair<bool, PsimagLite::String> expandOneValue(const String& value) const
 	{
 		const SizeType     n = value.length();
-		PsimagLite::String macroName;
-		PsimagLite::String retString;
-		bool               hasAtLeastOneMacro = false;
+		PsimagLite::String macro_name;
+		PsimagLite::String ret_string;
+		bool               has_at_least_one_macro = false;
 		SizeType           status = 0; // 0 = outsite a macro, 1 = inside a macro
 		for (SizeType i = 0; i < n; ++i) {
 			const char c = value[i];
@@ -273,14 +274,14 @@ private:
 			}
 
 			if (status == 0) {
-				retString += c;
+				ret_string += c;
 				continue;
 			}
 
 			bool macro_ended   = false;
 			bool add_character = false;
 			if (isValidCharForMacroName(c)) {
-				macroName += c;
+				macro_name += c;
 				if (i + 1 == n)
 					macro_ended = true;
 			} else {
@@ -289,22 +290,23 @@ private:
 			}
 
 			if (macro_ended) {
-				int x = storageIndexByName(macroName);
+				int x = storageIndexByName(macro_name);
 				if (x < 0)
-					err("No macro named " + macroName + "\n");
+					err("No macro named " + macro_name + "\n");
 
 				assert(static_cast<SizeType>(x) < ainurVariables_.size());
-				retString += unquote(ainurVariables_[x].value);
+				ret_string += unquote(ainurVariables_[x].value);
 				if (add_character)
-					retString += c;
+					ret_string += c;
 
-				macroName          = "";
-				hasAtLeastOneMacro = true;
-				status             = 0;
+				macro_name             = "";
+				has_at_least_one_macro = true;
+				status                 = 0;
 			}
 		}
 
-		return std::pair<bool, PsimagLite::String>(hasAtLeastOneMacro, unquote(retString));
+		return std::pair<bool, PsimagLite::String>(has_at_least_one_macro,
+		                                           unquote(ret_string));
 	}
 
 	static bool isValidCharForMacroName(char c)
@@ -329,7 +331,7 @@ private:
 		return str;
 	}
 
-	static String              ZERO_CHAR_STRING_;
+	static String              ZERO_CHAR_STRING;
 	AinurMacros                ainurMacros_;
 	std::vector<AinurVariable> ainurVariables_;
 	mutable VectorSizeType     used_;

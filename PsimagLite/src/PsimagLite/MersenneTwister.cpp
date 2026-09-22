@@ -24,17 +24,17 @@ void MersenneTwister::seed(unsigned s)
 {
 	index_    = 0;
 	state_[0] = s;
-	for (unsigned i = 1; i < N_; ++i) {
+	for (unsigned i = 1; i < n; ++i) {
 		unsigned tmp = state_[i - 1] ^ (state_[i - 1] >> 30);
-		state_[i]    = keepLast32BitMask_ & (1812433253 * (tmp + i));
+		state_[i]    = keep_last32_bit_mask & (1812433253 * (tmp + i));
 	}
 }
 
 void MersenneTwister::generate()
 {
-	for (unsigned i = 0; i < N_; ++i) {
-		unsigned y = (state_[i] & 0x80000000) + (state_[(i + 1) % N_] & 0x7fffffff);
-		state_[i]  = state_[(i + 397) % N_] ^ (y >> 1);
+	for (unsigned i = 0; i < n; ++i) {
+		unsigned y = (state_[i] & 0x80000000) + (state_[(i + 1) % n] & 0x7fffffff);
+		state_[i]  = state_[(i + 397) % n] ^ (y >> 1);
 		if (y % 2 != 0)
 			state_[i] ^= 2567483615;
 	}
@@ -51,7 +51,7 @@ unsigned MersenneTwister::random()
 	y ^= (y << 15) & 4022730752;
 	y ^= (y >> 18);
 
-	index_ = (index_ + 1) % N_;
+	index_ = (index_ + 1) % n;
 
 	return y;
 }
@@ -59,7 +59,7 @@ unsigned MersenneTwister::random()
 double MersenneTwister::operator()()
 {
 	unsigned r = random();
-	return (static_cast<double>(r) / keepLast32BitMask_);
+	return (static_cast<double>(r) / keep_last32_bit_mask);
 }
 
 } // namespace PsimagLite

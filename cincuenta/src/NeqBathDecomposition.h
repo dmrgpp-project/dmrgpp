@@ -49,12 +49,12 @@ public:
 	    , nT_(nT)
 	    , V_(nT + 1, std::max(rank, SizeType(1)), ComplexType(0))
 	{
-		const SizeType nBath = bathParams.size() / 2;
-		hoppings_.resize(nBath);
-		bathEps_.resize(nBath);
-		for (SizeType i = 0; i < nBath; ++i) {
+		const SizeType n_bath = bathParams.size() / 2;
+		hoppings_.resize(n_bath);
+		bathEps_.resize(n_bath);
+		for (SizeType i = 0; i < n_bath; ++i) {
 			hoppings_[i] = bathParams[i];
-			bathEps_[i]  = bathParams[nBath + i];
+			bathEps_[i]  = bathParams[n_bath + i];
 		}
 	}
 
@@ -73,12 +73,12 @@ public:
 		if (n == 0)
 			return;
 
-		const int L = static_cast<int>(rank_);
+		const int l = static_cast<int>(rank_);
 
 		maxDiagSeen_
 		    = std::max(maxDiagSeen_, std::abs(-std::real(iDeltaPlusLesser(n, n, delta))));
 
-		if (n <= L) {
+		if (n <= l) {
 			// Standard Cholesky: n=1 seeds col 0, n=2 seeds col 1, ..., n=L seeds col
 			// L-1. Pivot for column p lives at row p+1 (row 0 is degenerate).
 			const int col = n - 1;
@@ -115,31 +115,31 @@ public:
 	}
 
 	// V^+(t_n, p): second-bath hopping for orbital p = 0..rank_-1
-	ComplexType Vplus(int n, int p) const
+	ComplexType vplus(int n, int p) const
 	{
 		assert(p >= 0 && static_cast<SizeType>(p) < rank_);
 		return V_(n, p);
 	}
 
 	// V^-(t_n, α): first-bath hopping V_α exp(−i ε_α t_n)
-	ComplexType Vminus(int n, int alpha) const
+	ComplexType vminus(int n, int alpha) const
 	{
-		const ComplexType I(0, 1);
+		const ComplexType i(0, 1);
 		return static_cast<ComplexType>(hoppings_[alpha])
-		    * std::exp(-I * static_cast<ComplexType>(bathEps_[alpha] * n * dt_));
+		    * std::exp(-i * static_cast<ComplexType>(bathEps_[alpha] * n * dt_));
 	}
 
 	// Δ⁻_<(t_n, t_j): first-bath lesser hybridization
 	ComplexType deltaMinusLesser(int n, int j) const
 	{
-		const ComplexType I(0, 1);
+		const ComplexType i(0, 1);
 		ComplexType       result(0);
 		for (SizeType a = 0; a < hoppings_.size(); ++a) {
-			const RealType V2    = hoppings_[a] * hoppings_[a];
+			const RealType v2    = hoppings_[a] * hoppings_[a];
 			const RealType eps   = bathEps_[a];
 			const RealType fermi = fermiFunc(eps);
-			result += V2 * I * fermi
-			    * std::exp(-I * static_cast<ComplexType>(eps * (n - j) * dt_));
+			result += v2 * i * fermi
+			    * std::exp(-i * static_cast<ComplexType>(eps * (n - j) * dt_));
 		}
 		return result;
 	}
@@ -148,13 +148,13 @@ public:
 	ComplexType deltaMinusRetarded(int n, int j) const
 	{
 		assert(n >= j);
-		const ComplexType I(0, 1);
+		const ComplexType i(0, 1);
 		ComplexType       result(0);
 		for (SizeType a = 0; a < hoppings_.size(); ++a) {
-			const RealType V2  = hoppings_[a] * hoppings_[a];
+			const RealType v2  = hoppings_[a] * hoppings_[a];
 			const RealType eps = bathEps_[a];
-			result += V2 * (-I)
-			    * std::exp(-I * static_cast<ComplexType>(eps * (n - j) * dt_));
+			result += v2 * (-i)
+			    * std::exp(-i * static_cast<ComplexType>(eps * (n - j) * dt_));
 		}
 		return result;
 	}
@@ -213,13 +213,13 @@ private:
 	// i Δ⁺_<(t_n, t_j): helper with antisymmetry for j > n
 	ComplexType iDeltaPlusLesser(int n, int j, const RealTimeGfType& delta) const
 	{
-		const ComplexType I(0, 1);
+		const ComplexType i(0, 1);
 		ComplexType       dless;
 		if (j <= n)
 			dless = static_cast<ComplexType>(delta.lesser(n, j));
 		else
 			dless = -std::conj(static_cast<ComplexType>(delta.lesser(j, n)));
-		return I * (dless - deltaMinusLesser(n, j));
+		return i * (dless - deltaMinusLesser(n, j));
 	}
 
 	// Standard Cholesky off-diagonal element V_(n, p) in the standard phase.
@@ -295,7 +295,7 @@ private:
 	// row of Q_s.
 	void choleskyOptimalUpdate(int n, const RealTimeGfType& delta)
 	{
-		const int L = static_cast<int>(rank_);
+		const int l = static_cast<int>(rank_);
 		const int s = n - 1; // number of previously-determined rows (1..n-1)
 
 		VectorComplexType a(s);
@@ -305,26 +305,26 @@ private:
 		// See the bug-3 discussion above -- this is NOT literally "Q^H Q"
 		// with Q_{kp}=V_(k,p); it's Q_raw^T @ conj(Q_raw), which is what
 		// the underlying Hermitian factorization actually requires.
-		MatrixComplexType QtQ(L, L, ComplexType(0));
-		for (int p = 0; p < L; ++p) {
-			for (int pp = 0; pp < L; ++pp) {
+		MatrixComplexType qt_q(l, l, ComplexType(0));
+		for (int p = 0; p < l; ++p) {
+			for (int pp = 0; pp < l; ++pp) {
 				ComplexType sum(0);
 				for (int k = 1; k <= s; ++k)
 					sum += V_(k, p) * std::conj(V_(k, pp));
-				QtQ(p, pp) = sum;
+				qt_q(p, pp) = sum;
 			}
 		}
 
 		// Rhs Qta[p] = Sum_{k=1}^{s} V_(k,p) * a[k-1]  (i.e. Q_raw^T @ a,
 		// NO conjugate on V -- see bug-3 discussion above).
-		VectorComplexType Qta(L, ComplexType(0));
-		for (int p = 0; p < L; ++p)
+		VectorComplexType qta(l, ComplexType(0));
+		for (int p = 0; p < l; ++p)
 			for (int k = 1; k <= s; ++k)
-				Qta[p] += V_(k, p) * a[k - 1];
+				qta[p] += V_(k, p) * a[k - 1];
 
 		const RealType    d = -std::real(iDeltaPlusLesser(n, n, delta));
-		VectorComplexType q = solveOptimalUpdateJoint(QtQ, Qta, d, L);
-		for (int p = 0; p < L; ++p)
+		VectorComplexType q = solveOptimalUpdateJoint(qt_q, qta, d, l);
+		for (int p = 0; p < l; ++p)
 			V_(n, p) = q[p];
 	}
 
@@ -396,26 +396,26 @@ private:
 	                                                 RealType                 d,
 	                                                 int                      L)
 	{
-		MatrixComplexType W(QtQ); // zheev overwrites W with eigenvectors (columns)
+		MatrixComplexType w(QtQ); // zheev overwrites W with eigenvectors (columns)
 		VectorRealType    lam; // ascending eigenvalues
-		PsimagLite::diag(W, lam, 'V');
+		PsimagLite::diag(w, lam, 'V');
 
 		VectorComplexType b(L, ComplexType(0));
 		for (int i = 0; i < L; ++i)
 			for (int k = 0; k < L; ++k)
-				b[i] += std::conj(W(k, i)) * Qta[k];
+				b[i] += std::conj(w(k, i)) * Qta[k];
 
-		auto qOf = [&](RealType mu)
+		auto q_of = [&](RealType mu)
 		{
 			VectorComplexType q(L, ComplexType(0));
 			for (int i = 0; i < L; ++i) {
 				const ComplexType c = b[i] / ComplexType(lam[i] + mu - d, 0);
 				for (int p = 0; p < L; ++p)
-					q[p] += W(p, i) * c;
+					q[p] += w(p, i) * c;
 			}
 			return q;
 		};
-		auto gOf = [&](RealType mu)
+		auto g_of = [&](RealType mu)
 		{
 			RealType sum = 0;
 			for (int i = 0; i < L; ++i) {
@@ -427,97 +427,97 @@ private:
 
 		// Hard-case check (see docstring above).
 		{
-			const RealType    lamMax = lam[L - 1];
+			const RealType    lam_max = lam[L - 1];
 			std::vector<bool> hard(L, false);
-			RealType          hardNorm2 = 0;
-			int               nHard     = 0;
+			RealType          hard_norm2 = 0;
+			int               n_hard     = 0;
 			for (int i = 0; i < L; ++i) {
-				if (lam[i] < 1e-6 * lamMax) {
+				if (lam[i] < 1e-6 * lam_max) {
 					hard[i] = true;
-					hardNorm2 += std::norm(b[i]);
-					++nHard;
+					hard_norm2 += std::norm(b[i]);
+					++n_hard;
 				}
 			}
-			if (nHard > 0 && hardNorm2 < 1e-6 * std::max(d, RealType(1.0))) {
-				RealType softNorm2 = 0;
+			if (n_hard > 0 && hard_norm2 < 1e-6 * std::max(d, RealType(1.0))) {
+				RealType soft_norm2 = 0;
 				for (int i = 0; i < L; ++i)
 					if (!hard[i])
-						softNorm2 += std::norm(b[i]) / (lam[i] * lam[i]);
-				const RealType remainder = d - softNorm2;
+						soft_norm2 += std::norm(b[i]) / (lam[i] * lam[i]);
+				const RealType remainder = d - soft_norm2;
 				if (remainder > 0) {
-					const RealType    tau = std::sqrt(remainder / nHard);
+					const RealType    tau = std::sqrt(remainder / n_hard);
 					VectorComplexType q(L, ComplexType(0));
 					for (int i = 0; i < L; ++i) {
 						ComplexType c;
 						if (hard[i]) {
-							const RealType    absB  = std::abs(b[i]);
-							const ComplexType phase = (absB > 0)
-							    ? (b[i] / absB)
+							const RealType    abs_b = std::abs(b[i]);
+							const ComplexType phase = (abs_b > 0)
+							    ? (b[i] / abs_b)
 							    : ComplexType(1, 0);
 							c = ComplexType(tau, 0) * phase;
 						} else {
 							c = b[i] / ComplexType(lam[i], 0);
 						}
 						for (int p = 0; p < L; ++p)
-							q[p] += W(p, i) * c;
+							q[p] += w(p, i) * c;
 					}
-					RealType n2Hard    = 0;
-					bool     allFinite = true;
+					RealType n2_hard    = 0;
+					bool     all_finite = true;
 					for (int p = 0; p < L; ++p) {
 						if (!std::isfinite(q[p].real())
 						    || !std::isfinite(q[p].imag()))
-							allFinite = false;
-						n2Hard += std::norm(q[p]);
+							all_finite = false;
+						n2_hard += std::norm(q[p]);
 					}
-					if (allFinite
-					    && std::abs(n2Hard - d)
+					if (all_finite
+					    && std::abs(n2_hard - d)
 					        < 1e-6 * std::max(d, RealType(1.0)))
 						return q;
 				}
 			}
 		}
 
-		RealType muLo;
-		RealType muHi;
-		if (gOf(d) >= 0) {
+		RealType mu_lo;
+		RealType mu_hi;
+		if (g_of(d) >= 0) {
 			// True root is above d: bracket upward.
-			muLo           = d;
-			muHi           = d;
+			mu_lo          = d;
+			mu_hi          = d;
 			RealType step  = std::max(d, RealType(1.0)) * 0.5;
 			bool     found = false;
 			for (int iter = 0; iter < 60; ++iter) {
-				muHi += step;
-				if (gOf(muHi) <= 0) {
+				mu_hi += step;
+				if (g_of(mu_hi) <= 0) {
 					found = true;
 					break;
 				}
 				step *= 1.5;
 			}
 			if (!found)
-				return qOf(d);
+				return q_of(d);
 		} else {
 			// True root is below d, as in the original implementation.
-			muHi          = d;
-			muLo          = d;
+			mu_hi         = d;
+			mu_lo         = d;
 			RealType step = std::max(d, RealType(1.0)) * 0.5;
 			for (int iter = 0; iter < 60; ++iter) {
-				muLo = std::max(muLo - step, RealType(0.0));
-				if (gOf(muLo) >= 0 || muLo <= 0.0)
+				mu_lo = std::max(mu_lo - step, RealType(0.0));
+				if (g_of(mu_lo) >= 0 || mu_lo <= 0.0)
 					break;
 				step *= 1.5;
 			}
 		}
 
 		for (int iter = 0; iter < 100; ++iter) {
-			const RealType muMid = 0.5 * (muLo + muHi);
-			if (gOf(muMid) >= 0)
-				muLo = muMid;
+			const RealType mu_mid = 0.5 * (mu_lo + mu_hi);
+			if (g_of(mu_mid) >= 0)
+				mu_lo = mu_mid;
 			else
-				muHi = muMid;
-			if (muHi - muLo < 1e-14 * std::max(muHi, RealType(1.0)))
+				mu_hi = mu_mid;
+			if (mu_hi - mu_lo < 1e-14 * std::max(mu_hi, RealType(1.0)))
 				break;
 		}
-		return qOf(muLo);
+		return q_of(mu_lo);
 	}
 
 	// Least-squares solve of A q = b (A is L×L, Hermitian in practice since
@@ -552,22 +552,22 @@ private:
 		// looser than machine-epsilon truncation, since the near-singular
 		// directions here are not noise but genuinely poorly-determined
 		// combinations that must be dropped, not merely rounding error.
-		const RealType sMax
+		const RealType s_max
 		    = (s.empty()) ? RealType(0) : *std::max_element(s.begin(), s.end());
 		const RealType rcond  = RealType(1e-10);
-		const RealType thresh = rcond * sMax;
+		const RealType thresh = rcond * s_max;
 
 		// x = V * diag(1/s_i, truncated) * U^H * b
-		VectorComplexType uhB(L, ComplexType(0));
+		VectorComplexType uh_b(L, ComplexType(0));
 		for (int i = 0; i < L; ++i)
 			for (int k = 0; k < L; ++k)
-				uhB[i] += std::conj(u(k, i)) * b[k];
+				uh_b[i] += std::conj(u(k, i)) * b[k];
 
 		VectorComplexType x(L, ComplexType(0));
 		for (int i = 0; i < L; ++i) {
 			if (s[i] <= thresh)
 				continue;
-			const ComplexType coeff = uhB[i] / s[i];
+			const ComplexType coeff = uh_b[i] / s[i];
 			for (int c = 0; c < L; ++c)
 				x[c] += std::conj(vt(i, c)) * coeff;
 		}

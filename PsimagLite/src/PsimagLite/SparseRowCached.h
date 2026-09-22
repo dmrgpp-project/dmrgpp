@@ -105,11 +105,11 @@ public:
 	{
 		/*			cols_.push_back(col);
 		                        values_.push_back(value);*/
-		SizeType cacheSize = cols_.size();
-		if (counter_ >= cacheSize) {
-			cacheSize *= 2;
-			cols_.resize(cacheSize);
-			values_.resize(cacheSize);
+		SizeType cache_size = cols_.size();
+		if (counter_ >= cache_size) {
+			cache_size *= 2;
+			cols_.resize(cache_size);
+			values_.resize(cache_size);
 		}
 
 		cols_[counter_]   = col;
@@ -140,21 +140,21 @@ public:
 		Sort<ColumnsType> s;
 		ColumnsType       iperm(counter_);
 		s.sort(cols_, iperm, counter_);
-		SizeType  prevCol = cols_[0];
-		SizeType  counter = 0;
-		ValueType value   = 0;
+		SizeType  prev_col = cols_[0];
+		SizeType  counter  = 0;
+		ValueType value    = 0;
 		for (SizeType i = 0; i < counter_; i++) {
-			if (cols_[i] == prevCol) {
+			if (cols_[i] == prev_col) {
 				value += values_[iperm[i]];
 				continue;
 			}
-			matrix.pushCol(prevCol);
+			matrix.pushCol(prev_col);
 			matrix.pushValue(value);
 			counter++;
-			value   = values_[iperm[i]];
-			prevCol = cols_[i];
+			value    = values_[iperm[i]];
+			prev_col = cols_[i];
 		}
-		matrix.pushCol(prevCol);
+		matrix.pushCol(prev_col);
 		matrix.pushValue(value);
 		counter++;
 		counter_ = 0;

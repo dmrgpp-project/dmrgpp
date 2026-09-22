@@ -81,44 +81,44 @@ public:
 	    , pointer_(0)
 	    , printMatrix_(options.find("printmatrix") != PsimagLite::String::npos)
 	{
-		SizeType hilbert       = basis.size();
-		SizeType numberOfDofs  = basis.dofs();
-		SizeType numberOfSites = geometry.numberOfSites();
-		SizeType termId        = 0;
+		SizeType hilbert         = basis.size();
+		SizeType number_of_dofs  = basis.dofs();
+		SizeType number_of_sites = geometry.numberOfSites();
+		SizeType term_id         = 0;
 		//			SizeType counter=0;
 		PsimagLite::Vector<ItemType>::Type buffer;
 		for (SizeType ispace = 0; ispace < hilbert; ispace++) {
-			typename PsimagLite::Vector<WordType>::Type y(numberOfDofs, 0);
-			for (SizeType dof = 0; dof < numberOfDofs; dof++) {
+			typename PsimagLite::Vector<WordType>::Type y(number_of_dofs, 0);
+			for (SizeType dof = 0; dof < number_of_dofs; dof++) {
 				WordType x = basis(ispace, dof);
-				for (SizeType site = 0; site < numberOfSites; site++) {
-					SizeType reflectedSite
-					    = geometry.term(termId).findReflection(site);
-					SizeType thisSiteContent = x & 1;
+				for (SizeType site = 0; site < number_of_sites; site++) {
+					SizeType reflected_site
+					    = geometry.term(term_id).findReflection(site);
+					SizeType this_site_content = x & 1;
 					x >>= 1; // go to next site
-					addTo(y[dof], thisSiteContent, reflectedSite);
+					addTo(y[dof], this_site_content, reflected_site);
 					if (!x)
 						break;
 				}
 			}
 
-			SizeType yIndex = basis.perfectIndex(y);
+			SizeType y_index = basis.perfectIndex(y);
 			//				s_.setRow(ispace,counter);
 			//				s_.pushCol(yIndex);
 			//				s_.pushValue(1.0);
 			//				counter++;
-			if (yIndex == ispace) { // then S|psi> = |psi>
+			if (y_index == ispace) { // then S|psi> = |psi>
 				ItemType item1(ispace);
 				buffer.push_back(item1);
 				continue;
 			}
 			// S|psi> != |psi>
 			// Add normalized +
-			ItemType item2(ispace, yIndex, ItemType::PLUS);
+			ItemType item2(ispace, y_index, ItemType::PLUS);
 			buffer.push_back(item2);
 
 			// Add normalized -
-			ItemType item3(ispace, yIndex, ItemType::MINUS);
+			ItemType item3(ispace, y_index, ItemType::MINUS);
 			buffer.push_back(item3);
 		}
 		//			s_.setRow(s_.rank(),counter);
@@ -149,13 +149,13 @@ public:
 	void transformMatrix(typename PsimagLite::Vector<SparseMatrixType>::Type& matrix1,
 	                     const SparseMatrixType&                              matrix) const
 	{
-		SparseMatrixType rT;
-		transposeConjugate(rT, transform_);
+		SparseMatrixType r_t;
+		transposeConjugate(r_t, transform_);
 
 		if (matrix.rows() < 40)
 			printFullMatrix(matrix, "originalHam");
 		SparseMatrixType tmp;
-		multiply(tmp, matrix, rT);
+		multiply(tmp, matrix, r_t);
 
 		SparseMatrixType matrix2;
 		multiply(matrix2, transform_, tmp);
@@ -168,9 +168,9 @@ public:
 	{
 		VectorType gstmp(transform_.rows());
 
-		const SizeType excitedPlusOne = zs.size();
+		const SizeType excited_plus_one = zs.size();
 
-		for (SizeType i = 0; i < excitedPlusOne; ++i)
+		for (SizeType i = 0; i < excited_plus_one; ++i)
 			LanczosGlobals::transform(zs[i], offset, gstmp, transform_);
 	}
 
@@ -217,10 +217,10 @@ private:
 		PsimagLite::Vector<ItemType>::Type buffer;
 		makeUnique(buffer, buffer2);
 		assert(buffer.size() == transform_.rows());
-		SizeType counter      = 0;
-		RealType oneOverSqrt2 = 1.0 / sqrt(2.0);
-		RealType sign         = 1.0;
-		SizeType row          = 0;
+		SizeType counter        = 0;
+		RealType one_over_sqrt2 = 1.0 / sqrt(2.0);
+		RealType sign           = 1.0;
+		SizeType row            = 0;
 		for (SizeType i = 0; i < buffer.size(); i++) {
 			if (buffer[i].type == ItemType::MINUS)
 				continue;
@@ -233,10 +233,10 @@ private:
 				break;
 			case ItemType::PLUS:
 				transform_.pushCol(buffer[i].i);
-				transform_.pushValue(oneOverSqrt2);
+				transform_.pushValue(one_over_sqrt2);
 				counter++;
 				transform_.pushCol(buffer[i].j);
-				transform_.pushValue(oneOverSqrt2);
+				transform_.pushValue(one_over_sqrt2);
 				counter++;
 				break;
 			}
@@ -247,10 +247,10 @@ private:
 				continue;
 			transform_.setRow(row++, counter);
 			transform_.pushCol(buffer[i].i);
-			transform_.pushValue(oneOverSqrt2 * sign);
+			transform_.pushValue(one_over_sqrt2 * sign);
 			counter++;
 			transform_.pushCol(buffer[i].j);
-			transform_.pushValue(-oneOverSqrt2 * sign);
+			transform_.pushValue(-one_over_sqrt2 * sign);
 			counter++;
 		}
 		transform_.setRow(transform_.rows(), counter);
@@ -326,9 +326,9 @@ private:
 		}
 		matrixA.setRow(plusSector_, counter);
 
-		SizeType rank        = matrix.rows();
-		SizeType minusSector = rank - plusSector_;
-		matrixB.resize(minusSector, minusSector);
+		SizeType rank         = matrix.rows();
+		SizeType minus_sector = rank - plusSector_;
+		matrixB.resize(minus_sector, minus_sector);
 		counter = 0;
 		for (SizeType i = plusSector_; i < rank; i++) {
 			matrixB.setRow(i - plusSector_, counter);
@@ -349,7 +349,7 @@ private:
 				}
 			}
 		}
-		matrixB.setRow(minusSector, counter);
+		matrixB.setRow(minus_sector, counter);
 	}
 
 	PsimagLite::ProgressIndicator                       progress_;

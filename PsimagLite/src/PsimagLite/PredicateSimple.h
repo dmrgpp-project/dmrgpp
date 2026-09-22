@@ -35,15 +35,15 @@ public:
 		for (SizeType i = 0; i < n - 1; ++i) {
 
 			// order matters: test with LONGER FIRST
-			String maybeOp = pred.substr(i, 2);
-			if (operatorLength(maybeOp) == 2) {
+			String maybe_op = pred.substr(i, 2);
+			if (operatorLength(maybe_op) == 2) {
 				location = i;
 				length   = 2;
 				break;
 			}
 
-			maybeOp = pred.substr(i, 1);
-			if (operatorLength(maybeOp) == 1) {
+			maybe_op = pred.substr(i, 1);
+			if (operatorLength(maybe_op) == 1) {
 				location = i;
 				length   = 1;
 				break;
@@ -103,9 +103,9 @@ private:
 
 	static SizeType operatorLength(String op)
 	{
-		const SizeType n = ops_.size();
+		const SizeType n = OPS.size();
 		for (SizeType i = 0; i < n; ++i)
-			if (op == ops_[i])
+			if (op == OPS[i])
 				return op.length();
 
 		return 0;
@@ -115,13 +115,13 @@ private:
 	typename SomeVectorType::value_type
 	getValue(String hs, const VectorStringType& names, const SomeVectorType& vals)
 	{
-		String           numericHs = replaceVariables(hs, names, vals);
+		String           numeric_hs = replaceVariables(hs, names, vals);
 		VectorStringType tokens;
-		split(tokens, numericHs, separator_);
+		split(tokens, numeric_hs, separator_);
 		using PrimitivesType = PlusMinusMultiplyDivide<typename SomeVectorType::value_type>;
 		PrimitivesType                   primitives;
-		ExpressionForAST<PrimitivesType> expresionForAST(tokens, primitives);
-		return expresionForAST.exec();
+		ExpressionForAST<PrimitivesType> expresion_for_ast(tokens, primitives);
+		return expresion_for_ast.exec();
 	}
 
 	template <typename SomeVectorType>
@@ -140,8 +140,8 @@ private:
 
 	template <typename T> static String replaceVariable(String hs, String name, T val)
 	{
-		const String   valString  = ttos(val);
-		const SizeType nameLength = name.length();
+		const String   val_string  = ttos(val);
+		const SizeType name_length = name.length();
 
 		while (true) {
 			size_t index = hs.find(name);
@@ -149,14 +149,14 @@ private:
 				return hs;
 			String part1 = (index == 0) ? "" : hs.substr(0, index);
 			String part2
-			    = hs.substr(index + nameLength, hs.length() - nameLength - index);
-			hs = part1 + valString + part2;
+			    = hs.substr(index + name_length, hs.length() - name_length - index);
+			hs = part1 + val_string + part2;
 		}
 
 		return hs;
 	}
 
-	static VectorStringType ops_;
+	static VectorStringType OPS;
 	String                  pred_;
 	String                  separator_;
 	String                  lhs_;

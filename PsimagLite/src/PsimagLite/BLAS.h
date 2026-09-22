@@ -36,948 +36,338 @@ namespace BLAS {
 	// MISSING STUFF (BY G.A.)
 	// ==============================================================
 	extern "C" double
-	ddot_(IntegerForBlasType*, double*, IntegerForBlasType*, double*, IntegerForBlasType*);
+	ddot(IntegerForBlasType*, double*, IntegerForBlasType*, double*, IntegerForBlasType*);
 
 	// ============================================================================
 	// = Level 3 BLAS             GEMM
 	// ============================================================================
-	extern "C" void sgemm_(char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       float*,
-	                       IntegerForBlasType*);
+	extern "C" void sgemm(char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      const float*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      float*,
+	                      IntegerForBlasType*);
 
-	extern "C" void dgemm_(char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       double*,
-	                       IntegerForBlasType*);
+	extern "C" void dgemm(char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      const double*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      double*,
+	                      IntegerForBlasType*);
 
-	extern "C" void cgemm_(char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*);
+	extern "C" void cgemm(char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      std::complex<float>*,
+	                      IntegerForBlasType*);
 
-	extern "C" void zgemm_(char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*);
+	extern "C" void zgemm(char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      std::complex<double>*,
+	                      IntegerForBlasType*);
 
 	//*****************************************************************************
 	//*                           SYMM
 	//*****************************************************************************
 
-	extern "C" void ssymm_(char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       const float*,
-	                       IntegerForBlasType*);
+	extern "C" void ssymm(char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      const float*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      const float*,
+	                      IntegerForBlasType*);
 
-	extern "C" void dsymm_(char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       const double*,
-	                       IntegerForBlasType*);
+	extern "C" void dsymm(char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      const double*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      const double*,
+	                      IntegerForBlasType*);
 
-	extern "C" void csymm_(char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*);
-	extern "C" void zsymm_(char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*);
+	extern "C" void csymm(char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*);
+	extern "C" void zsymm(char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*);
 
 	//*****************************************************************************
 	//*                           HEMM
 	//*****************************************************************************
 
-	extern "C" void chemm_(char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*);
+	extern "C" void chemm(char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      std::complex<float>*,
+	                      IntegerForBlasType*);
 
-	extern "C" void zhemm_(char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*);
+	extern "C" void zhemm(char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      std::complex<double>*,
+	                      IntegerForBlasType*);
 
 	// ****************************************************************************
 	// *                          SYRK
 	// ****************************************************************************
 
-	extern "C" void ssyrk_(char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       float*,
-	                       IntegerForBlasType*);
+	extern "C" void ssyrk(char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      const float*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      float*,
+	                      IntegerForBlasType*);
 
-	extern "C" void dsyrk_(char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       double*,
-	                       IntegerForBlasType*);
+	extern "C" void dsyrk(char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      const double*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      double*,
+	                      IntegerForBlasType*);
 
-	extern "C" void csyrk_(char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*);
+	extern "C" void csyrk(char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      std::complex<float>*,
+	                      IntegerForBlasType*);
 
-	extern "C" void zsyrk_(char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*);
+	extern "C" void zsyrk(char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      std::complex<double>*,
+	                      IntegerForBlasType*);
 
 	// ****************************************************************************
 	// *                          HERK
 	// ****************************************************************************
-	extern "C" void cherk_(char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*);
+	extern "C" void cherk(char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      std::complex<float>*,
+	                      IntegerForBlasType*);
 
-	extern "C" void zherk_(char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*);
+	extern "C" void zherk(char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      std::complex<double>*,
+	                      IntegerForBlasType*);
 	// ****************************************************************************
 	// *                          SYR2K
 	// ****************************************************************************
-	extern "C" void ssyr2k_(char*,
-	                        char*,
-	                        IntegerForBlasType*,
-	                        IntegerForBlasType*,
-	                        const float*,
-	                        const float*,
-	                        IntegerForBlasType*,
-	                        const float*,
-	                        IntegerForBlasType*,
-	                        const float*,
-	                        float*,
-	                        IntegerForBlasType*);
+	extern "C" void ssyr2k(char*,
+	                       char*,
+	                       IntegerForBlasType*,
+	                       IntegerForBlasType*,
+	                       const float*,
+	                       const float*,
+	                       IntegerForBlasType*,
+	                       const float*,
+	                       IntegerForBlasType*,
+	                       const float*,
+	                       float*,
+	                       IntegerForBlasType*);
 
-	extern "C" void dsyr2k_(char*,
-	                        char*,
-	                        IntegerForBlasType*,
-	                        IntegerForBlasType*,
-	                        const double*,
-	                        const double*,
-	                        IntegerForBlasType*,
-	                        const double*,
-	                        IntegerForBlasType*,
-	                        const double*,
-	                        double*,
-	                        IntegerForBlasType*);
+	extern "C" void dsyr2k(char*,
+	                       char*,
+	                       IntegerForBlasType*,
+	                       IntegerForBlasType*,
+	                       const double*,
+	                       const double*,
+	                       IntegerForBlasType*,
+	                       const double*,
+	                       IntegerForBlasType*,
+	                       const double*,
+	                       double*,
+	                       IntegerForBlasType*);
 
-	extern "C" void csyr2k_(char*,
-	                        char*,
-	                        IntegerForBlasType*,
-	                        IntegerForBlasType*,
-	                        const std::complex<float>*,
-	                        const std::complex<float>*,
-	                        IntegerForBlasType*,
-	                        const std::complex<float>*,
-	                        IntegerForBlasType*,
-	                        const std::complex<float>*,
-	                        std::complex<float>*,
-	                        IntegerForBlasType*);
+	extern "C" void csyr2k(char*,
+	                       char*,
+	                       IntegerForBlasType*,
+	                       IntegerForBlasType*,
+	                       const std::complex<float>*,
+	                       const std::complex<float>*,
+	                       IntegerForBlasType*,
+	                       const std::complex<float>*,
+	                       IntegerForBlasType*,
+	                       const std::complex<float>*,
+	                       std::complex<float>*,
+	                       IntegerForBlasType*);
 
-	extern "C" void zsyr2k_(char*,
-	                        char*,
-	                        IntegerForBlasType*,
-	                        IntegerForBlasType*,
-	                        const std::complex<double>*,
-	                        const std::complex<double>*,
-	                        IntegerForBlasType*,
-	                        const std::complex<double>*,
-	                        IntegerForBlasType*,
-	                        const std::complex<double>*,
-	                        std::complex<double>*,
-	                        IntegerForBlasType*);
+	extern "C" void zsyr2k(char*,
+	                       char*,
+	                       IntegerForBlasType*,
+	                       IntegerForBlasType*,
+	                       const std::complex<double>*,
+	                       const std::complex<double>*,
+	                       IntegerForBlasType*,
+	                       const std::complex<double>*,
+	                       IntegerForBlasType*,
+	                       const std::complex<double>*,
+	                       std::complex<double>*,
+	                       IntegerForBlasType*);
 	// ****************************************************************************
 	// *                          HER2k
 	// ****************************************************************************
-	extern "C" void cher2k_(char*,
-	                        char*,
-	                        IntegerForBlasType*,
-	                        IntegerForBlasType*,
-	                        const std::complex<float>*,
-	                        const std::complex<float>*,
-	                        IntegerForBlasType*,
-	                        const std::complex<float>*,
-	                        IntegerForBlasType*,
-	                        const std::complex<float>*,
-	                        std::complex<float>*,
-	                        IntegerForBlasType*);
+	extern "C" void cher2k(char*,
+	                       char*,
+	                       IntegerForBlasType*,
+	                       IntegerForBlasType*,
+	                       const std::complex<float>*,
+	                       const std::complex<float>*,
+	                       IntegerForBlasType*,
+	                       const std::complex<float>*,
+	                       IntegerForBlasType*,
+	                       const std::complex<float>*,
+	                       std::complex<float>*,
+	                       IntegerForBlasType*);
 
-	extern "C" void zher2k_(char*,
-	                        char*,
-	                        IntegerForBlasType*,
-	                        IntegerForBlasType*,
-	                        const std::complex<double>*,
-	                        const std::complex<double>*,
-	                        IntegerForBlasType*,
-	                        const std::complex<double>*,
-	                        IntegerForBlasType*,
-	                        const std::complex<double>*,
-	                        std::complex<double>*,
-	                        IntegerForBlasType*);
+	extern "C" void zher2k(char*,
+	                       char*,
+	                       IntegerForBlasType*,
+	                       IntegerForBlasType*,
+	                       const std::complex<double>*,
+	                       const std::complex<double>*,
+	                       IntegerForBlasType*,
+	                       const std::complex<double>*,
+	                       IntegerForBlasType*,
+	                       const std::complex<double>*,
+	                       std::complex<double>*,
+	                       IntegerForBlasType*);
 	// ****************************************************************************
 	// *                          TRMM
 	// ****************************************************************************
-	extern "C" void strmm_(char*,
-	                       char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       float*,
-	                       IntegerForBlasType*);
-
-	extern "C" void dtrmm_(char*,
-	                       char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       double*,
-	                       IntegerForBlasType*);
-
-	extern "C" void ctrmm_(char*,
-	                       char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*);
-
-	extern "C" void ztrmm_(char*,
-	                       char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*);
-	// ****************************************************************************
-	// *                          TRSM
-	// ****************************************************************************
-	extern "C" void strsm_(char*,
-	                       char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       float*,
-	                       IntegerForBlasType*);
-
-	extern "C" void dtrsm_(char*,
-	                       char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       double*,
-	                       IntegerForBlasType*);
-
-	extern "C" void ctrsm_(char*,
-	                       char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*);
-
-	extern "C" void ztrsm_(char*,
-	                       char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*);
-	// ****************************************************************************
-	// *    Level 2 BLAS          GEMV
-	// ****************************************************************************
-	extern "C" void sgemv_(char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       float*,
-	                       IntegerForBlasType*);
-
-	extern "C" void dgemv_(char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       double*,
-	                       IntegerForBlasType*);
-
-	extern "C" void cgemv_(char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*);
-
-	extern "C" void zgemv_(char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*);
-	// ****************************************************************************
-	// *                          GBMV
-	// ****************************************************************************
-	extern "C" void sgbmv_(char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       float*,
-	                       IntegerForBlasType*);
-
-	extern "C" void dgbmv_(char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       double*,
-	                       IntegerForBlasType*);
-
-	extern "C" void cgbmv_(char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*);
-
-	extern "C" void zgbmv_(char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*);
-
-	// ****************************************************************************
-	// *                          HEMV
-	// ****************************************************************************
-	extern "C" void chemv_(char*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*);
-
-	extern "C" void zhemv_(char*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*);
-	// ****************************************************************************
-	// *                         HBMV
-	// ****************************************************************************
-	extern "C" void chbmv_(char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*);
-
-	extern "C" void zhbmv_(char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*);
-	// ****************************************************************************
-	// *                         HPMV
-	// ****************************************************************************
-	extern "C" void chpmv_(char*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       const std::complex<float>*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*);
-
-	extern "C" void zhpmv_(char*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       const std::complex<double>*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*);
-	// ******************************************************************************
-	// *                         SYMV
-	// ******************************************************************************
-	extern "C" void ssymv_(char*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       float*,
-	                       IntegerForBlasType*);
-
-	extern "C" void dsymv_(char*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       double*,
-	                       IntegerForBlasType*);
-	// ******************************************************************************
-	// *                         SBMV
-	// ******************************************************************************
-	extern "C" void ssbmv_(char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       float*,
-	                       IntegerForBlasType*);
-
-	extern "C" void dsbmv_(char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       double*,
-	                       IntegerForBlasType*);
-	// ******************************************************************************
-	// *                         SPMV
-	// ******************************************************************************
-	extern "C" void sspmv_(char*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       const float*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       float*,
-	                       IntegerForBlasType*);
-
-	extern "C" void dspmv_(char*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       const double*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       double*,
-	                       IntegerForBlasType*);
-	// ******************************************************************************
-	// *                         TRMV
-	// ******************************************************************************
-	extern "C" void strmv_(char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       float*,
-	                       IntegerForBlasType*);
-
-	extern "C" void dtrmv_(char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       double*,
-	                       IntegerForBlasType*);
-
-	extern "C" void ctrmv_(char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*);
-
-	extern "C" void ztrmv_(char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*);
-
-	// ******************************************************************************
-	// *                         TBMV
-	// ******************************************************************************
-	extern "C" void stbmv_(char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       float*,
-	                       IntegerForBlasType*);
-
-	extern "C" void dtbmv_(char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       double*,
-	                       IntegerForBlasType*);
-
-	extern "C" void ctbmv_(char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*);
-
-	extern "C" void ztbmv_(char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*);
-	// ******************************************************************************
-	// *                         TPMV
-	// ******************************************************************************
-	extern "C" void
-	stpmv_(char*, char*, char*, IntegerForBlasType*, const float*, float*, IntegerForBlasType*);
-
-	extern "C" void dtpmv_(char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       double*,
-	                       IntegerForBlasType*);
-
-	extern "C" void ctpmv_(char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*);
-
-	extern "C" void ztpmv_(char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*);
-	// ******************************************************************************
-	// *                         TRSV
-	// ******************************************************************************
-	extern "C" void strsv_(char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       float*,
-	                       IntegerForBlasType*);
-
-	extern "C" void dtrsv_(char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       double*,
-	                       IntegerForBlasType*);
-
-	extern "C" void ctrsv_(char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*);
-
-	extern "C" void ztrsv_(char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*);
-	// ******************************************************************************
-	// *                         TBSV
-	// ******************************************************************************
-	extern "C" void stbsv_(char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       float*,
-	                       IntegerForBlasType*);
-
-	extern "C" void dtbsv_(char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       double*,
-	                       IntegerForBlasType*);
-
-	extern "C" void ctbsv_(char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*);
-
-	extern "C" void ztbsv_(char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*);
-	// ******************************************************************************
-	// *                         TPSV
-	// ******************************************************************************
-	extern "C" void
-	stpsv_(char*, char*, char*, IntegerForBlasType*, const float*, float*, IntegerForBlasType*);
-
-	extern "C" void dtpsv_(char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       double*,
-	                       IntegerForBlasType*);
-
-	extern "C" void ctpsv_(char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*);
-
-	extern "C" void ztpsv_(char*,
-	                       char*,
-	                       char*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*);
-	// ******************************************************************************
-	// *                         GER
-	// ******************************************************************************
-	extern "C" void sger_(IntegerForBlasType*,
+	extern "C" void strmm(char*,
+	                      char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
 	                      IntegerForBlasType*,
 	                      const float*,
-	                      const float*,
-	                      IntegerForBlasType*,
 	                      const float*,
 	                      IntegerForBlasType*,
 	                      float*,
 	                      IntegerForBlasType*);
 
-	extern "C" void dger_(IntegerForBlasType*,
+	extern "C" void dtrmm(char*,
+	                      char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
 	                      IntegerForBlasType*,
 	                      const double*,
-	                      const double*,
-	                      IntegerForBlasType*,
 	                      const double*,
 	                      IntegerForBlasType*,
 	                      double*,
 	                      IntegerForBlasType*);
-	// ******************************************************************************
-	// *                         GERU
-	// ******************************************************************************
-	extern "C" void cgeru_(IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*);
 
-	extern "C" void zgeru_(IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*);
-	// ******************************************************************************
-	// *                         GERC
-	// ******************************************************************************
-	extern "C" void cgerc_(IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*);
-
-	extern "C" void zgerc_(IntegerForBlasType*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*);
-	// ******************************************************************************
-	// *                         HER
-	// ******************************************************************************
-	extern "C" void cher_(char*,
+	extern "C" void ctrmm(char*,
+	                      char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
 	                      IntegerForBlasType*,
 	                      const std::complex<float>*,
 	                      const std::complex<float>*,
@@ -985,75 +375,25 @@ namespace BLAS {
 	                      std::complex<float>*,
 	                      IntegerForBlasType*);
 
-	extern "C" void zher_(char*,
+	extern "C" void ztrmm(char*,
+	                      char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
 	                      IntegerForBlasType*,
 	                      const std::complex<double>*,
 	                      const std::complex<double>*,
 	                      IntegerForBlasType*,
 	                      std::complex<double>*,
 	                      IntegerForBlasType*);
-	// ******************************************************************************
-	// *                         HPR
-	// ******************************************************************************
-	extern "C" void chpr_(char*,
+	// ****************************************************************************
+	// *                          TRSM
+	// ****************************************************************************
+	extern "C" void strsm(char*,
+	                      char*,
+	                      char*,
+	                      char*,
 	                      IntegerForBlasType*,
-	                      const std::complex<float>*,
-	                      const std::complex<float>*,
-	                      IntegerForBlasType*,
-	                      std::complex<float>*);
-
-	extern "C" void zhpr_(char*,
-	                      IntegerForBlasType*,
-	                      const std::complex<double>*,
-	                      const std::complex<double>*,
-	                      IntegerForBlasType*,
-	                      std::complex<float>*);
-	// ******************************************************************************
-	// *                         HER2
-	// ******************************************************************************
-	extern "C" void cher2_(char*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*);
-
-	extern "C" void zher2_(char*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*);
-	// ******************************************************************************
-	// *                         HPR2
-	// ******************************************************************************
-	extern "C" void chpr2_(char*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       std::complex<float>*);
-
-	extern "C" void zhpr2_(char*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       std::complex<double>*);
-	// ******************************************************************************
-	// *                         SYR
-	// ******************************************************************************
-	extern "C" void ssyr_(char*,
 	                      IntegerForBlasType*,
 	                      const float*,
 	                      const float*,
@@ -1061,198 +401,858 @@ namespace BLAS {
 	                      float*,
 	                      IntegerForBlasType*);
 
-	extern "C" void dsyr_(char*,
+	extern "C" void dtrsm(char*,
+	                      char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
 	                      IntegerForBlasType*,
 	                      const double*,
 	                      const double*,
 	                      IntegerForBlasType*,
 	                      double*,
 	                      IntegerForBlasType*);
+
+	extern "C" void ctrsm(char*,
+	                      char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      std::complex<float>*,
+	                      IntegerForBlasType*);
+
+	extern "C" void ztrsm(char*,
+	                      char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      std::complex<double>*,
+	                      IntegerForBlasType*);
+	// ****************************************************************************
+	// *    Level 2 BLAS          GEMV
+	// ****************************************************************************
+	extern "C" void sgemv(char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      const float*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      float*,
+	                      IntegerForBlasType*);
+
+	extern "C" void dgemv(char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      const double*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      double*,
+	                      IntegerForBlasType*);
+
+	extern "C" void cgemv(char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      std::complex<float>*,
+	                      IntegerForBlasType*);
+
+	extern "C" void zgemv(char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      std::complex<double>*,
+	                      IntegerForBlasType*);
+	// ****************************************************************************
+	// *                          GBMV
+	// ****************************************************************************
+	extern "C" void sgbmv(char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      const float*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      float*,
+	                      IntegerForBlasType*);
+
+	extern "C" void dgbmv(char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      const double*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      double*,
+	                      IntegerForBlasType*);
+
+	extern "C" void cgbmv(char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      std::complex<float>*,
+	                      IntegerForBlasType*);
+
+	extern "C" void zgbmv(char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      std::complex<double>*,
+	                      IntegerForBlasType*);
+
+	// ****************************************************************************
+	// *                          HEMV
+	// ****************************************************************************
+	extern "C" void chemv(char*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      std::complex<float>*,
+	                      IntegerForBlasType*);
+
+	extern "C" void zhemv(char*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      std::complex<double>*,
+	                      IntegerForBlasType*);
+	// ****************************************************************************
+	// *                         HBMV
+	// ****************************************************************************
+	extern "C" void chbmv(char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      std::complex<float>*,
+	                      IntegerForBlasType*);
+
+	extern "C" void zhbmv(char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      std::complex<double>*,
+	                      IntegerForBlasType*);
+	// ****************************************************************************
+	// *                         HPMV
+	// ****************************************************************************
+	extern "C" void chpmv(char*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      const std::complex<float>*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      std::complex<float>*,
+	                      IntegerForBlasType*);
+
+	extern "C" void zhpmv(char*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      const std::complex<double>*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      std::complex<double>*,
+	                      IntegerForBlasType*);
+	// ******************************************************************************
+	// *                         SYMV
+	// ******************************************************************************
+	extern "C" void ssymv(char*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      const float*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      float*,
+	                      IntegerForBlasType*);
+
+	extern "C" void dsymv(char*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      const double*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      double*,
+	                      IntegerForBlasType*);
+	// ******************************************************************************
+	// *                         SBMV
+	// ******************************************************************************
+	extern "C" void ssbmv(char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      const float*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      float*,
+	                      IntegerForBlasType*);
+
+	extern "C" void dsbmv(char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      const double*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      double*,
+	                      IntegerForBlasType*);
+	// ******************************************************************************
+	// *                         SPMV
+	// ******************************************************************************
+	extern "C" void sspmv(char*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      const float*,
+	                      const float*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      float*,
+	                      IntegerForBlasType*);
+
+	extern "C" void dspmv(char*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      const double*,
+	                      const double*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      double*,
+	                      IntegerForBlasType*);
+	// ******************************************************************************
+	// *                         TRMV
+	// ******************************************************************************
+	extern "C" void strmv(char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      IntegerForBlasType*,
+	                      float*,
+	                      IntegerForBlasType*);
+
+	extern "C" void dtrmv(char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      IntegerForBlasType*,
+	                      double*,
+	                      IntegerForBlasType*);
+
+	extern "C" void ctrmv(char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      std::complex<float>*,
+	                      IntegerForBlasType*);
+
+	extern "C" void ztrmv(char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      std::complex<double>*,
+	                      IntegerForBlasType*);
+
+	// ******************************************************************************
+	// *                         TBMV
+	// ******************************************************************************
+	extern "C" void stbmv(char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      IntegerForBlasType*,
+	                      float*,
+	                      IntegerForBlasType*);
+
+	extern "C" void dtbmv(char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      IntegerForBlasType*,
+	                      double*,
+	                      IntegerForBlasType*);
+
+	extern "C" void ctbmv(char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      std::complex<float>*,
+	                      IntegerForBlasType*);
+
+	extern "C" void ztbmv(char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      std::complex<double>*,
+	                      IntegerForBlasType*);
+	// ******************************************************************************
+	// *                         TPMV
+	// ******************************************************************************
+	extern "C" void
+	stpmv(char*, char*, char*, IntegerForBlasType*, const float*, float*, IntegerForBlasType*);
+
+	extern "C" void dtpmv(char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      double*,
+	                      IntegerForBlasType*);
+
+	extern "C" void ctpmv(char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      std::complex<float>*,
+	                      IntegerForBlasType*);
+
+	extern "C" void ztpmv(char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      std::complex<double>*,
+	                      IntegerForBlasType*);
+	// ******************************************************************************
+	// *                         TRSV
+	// ******************************************************************************
+	extern "C" void strsv(char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      IntegerForBlasType*,
+	                      float*,
+	                      IntegerForBlasType*);
+
+	extern "C" void dtrsv(char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      IntegerForBlasType*,
+	                      double*,
+	                      IntegerForBlasType*);
+
+	extern "C" void ctrsv(char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      std::complex<float>*,
+	                      IntegerForBlasType*);
+
+	extern "C" void ztrsv(char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      std::complex<double>*,
+	                      IntegerForBlasType*);
+	// ******************************************************************************
+	// *                         TBSV
+	// ******************************************************************************
+	extern "C" void stbsv(char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      IntegerForBlasType*,
+	                      float*,
+	                      IntegerForBlasType*);
+
+	extern "C" void dtbsv(char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      IntegerForBlasType*,
+	                      double*,
+	                      IntegerForBlasType*);
+
+	extern "C" void ctbsv(char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      std::complex<float>*,
+	                      IntegerForBlasType*);
+
+	extern "C" void ztbsv(char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      std::complex<double>*,
+	                      IntegerForBlasType*);
+	// ******************************************************************************
+	// *                         TPSV
+	// ******************************************************************************
+	extern "C" void
+	stpsv(char*, char*, char*, IntegerForBlasType*, const float*, float*, IntegerForBlasType*);
+
+	extern "C" void dtpsv(char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      double*,
+	                      IntegerForBlasType*);
+
+	extern "C" void ctpsv(char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      std::complex<float>*,
+	                      IntegerForBlasType*);
+
+	extern "C" void ztpsv(char*,
+	                      char*,
+	                      char*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      std::complex<double>*,
+	                      IntegerForBlasType*);
+	// ******************************************************************************
+	// *                         GER
+	// ******************************************************************************
+	extern "C" void sger(IntegerForBlasType*,
+	                     IntegerForBlasType*,
+	                     const float*,
+	                     const float*,
+	                     IntegerForBlasType*,
+	                     const float*,
+	                     IntegerForBlasType*,
+	                     float*,
+	                     IntegerForBlasType*);
+
+	extern "C" void dger(IntegerForBlasType*,
+	                     IntegerForBlasType*,
+	                     const double*,
+	                     const double*,
+	                     IntegerForBlasType*,
+	                     const double*,
+	                     IntegerForBlasType*,
+	                     double*,
+	                     IntegerForBlasType*);
+	// ******************************************************************************
+	// *                         GERU
+	// ******************************************************************************
+	extern "C" void cgeru(IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      std::complex<float>*,
+	                      IntegerForBlasType*);
+
+	extern "C" void zgeru(IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      std::complex<double>*,
+	                      IntegerForBlasType*);
+	// ******************************************************************************
+	// *                         GERC
+	// ******************************************************************************
+	extern "C" void cgerc(IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      std::complex<float>*,
+	                      IntegerForBlasType*);
+
+	extern "C" void zgerc(IntegerForBlasType*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      std::complex<double>*,
+	                      IntegerForBlasType*);
+	// ******************************************************************************
+	// *                         HER
+	// ******************************************************************************
+	extern "C" void cher(char*,
+	                     IntegerForBlasType*,
+	                     const std::complex<float>*,
+	                     const std::complex<float>*,
+	                     IntegerForBlasType*,
+	                     std::complex<float>*,
+	                     IntegerForBlasType*);
+
+	extern "C" void zher(char*,
+	                     IntegerForBlasType*,
+	                     const std::complex<double>*,
+	                     const std::complex<double>*,
+	                     IntegerForBlasType*,
+	                     std::complex<double>*,
+	                     IntegerForBlasType*);
+	// ******************************************************************************
+	// *                         HPR
+	// ******************************************************************************
+	extern "C" void chpr(char*,
+	                     IntegerForBlasType*,
+	                     const std::complex<float>*,
+	                     const std::complex<float>*,
+	                     IntegerForBlasType*,
+	                     std::complex<float>*);
+
+	extern "C" void zhpr(char*,
+	                     IntegerForBlasType*,
+	                     const std::complex<double>*,
+	                     const std::complex<double>*,
+	                     IntegerForBlasType*,
+	                     std::complex<float>*);
+	// ******************************************************************************
+	// *                         HER2
+	// ******************************************************************************
+	extern "C" void cher2(char*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      std::complex<float>*,
+	                      IntegerForBlasType*);
+
+	extern "C" void zher2(char*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      std::complex<double>*,
+	                      IntegerForBlasType*);
+	// ******************************************************************************
+	// *                         HPR2
+	// ******************************************************************************
+	extern "C" void chpr2(char*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      std::complex<float>*);
+
+	extern "C" void zhpr2(char*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      std::complex<double>*);
+	// ******************************************************************************
+	// *                         SYR
+	// ******************************************************************************
+	extern "C" void ssyr(char*,
+	                     IntegerForBlasType*,
+	                     const float*,
+	                     const float*,
+	                     IntegerForBlasType*,
+	                     float*,
+	                     IntegerForBlasType*);
+
+	extern "C" void dsyr(char*,
+	                     IntegerForBlasType*,
+	                     const double*,
+	                     const double*,
+	                     IntegerForBlasType*,
+	                     double*,
+	                     IntegerForBlasType*);
 	// ******************************************************************************
 	// *                         SPR
 	// ******************************************************************************
 	extern "C" void
-	sspr_(char*, IntegerForBlasType*, const float*, const float*, IntegerForBlasType*, float*);
+	sspr(char*, IntegerForBlasType*, const float*, const float*, IntegerForBlasType*, float*);
 
-	extern "C" void dspr_(char*,
+	extern "C" void dspr(char*,
+	                     IntegerForBlasType*,
+	                     const double*,
+	                     const double*,
+	                     IntegerForBlasType*,
+	                     double*);
+	// ******************************************************************************
+	// *                         SYR2
+	// ******************************************************************************
+	extern "C" void ssyr2(char*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      const float*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      IntegerForBlasType*,
+	                      float*,
+	                      IntegerForBlasType*);
+
+	extern "C" void dsyr2(char*,
 	                      IntegerForBlasType*,
 	                      const double*,
+	                      const double*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      IntegerForBlasType*,
+	                      double*,
+	                      IntegerForBlasType*);
+	// ******************************************************************************
+	// *                         SPR2
+	// ******************************************************************************
+	extern "C" void sspr2(char*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      const float*,
+	                      IntegerForBlasType*,
+	                      const float*,
+	                      IntegerForBlasType*,
+	                      float*);
+
+	extern "C" void dspr2(char*,
+	                      IntegerForBlasType*,
+	                      const double*,
+	                      const double*,
+	                      IntegerForBlasType*,
 	                      const double*,
 	                      IntegerForBlasType*,
 	                      double*);
 	// ******************************************************************************
-	// *                         SYR2
-	// ******************************************************************************
-	extern "C" void ssyr2_(char*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       float*,
-	                       IntegerForBlasType*);
-
-	extern "C" void dsyr2_(char*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       double*,
-	                       IntegerForBlasType*);
-	// ******************************************************************************
-	// *                         SPR2
-	// ******************************************************************************
-	extern "C" void sspr2_(char*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       float*);
-
-	extern "C" void dspr2_(char*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       double*);
-	// ******************************************************************************
 	// *Level 1 BLAS
 	// ******************************************************************************
 
-	extern "C" void srotg_(float*, float*, float*, float*);
-	extern "C" void drotg_(double*, double*, double*, double*);
+	extern "C" void srotg(float*, float*, float*, float*);
+	extern "C" void drotg(double*, double*, double*, double*);
 
-	extern "C" void srotmg_(float*, float*, float*, float*, float*);
-	extern "C" void drotmg_(double*, double*, double*, double*, double*);
+	extern "C" void srotmg(float*, float*, float*, float*, float*);
+	extern "C" void drotmg(double*, double*, double*, double*, double*);
 
-	extern "C" void srot_(IntegerForBlasType*,
+	extern "C" void srot(IntegerForBlasType*,
+	                     float*,
+	                     IntegerForBlasType*,
+	                     float*,
+	                     IntegerForBlasType*,
+	                     const float*,
+	                     const float*);
+	extern "C" void drot(IntegerForBlasType*,
+	                     double*,
+	                     IntegerForBlasType*,
+	                     double*,
+	                     IntegerForBlasType*,
+	                     const double*,
+	                     const double*);
+
+	extern "C" void srotm(IntegerForBlasType*,
 	                      float*,
 	                      IntegerForBlasType*,
 	                      float*,
 	                      IntegerForBlasType*,
-	                      const float*,
 	                      const float*);
-	extern "C" void drot_(IntegerForBlasType*,
+	extern "C" void drotm(IntegerForBlasType*,
 	                      double*,
 	                      IntegerForBlasType*,
 	                      double*,
 	                      IntegerForBlasType*,
-	                      const double*,
 	                      const double*);
 
-	extern "C" void srotm_(IntegerForBlasType*,
-	                       float*,
-	                       IntegerForBlasType*,
-	                       float*,
-	                       IntegerForBlasType*,
-	                       const float*);
-	extern "C" void drotm_(IntegerForBlasType*,
-	                       double*,
-	                       IntegerForBlasType*,
-	                       double*,
-	                       IntegerForBlasType*,
-	                       const double*);
+	extern "C" void
+	sswap(IntegerForBlasType*, float*, IntegerForBlasType*, float*, IntegerForBlasType*);
 
 	extern "C" void
-	sswap_(IntegerForBlasType*, float*, IntegerForBlasType*, float*, IntegerForBlasType*);
+	dswap(IntegerForBlasType*, double*, IntegerForBlasType*, double*, IntegerForBlasType*);
+
+	extern "C" void cswap(IntegerForBlasType*,
+	                      std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      std::complex<float>*,
+	                      IntegerForBlasType*);
+
+	extern "C" void zswap(IntegerForBlasType*,
+	                      std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      std::complex<double>*,
+	                      IntegerForBlasType*);
+
+	extern "C" void saxpy(IntegerForBlasType*,
+	                      const float*,
+	                      const float*,
+	                      IntegerForBlasType*,
+	                      float*,
+	                      IntegerForBlasType*);
+
+	extern "C" void daxpy(IntegerForBlasType*,
+	                      const double*,
+	                      const double*,
+	                      IntegerForBlasType*,
+	                      double*,
+	                      IntegerForBlasType*);
+
+	extern "C" void caxpy(IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      std::complex<float>*,
+	                      IntegerForBlasType*);
+
+	extern "C" void zaxpy(IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      std::complex<double>*,
+	                      IntegerForBlasType*);
 
 	extern "C" void
-	dswap_(IntegerForBlasType*, double*, IntegerForBlasType*, double*, IntegerForBlasType*);
+	scopy(IntegerForBlasType*, const float*, IntegerForBlasType*, float*, IntegerForBlasType*);
 
-	extern "C" void cswap_(IntegerForBlasType*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*);
+	extern "C" void dcopy(IntegerForBlasType*,
+	                      const double*,
+	                      IntegerForBlasType*,
+	                      double*,
+	                      IntegerForBlasType*);
 
-	extern "C" void zswap_(IntegerForBlasType*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*);
+	extern "C" void ccopy(IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      IntegerForBlasType*,
+	                      std::complex<float>*,
+	                      IntegerForBlasType*);
 
-	extern "C" void saxpy_(IntegerForBlasType*,
-	                       const float*,
-	                       const float*,
-	                       IntegerForBlasType*,
-	                       float*,
-	                       IntegerForBlasType*);
+	extern "C" void zcopy(IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      IntegerForBlasType*,
+	                      std::complex<double>*,
+	                      IntegerForBlasType*);
 
-	extern "C" void daxpy_(IntegerForBlasType*,
-	                       const double*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       double*,
-	                       IntegerForBlasType*);
+	extern "C" void sscal(IntegerForBlasType*, const float*, float*, IntegerForBlasType*);
 
-	extern "C" void caxpy_(IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*);
+	extern "C" void dscal(IntegerForBlasType*, const double*, double*, IntegerForBlasType*);
 
-	extern "C" void zaxpy_(IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*);
+	extern "C" void cscal(IntegerForBlasType*,
+	                      const std::complex<float>*,
+	                      std::complex<float>*,
+	                      IntegerForBlasType*);
 
-	extern "C" void
-	scopy_(IntegerForBlasType*, const float*, IntegerForBlasType*, float*, IntegerForBlasType*);
-
-	extern "C" void dcopy_(IntegerForBlasType*,
-	                       const double*,
-	                       IntegerForBlasType*,
-	                       double*,
-	                       IntegerForBlasType*);
-
-	extern "C" void ccopy_(IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       IntegerForBlasType*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*);
-
-	extern "C" void zcopy_(IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       IntegerForBlasType*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*);
-
-	extern "C" void sscal_(IntegerForBlasType*, const float*, float*, IntegerForBlasType*);
-
-	extern "C" void dscal_(IntegerForBlasType*, const double*, double*, IntegerForBlasType*);
-
-	extern "C" void cscal_(IntegerForBlasType*,
-	                       const std::complex<float>*,
-	                       std::complex<float>*,
-	                       IntegerForBlasType*);
-
-	extern "C" void zscal_(IntegerForBlasType*,
-	                       const std::complex<double>*,
-	                       std::complex<double>*,
-	                       IntegerForBlasType*);
+	extern "C" void zscal(IntegerForBlasType*,
+	                      const std::complex<double>*,
+	                      std::complex<double>*,
+	                      IntegerForBlasType*);
 
 	// ============================================================================
-	inline double DOT(IntegerForBlasType n,
+	inline double dot(IntegerForBlasType n,
 	                  double*            dx,
 	                  IntegerForBlasType incx,
 	                  double*            dy,
 	                  IntegerForBlasType incy)
 	{
-		return ddot_(&n, dx, &incx, dy, &incy);
+		return ddot(&n, dx, &incx, dy, &incy);
 	}
 
 	// ============================================================================
-	inline void GEMM(char               c1,
+	inline void gemm(char               c1,
 	                 char               c2,
 	                 IntegerForBlasType sX,
 	                 IntegerForBlasType sY,
@@ -1266,10 +1266,10 @@ namespace BLAS {
 	                 float*             z,
 	                 IntegerForBlasType sz)
 	{
-		PsimagLite::kokkos_gemm(c1, c2, sX, sY, sZ, a, x, sx, y, sy, b, z, sz);
+		PsimagLite::kokkosGemm(c1, c2, sX, sY, sZ, a, x, sx, y, sy, b, z, sz);
 	}
 
-	inline void GEMM(char               c1,
+	inline void gemm(char               c1,
 	                 char               c2,
 	                 IntegerForBlasType sX,
 	                 IntegerForBlasType sY,
@@ -1283,10 +1283,10 @@ namespace BLAS {
 	                 double*            z,
 	                 IntegerForBlasType sz)
 	{
-		PsimagLite::kokkos_gemm(c1, c2, sX, sY, sZ, a, x, sx, y, sy, b, z, sz);
+		PsimagLite::kokkosGemm(c1, c2, sX, sY, sZ, a, x, sx, y, sy, b, z, sz);
 	}
 
-	inline void GEMM(char                       c1,
+	inline void gemm(char                       c1,
 	                 char                       c2,
 	                 IntegerForBlasType         sX,
 	                 IntegerForBlasType         sY,
@@ -1300,10 +1300,10 @@ namespace BLAS {
 	                 std::complex<float>*       z,
 	                 IntegerForBlasType         sz)
 	{
-		PsimagLite::kokkos_gemm(c1, c2, sX, sY, sZ, a, x, sx, y, sy, b, z, sz);
+		PsimagLite::kokkosGemm(c1, c2, sX, sY, sZ, a, x, sx, y, sy, b, z, sz);
 	}
 
-	inline void GEMM(char                        c1,
+	inline void gemm(char                        c1,
 	                 char                        c2,
 	                 IntegerForBlasType          sX,
 	                 IntegerForBlasType          sY,
@@ -1330,11 +1330,11 @@ namespace BLAS {
 				throw PsimagLite::RuntimeError("GEMM lda < max(1, k)\n");
 			}
 		}
-		PsimagLite::kokkos_gemm(c1, c2, sX, sY, sZ, a, x, sx, y, sy, b, z, sz);
+		PsimagLite::kokkosGemm(c1, c2, sX, sY, sZ, a, x, sx, y, sy, b, z, sz);
 	}
 
 	// ***************************************************************************
-	inline void SYMM(char               c1,
+	inline void symm(char               c1,
 	                 char               c2,
 	                 IntegerForBlasType sX,
 	                 IntegerForBlasType sY,
@@ -1347,10 +1347,10 @@ namespace BLAS {
 	                 float*             z,
 	                 IntegerForBlasType sz)
 	{
-		ssymm_(&c1, &c2, &sX, &sY, &a, x, &sx, y, &sy, &b, z, &sz);
+		ssymm(&c1, &c2, &sX, &sY, &a, x, &sx, y, &sy, &b, z, &sz);
 	}
 
-	inline void SYMM(char               c1,
+	inline void symm(char               c1,
 	                 char               c2,
 	                 IntegerForBlasType sX,
 	                 IntegerForBlasType sY,
@@ -1363,9 +1363,9 @@ namespace BLAS {
 	                 double*            z,
 	                 IntegerForBlasType sz)
 	{
-		dsymm_(&c1, &c2, &sX, &sY, &a, x, &sx, y, &sy, &b, z, &sz);
+		dsymm(&c1, &c2, &sX, &sY, &a, x, &sx, y, &sy, &b, z, &sz);
 	}
-	inline void SYMM(char                       c1,
+	inline void symm(char                       c1,
 	                 char                       c2,
 	                 IntegerForBlasType         sX,
 	                 IntegerForBlasType         sY,
@@ -1378,9 +1378,9 @@ namespace BLAS {
 	                 std::complex<float>*       z,
 	                 IntegerForBlasType         sz)
 	{
-		csymm_(&c1, &c2, &sX, &sY, &a, x, &sx, y, &sy, &b, z, &sz);
+		csymm(&c1, &c2, &sX, &sY, &a, x, &sx, y, &sy, &b, z, &sz);
 	}
-	inline void SYMM(char                        c1,
+	inline void symm(char                        c1,
 	                 char                        c2,
 	                 IntegerForBlasType          sX,
 	                 IntegerForBlasType          sY,
@@ -1393,10 +1393,10 @@ namespace BLAS {
 	                 std::complex<double>*       z,
 	                 IntegerForBlasType          sz)
 	{
-		zsymm_(&c1, &c2, &sX, &sY, &a, x, &sx, y, &sy, &b, z, &sz);
+		zsymm(&c1, &c2, &sX, &sY, &a, x, &sx, y, &sy, &b, z, &sz);
 	}
 	// ---------------------------------------------------------------------------
-	inline void HEMM(char                       c1,
+	inline void hemm(char                       c1,
 	                 char                       c2,
 	                 IntegerForBlasType         sX,
 	                 IntegerForBlasType         sY,
@@ -1409,9 +1409,9 @@ namespace BLAS {
 	                 std::complex<float>*       z,
 	                 IntegerForBlasType         sz)
 	{
-		chemm_(&c1, &c2, &sX, &sY, &a, x, &sx, y, &sx, &b, z, &sz);
+		chemm(&c1, &c2, &sX, &sY, &a, x, &sx, y, &sx, &b, z, &sz);
 	}
-	inline void HEMM(char                        c1,
+	inline void hemm(char                        c1,
 	                 char                        c2,
 	                 IntegerForBlasType          sX,
 	                 IntegerForBlasType          sY,
@@ -1424,10 +1424,10 @@ namespace BLAS {
 	                 std::complex<double>*       z,
 	                 IntegerForBlasType          sz)
 	{
-		zhemm_(&c1, &c2, &sX, &sY, &a, x, &sx, y, &sx, &b, z, &sz);
+		zhemm(&c1, &c2, &sX, &sY, &a, x, &sx, y, &sx, &b, z, &sz);
 	}
 	// **************************************************************************
-	inline void SYRK(char               UPLO,
+	inline void syrk(char               UPLO,
 	                 char               TRANS,
 	                 IntegerForBlasType N,
 	                 IntegerForBlasType K,
@@ -1438,9 +1438,9 @@ namespace BLAS {
 	                 float*             C,
 	                 IntegerForBlasType LDC)
 	{
-		ssyrk_(&UPLO, &TRANS, &N, &K, &ALPHA, A, &LDA, &BETA, C, &LDC);
+		ssyrk(&UPLO, &TRANS, &N, &K, &ALPHA, A, &LDA, &BETA, C, &LDC);
 	}
-	inline void SYRK(char               UPLO,
+	inline void syrk(char               UPLO,
 	                 char               TRANS,
 	                 IntegerForBlasType N,
 	                 IntegerForBlasType K,
@@ -1451,9 +1451,9 @@ namespace BLAS {
 	                 double*            C,
 	                 IntegerForBlasType LDC)
 	{
-		dsyrk_(&UPLO, &TRANS, &N, &K, &ALPHA, A, &LDA, &BETA, C, &LDC);
+		dsyrk(&UPLO, &TRANS, &N, &K, &ALPHA, A, &LDA, &BETA, C, &LDC);
 	}
-	inline void SYRK(char                       UPLO,
+	inline void syrk(char                       UPLO,
 	                 char                       TRANS,
 	                 IntegerForBlasType         N,
 	                 IntegerForBlasType         K,
@@ -1464,9 +1464,9 @@ namespace BLAS {
 	                 std::complex<float>*       C,
 	                 IntegerForBlasType         LDC)
 	{
-		csyrk_(&UPLO, &TRANS, &N, &K, &ALPHA, A, &LDA, &BETA, C, &LDC);
+		csyrk(&UPLO, &TRANS, &N, &K, &ALPHA, A, &LDA, &BETA, C, &LDC);
 	}
-	inline void SYRK(char                        UPLO,
+	inline void syrk(char                        UPLO,
 	                 char                        TRANS,
 	                 IntegerForBlasType          N,
 	                 IntegerForBlasType          K,
@@ -1477,11 +1477,11 @@ namespace BLAS {
 	                 std::complex<double>*       C,
 	                 IntegerForBlasType          LDC)
 	{
-		zsyrk_(&UPLO, &TRANS, &N, &K, &ALPHA, A, &LDA, &BETA, C, &LDC);
+		zsyrk(&UPLO, &TRANS, &N, &K, &ALPHA, A, &LDA, &BETA, C, &LDC);
 	}
 
 	// ***************************************************************************
-	inline void HERK(char                       UPLO,
+	inline void herk(char                       UPLO,
 	                 char                       TRANS,
 	                 IntegerForBlasType         N,
 	                 IntegerForBlasType         K,
@@ -1492,9 +1492,9 @@ namespace BLAS {
 	                 std::complex<float>*       C,
 	                 IntegerForBlasType         LDC)
 	{
-		cherk_(&UPLO, &TRANS, &N, &K, &ALPHA, A, &LDA, &BETA, C, &LDC);
+		cherk(&UPLO, &TRANS, &N, &K, &ALPHA, A, &LDA, &BETA, C, &LDC);
 	}
-	inline void HERK(char                        UPLO,
+	inline void herk(char                        UPLO,
 	                 char                        TRANS,
 	                 IntegerForBlasType          N,
 	                 IntegerForBlasType          K,
@@ -1505,10 +1505,10 @@ namespace BLAS {
 	                 std::complex<double>*       C,
 	                 IntegerForBlasType          LDC)
 	{
-		zherk_(&UPLO, &TRANS, &N, &K, &ALPHA, A, &LDA, &BETA, C, &LDC);
+		zherk(&UPLO, &TRANS, &N, &K, &ALPHA, A, &LDA, &BETA, C, &LDC);
 	}
 	// ***************************************************************************
-	inline void SYR2K(char               uplo,
+	inline void syR2K(char               uplo,
 	                  char               trans,
 	                  IntegerForBlasType n,
 	                  IntegerForBlasType k,
@@ -1521,9 +1521,9 @@ namespace BLAS {
 	                  float*             C,
 	                  IntegerForBlasType ldc)
 	{
-		ssyr2k_(&uplo, &trans, &n, &k, &alpha, A, &lda, B, &ldb, &beta, C, &ldc);
+		ssyr2k(&uplo, &trans, &n, &k, &alpha, A, &lda, B, &ldb, &beta, C, &ldc);
 	}
-	inline void SYR2K(char               uplo,
+	inline void syR2K(char               uplo,
 	                  char               trans,
 	                  IntegerForBlasType n,
 	                  IntegerForBlasType k,
@@ -1536,9 +1536,9 @@ namespace BLAS {
 	                  double*            C,
 	                  IntegerForBlasType ldc)
 	{
-		dsyr2k_(&uplo, &trans, &n, &k, &alpha, A, &lda, B, &ldb, &beta, C, &ldc);
+		dsyr2k(&uplo, &trans, &n, &k, &alpha, A, &lda, B, &ldb, &beta, C, &ldc);
 	}
-	inline void SYR2k(char                       uplo,
+	inline void syR2k(char                       uplo,
 	                  char                       trans,
 	                  IntegerForBlasType         n,
 	                  IntegerForBlasType         k,
@@ -1551,9 +1551,9 @@ namespace BLAS {
 	                  std::complex<float>*       C,
 	                  IntegerForBlasType         ldc)
 	{
-		csyr2k_(&uplo, &trans, &n, &k, &alpha, A, &lda, B, &ldb, &beta, C, &ldc);
+		csyr2k(&uplo, &trans, &n, &k, &alpha, A, &lda, B, &ldb, &beta, C, &ldc);
 	}
-	inline void SYR2k(char                        uplo,
+	inline void syR2k(char                        uplo,
 	                  char                        trans,
 	                  IntegerForBlasType          n,
 	                  IntegerForBlasType          k,
@@ -1566,10 +1566,10 @@ namespace BLAS {
 	                  std::complex<double>*       C,
 	                  IntegerForBlasType          ldc)
 	{
-		zsyr2k_(&uplo, &trans, &n, &k, &alpha, A, &lda, B, &ldb, &beta, C, &ldc);
+		zsyr2k(&uplo, &trans, &n, &k, &alpha, A, &lda, B, &ldb, &beta, C, &ldc);
 	}
 	// ***************************************************************************
-	inline void HER2k(char                       uplo,
+	inline void heR2k(char                       uplo,
 	                  char                       trans,
 	                  IntegerForBlasType         n,
 	                  IntegerForBlasType         k,
@@ -1582,9 +1582,9 @@ namespace BLAS {
 	                  std::complex<float>*       C,
 	                  IntegerForBlasType         ldc)
 	{
-		cher2k_(&uplo, &trans, &n, &k, &alpha, A, &lda, B, &ldb, &beta, C, &ldc);
+		cher2k(&uplo, &trans, &n, &k, &alpha, A, &lda, B, &ldb, &beta, C, &ldc);
 	}
-	inline void HER2k(char                        uplo,
+	inline void heR2k(char                        uplo,
 	                  char                        trans,
 	                  IntegerForBlasType          n,
 	                  IntegerForBlasType          k,
@@ -1597,10 +1597,10 @@ namespace BLAS {
 	                  std::complex<double>*       C,
 	                  IntegerForBlasType          ldc)
 	{
-		zher2k_(&uplo, &trans, &n, &k, &alpha, A, &lda, B, &ldb, &beta, C, &ldc);
+		zher2k(&uplo, &trans, &n, &k, &alpha, A, &lda, B, &ldb, &beta, C, &ldc);
 	}
 	// ********************************************************************************
-	inline void TRMM(char               side,
+	inline void trmm(char               side,
 	                 char               uplo,
 	                 char               transa,
 	                 char               diag,
@@ -1612,9 +1612,9 @@ namespace BLAS {
 	                 float*             B,
 	                 IntegerForBlasType ldb)
 	{
-		strmm_(&side, &uplo, &transa, &diag, &m, &n, &alpha, A, &lda, B, &ldb);
+		strmm(&side, &uplo, &transa, &diag, &m, &n, &alpha, A, &lda, B, &ldb);
 	}
-	inline void TRMM(char               side,
+	inline void trmm(char               side,
 	                 char               uplo,
 	                 char               transa,
 	                 char               diag,
@@ -1626,9 +1626,9 @@ namespace BLAS {
 	                 double*            B,
 	                 IntegerForBlasType ldb)
 	{
-		dtrmm_(&side, &uplo, &transa, &diag, &m, &n, &alpha, A, &lda, B, &ldb);
+		dtrmm(&side, &uplo, &transa, &diag, &m, &n, &alpha, A, &lda, B, &ldb);
 	}
-	inline void TRMM(char                       side,
+	inline void trmm(char                       side,
 	                 char                       uplo,
 	                 char                       transa,
 	                 char                       diag,
@@ -1640,9 +1640,9 @@ namespace BLAS {
 	                 std::complex<float>*       B,
 	                 IntegerForBlasType         ldb)
 	{
-		ctrmm_(&side, &uplo, &transa, &diag, &m, &n, &alpha, A, &lda, B, &ldb);
+		ctrmm(&side, &uplo, &transa, &diag, &m, &n, &alpha, A, &lda, B, &ldb);
 	}
-	inline void TRMM(char                        side,
+	inline void trmm(char                        side,
 	                 char                        uplo,
 	                 char                        transa,
 	                 char                        diag,
@@ -1654,10 +1654,10 @@ namespace BLAS {
 	                 std::complex<double>*       B,
 	                 IntegerForBlasType          ldb)
 	{
-		ztrmm_(&side, &uplo, &transa, &diag, &m, &n, &alpha, A, &lda, B, &ldb);
+		ztrmm(&side, &uplo, &transa, &diag, &m, &n, &alpha, A, &lda, B, &ldb);
 	}
 	// ********************************************************************************
-	inline void TRSM(char               side,
+	inline void trsm(char               side,
 	                 char               uplo,
 	                 char               transa,
 	                 char               diag,
@@ -1669,9 +1669,9 @@ namespace BLAS {
 	                 float*             B,
 	                 IntegerForBlasType ldb)
 	{
-		strsm_(&side, &uplo, &transa, &diag, &m, &n, &alpha, A, &lda, B, &ldb);
+		strsm(&side, &uplo, &transa, &diag, &m, &n, &alpha, A, &lda, B, &ldb);
 	}
-	inline void TRSM(char               side,
+	inline void trsm(char               side,
 	                 char               uplo,
 	                 char               transa,
 	                 char               diag,
@@ -1683,9 +1683,9 @@ namespace BLAS {
 	                 double*            B,
 	                 IntegerForBlasType ldb)
 	{
-		dtrsm_(&side, &uplo, &transa, &diag, &m, &n, &alpha, A, &lda, B, &ldb);
+		dtrsm(&side, &uplo, &transa, &diag, &m, &n, &alpha, A, &lda, B, &ldb);
 	}
-	inline void TRSM(char                       side,
+	inline void trsm(char                       side,
 	                 char                       uplo,
 	                 char                       transa,
 	                 char                       diag,
@@ -1697,9 +1697,9 @@ namespace BLAS {
 	                 std::complex<float>*       B,
 	                 IntegerForBlasType         ldb)
 	{
-		ctrsm_(&side, &uplo, &transa, &diag, &m, &n, &alpha, A, &lda, B, &ldb);
+		ctrsm(&side, &uplo, &transa, &diag, &m, &n, &alpha, A, &lda, B, &ldb);
 	}
-	inline void TRSM(char                        side,
+	inline void trsm(char                        side,
 	                 char                        uplo,
 	                 char                        transa,
 	                 char                        diag,
@@ -1711,11 +1711,11 @@ namespace BLAS {
 	                 std::complex<double>*       B,
 	                 IntegerForBlasType          ldb)
 	{
-		ztrsm_(&side, &uplo, &transa, &diag, &m, &n, &alpha, A, &lda, B, &ldb);
+		ztrsm(&side, &uplo, &transa, &diag, &m, &n, &alpha, A, &lda, B, &ldb);
 	}
 	// ***************************************************************************
 
-	inline void GEMV(char               c,
+	inline void gemv(char               c,
 	                 IntegerForBlasType M,
 	                 IntegerForBlasType N,
 	                 const float&       alpha,
@@ -1727,10 +1727,10 @@ namespace BLAS {
 	                 float*             y,
 	                 IntegerForBlasType incY)
 	{
-		sgemv_(&c, &M, &N, &alpha, A, &ldA, x, &incX, &beta, y, &incY);
+		sgemv(&c, &M, &N, &alpha, A, &ldA, x, &incX, &beta, y, &incY);
 	}
 	// ----------------------------------------------------------------------------
-	inline void GEMV(char               c,
+	inline void gemv(char               c,
 	                 IntegerForBlasType M,
 	                 IntegerForBlasType N,
 	                 const double&      alpha,
@@ -1742,10 +1742,10 @@ namespace BLAS {
 	                 double*            y,
 	                 IntegerForBlasType incY)
 	{
-		dgemv_(&c, &M, &N, &alpha, A, &ldA, x, &incX, &beta, y, &incY);
+		dgemv(&c, &M, &N, &alpha, A, &ldA, x, &incX, &beta, y, &incY);
 	}
 	// ---------------------------------------------------------------------------
-	inline void GEMV(char                       c,
+	inline void gemv(char                       c,
 	                 IntegerForBlasType         M,
 	                 IntegerForBlasType         N,
 	                 const std::complex<float>& alpha,
@@ -1757,10 +1757,10 @@ namespace BLAS {
 	                 std::complex<float>*       y,
 	                 IntegerForBlasType         incY)
 	{
-		cgemv_(&c, &M, &N, &alpha, A, &ldA, x, &incX, &beta, y, &incY);
+		cgemv(&c, &M, &N, &alpha, A, &ldA, x, &incX, &beta, y, &incY);
 	}
 	// ---------------------------------------------------------------------------
-	inline void GEMV(char                        c,
+	inline void gemv(char                        c,
 	                 IntegerForBlasType          M,
 	                 IntegerForBlasType          N,
 	                 const std::complex<double>& alpha,
@@ -1772,10 +1772,10 @@ namespace BLAS {
 	                 std::complex<double>*       y,
 	                 IntegerForBlasType          incY)
 	{
-		zgemv_(&c, &M, &N, &alpha, A, &ldA, x, &incX, &beta, y, &incY);
+		zgemv(&c, &M, &N, &alpha, A, &ldA, x, &incX, &beta, y, &incY);
 	}
 	// ----------------------------------------------------------------------------
-	inline void GBMV(char               trans,
+	inline void gbmv(char               trans,
 	                 IntegerForBlasType m,
 	                 IntegerForBlasType n,
 	                 IntegerForBlasType kl,
@@ -1789,9 +1789,9 @@ namespace BLAS {
 	                 float*             y,
 	                 IntegerForBlasType incy)
 	{
-		sgbmv_(&trans, &m, &n, &kl, &ku, &alpha, A, &lda, x, &incx, &beta, y, &incy);
+		sgbmv(&trans, &m, &n, &kl, &ku, &alpha, A, &lda, x, &incx, &beta, y, &incy);
 	}
-	inline void GBMV(char               trans,
+	inline void gbmv(char               trans,
 	                 IntegerForBlasType m,
 	                 IntegerForBlasType n,
 	                 IntegerForBlasType kl,
@@ -1805,9 +1805,9 @@ namespace BLAS {
 	                 double*            y,
 	                 IntegerForBlasType incy)
 	{
-		dgbmv_(&trans, &m, &n, &kl, &ku, &alpha, A, &lda, x, &incx, &beta, y, &incy);
+		dgbmv(&trans, &m, &n, &kl, &ku, &alpha, A, &lda, x, &incx, &beta, y, &incy);
 	}
-	inline void GBMV(char                       trans,
+	inline void gbmv(char                       trans,
 	                 IntegerForBlasType         m,
 	                 IntegerForBlasType         n,
 	                 IntegerForBlasType         kl,
@@ -1821,9 +1821,9 @@ namespace BLAS {
 	                 std::complex<float>*       y,
 	                 IntegerForBlasType         incy)
 	{
-		cgbmv_(&trans, &m, &n, &kl, &ku, &alpha, A, &lda, x, &incx, &beta, y, &incy);
+		cgbmv(&trans, &m, &n, &kl, &ku, &alpha, A, &lda, x, &incx, &beta, y, &incy);
 	}
-	inline void GBMV(char                        trans,
+	inline void gbmv(char                        trans,
 	                 IntegerForBlasType          m,
 	                 IntegerForBlasType          n,
 	                 IntegerForBlasType          kl,
@@ -1837,10 +1837,10 @@ namespace BLAS {
 	                 std::complex<double>*       y,
 	                 IntegerForBlasType          incy)
 	{
-		zgbmv_(&trans, &m, &n, &kl, &ku, &alpha, A, &lda, x, &incx, &beta, y, &incy);
+		zgbmv(&trans, &m, &n, &kl, &ku, &alpha, A, &lda, x, &incx, &beta, y, &incy);
 	}
 	// ****************************************************************************
-	inline void HEMV(char                       uplo,
+	inline void hemv(char                       uplo,
 	                 IntegerForBlasType         n,
 	                 const std::complex<float>& alpha,
 	                 const std::complex<float>* a,
@@ -1851,9 +1851,9 @@ namespace BLAS {
 	                 std::complex<float>*       y,
 	                 IntegerForBlasType         incy)
 	{
-		chemv_(&uplo, &n, &alpha, a, &lda, x, &incx, &beta, y, &incy);
+		chemv(&uplo, &n, &alpha, a, &lda, x, &incx, &beta, y, &incy);
 	}
-	inline void HEMV(char                        uplo,
+	inline void hemv(char                        uplo,
 	                 IntegerForBlasType          n,
 	                 const std::complex<double>& alpha,
 	                 const std::complex<double>* a,
@@ -1864,10 +1864,10 @@ namespace BLAS {
 	                 std::complex<double>*       y,
 	                 IntegerForBlasType          incy)
 	{
-		zhemv_(&uplo, &n, &alpha, a, &lda, x, &incx, &beta, y, &incy);
+		zhemv(&uplo, &n, &alpha, a, &lda, x, &incx, &beta, y, &incy);
 	}
 	// **************************************************************************
-	inline void HBMV(char                       uplo,
+	inline void hbmv(char                       uplo,
 	                 IntegerForBlasType         n,
 	                 IntegerForBlasType         k,
 	                 const std::complex<float>& alpha,
@@ -1879,9 +1879,9 @@ namespace BLAS {
 	                 std::complex<float>*       y,
 	                 IntegerForBlasType         incy)
 	{
-		chbmv_(&uplo, &n, &k, &alpha, a, &lda, x, &incx, &beta, y, &incy);
+		chbmv(&uplo, &n, &k, &alpha, a, &lda, x, &incx, &beta, y, &incy);
 	}
-	inline void HBMV(char                        uplo,
+	inline void hbmv(char                        uplo,
 	                 IntegerForBlasType          n,
 	                 IntegerForBlasType          k,
 	                 const std::complex<double>& alpha,
@@ -1893,10 +1893,10 @@ namespace BLAS {
 	                 std::complex<double>*       y,
 	                 IntegerForBlasType          incy)
 	{
-		zhbmv_(&uplo, &n, &k, &alpha, a, &lda, x, &incx, &beta, y, &incy);
+		zhbmv(&uplo, &n, &k, &alpha, a, &lda, x, &incx, &beta, y, &incy);
 	}
 	// ***************************************************************************
-	inline void HPMV(char                       uplo,
+	inline void hpmv(char                       uplo,
 	                 IntegerForBlasType         n,
 	                 const std::complex<float>& alpha,
 	                 const std::complex<float>* ap,
@@ -1906,9 +1906,9 @@ namespace BLAS {
 	                 std::complex<float>*       y,
 	                 IntegerForBlasType         incy)
 	{
-		chpmv_(&uplo, &n, &alpha, ap, x, &incx, &beta, y, &incy);
+		chpmv(&uplo, &n, &alpha, ap, x, &incx, &beta, y, &incy);
 	}
-	inline void HPMV(char                        uplo,
+	inline void hpmv(char                        uplo,
 	                 IntegerForBlasType          n,
 	                 const std::complex<double>& alpha,
 	                 const std::complex<double>* ap,
@@ -1918,10 +1918,10 @@ namespace BLAS {
 	                 std::complex<double>*       y,
 	                 IntegerForBlasType          incy)
 	{
-		zhpmv_(&uplo, &n, &alpha, ap, x, &incx, &beta, y, &incy);
+		zhpmv(&uplo, &n, &alpha, ap, x, &incx, &beta, y, &incy);
 	}
 	// ***************************************************************************
-	inline void SYMV(char               uplo,
+	inline void symv(char               uplo,
 	                 IntegerForBlasType n,
 	                 const float&       alpha,
 	                 const float*       a,
@@ -1932,9 +1932,9 @@ namespace BLAS {
 	                 float*             y,
 	                 IntegerForBlasType incy)
 	{
-		ssymv_(&uplo, &n, &alpha, a, &lda, x, &incx, &beta, y, &incy);
+		ssymv(&uplo, &n, &alpha, a, &lda, x, &incx, &beta, y, &incy);
 	}
-	inline void SYMV(char               uplo,
+	inline void symv(char               uplo,
 	                 IntegerForBlasType n,
 	                 const double&      alpha,
 	                 const double*      a,
@@ -1945,10 +1945,10 @@ namespace BLAS {
 	                 double*            y,
 	                 IntegerForBlasType incy)
 	{
-		dsymv_(&uplo, &n, &alpha, a, &lda, x, &incx, &beta, y, &incy);
+		dsymv(&uplo, &n, &alpha, a, &lda, x, &incx, &beta, y, &incy);
 	}
 	// ****************************************************************************
-	inline void SBMV(char               uplo,
+	inline void sbmv(char               uplo,
 	                 IntegerForBlasType n,
 	                 IntegerForBlasType k,
 	                 const float&       alpha,
@@ -1960,9 +1960,9 @@ namespace BLAS {
 	                 float*             y,
 	                 IntegerForBlasType incy)
 	{
-		ssbmv_(&uplo, &n, &k, &alpha, a, &lda, x, &incx, &beta, y, &incy);
+		ssbmv(&uplo, &n, &k, &alpha, a, &lda, x, &incx, &beta, y, &incy);
 	}
-	inline void SBMV(char               uplo,
+	inline void sbmv(char               uplo,
 	                 IntegerForBlasType n,
 	                 IntegerForBlasType k,
 	                 const double&      alpha,
@@ -1974,10 +1974,10 @@ namespace BLAS {
 	                 double*            y,
 	                 IntegerForBlasType incy)
 	{
-		dsbmv_(&uplo, &n, &k, &alpha, a, &lda, x, &incx, &beta, y, &incy);
+		dsbmv(&uplo, &n, &k, &alpha, a, &lda, x, &incx, &beta, y, &incy);
 	}
 	// ****************************************************************************
-	inline void SPMV(char               uplo,
+	inline void spmv(char               uplo,
 	                 IntegerForBlasType n,
 	                 const float&       alpha,
 	                 const float*       ap,
@@ -1987,9 +1987,9 @@ namespace BLAS {
 	                 float*             y,
 	                 IntegerForBlasType incy)
 	{
-		sspmv_(&uplo, &n, &alpha, ap, x, &incx, &beta, y, &incy);
+		sspmv(&uplo, &n, &alpha, ap, x, &incx, &beta, y, &incy);
 	}
-	inline void SPMV(char               uplo,
+	inline void spmv(char               uplo,
 	                 IntegerForBlasType n,
 	                 const double&      alpha,
 	                 const double*      ap,
@@ -1999,10 +1999,10 @@ namespace BLAS {
 	                 double*            y,
 	                 IntegerForBlasType incy)
 	{
-		dspmv_(&uplo, &n, &alpha, ap, x, &incx, &beta, y, &incy);
+		dspmv(&uplo, &n, &alpha, ap, x, &incx, &beta, y, &incy);
 	}
 	// ****************************************************************************
-	inline void TRMV(char               uplo,
+	inline void trmv(char               uplo,
 	                 char               trans,
 	                 char               diag,
 	                 IntegerForBlasType n,
@@ -2011,9 +2011,9 @@ namespace BLAS {
 	                 float*             x,
 	                 IntegerForBlasType incx)
 	{
-		strmv_(&uplo, &trans, &diag, &n, a, &lda, x, &incx);
+		strmv(&uplo, &trans, &diag, &n, a, &lda, x, &incx);
 	}
-	inline void TRMV(char               uplo,
+	inline void trmv(char               uplo,
 	                 char               trans,
 	                 char               diag,
 	                 IntegerForBlasType n,
@@ -2022,9 +2022,9 @@ namespace BLAS {
 	                 double*            x,
 	                 IntegerForBlasType incx)
 	{
-		dtrmv_(&uplo, &trans, &diag, &n, a, &lda, x, &incx);
+		dtrmv(&uplo, &trans, &diag, &n, a, &lda, x, &incx);
 	}
-	inline void TRMV(char                       uplo,
+	inline void trmv(char                       uplo,
 	                 char                       trans,
 	                 char                       diag,
 	                 IntegerForBlasType         n,
@@ -2033,9 +2033,9 @@ namespace BLAS {
 	                 std::complex<float>*       x,
 	                 IntegerForBlasType         incx)
 	{
-		ctrmv_(&uplo, &trans, &diag, &n, a, &lda, x, &incx);
+		ctrmv(&uplo, &trans, &diag, &n, a, &lda, x, &incx);
 	}
-	inline void TRMV(char                        uplo,
+	inline void trmv(char                        uplo,
 	                 char                        trans,
 	                 char                        diag,
 	                 IntegerForBlasType          n,
@@ -2044,10 +2044,10 @@ namespace BLAS {
 	                 std::complex<double>*       x,
 	                 IntegerForBlasType          incx)
 	{
-		ztrmv_(&uplo, &trans, &diag, &n, a, &lda, x, &incx);
+		ztrmv(&uplo, &trans, &diag, &n, a, &lda, x, &incx);
 	}
 	// ****************************************************************************
-	inline void TBMV(char               uplo,
+	inline void tbmv(char               uplo,
 	                 char               trans,
 	                 char               diag,
 	                 IntegerForBlasType n,
@@ -2057,9 +2057,9 @@ namespace BLAS {
 	                 float*             x,
 	                 IntegerForBlasType incx)
 	{
-		stbmv_(&uplo, &trans, &diag, &n, &k, a, &lda, x, &incx);
+		stbmv(&uplo, &trans, &diag, &n, &k, a, &lda, x, &incx);
 	}
-	inline void TBMV(char               uplo,
+	inline void tbmv(char               uplo,
 	                 char               trans,
 	                 char               diag,
 	                 IntegerForBlasType n,
@@ -2069,9 +2069,9 @@ namespace BLAS {
 	                 double*            x,
 	                 IntegerForBlasType incx)
 	{
-		dtbmv_(&uplo, &trans, &diag, &n, &k, a, &lda, x, &incx);
+		dtbmv(&uplo, &trans, &diag, &n, &k, a, &lda, x, &incx);
 	}
-	inline void TBMV(char                       uplo,
+	inline void tbmv(char                       uplo,
 	                 char                       trans,
 	                 char                       diag,
 	                 IntegerForBlasType         n,
@@ -2081,9 +2081,9 @@ namespace BLAS {
 	                 std::complex<float>*       x,
 	                 IntegerForBlasType         incx)
 	{
-		ctbmv_(&uplo, &trans, &diag, &n, &k, a, &lda, x, &incx);
+		ctbmv(&uplo, &trans, &diag, &n, &k, a, &lda, x, &incx);
 	}
-	inline void TBMV(char                        uplo,
+	inline void tbmv(char                        uplo,
 	                 char                        trans,
 	                 char                        diag,
 	                 IntegerForBlasType          n,
@@ -2093,10 +2093,10 @@ namespace BLAS {
 	                 std::complex<double>*       x,
 	                 IntegerForBlasType          incx)
 	{
-		ztbmv_(&uplo, &trans, &diag, &n, &k, a, &lda, x, &incx);
+		ztbmv(&uplo, &trans, &diag, &n, &k, a, &lda, x, &incx);
 	}
 	// ****************************************************************************
-	inline void TPMV(char               uplo,
+	inline void tpmv(char               uplo,
 	                 char               trans,
 	                 char               diag,
 	                 IntegerForBlasType n,
@@ -2104,9 +2104,9 @@ namespace BLAS {
 	                 float*             x,
 	                 IntegerForBlasType incx)
 	{
-		stpmv_(&uplo, &trans, &diag, &n, ap, x, &incx);
+		stpmv(&uplo, &trans, &diag, &n, ap, x, &incx);
 	}
-	inline void TPMV(char               uplo,
+	inline void tpmv(char               uplo,
 	                 char               trans,
 	                 char               diag,
 	                 IntegerForBlasType n,
@@ -2114,9 +2114,9 @@ namespace BLAS {
 	                 double*            x,
 	                 IntegerForBlasType incx)
 	{
-		dtpmv_(&uplo, &trans, &diag, &n, ap, x, &incx);
+		dtpmv(&uplo, &trans, &diag, &n, ap, x, &incx);
 	}
-	inline void TPMV(char                       uplo,
+	inline void tpmv(char                       uplo,
 	                 char                       trans,
 	                 char                       diag,
 	                 IntegerForBlasType         n,
@@ -2124,9 +2124,9 @@ namespace BLAS {
 	                 std::complex<float>*       x,
 	                 IntegerForBlasType         incx)
 	{
-		ctpmv_(&uplo, &trans, &diag, &n, ap, x, &incx);
+		ctpmv(&uplo, &trans, &diag, &n, ap, x, &incx);
 	}
-	inline void TPMV(char                        uplo,
+	inline void tpmv(char                        uplo,
 	                 char                        trans,
 	                 char                        diag,
 	                 IntegerForBlasType          n,
@@ -2134,10 +2134,10 @@ namespace BLAS {
 	                 std::complex<double>*       x,
 	                 IntegerForBlasType          incx)
 	{
-		ztpmv_(&uplo, &trans, &diag, &n, ap, x, &incx);
+		ztpmv(&uplo, &trans, &diag, &n, ap, x, &incx);
 	}
 	// ****************************************************************************
-	inline void TRSV(char               uplo,
+	inline void trsv(char               uplo,
 	                 char               trans,
 	                 char               diag,
 	                 IntegerForBlasType n,
@@ -2146,9 +2146,9 @@ namespace BLAS {
 	                 float*             x,
 	                 IntegerForBlasType incx)
 	{
-		strsv_(&uplo, &trans, &diag, &n, a, &lda, x, &incx);
+		strsv(&uplo, &trans, &diag, &n, a, &lda, x, &incx);
 	}
-	inline void TRSV(char               uplo,
+	inline void trsv(char               uplo,
 	                 char               trans,
 	                 char               diag,
 	                 IntegerForBlasType n,
@@ -2157,9 +2157,9 @@ namespace BLAS {
 	                 double*            x,
 	                 IntegerForBlasType incx)
 	{
-		dtrsv_(&uplo, &trans, &diag, &n, a, &lda, x, &incx);
+		dtrsv(&uplo, &trans, &diag, &n, a, &lda, x, &incx);
 	}
-	inline void TRSV(char                       uplo,
+	inline void trsv(char                       uplo,
 	                 char                       trans,
 	                 char                       diag,
 	                 IntegerForBlasType         n,
@@ -2168,9 +2168,9 @@ namespace BLAS {
 	                 std::complex<float>*       x,
 	                 IntegerForBlasType         incx)
 	{
-		ctrsv_(&uplo, &trans, &diag, &n, a, &lda, x, &incx);
+		ctrsv(&uplo, &trans, &diag, &n, a, &lda, x, &incx);
 	}
-	inline void TRSV(char                        uplo,
+	inline void trsv(char                        uplo,
 	                 char                        trans,
 	                 char                        diag,
 	                 IntegerForBlasType          n,
@@ -2179,10 +2179,10 @@ namespace BLAS {
 	                 std::complex<double>*       x,
 	                 IntegerForBlasType          incx)
 	{
-		ztrsv_(&uplo, &trans, &diag, &n, a, &lda, x, &incx);
+		ztrsv(&uplo, &trans, &diag, &n, a, &lda, x, &incx);
 	}
 	// ****************************************************************************
-	inline void TBSV(char               uplo,
+	inline void tbsv(char               uplo,
 	                 char               trans,
 	                 char               diag,
 	                 IntegerForBlasType n,
@@ -2192,9 +2192,9 @@ namespace BLAS {
 	                 float*             x,
 	                 IntegerForBlasType incx)
 	{
-		stbsv_(&uplo, &trans, &diag, &n, &k, a, &lda, x, &incx);
+		stbsv(&uplo, &trans, &diag, &n, &k, a, &lda, x, &incx);
 	}
-	inline void TBSV(char               uplo,
+	inline void tbsv(char               uplo,
 	                 char               trans,
 	                 char               diag,
 	                 IntegerForBlasType n,
@@ -2204,9 +2204,9 @@ namespace BLAS {
 	                 double*            x,
 	                 IntegerForBlasType incx)
 	{
-		dtbsv_(&uplo, &trans, &diag, &n, &k, a, &lda, x, &incx);
+		dtbsv(&uplo, &trans, &diag, &n, &k, a, &lda, x, &incx);
 	}
-	inline void TBSV(char                       uplo,
+	inline void tbsv(char                       uplo,
 	                 char                       trans,
 	                 char                       diag,
 	                 IntegerForBlasType         n,
@@ -2216,9 +2216,9 @@ namespace BLAS {
 	                 std::complex<float>*       x,
 	                 IntegerForBlasType         incx)
 	{
-		ctbsv_(&uplo, &trans, &diag, &n, &k, a, &lda, x, &incx);
+		ctbsv(&uplo, &trans, &diag, &n, &k, a, &lda, x, &incx);
 	}
-	inline void TBSV(char                        uplo,
+	inline void tbsv(char                        uplo,
 	                 char                        trans,
 	                 char                        diag,
 	                 IntegerForBlasType          n,
@@ -2228,10 +2228,10 @@ namespace BLAS {
 	                 std::complex<double>*       x,
 	                 IntegerForBlasType          incx)
 	{
-		ztbsv_(&uplo, &trans, &diag, &n, &k, a, &lda, x, &incx);
+		ztbsv(&uplo, &trans, &diag, &n, &k, a, &lda, x, &incx);
 	}
 	// ****************************************************************************
-	inline void TPSV(char               uplo,
+	inline void tpsv(char               uplo,
 	                 char               trans,
 	                 char               diag,
 	                 IntegerForBlasType n,
@@ -2239,9 +2239,9 @@ namespace BLAS {
 	                 float*             x,
 	                 IntegerForBlasType incx)
 	{
-		stpsv_(&uplo, &trans, &diag, &n, ap, x, &incx);
+		stpsv(&uplo, &trans, &diag, &n, ap, x, &incx);
 	}
-	inline void TPSV(char               uplo,
+	inline void tpsv(char               uplo,
 	                 char               trans,
 	                 char               diag,
 	                 IntegerForBlasType n,
@@ -2249,9 +2249,9 @@ namespace BLAS {
 	                 double*            x,
 	                 IntegerForBlasType incx)
 	{
-		dtpsv_(&uplo, &trans, &diag, &n, ap, x, &incx);
+		dtpsv(&uplo, &trans, &diag, &n, ap, x, &incx);
 	}
-	inline void TPSV(char                       uplo,
+	inline void tpsv(char                       uplo,
 	                 char                       trans,
 	                 char                       diag,
 	                 IntegerForBlasType         n,
@@ -2259,9 +2259,9 @@ namespace BLAS {
 	                 std::complex<float>*       x,
 	                 IntegerForBlasType         incx)
 	{
-		ctpsv_(&uplo, &trans, &diag, &n, ap, x, &incx);
+		ctpsv(&uplo, &trans, &diag, &n, ap, x, &incx);
 	}
-	inline void TPSV(char                        uplo,
+	inline void tpsv(char                        uplo,
 	                 char                        trans,
 	                 char                        diag,
 	                 IntegerForBlasType          n,
@@ -2269,10 +2269,10 @@ namespace BLAS {
 	                 std::complex<double>*       x,
 	                 IntegerForBlasType          incx)
 	{
-		ztpsv_(&uplo, &trans, &diag, &n, ap, x, &incx);
+		ztpsv(&uplo, &trans, &diag, &n, ap, x, &incx);
 	}
 	// ****************************************************************************
-	inline void GER(IntegerForBlasType m,
+	inline void ger(IntegerForBlasType m,
 	                IntegerForBlasType n,
 	                const float&       alpha,
 	                const float*       x,
@@ -2282,9 +2282,9 @@ namespace BLAS {
 	                float*             a,
 	                IntegerForBlasType lda)
 	{
-		sger_(&m, &n, &alpha, x, &incx, y, &incy, a, &lda);
+		sger(&m, &n, &alpha, x, &incx, y, &incy, a, &lda);
 	}
-	inline void GER(IntegerForBlasType m,
+	inline void ger(IntegerForBlasType m,
 	                IntegerForBlasType n,
 	                const double&      alpha,
 	                const double*      x,
@@ -2294,10 +2294,10 @@ namespace BLAS {
 	                double*            a,
 	                IntegerForBlasType lda)
 	{
-		dger_(&m, &n, &alpha, x, &incx, y, &incy, a, &lda);
+		dger(&m, &n, &alpha, x, &incx, y, &incy, a, &lda);
 	}
 	// ****************************************************************************
-	inline void GERU(IntegerForBlasType         m,
+	inline void geru(IntegerForBlasType         m,
 	                 IntegerForBlasType         n,
 	                 const std::complex<float>& alpha,
 	                 const std::complex<float>* x,
@@ -2307,9 +2307,9 @@ namespace BLAS {
 	                 std::complex<float>*       a,
 	                 IntegerForBlasType         lda)
 	{
-		cgeru_(&m, &n, &alpha, x, &incx, y, &incy, a, &lda);
+		cgeru(&m, &n, &alpha, x, &incx, y, &incy, a, &lda);
 	}
-	inline void GERU(IntegerForBlasType          m,
+	inline void geru(IntegerForBlasType          m,
 	                 IntegerForBlasType          n,
 	                 const std::complex<double>& alpha,
 	                 const std::complex<double>* x,
@@ -2319,10 +2319,10 @@ namespace BLAS {
 	                 std::complex<double>*       a,
 	                 IntegerForBlasType          lda)
 	{
-		zgeru_(&m, &n, &alpha, x, &incx, y, &incy, a, &lda);
+		zgeru(&m, &n, &alpha, x, &incx, y, &incy, a, &lda);
 	}
 	// ****************************************************************************
-	inline void GERC(IntegerForBlasType         m,
+	inline void gerc(IntegerForBlasType         m,
 	                 IntegerForBlasType         n,
 	                 const std::complex<float>& alpha,
 	                 const std::complex<float>* x,
@@ -2332,9 +2332,9 @@ namespace BLAS {
 	                 std::complex<float>*       a,
 	                 IntegerForBlasType         lda)
 	{
-		cgerc_(&m, &n, &alpha, x, &incx, y, &incy, a, &lda);
+		cgerc(&m, &n, &alpha, x, &incx, y, &incy, a, &lda);
 	}
-	inline void GERC(IntegerForBlasType          m,
+	inline void gerc(IntegerForBlasType          m,
 	                 IntegerForBlasType          n,
 	                 const std::complex<double>& alpha,
 	                 const std::complex<double>* x,
@@ -2344,10 +2344,10 @@ namespace BLAS {
 	                 std::complex<double>*       a,
 	                 IntegerForBlasType          lda)
 	{
-		zgerc_(&m, &n, &alpha, x, &incx, y, &incy, a, &lda);
+		zgerc(&m, &n, &alpha, x, &incx, y, &incy, a, &lda);
 	}
 	// *****************************************************************************
-	inline void HER(char                       uplo,
+	inline void her(char                       uplo,
 	                IntegerForBlasType         n,
 	                const std::complex<float>& alpha,
 	                const std::complex<float>* x,
@@ -2355,9 +2355,9 @@ namespace BLAS {
 	                std::complex<float>*       a,
 	                IntegerForBlasType         lda)
 	{
-		cher_(&uplo, &n, &alpha, x, &incx, a, &lda);
+		cher(&uplo, &n, &alpha, x, &incx, a, &lda);
 	}
-	inline void HER(char                        uplo,
+	inline void her(char                        uplo,
 	                IntegerForBlasType          n,
 	                const std::complex<double>& alpha,
 	                const std::complex<double>* x,
@@ -2365,29 +2365,29 @@ namespace BLAS {
 	                std::complex<double>*       a,
 	                IntegerForBlasType          lda)
 	{
-		zher_(&uplo, &n, &alpha, x, &incx, a, &lda);
+		zher(&uplo, &n, &alpha, x, &incx, a, &lda);
 	}
 	// *****************************************************************************
-	inline void HPR(char                       uplo,
+	inline void hpr(char                       uplo,
 	                IntegerForBlasType         n,
 	                const std::complex<float>& alpha,
 	                const std::complex<float>* x,
 	                IntegerForBlasType         incx,
 	                std::complex<float>*       ap)
 	{
-		chpr_(&uplo, &n, &alpha, x, &incx, ap);
+		chpr(&uplo, &n, &alpha, x, &incx, ap);
 	}
-	inline void HPR(char                        uplo,
+	inline void hpr(char                        uplo,
 	                IntegerForBlasType          n,
 	                const std::complex<double>& alpha,
 	                const std::complex<double>* x,
 	                IntegerForBlasType          incx,
 	                std::complex<float>*        ap)
 	{
-		zhpr_(&uplo, &n, &alpha, x, &incx, ap);
+		zhpr(&uplo, &n, &alpha, x, &incx, ap);
 	}
 	// *****************************************************************************
-	inline void HER2(char                       uplo,
+	inline void heR2(char                       uplo,
 	                 IntegerForBlasType         n,
 	                 const std::complex<float>& alpha,
 	                 const std::complex<float>* x,
@@ -2397,9 +2397,9 @@ namespace BLAS {
 	                 std::complex<float>*       a,
 	                 IntegerForBlasType         lda)
 	{
-		cher2_(&uplo, &n, &alpha, x, &incx, y, &incy, a, &lda);
+		cher2(&uplo, &n, &alpha, x, &incx, y, &incy, a, &lda);
 	}
-	inline void HER2(char                        uplo,
+	inline void heR2(char                        uplo,
 	                 IntegerForBlasType          n,
 	                 const std::complex<double>& alpha,
 	                 const std::complex<double>* x,
@@ -2409,10 +2409,10 @@ namespace BLAS {
 	                 std::complex<double>*       a,
 	                 IntegerForBlasType          lda)
 	{
-		zher2_(&uplo, &n, &alpha, x, &incx, y, &incy, a, &lda);
+		zher2(&uplo, &n, &alpha, x, &incx, y, &incy, a, &lda);
 	}
 	// *****************************************************************************
-	inline void HPR2(char                       uplo,
+	inline void hpR2(char                       uplo,
 	                 IntegerForBlasType         n,
 	                 const std::complex<float>& alpha,
 	                 const std::complex<float>* x,
@@ -2421,9 +2421,9 @@ namespace BLAS {
 	                 IntegerForBlasType         incy,
 	                 std::complex<float>*       ap)
 	{
-		chpr2_(&uplo, &n, &alpha, x, &incx, y, &incy, ap);
+		chpr2(&uplo, &n, &alpha, x, &incx, y, &incy, ap);
 	}
-	inline void HPR2(char                        uplo,
+	inline void hpR2(char                        uplo,
 	                 IntegerForBlasType          n,
 	                 const std::complex<double>& alpha,
 	                 const std::complex<double>* x,
@@ -2432,10 +2432,10 @@ namespace BLAS {
 	                 IntegerForBlasType          incy,
 	                 std::complex<double>*       ap)
 	{
-		zhpr2_(&uplo, &n, &alpha, x, &incx, y, &incy, ap);
+		zhpr2(&uplo, &n, &alpha, x, &incx, y, &incy, ap);
 	}
 	// *****************************************************************************
-	inline void SYR(char               uplo,
+	inline void syr(char               uplo,
 	                IntegerForBlasType n,
 	                const float&       alpha,
 	                const float*       x,
@@ -2443,9 +2443,9 @@ namespace BLAS {
 	                float*             a,
 	                IntegerForBlasType lda)
 	{
-		ssyr_(&uplo, &n, &alpha, x, &incx, a, &lda);
+		ssyr(&uplo, &n, &alpha, x, &incx, a, &lda);
 	}
-	inline void SYR(char               uplo,
+	inline void syr(char               uplo,
 	                IntegerForBlasType n,
 	                const double&      alpha,
 	                const double*      x,
@@ -2453,29 +2453,29 @@ namespace BLAS {
 	                double*            a,
 	                IntegerForBlasType lda)
 	{
-		dsyr_(&uplo, &n, &alpha, x, &incx, a, &lda);
+		dsyr(&uplo, &n, &alpha, x, &incx, a, &lda);
 	}
 	// ****************************************************************************
-	inline void SPR(char               uplo,
+	inline void spr(char               uplo,
 	                IntegerForBlasType n,
 	                const float&       alpha,
 	                const float*       x,
 	                IntegerForBlasType incx,
 	                float*             ap)
 	{
-		sspr_(&uplo, &n, &alpha, x, &incx, ap);
+		sspr(&uplo, &n, &alpha, x, &incx, ap);
 	}
-	inline void SPR(char               uplo,
+	inline void spr(char               uplo,
 	                IntegerForBlasType n,
 	                const double&      alpha,
 	                const double*      x,
 	                IntegerForBlasType incx,
 	                double*            ap)
 	{
-		dspr_(&uplo, &n, &alpha, x, &incx, ap);
+		dspr(&uplo, &n, &alpha, x, &incx, ap);
 	}
 	// ****************************************************************************
-	inline void SYR2(char               uplo,
+	inline void syR2(char               uplo,
 	                 IntegerForBlasType n,
 	                 const float&       alpha,
 	                 const float*       x,
@@ -2486,9 +2486,9 @@ namespace BLAS {
 	                 float*             a,
 	                 IntegerForBlasType lda)
 	{
-		ssyr2_(&uplo, &n, &alpha, x, &incx, y, &incy, a, &lda);
+		ssyr2(&uplo, &n, &alpha, x, &incx, y, &incy, a, &lda);
 	}
-	inline void SYR2(char               uplo,
+	inline void syR2(char               uplo,
 	                 IntegerForBlasType n,
 	                 const double&      alpha,
 	                 const double*      x,
@@ -2499,10 +2499,10 @@ namespace BLAS {
 	                 double*            a,
 	                 IntegerForBlasType lda)
 	{
-		dsyr2_(&uplo, &n, &alpha, x, &incx, y, &incy, a, &lda);
+		dsyr2(&uplo, &n, &alpha, x, &incx, y, &incy, a, &lda);
 	}
 	// ****************************************************************************
-	inline void SPR2(char               uplo,
+	inline void spR2(char               uplo,
 	                 IntegerForBlasType n,
 	                 const float&       alpha,
 	                 const float*       x,
@@ -2512,9 +2512,9 @@ namespace BLAS {
 	                 IntegerForBlasType incy,
 	                 float*             ap)
 	{
-		sspr2_(&uplo, &n, &alpha, x, &incx, y, &incy, ap);
+		sspr2(&uplo, &n, &alpha, x, &incx, y, &incy, ap);
 	}
-	inline void SPR2(char               uplo,
+	inline void spR2(char               uplo,
 	                 IntegerForBlasType n,
 	                 const double&      alpha,
 	                 const double*      x,
@@ -2524,32 +2524,32 @@ namespace BLAS {
 	                 IntegerForBlasType incy,
 	                 double*            ap)
 	{
-		dspr2_(&uplo, &n, &alpha, x, &incx, y, &incy, ap);
+		dspr2(&uplo, &n, &alpha, x, &incx, y, &incy, ap);
 	}
 
 	// ****************************************************************************
 
-	inline void AXPY(IntegerForBlasType size,
+	inline void axpy(IntegerForBlasType size,
 	                 const float&       a,
 	                 const float*       x,
 	                 IntegerForBlasType sx,
 	                 float*             y,
 	                 IntegerForBlasType sy)
 	{
-		saxpy_(&size, &a, x, &sx, y, &sy);
+		saxpy(&size, &a, x, &sx, y, &sy);
 	}
 
-	inline void AXPY(IntegerForBlasType size,
+	inline void axpy(IntegerForBlasType size,
 	                 const double&      a,
 	                 const double*      x,
 	                 IntegerForBlasType sx,
 	                 double*            y,
 	                 IntegerForBlasType sy)
 	{
-		daxpy_(&size, &a, x, &sx, y, &sy);
+		daxpy(&size, &a, x, &sx, y, &sy);
 	}
 
-	inline void AXPY(IntegerForBlasType         size,
+	inline void axpy(IntegerForBlasType         size,
 	                 const std::complex<float>& a,
 	                 const std::complex<float>* x,
 	                 IntegerForBlasType         sx,
@@ -2557,10 +2557,10 @@ namespace BLAS {
 	                 std::complex<float>* y,
 	                 IntegerForBlasType   sy)
 	{
-		caxpy_(&size, &a, x, &sx, y, &sy);
+		caxpy(&size, &a, x, &sx, y, &sy);
 	}
 
-	inline void AXPY(IntegerForBlasType          size,
+	inline void axpy(IntegerForBlasType          size,
 	                 const std::complex<double>& a,
 	                 const std::complex<double>* x,
 	                 IntegerForBlasType          sx,
@@ -2568,69 +2568,69 @@ namespace BLAS {
 	                 std::complex<double>* y,
 	                 IntegerForBlasType    sy)
 	{
-		zaxpy_(&size, &a, x, &sx, y, &sy);
+		zaxpy(&size, &a, x, &sx, y, &sy);
 	}
 	// ----------------------------------------------------------------------------
-	inline void COPY(IntegerForBlasType size,
+	inline void copy(IntegerForBlasType size,
 	                 const float*       x,
 	                 IntegerForBlasType sx,
 	                 float*             y,
 	                 IntegerForBlasType sy)
 	{
-		scopy_(&size, x, &sx, y, &sy);
+		scopy(&size, x, &sx, y, &sy);
 	}
 
-	inline void COPY(IntegerForBlasType size,
+	inline void copy(IntegerForBlasType size,
 	                 const double*      x,
 	                 IntegerForBlasType sx,
 	                 double*            y,
 	                 IntegerForBlasType sy)
 	{
-		dcopy_(&size, x, &sx, y, &sy);
+		dcopy(&size, x, &sx, y, &sy);
 	}
 
-	inline void COPY(IntegerForBlasType         size,
+	inline void copy(IntegerForBlasType         size,
 	                 const std::complex<float>* x,
 	                 IntegerForBlasType         sx,
 	                 std::complex<float>*       y,
 	                 IntegerForBlasType         sy)
 	{
-		ccopy_(&size, x, &sx, y, &sy);
+		ccopy(&size, x, &sx, y, &sy);
 	}
 
-	inline void COPY(IntegerForBlasType          size,
+	inline void copy(IntegerForBlasType          size,
 	                 const std::complex<double>* x,
 	                 IntegerForBlasType          sx,
 	                 std::complex<double>*       y,
 	                 IntegerForBlasType          sy)
 	{
-		zcopy_(&size, x, &sx, y, &sy);
+		zcopy(&size, x, &sx, y, &sy);
 	}
 	// ----------------------------------------------------------------------------
-	inline void SCAL(IntegerForBlasType size, const float& a, float* y, IntegerForBlasType sy)
+	inline void scal(IntegerForBlasType size, const float& a, float* y, IntegerForBlasType sy)
 	{
-		sscal_(&size, &a, y, &sy);
+		sscal(&size, &a, y, &sy);
 	}
 
-	inline void SCAL(IntegerForBlasType size, const double& a, double* y, IntegerForBlasType sy)
+	inline void scal(IntegerForBlasType size, const double& a, double* y, IntegerForBlasType sy)
 	{
-		dscal_(&size, &a, y, &sy);
+		dscal(&size, &a, y, &sy);
 	}
 
-	inline void SCAL(IntegerForBlasType         size,
+	inline void scal(IntegerForBlasType         size,
 	                 const std::complex<float>& a,
 	                 std::complex<float>*       y,
 	                 IntegerForBlasType         sy)
 	{
-		cscal_(&size, &a, y, &sy);
+		cscal(&size, &a, y, &sy);
 	}
 
-	inline void SCAL(IntegerForBlasType          size,
+	inline void scal(IntegerForBlasType          size,
 	                 const std::complex<double>& a,
 	                 std::complex<double>*       y,
 	                 IntegerForBlasType          sy)
 	{
-		zscal_(&size, &a, y, &sy);
+		zscal(&size, &a, y, &sy);
 	}
 } /* namespace BLAS */
 } /* namespace psimag */

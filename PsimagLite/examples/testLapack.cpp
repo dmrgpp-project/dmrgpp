@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <iostream>
 
-extern "C" void dsyev_(char*, char*, int*, double*, int*, double*, double*, int*, int*);
+extern "C" void dsyev(char*, char*, int*, double*, int*, double*, double*, int*, int*);
 
 int main()
 {
@@ -26,7 +26,7 @@ int main()
 	int                              lwork = -1;
 
 	// query:
-	dsyev_(&jobz, &uplo, &n, &(m[0]), &lda, &(eigs[0]), &(work[0]), &lwork, &info);
+	dsyev(&jobz, &uplo, &n, &(m[0]), &lda, &(eigs[0]), &(work[0]), &lwork, &info);
 	if (info != 0) {
 		std::cerr << "diag: dsyev_: failed with info=" << info << "\n";
 		return 1;
@@ -35,7 +35,7 @@ int main()
 	work.resize(lwork + 1);
 
 	// real work:
-	dsyev_(&jobz, &uplo, &n, &(m[0]), &lda, &(eigs[0]), &(work[0]), &lwork, &info);
+	dsyev(&jobz, &uplo, &n, &(m[0]), &lda, &(eigs[0]), &(work[0]), &lwork, &info);
 	if (info != 0) {
 		std::cerr << "diag: dsyev_: failed with info=" << info << "\n";
 		return 1;

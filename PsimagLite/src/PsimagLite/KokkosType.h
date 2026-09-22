@@ -9,11 +9,11 @@ namespace PsimagLite {
 
 // We need to map std::complex to Kokkos::complex while keeping all other types.
 template <typename T> struct KokkosType {
-	using type = T;
+	using Type = T;
 };
 
 template <typename T> struct KokkosType<std::complex<T>> {
-	using type = Kokkos::complex<T>;
+	using Type = Kokkos::complex<T>;
 };
 
 }

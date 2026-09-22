@@ -1,10 +1,9 @@
 #include "util.h"
 
-template <typename ComplexOrRealType>
-bool den_is_eye(const PsimagLite::Matrix<ComplexOrRealType>& a_)
+template <typename ComplexOrRealType> bool denIsEye(const PsimagLite::Matrix<ComplexOrRealType>& a_)
 {
-	const int nrow_A = a_.n_row();
-	const int ncol_A = a_.n_col();
+	const int nrow_a = a_.n_row();
+	const int ncol_a = a_.n_col();
 	/*
 	 * -------------------------
 	 * return whether A is the identity matrix
@@ -12,14 +11,14 @@ bool den_is_eye(const PsimagLite::Matrix<ComplexOrRealType>& a_)
 	 * -------------------------
 	 */
 
-	if (nrow_A != ncol_A) {
+	if (nrow_a != ncol_a) {
 		return (false);
 	};
 
 	int ja = 0;
-	for (ja = 0; ja < ncol_A; ja++) {
+	for (ja = 0; ja < ncol_a; ja++) {
 		int ia = 0;
-		for (ia = 0; ia < nrow_A; ia++) {
+		for (ia = 0; ia < nrow_a; ia++) {
 			ComplexOrRealType aij = a_(ia, ja);
 			ComplexOrRealType eij = (ia == ja) ? 1 : 0;
 

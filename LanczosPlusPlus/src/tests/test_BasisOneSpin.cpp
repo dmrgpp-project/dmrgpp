@@ -9,14 +9,14 @@ using LanczosPlusPlus::BasisOneSpin;
 // index, and no two stored words collide.
 static void checkPerfectIndexIsBijection(const BasisOneSpin& basis)
 {
-	std::set<SizeType> seenIndices;
+	std::set<SizeType> seen_indices;
 	for (SizeType i = 0; i < basis.size(); ++i) {
 		const auto     word = basis[i];
 		const SizeType idx  = basis.perfectIndex(word);
 		INFO("i=" << i << " word=" << word << " perfectIndex=" << idx);
 		CHECK(idx == i);
-		CHECK(seenIndices.count(idx) == 0);
-		seenIndices.insert(idx);
+		CHECK(seen_indices.count(idx) == 0);
+		seen_indices.insert(idx);
 	}
 }
 

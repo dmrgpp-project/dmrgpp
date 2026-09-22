@@ -125,14 +125,14 @@ template <typename T> struct RemoveConst<const T> {
 template <typename T> struct IsStringLike {
 	enum
 	{
-		True = false
+		TRUE = false
 	};
 };
 
 template <typename A> struct IsStringLike<std::basic_string<char, std::char_traits<char>, A>> {
 	enum
 	{
-		True = true
+		TRUE = true
 	};
 };
 

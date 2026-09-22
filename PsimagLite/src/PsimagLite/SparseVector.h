@@ -91,8 +91,8 @@ namespace PsimagLite {
 template <typename FieldType> struct SparseVector {
 public:
 
-	using value_type = FieldType;
-	using PairType   = std::pair<SizeType, SizeType>;
+	using ValueType = FieldType;
+	using PairType  = std::pair<SizeType, SizeType>;
 
 	SparseVector(const typename Vector<FieldType>::Type& v)
 	    : size_(v.size())
@@ -162,8 +162,8 @@ public:
 	             bool                              test = false) const
 	{
 		if (test) {
-			PairType firstLast = findFirstLast();
-			if (i0 > firstLast.first || i0 + total < firstLast.second)
+			PairType first_last = findFirstLast();
+			if (i0 > firstLast.first || i0 + total < first_last.second)
 				throw RuntimeError("SparseVector::toChunk(...)"
 				                   " check failed\n");
 		}
@@ -188,10 +188,10 @@ public:
 
 	template <typename SomeBasisType> SizeType findPartition(const SomeBasisType& parts) const
 	{
-		PairType firstLast = findFirstLast();
-		SizeType ret       = 0;
+		PairType first_last = findFirstLast();
+		SizeType ret        = 0;
 		for (SizeType i = 0; i < parts.partition(); i++) {
-			if (firstLast.first >= parts.partition(i)) {
+			if (first_last.first >= parts.partition(i)) {
 				ret = i;
 			} else {
 				break;
@@ -199,7 +199,7 @@ public:
 		}
 		SizeType ret2 = 1;
 		for (SizeType i = 0; i < parts.partition(); i++) {
-			if (firstLast.second > parts.partition(i)) {
+			if (first_last.second > parts.partition(i)) {
 				ret2 = i;
 			} else {
 				break;
@@ -292,26 +292,26 @@ public:
 		for (SizeType i = 0; i < values_.size(); i++)
 			values[i] = values_[iperm[i]];
 		values_.clear();
-		FieldType                       sum       = values[0];
-		SizeType                        prevIndex = indices_[0];
+		FieldType                       sum        = values[0];
+		SizeType                        prev_index = indices_[0];
 		typename Vector<SizeType>::Type indices;
 
 		for (SizeType i = 1; i < indices_.size(); i++) {
 
-			if (indices_[i] != prevIndex) {
+			if (indices_[i] != prev_index) {
 				if (PsimagLite::norm(sum) > 1e-16) {
 					values_.push_back(sum);
-					indices.push_back(prevIndex);
+					indices.push_back(prev_index);
 				}
-				sum       = values[i];
-				prevIndex = indices_[i];
+				sum        = values[i];
+				prev_index = indices_[i];
 			} else {
 				sum += values[i];
 			}
 		}
 		if (PsimagLite::norm(sum) > 1e-16) {
 			values_.push_back(sum);
-			indices.push_back(prevIndex);
+			indices.push_back(prev_index);
 		}
 		indices_  = indices;
 		isSorted_ = true;

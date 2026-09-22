@@ -150,7 +150,7 @@ public:
 	    , geometryBase_(0)
 	    , gOptions_("none")
 	{
-		String savedPrefix = io.prefix();
+		String saved_prefix = io.prefix();
 		io.prefix() += (aux.numberOfTerms > 1) ? "gt" + ttos(aux.termId) + ":" : "";
 
 		InternalDofEnum idof = GeometryDirectionType::SPECIFIC;
@@ -173,7 +173,7 @@ public:
 		} catch (std::exception&) { }
 
 		io.readline(gOptions_, "GeometryOptions=");
-		bool constantValues = (gOptions_.find("ConstantValues") != String::npos);
+		bool constant_values = (gOptions_.find("ConstantValues") != String::npos);
 
 		if (s == "chain" || s == "longchain") {
 			geometryBase_
@@ -211,25 +211,25 @@ public:
 		const SizeType ndirs = (geometryBase_) ? geometryBase_->dirs() : 0;
 		for (SizeType i = 0; i < ndirs; ++i) {
 			typename GeometryDirectionType::Auxiliary aux(
-			    constantValues, i, idof, orbitals_);
+			    constant_values, i, idof, orbitals_);
 
 			directions_.push_back(GeometryDirectionType(io, aux, geometryBase_));
 		}
 
-		bool hasModifier = false;
+		bool has_modifier = false;
 		try {
-			String vModifier;
-			io.readline(vModifier, "GeometryValueModifier=");
-			hasModifier = true;
+			String v_modifier;
+			io.readline(v_modifier, "GeometryValueModifier=");
+			has_modifier = true;
 		} catch (std::exception&) { }
 
-		if (hasModifier) {
+		if (has_modifier) {
 			throw RuntimeError("GeometryValueModifier is no longer allowed\n");
 		}
 
 		cacheValues();
 
-		io.prefix() = savedPrefix;
+		io.prefix() = saved_prefix;
 
 		if (aux.debug) {
 			std::cerr << "Cached values:\n";
@@ -259,10 +259,10 @@ public:
 	{
 		String str("");
 
-		static const SizeType maxTerms = 10;
+		static const SizeType max_terms = 10;
 		// last term is used to define entities without the prefix gt0:
-		for (SizeType i = 0; i < maxTerms; ++i) {
-			String istr = (i + 1 < maxTerms) ? "gt" + ttos(i) + ":" : "";
+		for (SizeType i = 0; i < max_terms; ++i) {
+			String istr = (i + 1 < max_terms) ? "gt" + ttos(i) + ":" : "";
 			str += "integer " + istr + "DegreesOfFreedom;\n";
 			str += "string " + istr + "GeometryKind;\n";
 			str += "string " + istr + "GeometryOptions;\n";
@@ -307,24 +307,24 @@ public:
 	                                    SizeType edof2) const
 	{
 		assert(geometryBase_);
-		bool     bothFringe = (geometryBase_->fringe(i1, smax, emin)
-                                   && geometryBase_->fringe(i2, smax, emin));
-		SizeType siteNew1   = i1;
-		SizeType siteNew2   = i2;
-		SizeType edofNew1   = edof1;
-		SizeType edofNew2   = edof2;
-		if (bothFringe) {
+		bool     both_fringe = (geometryBase_->fringe(i1, smax, emin)
+                                    && geometryBase_->fringe(i2, smax, emin));
+		SizeType site_new1   = i1;
+		SizeType site_new2   = i2;
+		SizeType edof_new1   = edof1;
+		SizeType edof_new2   = edof2;
+		if (both_fringe) {
 			if (i2 < i1) {
-				siteNew1 = i2;
-				siteNew2 = i1;
-				edofNew1 = edof2;
-				edofNew2 = edof1;
+				site_new1 = i2;
+				site_new2 = i1;
+				edof_new1 = edof2;
+				edof_new2 = edof1;
 			}
 
-			siteNew2 = geometryBase_->getSubstituteSite(smax, emin, siteNew2);
+			site_new2 = geometryBase_->getSubstituteSite(smax, emin, site_new2);
 		}
 
-		return operator()(siteNew1, edofNew1, siteNew2, edofNew2);
+		return operator()(site_new1, edof_new1, site_new2, edof_new2);
 	}
 
 	bool connected(SizeType smax, SizeType emin, SizeType i1, SizeType i2) const
@@ -333,10 +333,10 @@ public:
 			return false;
 
 		assert(geometryBase_);
-		bool bothFringe = (geometryBase_->fringe(i1, smax, emin)
-		                   && geometryBase_->fringe(i2, smax, emin));
+		bool both_fringe = (geometryBase_->fringe(i1, smax, emin)
+		                    && geometryBase_->fringe(i2, smax, emin));
 
-		if (!bothFringe)
+		if (!both_fringe)
 			return geometryBase_->connected(i1, i2);
 		// std::cerr<<"fringe= "<<i1<<" "<<i2<<"\n";
 		return true;
@@ -378,13 +378,13 @@ public:
 
 	void print(std::ostream& os) const
 	{
-		SizeType linSize = aux_.linSize;
+		SizeType lin_size = aux_.linSize;
 
 		os << "#orbital changes first\n";
-		for (SizeType i = 0; i < linSize; i++) {
+		for (SizeType i = 0; i < lin_size; i++) {
 			SizeType dofsi = orbitals(i);
 			for (SizeType dof1 = 0; dof1 < dofsi; dof1++) {
-				for (SizeType j = 0; j < linSize; j++) {
+				for (SizeType j = 0; j < lin_size; j++) {
 					SizeType dofsj = orbitals(j);
 					for (SizeType dof2 = 0; dof2 < dofsj; dof2++) {
 						if (!connected(i, j)) {
@@ -440,12 +440,12 @@ private:
 		if (!geometryBase_)
 			return;
 
-		SizeType linSize    = aux_.linSize;
-		SizeType matrixRank = geometryBase_->matrixRank(linSize, orbitals_);
-		cachedValues_.resize(matrixRank, matrixRank);
+		SizeType lin_size    = aux_.linSize;
+		SizeType matrix_rank = geometryBase_->matrixRank(lin_size, orbitals_);
+		cachedValues_.resize(matrix_rank, matrix_rank);
 
-		for (SizeType i1 = 0; i1 < linSize; ++i1) {
-			for (SizeType i2 = 0; i2 < linSize; ++i2) {
+		for (SizeType i1 = 0; i1 < lin_size; ++i1) {
+			for (SizeType i2 = 0; i2 < lin_size; ++i2) {
 				if (!geometryBase_->connected(i1, i2))
 					continue;
 				for (SizeType edof1 = 0; edof1 < orbitals_; edof1++) {

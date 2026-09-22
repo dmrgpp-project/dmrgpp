@@ -1,18 +1,18 @@
 #include "util.h"
 
 template <typename ComplexOrRealType>
-void csc_matmul_post(char                                                        trans_A,
-                     const int                                                   nrow_A,
-                     const int                                                   ncol_A,
-                     const PsimagLite::Vector<int>::Type&                        acolptr,
-                     const PsimagLite::Vector<int>::Type&                        arow,
-                     const typename PsimagLite::Vector<ComplexOrRealType>::Type& aval,
-                     const int                                                   nrow_Y,
-                     const int                                                   ncol_Y,
-                     const PsimagLite::Matrix<ComplexOrRealType>&                yin,
-                     const int                                                   nrow_X,
-                     const int                                                   ncol_X,
-                     PsimagLite::Matrix<ComplexOrRealType>&                      xout)
+void cscMatmulPost(char                                                        trans_A,
+                   const int                                                   nrow_A,
+                   const int                                                   ncol_A,
+                   const PsimagLite::Vector<int>::Type&                        acolptr,
+                   const PsimagLite::Vector<int>::Type&                        arow,
+                   const typename PsimagLite::Vector<ComplexOrRealType>::Type& aval,
+                   const int                                                   nrow_Y,
+                   const int                                                   ncol_Y,
+                   const PsimagLite::Matrix<ComplexOrRealType>&                yin,
+                   const int                                                   nrow_X,
+                   const int                                                   ncol_X,
+                   PsimagLite::Matrix<ComplexOrRealType>&                      xout)
 {
 	/*
 	 * -------------------------------------------------------
@@ -33,10 +33,10 @@ void csc_matmul_post(char                                                       
 	 */
 	const bool is_complex = PsimagLite::IsComplexNumber<ComplexOrRealType>::True;
 
-	int isTranspose     = (trans_A == 'T') || (trans_A == 't');
-	int isConjTranspose = (trans_A == 'C') || (trans_A == 'c');
+	int is_transpose      = (trans_A == 'T') || (trans_A == 't');
+	int is_conj_transpose = (trans_A == 'C') || (trans_A == 'c');
 
-	if (isTranspose || isConjTranspose) {
+	if (is_transpose || is_conj_transpose) {
 		/*
 		 *   ----------------------------------------------------------
 		 *   X(nrow_X,ncol_X) +=  Y(nrow_Y,ncol_Y) * transpose(A(nrow_A,ncol_A))
@@ -59,7 +59,7 @@ void csc_matmul_post(char                                                       
 				assert((0 <= ia) && (ia < nrow_A));
 
 				ComplexOrRealType atji = aij;
-				if (is_complex && isConjTranspose) {
+				if (is_complex && is_conj_transpose) {
 					atji = PsimagLite::conj(atji);
 				};
 

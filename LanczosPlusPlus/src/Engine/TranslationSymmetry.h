@@ -98,9 +98,9 @@ public:
 			for (SizeType k = 0; k < kspace.size(); k++) {
 				typename PsimagLite::Vector<WordType>::Type y
 				    = translateInternal(ispace, k);
-				SizeType yIndex = basis.perfectIndex(y);
-				if (!seen[yIndex]) {
-					seen[yIndex]       = true;
+				SizeType y_index = basis.perfectIndex(y);
+				if (!seen[y_index]) {
+					seen[y_index]      = true;
 					data_[yIndex].type = k;
 					data_[yIndex].i    = ispace;
 				}
@@ -123,10 +123,10 @@ private:
 	typename PsimagLite::Vector<WordType>::Type translateInternal(SizeType state,
 	                                                              SizeType k) const
 	{
-		SizeType                                    numberOfDofs = basis_.dofs();
-		typename PsimagLite::Vector<WordType>::Type y(numberOfDofs);
+		SizeType                                    number_of_dofs = basis_.dofs();
+		typename PsimagLite::Vector<WordType>::Type y(number_of_dofs);
 
-		for (SizeType dof = 0; dof < numberOfDofs; dof++) {
+		for (SizeType dof = 0; dof < number_of_dofs; dof++) {
 			WordType x = basis_(state, dof);
 			y[dof]     = translateInternal2(x, k);
 		}
@@ -137,16 +137,16 @@ private:
 
 	WordType translateInternal2(WordType state, SizeType k) const
 	{
-		SizeType numberOfSites = geometry_.numberOfSites();
-		SizeType termId        = 0;
-		WordType x             = state;
-		WordType y             = 0;
-		SizeType diry          = 1;
-		for (SizeType site = 0; site < numberOfSites; site++) {
-			SizeType tSite           = geometry_.term(termId).translate(site, diry, k);
-			SizeType thisSiteContent = x & 1;
+		SizeType number_of_sites = geometry_.numberOfSites();
+		SizeType term_id         = 0;
+		WordType x               = state;
+		WordType y               = 0;
+		SizeType diry            = 1;
+		for (SizeType site = 0; site < number_of_sites; site++) {
+			SizeType t_site = geometry_.term(term_id).translate(site, diry, k);
+			SizeType this_site_content = x & 1;
 			x >>= 1; // go to next site
-			addTo(y, thisSiteContent, tSite);
+			addTo(y, this_site_content, t_site);
 			if (!x)
 				break;
 		}
@@ -202,18 +202,18 @@ public:
 		SizeType               hilbert = basis.size();
 		VectorSparseVectorType bag;
 		for (SizeType k = 0; k < kspace_.size(); k++) {
-			SizeType blockSize = 0;
+			SizeType block_size = 0;
 			for (SizeType ispace = 0; ispace < hilbert; ispace++) {
 				typename PsimagLite::Vector<ComplexOrRealType>::Type v(hilbert);
 				eikrTr(v, ispace, k, reps);
-				SparseVectorType sparseV(v);
-				sparseV.sort();
-				if (!checkForOrthogonality(sparseV, bag))
+				SparseVectorType sparse_v(v);
+				sparse_v.sort();
+				if (!checkForOrthogonality(sparse_v, bag))
 					continue;
-				bag.push_back(sparseV);
-				blockSize++;
+				bag.push_back(sparse_v);
+				block_size++;
 			}
-			kspace_.setBlockSize(k, blockSize);
+			kspace_.setBlockSize(k, block_size);
 		}
 
 		if (kspace_.blockSize() != hilbert) {
@@ -253,13 +253,13 @@ public:
 	void transformMatrix(typename PsimagLite::Vector<SparseMatrixType>::Type& matrix1,
 	                     const SparseMatrixType&                              matrix) const
 	{
-		SparseMatrixType rT;
-		transposeConjugate(rT, transform_);
+		SparseMatrixType r_t;
+		transposeConjugate(r_t, transform_);
 
 		if (matrix.rows() < 40)
 			printFullMatrix(matrix, "originalHam");
 		SparseMatrixType tmp;
-		multiply(tmp, matrix, rT);
+		multiply(tmp, matrix, r_t);
 
 		SparseMatrixType matrix2;
 		multiply(matrix2, transform_, tmp);
@@ -274,9 +274,9 @@ public:
 	{
 		VectorType gstmp(transform_.rows(), 0);
 
-		const SizeType excitedPlusOne = zs.size();
+		const SizeType excited_plus_one = zs.size();
 
-		for (SizeType i = 0; i < excitedPlusOne; ++i) {
+		for (SizeType i = 0; i < excited_plus_one; ++i) {
 			LanczosGlobals::transform(zs[i], offset, gstmp, transform_);
 		}
 	}
@@ -367,25 +367,25 @@ private:
 	{
 		SizeType offset = 0;
 		for (SizeType i = 0; i < kspace_.size(); i++) {
-			SizeType blockSize = kspace_.blockSizes(i);
-			if (blockSize == 0)
+			SizeType block_size = kspace_.blockSizes(i);
+			if (block_size == 0)
 				continue;
-			std::cout << "BLOCKSIZE=" << blockSize << "\n";
-			SparseMatrixType m(blockSize, blockSize);
+			std::cout << "BLOCKSIZE=" << block_size << "\n";
+			SparseMatrixType m(block_size, block_size);
 			SizeType         counter = 0;
-			for (SizeType row = 0; row < blockSize; row++) {
+			for (SizeType row = 0; row < block_size; row++) {
 				m.setRow(row, counter);
-				SizeType globalRow = row + offset;
-				SizeType start     = matrix2.getRowPtr(globalRow);
-				SizeType end       = matrix2.getRowPtr(globalRow + 1);
+				SizeType global_row = row + offset;
+				SizeType start      = matrix2.getRowPtr(global_row);
+				SizeType end        = matrix2.getRowPtr(global_row + 1);
 				for (SizeType k = start; k < end; k++) {
 					ComplexOrRealType val = matrix2.getValue(k);
 					if (PsimagLite::norm(val) < 1e-8)
 						continue;
-					SizeType globalCol = matrix2.getCol(k);
+					SizeType global_col = matrix2.getCol(k);
 
 					assert(globalCol >= offset);
-					SizeType col = globalCol - offset;
+					SizeType col = global_col - offset;
 
 					assert(col < blockSize);
 					m.pushCol(col);
@@ -393,10 +393,10 @@ private:
 					counter++;
 				}
 			}
-			m.setRow(blockSize, counter);
+			m.setRow(block_size, counter);
 			m.checkValidity();
 			matrix.push_back(m);
-			offset += blockSize;
+			offset += block_size;
 		}
 	}
 
@@ -407,11 +407,11 @@ private:
 			gstmp[i + offset] = gs[i];
 		}
 
-		SparseMatrixType rT;
-		transposeConjugate(rT, transform_);
+		SparseMatrixType r_t;
+		transposeConjugate(r_t, transform_);
 		gs.clear();
 		gs.resize(transform_.rows());
-		multiply(gs, rT, gstmp);
+		multiply(gs, r_t, gstmp);
 	}
 
 	PsimagLite::ProgressIndicator                       progress_;

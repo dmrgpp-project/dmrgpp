@@ -99,23 +99,23 @@ public:
 		SizeType nsite = geometry_.numberOfSites();
 
 		// Calculate off-diagonal elements AND store matrix
-		SizeType cacheSize = hilbert / 10;
-		if (cacheSize < 100)
-			cacheSize = 100;
-		SparseRowType sparseRow(cacheSize);
+		SizeType cache_size = hilbert / 10;
+		if (cache_size < 100)
+			cache_size = 100;
+		SparseRowType sparse_row(cache_size);
 		for (SizeType ispace = 0; ispace < hilbert; ispace++) {
 			WordType ket1 = basis.operator()(ispace, SPIN_UP);
 			WordType ket2 = basis.operator()(ispace, SPIN_DOWN);
 			// Save diagonal
-			sparseRow.add(ispace, diag[ispace]);
+			sparse_row.add(ispace, diag[ispace]);
 			for (SizeType i = 0; i < nsite; i++) {
 				for (SizeType orb = 0; orb < basis.orbsPerSite(i); orb++) {
 					setHoppingTerm(
-					    sparseRow, ket1, ket2, ispace, i, orb, basis);
+					    sparse_row, ket1, ket2, ispace, i, orb, basis);
 				}
 			}
 
-			x[ispace] += sparseRow.matrixVectorProduct(y);
+			x[ispace] += sparse_row.matrixVectorProduct(y);
 		}
 	}
 
@@ -136,23 +136,23 @@ public:
 		matrix.resize(hilbert, hilbert);
 
 		// Calculate off-diagonal elements AND store matrix
-		SizeType      nCounter = 0;
-		SparseRowType sparseRow(100);
+		SizeType      n_counter = 0;
+		SparseRowType sparse_row(100);
 		for (SizeType ispace = 0; ispace < hilbert; ispace++) {
-			matrix.setRow(ispace, nCounter);
+			matrix.setRow(ispace, n_counter);
 			WordType ket1 = basis(ispace, SPIN_UP);
 			WordType ket2 = basis(ispace, SPIN_DOWN);
 			// Save diagonal
-			sparseRow.add(ispace, diag[ispace]);
+			sparse_row.add(ispace, diag[ispace]);
 			for (SizeType i = 0; i < nsite; i++) {
 				for (SizeType orb = 0; orb < basis.orbsPerSite(i); orb++) {
 					setHoppingTerm(
-					    sparseRow, ket1, ket2, ispace, i, orb, basis);
+					    sparse_row, ket1, ket2, ispace, i, orb, basis);
 				}
 			}
-			nCounter += sparseRow.finalize(matrix);
+			n_counter += sparse_row.finalize(matrix);
 		}
-		matrix.setRow(hilbert, nCounter);
+		matrix.setRow(hilbert, n_counter);
 	}
 
 	PsimagLite::String name() const override { return __FILE__; }
@@ -173,7 +173,7 @@ private:
 		return geometry_(i, orb1, j, orb2, 0);
 	}
 
-	ComplexOrRealType Upd(SizeType i, SizeType j) const { return geometry_(i, 0, j, 0, 1); }
+	ComplexOrRealType upd(SizeType i, SizeType j) const { return geometry_(i, 0, j, 0, 1); }
 
 	void setHoppingTerm(SparseRowType&       sparseRow,
 	                    const WordType&      ket1,
@@ -211,24 +211,24 @@ private:
 					WordType bra1 = ket1
 					    ^ (BasisType::bitmask(ii) | BasisType::bitmask(jj));
 					SizeType temp = basis.perfectIndex(bra1, ispace, SPIN_UP);
-					RealType extraSign
+					RealType extra_sign
 					    = (s1i == 1) ? LanczosGlobals::FERMION_SIGN : 1;
 					RealType tmp2
 					    = basis.doSign(ket1, ket2, i, orb, j, orb2, SPIN_UP);
-					ComplexOrRealType cTemp = h * extraSign * tmp2;
-					sparseRow.add(temp, cTemp);
+					ComplexOrRealType c_temp = h * extra_sign * tmp2;
+					sparseRow.add(temp, c_temp);
 				}
 
 				if (s2i + s2j == 1) {
 					WordType bra2 = ket2
 					    ^ (BasisType::bitmask(ii) | BasisType::bitmask(jj));
 					SizeType temp = basis.perfectIndex(bra2, ispace, SPIN_DOWN);
-					RealType extraSign
+					RealType extra_sign
 					    = (s2i == 1) ? LanczosGlobals::FERMION_SIGN : 1;
 					RealType tmp2
 					    = basis.doSign(ket1, ket2, i, orb, j, orb2, SPIN_DOWN);
-					ComplexOrRealType cTemp = h * extraSign * tmp2;
-					sparseRow.add(temp, cTemp);
+					ComplexOrRealType c_temp = h * extra_sign * tmp2;
+					sparseRow.add(temp, c_temp);
 				}
 			}
 		}
@@ -248,7 +248,7 @@ private:
 			for (SizeType i = 0; i < nsite; i++) {
 				for (SizeType orb = 0; orb < basis.orbsPerSite(i); orb++) {
 
-					SizeType totalCharge
+					SizeType total_charge
 					    = basis.getN(ket1, ket1, i, SPIN_UP, orb)
 					    + basis.getN(ket2, ket2, i, SPIN_DOWN, orb);
 
@@ -263,7 +263,7 @@ private:
 					           ket1, ket2, i, SPIN_DOWN, orb));
 
 					// Potential term
-					s += mp_.potentialV[i] * totalCharge;
+					s += mp_.potentialV[i] * total_charge;
 
 					// Upd n_O n_Cu
 					if (basis.orbsPerSite(i) == 1)
@@ -273,11 +273,11 @@ private:
 						if (basis.orbsPerSite(j) == 2)
 							continue;
 						// j is a Copper site now
-						SizeType totalCharge2
+						SizeType total_charge2
 						    = basis.getN(ket1, ket1, j, SPIN_UP, 0)
 						    + basis.getN(ket2, ket2, j, SPIN_DOWN, 0);
-						s += (2.0 - totalCharge) * (2.0 - totalCharge2)
-						    * Upd(i, j);
+						s += (2.0 - total_charge) * (2.0 - total_charge2)
+						    * upd(i, j);
 					}
 				}
 			}

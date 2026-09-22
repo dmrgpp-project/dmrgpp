@@ -103,9 +103,9 @@ int main(int argc, char** argv)
 	SizeType total   = atoi(argv[4]);
 	SizeType threads = atoi(argv[5]);
 
-	PsimagLite::CodeSectionParams           codeSections(threads);
-	PsimagLite::Parallelizer<MyBlasWrapper> parallel(codeSections);
-	MyBlasWrapper                           myblasWrapper(m, n, k, total);
+	PsimagLite::CodeSectionParams           code_sections(threads);
+	PsimagLite::Parallelizer<MyBlasWrapper> parallel(code_sections);
+	MyBlasWrapper                           myblas_wrapper(m, n, k, total);
 
-	parallel.loopCreate(myblasWrapper);
+	parallel.loopCreate(myblas_wrapper);
 }

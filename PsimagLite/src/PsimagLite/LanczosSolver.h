@@ -30,7 +30,7 @@ public:
 	void computeOneState(RealType&         energy,
 	                     VectorType&       z,
 	                     const VectorType& initialVector,
-	                     SizeType          excited) override
+	                     SizeType          excited)
 	{
 		Profiling profiling("LanczosSolver", std::cout);
 
@@ -68,7 +68,7 @@ public:
 	void computeAllStatesBelow(VectorRealType&   eigs,
 	                           VectorVectorType& z,
 	                           const VectorType& initialVector,
-	                           SizeType          excited) override
+	                           SizeType          excited)
 	{
 		TridiagonalMatrixType ab;
 		ls_.decomposition(initialVector, ab, excited);

@@ -99,8 +99,8 @@ class Concurrency {
 
 public:
 
-	static SizeType          mode;
-	static CodeSectionParams codeSectionParams;
+	static SizeType          MODE;
+	static CodeSectionParams CODE_SECTION_PARAMS;
 
 #ifndef USE_PTHREADS
 
@@ -164,7 +164,7 @@ public:
 
 	static SizeType storageSize(SizeType npthreads)
 	{
-		switch (mode) {
+		switch (MODE) {
 		case SERIAL:
 			assert(npthreads == 1);
 		case PTHREADS:
@@ -178,7 +178,7 @@ public:
 
 	static SizeType storageIndex(SizeType threadNum)
 	{
-		switch (mode) {
+		switch (MODE) {
 		case SERIAL:
 			assert(threadNum == 0);
 		case PTHREADS:
@@ -193,11 +193,11 @@ public:
 	Concurrency(int* argc, char*** argv, size_t nthreads)
 	{
 		FloatingPoint::enableExcept();
-		codeSectionParams.npthreads         = nthreads;
-		codeSectionParams.npthreadsLevelTwo = 1;
-		mode                                = 0;
+		CODE_SECTION_PARAMS.npthreads         = nthreads;
+		CODE_SECTION_PARAMS.npthreadsLevelTwo = 1;
+		MODE                                  = 0;
 #ifdef USE_PTHREADS
-		mode |= 1;
+		MODE |= 1;
 		if (!psimag::LAPACK::isThreadSafe())
 			std::cerr << "WARNING: You LAPACK might not be thread safe\n";
 #else
@@ -211,7 +211,7 @@ public:
 		MPI::version(std::cout);
 
 		if (MPI::hasMpi())
-			mode |= 2;
+			MODE |= 2;
 	}
 
 	~Concurrency() { MPI::finalize(); }
@@ -225,15 +225,15 @@ public:
 
 	static SizeType rank(MPI::CommType comm = MPI::COMM_WORLD) { return MPI::commRank(comm); }
 
-	static bool hasMpi() { return (mode & MPI); }
+	static bool hasMpi() { return (MODE & MPI); }
 
-	static bool hasPthreads() { return (mode & PTHREADS); }
+	static bool hasPthreads() { return (MODE & PTHREADS); }
 
 	static void mpiDisable(String label)
 	{
 		if (!hasMpi())
 			return;
-		mpiDisabled_.disable(label);
+		MPI_DISABLED.disable(label);
 	}
 
 	static void
@@ -241,7 +241,7 @@ public:
 	{
 		if (!hasMpi())
 			return;
-		if (!mpiDisabled_(label))
+		if (!MPI_DISABLED(label))
 			return;
 		mpiRank   = 0;
 		blockSize = total;
@@ -256,13 +256,14 @@ public:
 	{
 		if (!hasMpi())
 			return false;
-		return mpiDisabled_(label);
+		return MPI_DISABLED(label);
 	}
 
 	static void setOptions(const CodeSectionParams& cs)
 	{
-		codeSectionParams = cs;
-		if (codeSectionParams.npthreads == 1 && codeSectionParams.npthreadsLevelTwo == 1)
+		CODE_SECTION_PARAMS = cs;
+		if (CODE_SECTION_PARAMS.npthreads == 1
+		    && CODE_SECTION_PARAMS.npthreadsLevelTwo == 1)
 			return;
 
 #ifndef USE_PTHREADS
@@ -275,17 +276,17 @@ public:
 		message1 += "and recompile\n";
 		throw PsimagLite::RuntimeError(message1.c_str());
 #else
-		std::cout << "Concurrency::npthreads=" << codeSectionParams.npthreads << "\n";
-		std::cout << "Concurrency::npthreads2=" << codeSectionParams.npthreadsLevelTwo
+		std::cout << "Concurrency::npthreads=" << CODE_SECTION_PARAMS.npthreads << "\n";
+		std::cout << "Concurrency::npthreads2=" << CODE_SECTION_PARAMS.npthreadsLevelTwo
 		          << "\n";
-		std::cout << "Concurrency::setAffinitiesDefault=" << codeSectionParams.setAffinities
-		          << "\n";
+		std::cout << "Concurrency::setAffinitiesDefault="
+		          << CODE_SECTION_PARAMS.setAffinities << "\n";
 #endif
 	}
 
 private:
 
-	static MpiDisabledType mpiDisabled_;
+	static MpiDisabledType MPI_DISABLED;
 };
 
 } // namespace PsimagLite

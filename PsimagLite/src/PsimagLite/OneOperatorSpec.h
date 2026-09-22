@@ -12,11 +12,11 @@ struct OneOperatorSpec {
 	    , label(label_)
 	    , transpose(false)
 	{
-		SizeType lastIndex = label.length();
-		if (lastIndex > 0)
-			lastIndex--;
-		if (label[lastIndex] == '\'') {
-			label     = label.substr(0, lastIndex);
+		SizeType last_index = label.length();
+		if (last_index > 0)
+			last_index--;
+		if (label[last_index] == '\'') {
+			label     = label.substr(0, last_index);
 			transpose = true;
 		}
 
@@ -34,15 +34,15 @@ struct OneOperatorSpec {
 		if (i + 1 == label.length())
 			err("WRONG op. spec. " + label_ + ", nothing after ?\n");
 
-		label                      = label_.substr(0, i);
-		const String numericString = label_.substr(i + 1, label_.length());
-		if (!isAnInteger(numericString)) {
+		label                       = label_.substr(0, i);
+		const String numeric_string = label_.substr(i + 1, label_.length());
+		if (!isAnInteger(numeric_string)) {
 			throw RuntimeError("FATAL: Syntax Error: The label " + label
 			                   + " must be followed by an integer " + "and not "
-			                   + numericString + "\n");
+			                   + numeric_string + "\n");
 		}
 
-		dof = atoi(numericString.c_str());
+		dof = atoi(numeric_string.c_str());
 	}
 
 	struct SiteSplit {
@@ -61,32 +61,32 @@ struct OneOperatorSpec {
 	static SiteSplit
 	extractSiteIfAny(PsimagLite::String name, const char cBegin = '[', const char cEnd = ']')
 	{
-		int firstIndex = -1;
-		int lastIndex  = -1;
+		int first_index = -1;
+		int last_index  = -1;
 		for (SizeType i = 0; i < name.length(); ++i) {
 			if (name[i] == cBegin) {
-				firstIndex = i;
+				first_index = i;
 				continue;
 			}
 
 			if (name[i] == cEnd) {
-				lastIndex = i;
+				last_index = i;
 				continue;
 			}
 		}
 
-		if (firstIndex < 0 && lastIndex < 0)
+		if (first_index < 0 && last_index < 0)
 			return SiteSplit(false, name, "");
 
-		bool b1 = (firstIndex < 0 && lastIndex >= 0);
-		bool b2 = (firstIndex >= 0 && lastIndex < 0);
+		bool b1 = (first_index < 0 && last_index >= 0);
+		bool b2 = (first_index >= 0 && last_index < 0);
 		if (b1 || b2)
 			err(name + " has unmatched " + cBegin + " or " + cEnd + "\n");
 
-		String str = name.substr(0, firstIndex);
-		str += name.substr(lastIndex + 1, name.length() - lastIndex);
-		String siteString = name.substr(firstIndex + 1, lastIndex - firstIndex - 1);
-		return SiteSplit(true, str, siteString);
+		String str = name.substr(0, first_index);
+		str += name.substr(last_index + 1, name.length() - last_index);
+		String site_string = name.substr(first_index + 1, last_index - first_index - 1);
+		return SiteSplit(true, str, site_string);
 	}
 
 	static bool isNonNegativeInteger(const String& s)

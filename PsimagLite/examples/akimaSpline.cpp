@@ -67,13 +67,13 @@ int main(int argc, char* argv[])
 	VectorType x, s;
 	readTwoColumnData(argv[1], x, s);
 
-	AkimaSplineType   akimaSpline(x, s);
+	AkimaSplineType   akima_spline(x, s);
 	ComplexOrRealType xstart = std::atof(argv[2]);
 	ComplexOrRealType xend   = std::atof(argv[3]);
 	SizeType          total  = std::atoi(argv[4]);
 	ComplexOrRealType xstep  = (xend - xstart) / total;
 
 	for (ComplexOrRealType x = xstart; x < xend; x += xstep) {
-		std::cout << x << " " << akimaSpline(x) << "\n";
+		std::cout << x << " " << akima_spline(x) << "\n";
 	}
 }

@@ -85,13 +85,13 @@ template <typename FieldType> class TridiagonalMatrix {
 
 	using RealType = typename Real<FieldType>::Type;
 
-	static const bool diagWithLapack_ = true;
+	static const bool DIAG_WITH_LAPACK = true;
 
 public:
 
 	using VectorType     = typename Vector<FieldType>::Type;
 	using VectorRealType = typename Vector<RealType>::Type;
-	using value_type     = FieldType;
+	using ValueType      = FieldType;
 
 	TridiagonalMatrix() { }
 
@@ -164,7 +164,7 @@ public:
 
 	void diag(VectorRealType& eigs, SizeType nn) const
 	{
-		if (diagWithLapack_)
+		if (DIAG_WITH_LAPACK)
 			diag2(eigs, nn);
 		else
 			ground(eigs, nn);
@@ -189,7 +189,7 @@ private:
 		groundD.resize(n);
 		groundAllocations(n);
 
-		const long int maxCounter = 10000;
+		const long int max_counter = 10000;
 
 		assert(a_.size() >= nn && b_.size() >= nn);
 		for (SizeType i = 0; i < nn; ++i) {
@@ -197,14 +197,14 @@ private:
 			groundE_[i] = b_[i];
 		}
 
-		RealType s          = 0;
-		long int intCounter = 0;
-		int      m          = 0;
-		int      l          = 0;
+		RealType s           = 0;
+		long int int_counter = 0;
+		int      m           = 0;
+		int      l           = 0;
 		for (; l < n; l++) {
 			do {
-				intCounter++;
-				if (intCounter > maxCounter) {
+				int_counter++;
+				if (int_counter > max_counter) {
 					std::cerr << "lanczos: ground: "
 					             "premature exit ";
 					std::cerr << "(may indicate an "
@@ -256,7 +256,7 @@ private:
 
 		std::sort(groundD.begin(), groundD.end());
 
-		if (intCounter > maxCounter)
+		if (int_counter > max_counter)
 			throw RuntimeError(String(__FILE__) + "::ground(): internal error\n");
 	}
 

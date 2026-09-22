@@ -258,12 +258,12 @@ TEST_CASE("TextAndNumbersChecker reports generic stream read errors", "[TextAndN
 {
 	TemporaryFiles        files;
 	TextAndNumbersChecker checker(0.01);
-	const auto            firstDirectory  = files.path("first-directory");
-	const auto            secondDirectory = files.path("second-directory");
-	std::filesystem::create_directory(firstDirectory);
-	std::filesystem::create_directory(secondDirectory);
+	const auto            first_directory  = files.path("first-directory");
+	const auto            second_directory = files.path("second-directory");
+	std::filesystem::create_directory(first_directory);
+	std::filesystem::create_directory(second_directory);
 
-	CHECK_THROWS_MATCHES(checker.run(firstDirectory, secondDirectory),
+	CHECK_THROWS_MATCHES(checker.run(first_directory, second_directory),
 	                     std::runtime_error,
 	                     MessageMatches(ContainsSubstring("Error while reading first file")));
 }

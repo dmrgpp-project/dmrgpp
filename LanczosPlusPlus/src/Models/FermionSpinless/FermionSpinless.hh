@@ -76,21 +76,21 @@ public:
 
 		matrix.resize(hilbert, hilbert);
 		// Calculate off-diagonal elements AND store matrix
-		SizeType nCounter = 0;
+		SizeType n_counter = 0;
 		for (SizeType ispace = 0; ispace < hilbert; ++ispace) {
-			SparseRowType sparseRow;
-			matrix.setRow(ispace, nCounter);
+			SparseRowType sparse_row;
+			matrix.setRow(ispace, n_counter);
 			WordType ket = basis(ispace, 0);
 			// Save diagonal
-			sparseRow.add(ispace, diag[ispace]);
+			sparse_row.add(ispace, diag[ispace]);
 			for (SizeType i = 0; i < nsite; ++i) {
-				setHoppingTerm(sparseRow, ket, i, basis);
+				setHoppingTerm(sparse_row, ket, i, basis);
 			}
 
-			nCounter += sparseRow.finalize(matrix);
+			n_counter += sparse_row.finalize(matrix);
 		}
 
-		matrix.setRow(hilbert, nCounter);
+		matrix.setRow(hilbert, n_counter);
 	}
 
 	void matrixVectorProduct(VectorType& x, const VectorType& y) const override
@@ -114,13 +114,13 @@ public:
 		// Calculate off-diagonal elements AND store matrix
 		auto lambda = [&basis, nsite, &x, &y, this](SizeType ispace, SizeType)
 		{
-			SparseRowType sparseRow;
+			SparseRowType sparse_row;
 			WordType      ket = basis(ispace, 0);
 			for (SizeType i = 0; i < nsite; ++i) {
-				setHoppingTerm(sparseRow, ket, i, basis);
+				setHoppingTerm(sparse_row, ket, i, basis);
 			}
 
-			x[ispace] += sparseRow.finalize(y);
+			x[ispace] += sparse_row.finalize(y);
 		};
 
 		PsimagLite::Parallelizer2<> parallelizer2(
@@ -185,13 +185,13 @@ private:
 		// Hopping term
 		for (SizeType j = 0; j < nsite; ++j) {
 			const ComplexOrRealType& h = hoppings_(i, j);
-			const bool hasHop = (PsimagLite::real(h) != 0 || PsimagLite::imag(h) != 0);
-			WordType   s1j    = (ket & BasisType::bitmask(j));
+			const bool has_hop = (PsimagLite::real(h) != 0 || PsimagLite::imag(h) != 0);
+			WordType   s1j     = (ket & BasisType::bitmask(j));
 			if (s1j > 0)
 				s1j = 1;
 
 			// Apply c^\dagger_j c_i
-			if (hasHop && s1i == 1 && s1j == 0) {
+			if (has_hop && s1i == 1 && s1j == 0) {
 				// apply i
 				WordType bra1 = ket ^ BasisType::bitmask(i);
 				RealType tmp2 = LanczosGlobals::doSign(ket, i)
@@ -200,10 +200,10 @@ private:
 				// apply j
 				bra1 = bra1 ^ BasisType::bitmask(j);
 
-				SizeType          temp  = basis.perfectIndex(bra1, 0);
-				ComplexOrRealType cTemp = h * tmp2; //*extraSign;
+				SizeType          temp   = basis.perfectIndex(bra1, 0);
+				ComplexOrRealType c_temp = h * tmp2; //*extraSign;
 				assert(temp < basis.size());
-				sparseRow.add(temp, cTemp);
+				sparseRow.add(temp, c_temp);
 			}
 		}
 	}
@@ -233,10 +233,10 @@ private:
 	                   PsimagLite::String   operatorName,
 	                   SizeType             site) const
 	{
-		SizeType            hilbertDest = basis.size();
-		SizeType            hilbertSrc  = basis_.size();
-		SizeType            nsite       = geometry_.numberOfSites();
-		LabeledOperatorType lOperator(LabeledOperatorType::Label::OPERATOR_C);
+		SizeType            hilbert_dest = basis.size();
+		SizeType            hilbert_src  = basis_.size();
+		SizeType            nsite        = geometry_.numberOfSites();
+		LabeledOperatorType l_operator(LabeledOperatorType::Label::OPERATOR_C);
 		if (operatorName != "c") {
 			PsimagLite::String str(__FILE__);
 			str += " " + ttos(__LINE__) + "\n";
@@ -252,15 +252,15 @@ private:
 			throw PsimagLite::RuntimeError(str);
 		}
 
-		matrix.resize(hilbertSrc, hilbertDest);
+		matrix.resize(hilbert_src, hilbert_dest);
 		matrix.setTo(0.0);
 		SizeType orb = 0;
 
-		for (SizeType ispace = 0; ispace < hilbertSrc; ++ispace) {
+		for (SizeType ispace = 0; ispace < hilbert_src; ++ispace) {
 			WordType ket = basis_(ispace, 0);
 			WordType bra = ket;
 			// assumes OPERATOR_C
-			bool b = basis.getBra(bra, ket, 0, lOperator, site, 0);
+			bool b = basis.getBra(bra, ket, 0, l_operator, site, 0);
 			if (!b)
 				continue;
 			SizeType index = basis.perfectIndex(bra, 0);
@@ -273,28 +273,28 @@ private:
 	                           SizeType                   oldParts,
 	                           const LabeledOperatorType& lOperator) const
 	{
-		int newPart1 = oldParts;
-		int c        = (lOperator.id() == LabeledOperatorType::Label::OPERATOR_C) ? -1 : 1;
-		newPart1 += c;
+		int new_part1 = oldParts;
+		int c         = (lOperator.id() == LabeledOperatorType::Label::OPERATOR_C) ? -1 : 1;
+		new_part1 += c;
 
-		if (newPart1 < 0)
+		if (new_part1 < 0)
 			return false;
 		SizeType nsite = geometry_.numberOfSites();
-		if (static_cast<SizeType>(newPart1) > nsite)
+		if (static_cast<SizeType>(new_part1) > nsite)
 			return false;
-		if (newPart1 == 0)
+		if (new_part1 == 0)
 			return false;
-		newParts = newPart1;
+		newParts = new_part1;
 		return true;
 	}
 
 	void calcDiagonalElements(typename PsimagLite::Vector<RealType>::Type& diag,
 	                          const BasisBaseType&                         basis) const
 	{
-		constexpr RealType zeroPointFive = 0.5;
-		SizeType           hilbert       = basis.size();
-		SizeType           nsite         = geometry_.numberOfSites();
-		SizeType           orb           = 0;
+		constexpr RealType zero_point_five = 0.5;
+		SizeType           hilbert         = basis.size();
+		SizeType           nsite           = geometry_.numberOfSites();
+		SizeType           orb             = 0;
 
 		// Calculate diagonal elements
 		for (SizeType ispace = 0; ispace < hilbert; ++ispace) {
@@ -306,7 +306,7 @@ private:
 				RealType ne = basis.getN(ket, 0, i, 0, orb);
 
 				for (SizeType j = 0; j < nsite; ++j) {
-					ComplexOrRealType value = zeroPointFive * ninj_(i, j);
+					ComplexOrRealType value = zero_point_five * ninj_(i, j);
 					if (PsimagLite::real(value) == 0
 					    && PsimagLite::imag(value) == 0)
 						continue;

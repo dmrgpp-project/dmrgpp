@@ -220,45 +220,45 @@ struct LanczosGlobals {
 			gstmp[i + offset] = gs[i];
 		}
 
-		PsimagLite::CrsMatrix<typename SomeVectorType::value_type> rT;
-		transposeConjugate(rT, tr);
+		PsimagLite::CrsMatrix<typename SomeVectorType::value_type> r_t;
+		transposeConjugate(r_t, tr);
 		gs.clear();
 		gs.resize(tr.rows());
-		multiply(gs, rT, gstmp);
+		multiply(gs, r_t, gstmp);
 	}
 
 	static void doBitmask(SizeType total)
 	{
-		if (total == bitmask_.size())
+		if (total == bitmask.size())
 			return;
 
-		bitmask_.resize(total);
-		bitmask_[0] = 1ul;
-		for (SizeType i = 1; i < bitmask_.size(); i++)
-			bitmask_[i] = bitmask_[i - 1] << 1;
+		bitmask.resize(total);
+		bitmask[0] = 1ul;
+		for (SizeType i = 1; i < bitmask.size(); i++)
+			bitmask[i] = bitmask[i - 1] << 1;
 	}
 
 	static const WordType& bitmask(SizeType i)
 	{
 		assert(i < bitmask_.size());
-		return bitmask_[i];
+		return bitmask[i];
 	}
 
 	static void doCombinatorial(SizeType total)
 	{
-		if (total == comb_.size()) {
+		if (total == COMB.size()) {
 			return;
 		}
 
-		comb_.resize(total);
+		COMB.resize(total);
 	}
 
-	static const SizeType& combinatorial(SizeType i, SizeType j) { return comb_(i, j); }
+	static const SizeType& combinatorial(SizeType i, SizeType j) { return COMB(i, j); }
 
 private:
 
-	static PsimagLite::Vector<WordType>::Type bitmask_;
-	static Combinatorial                      comb_;
+	static PsimagLite::Vector<WordType>::Type BITMASK;
+	static Combinatorial                      COMB;
 }; // LanczosGlobals
 
 } // namespace LanczosPlusPlus

@@ -158,44 +158,44 @@ public:
 			throw RuntimeError(msg);
 		}
 
-		VectorType V2(matsize, 0); // v2
-		VectorType V1(matsize, 0); // v1
-		VectorType V0 = initVector; // v0
+		VectorType v2(matsize, 0); // v2
+		VectorType v1(matsize, 0); // v1
+		VectorType v0 = initVector; // v0
 
 		RealType atmp = 0;
 		for (SizeType i = 0; i < matsize; ++i)
-			atmp += PsimagLite::real(V0[i] * PsimagLite::conj(V0[i]));
+			atmp += PsimagLite::real(v0[i] * PsimagLite::conj(v0[i]));
 
 		atmp = 1.0 / sqrt(atmp);
 		for (SizeType i = 0; i < matsize; ++i)
-			V0[i] *= atmp;
+			v0[i] *= atmp;
 
 		if (max_nstep > matsize)
 			max_nstep = matsize;
 		ab.resize(max_nstep, 0);
 
-		bool     exitFlag = false;
-		SizeType j        = 0;
-		lanczosVectors_.saveInitialVector(V0);
+		bool     exit_flag = false;
+		SizeType j         = 0;
+		lanczosVectors_.saveInitialVector(v0);
 		lanczosVectors_.prepareMemory(matsize, max_nstep);
 
 		// -- 1st step --
 		ab.b(0) = 0.0; // beta_0 = 0 always
 		if (lanczosVectors_.lotaMemory())
-			lanczosVectors_.saveVector(V0, 0);
+			lanczosVectors_.saveVector(v0, 0);
 		for (SizeType i = 0; i < matsize; ++i)
-			V1[i] = 0.0;
-		mat_.matrixVectorProduct(V1, V0); // V1 = H|V0>
+			v1[i] = 0.0;
+		mat_.matrixVectorProduct(v1, v0); // V1 = H|V0>
 		atmp = 0.0;
 		for (SizeType i = 0; i < matsize; ++i)
 			atmp
-			    += PsimagLite::real(V1[i] * PsimagLite::conj(V0[i])); // alpha = <V0|V1>
+			    += PsimagLite::real(v1[i] * PsimagLite::conj(v0[i])); // alpha = <V0|V1>
 		ab.a(0) = atmp;
 
 		RealType btmp = 0.0;
 		for (SizeType i = 0; i < matsize; ++i) {
-			V1[i] -= atmp * V0[i]; // V1 = V1 - alpha*V0
-			btmp += PsimagLite::real(V1[i] * PsimagLite::conj(V1[i]));
+			v1[i] -= atmp * v0[i]; // V1 = V1 - alpha*V0
+			btmp += PsimagLite::real(v1[i] * PsimagLite::conj(v1[i]));
 		}
 
 		btmp    = sqrt(btmp);
@@ -204,47 +204,47 @@ public:
 		if (btmp > 0) {
 			btmp = 1.0 / btmp;
 			for (SizeType i = 0; i < matsize; ++i)
-				V1[i] *= btmp; // normalize V1
+				v1[i] *= btmp; // normalize V1
 		}
 
 		if (lanczosVectors_.lotaMemory() && 1 < max_nstep)
-			lanczosVectors_.saveVector(V1, 1);
+			lanczosVectors_.saveVector(v1, 1);
 
-		VectorRealType tmpEigs(ab.size(), 0);
+		VectorRealType tmp_eigs(ab.size(), 0);
 		VectorRealType eold(ab.size(), 0);
-		RealType       deltaMax = 0;
+		RealType       delta_max = 0;
 
 		// ---- Starting the loop -------
 		for (j = 1; j < max_nstep; ++j) {
 
-			lanczosVectors_.oneStepDecomposition(V0, V1, V2, ab, j);
-			ab.diag(tmpEigs, j + 1);
-			const SizeType eigsForError
-			    = std::min(excitedForStop, static_cast<SizeType>(tmpEigs.size()));
+			lanczosVectors_.oneStepDecomposition(v0, v1, v2, ab, j);
+			ab.diag(tmp_eigs, j + 1);
+			const SizeType eigs_for_error
+			    = std::min(excitedForStop, static_cast<SizeType>(tmp_eigs.size()));
 
-			deltaMax = 0;
-			for (SizeType ii = 0; ii < eigsForError; ++ii) {
-				const RealType delta = fabs(tmpEigs[ii] - eold[ii]);
-				eold[ii]             = tmpEigs[ii];
-				if (delta > deltaMax)
-					deltaMax = delta;
+			delta_max = 0;
+			for (SizeType ii = 0; ii < eigs_for_error; ++ii) {
+				const RealType delta = fabs(tmp_eigs[ii] - eold[ii]);
+				eold[ii]             = tmp_eigs[ii];
+				if (delta > delta_max)
+					delta_max = delta;
 			}
 
-			if (deltaMax < params_.tolerance)
-				exitFlag = true;
+			if (delta_max < params_.tolerance)
+				exit_flag = true;
 			if (j == max_nstep - 1)
-				exitFlag = true;
-			if (exitFlag && mat_.rows() <= 4)
+				exit_flag = true;
+			if (exit_flag && mat_.rows() <= 4)
 				break;
-			if (exitFlag && j >= params_.minSteps)
+			if (exit_flag && j >= params_.minSteps)
 				break;
 
 			if (lanczosVectors_.lotaMemory())
-				lanczosVectors_.saveVector(V2, j + 1);
+				lanczosVectors_.saveVector(v2, j + 1);
 
 			for (SizeType i = 0; i < matsize; ++i) {
-				V0[i] = V1[i];
-				V1[i] = V2[i];
+				v0[i] = v1[i];
+				v1[i] = v2[i];
 			}
 		}
 
@@ -259,7 +259,7 @@ public:
 		msg() << "Decomposition done for mat.rank=" << mat_.rows();
 		msg() << " after " << j << " steps";
 		if (params_.tolerance > 0)
-			msg() << ", actual eps=" << deltaMax;
+			msg() << ", actual eps=" << delta_max;
 
 		progress_.printline(msg, std::cout);
 

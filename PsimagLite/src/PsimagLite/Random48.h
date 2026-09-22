@@ -28,15 +28,15 @@ template <typename T> class Random48 {
 public:
 
 	using LongType = long int;
-	typedef T value_type; // legacy name
+	typedef T ValueType; // legacy name
 
 	Random48(LongType seed, SizeType rank = 0, SizeType nprocs = 1)
 	{
 		srand48(seed);
-		Vector<LongType>::Type vOfSeeds(nprocs);
-		for (SizeType i = 0; i < vOfSeeds.size(); i++)
-			vOfSeeds[i] = static_cast<LongType>(10000.0 * drand48());
-		seed_ = vOfSeeds[rank];
+		Vector<LongType>::Type v_of_seeds(nprocs);
+		for (SizeType i = 0; i < v_of_seeds.size(); i++)
+			v_of_seeds[i] = static_cast<LongType>(10000.0 * drand48());
+		seed_ = v_of_seeds[rank];
 		srand48(seed_);
 	}
 

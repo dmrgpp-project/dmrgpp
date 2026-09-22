@@ -35,10 +35,10 @@ public:
 		MEMORY_TEXTPTR
 	};
 
-	static const unsigned int      SIZEOF_HEAPREF = sizeof(void*);
-	static const unsigned int      SIZEOF_VPTR    = sizeof(void*);
-	static const unsigned int      SIZEOF_HEAPPTR = sizeof(void*);
-	static const long unsigned int LABEL_LENGTH   = 128;
+	static const unsigned int      sizeof_heapref = sizeof(void*);
+	static const unsigned int      sizeof_vptr    = sizeof(void*);
+	static const unsigned int      sizeof_heapptr = sizeof(void*);
+	static const long unsigned int label_length   = 128;
 
 	template <typename T>
 	MemResolv(T* ptr)
@@ -54,38 +54,38 @@ public:
 	    , zeroes_(0)
 	    , lenOfZeroes_(0)
 	{
-		if (label.length() < LABEL_LENGTH) {
-			SizeType toAdd = LABEL_LENGTH - label.length();
-			for (SizeType i = 0; i < toAdd; ++i)
+		if (label.length() < label_length) {
+			SizeType to_add = label_length - label.length();
+			for (SizeType i = 0; i < to_add; ++i)
 				label.push_back(0);
 		}
 
-		String mresolvName("MemResolv::ctor():");
+		String mresolv_name("MemResolv::ctor():");
 
 		std::ifstream fin(filename.c_str());
 		if (!fin || fin.bad() || !fin.good())
-			throw RuntimeError(mresolvName + " cannot open " + filename + "\n");
+			throw RuntimeError(mresolv_name + " cannot open " + filename + "\n");
 
-		long unsigned int lenOfLabel = 0;
-		fin.read(reinterpret_cast<char*>(&lenOfLabel), sizeof(lenOfLabel));
-		fin.read(reinterpret_cast<char*>(&lenOfLabel), sizeof(lenOfLabel));
-		if (lenOfLabel != LABEL_LENGTH)
-			throw RuntimeError(mresolvName + " label length error\n");
-		if (lenOfLabel != label.length())
-			throw RuntimeError(mresolvName + " mismatched label length\n");
+		long unsigned int len_of_label = 0;
+		fin.read(reinterpret_cast<char*>(&len_of_label), sizeof(len_of_label));
+		fin.read(reinterpret_cast<char*>(&len_of_label), sizeof(len_of_label));
+		if (len_of_label != label_length)
+			throw RuntimeError(mresolv_name + " label length error\n");
+		if (len_of_label != label.length())
+			throw RuntimeError(mresolv_name + " mismatched label length\n");
 
 		String label2;
-		label2.resize(LABEL_LENGTH);
-		fin.read(const_cast<char*>(label2.data()), LABEL_LENGTH);
+		label2.resize(label_length);
+		fin.read(const_cast<char*>(label2.data()), label_length);
 		if (!stringEqual(label2, label))
-			throw RuntimeError(mresolvName + " mismatched label");
+			throw RuntimeError(mresolv_name + " mismatched label");
 
-		long unsigned int oldStart    = 0;
-		char*             ptrOldStart = reinterpret_cast<char*>(&oldStart);
-		fin.read(ptrOldStart, sizeof(oldStart));
+		long unsigned int old_start     = 0;
+		char*             ptr_old_start = reinterpret_cast<char*>(&old_start);
+		fin.read(ptr_old_start, sizeof(old_start));
 
 		std::cout << "Recovered reference heap pointer ";
-		std::cout << reinterpret_cast<void*>(oldStart) << "\n";
+		std::cout << reinterpret_cast<void*>(old_start) << "\n";
 
 		fin.read(reinterpret_cast<char*>(&refTextPtr_), sizeof(refTextPtr_));
 		std::cout << "Recovered reference text pointer " << refTextPtr_ << "\n";
@@ -94,21 +94,21 @@ public:
 
 		loadChunkInfo(fin);
 
-		long unsigned int len    = 0;
-		char*             ptrLen = reinterpret_cast<char*>(&len);
-		fin.read(ptrLen, sizeof(len));
+		long unsigned int len     = 0;
+		char*             ptr_len = reinterpret_cast<char*>(&len);
+		fin.read(ptr_len, sizeof(len));
 		std::cout << "MemResolv read from file len= " << len << "\n";
-		unsigned char* sourcePtr = new unsigned char[len];
-		garbage_.push_back(sourcePtr);
+		unsigned char* source_ptr = new unsigned char[len];
+		garbage_.push_back(source_ptr);
 		garbageSize_.push_back(len);
-		fin.read(reinterpret_cast<char*>(sourcePtr), len);
+		fin.read(reinterpret_cast<char*>(source_ptr), len);
 		fin.close();
 
 		// ADJUST POINTER VALUES
-		long int newStart = pointerToLui(reinterpret_cast<void*>(sourcePtr));
-		long int offset   = newStart - oldStart;
+		long int new_start = pointerToLui(reinterpret_cast<void*>(source_ptr));
+		long int offset    = new_start - old_start;
 
-		adjustPointers(sourcePtr, offset);
+		adjustPointers(source_ptr, offset);
 	}
 
 	~MemResolv()
@@ -125,13 +125,13 @@ public:
 	{
 		assert(garbage_.size() > 0);
 
-		if (label.length() < LABEL_LENGTH) {
-			SizeType toAdd = LABEL_LENGTH - label.length();
-			for (SizeType i = 0; i < toAdd; ++i)
+		if (label.length() < label_length) {
+			SizeType to_add = label_length - label.length();
+			for (SizeType i = 0; i < to_add; ++i)
 				label.push_back(0);
 		}
 
-		if (label.length() != LABEL_LENGTH)
+		if (label.length() != label_length)
 			throw RuntimeError("MemResolv::save(): label length\n");
 
 		std::ofstream fout(filename.c_str());
@@ -141,41 +141,41 @@ public:
 			throw RuntimeError(msg + filename + "\n");
 		}
 
-		long unsigned int lenOfLabel = label.length();
+		long unsigned int len_of_label = label.length();
 		assert(lenOfLabel == LABEL_LENGTH);
-		fout.write(reinterpret_cast<char*>(&lenOfLabel), sizeof(lenOfLabel));
-		fout.write(reinterpret_cast<char*>(&lenOfLabel), sizeof(lenOfLabel));
-		fout.write(label.data(), lenOfLabel);
+		fout.write(reinterpret_cast<char*>(&len_of_label), sizeof(len_of_label));
+		fout.write(reinterpret_cast<char*>(&len_of_label), sizeof(len_of_label));
+		fout.write(label.data(), len_of_label);
 
-		SizeType       total       = 0;
-		SizeType       maxHoleSize = 0;
-		VectorPairType offsetsForHoles;
-		findSizes(total, maxHoleSize, offsetsForHoles);
+		SizeType       total         = 0;
+		SizeType       max_hole_size = 0;
+		VectorPairType offsets_for_holes;
+		findSizes(total, max_hole_size, offsets_for_holes);
 
-		long unsigned int refPtrValue
+		long unsigned int ref_ptr_value
 		    = pointerToLui(reinterpret_cast<void*>(vmptr_[0].ptr));
-		adjustPointer(reinterpret_cast<unsigned char*>(&refPtrValue),
-		              sizeof(refPtrValue),
+		adjustPointer(reinterpret_cast<unsigned char*>(&ref_ptr_value),
+		              sizeof(ref_ptr_value),
 		              0,
-		              &offsetsForHoles);
-		char* ptrRefPtr = reinterpret_cast<char*>(&refPtrValue);
-		fout.write(ptrRefPtr, sizeof(refPtrValue));
+		              &offsets_for_holes);
+		char* ptr_ref_ptr = reinterpret_cast<char*>(&ref_ptr_value);
+		fout.write(ptr_ref_ptr, sizeof(ref_ptr_value));
 
 		fout.write(reinterpret_cast<const char*>(&refTextPtr_), sizeof(refTextPtr_));
 		std::cout << "Written reference text pointer " << refTextPtr_ << "\n";
 
-		const char* ptrIntoPtr = reinterpret_cast<const char*>(&intoOffset_);
-		fout.write(ptrIntoPtr, sizeof(intoOffset_));
+		const char* ptr_into_ptr = reinterpret_cast<const char*>(&intoOffset_);
+		fout.write(ptr_into_ptr, sizeof(intoOffset_));
 
-		updateZeroes(maxHoleSize + 1);
+		updateZeroes(max_hole_size + 1);
 
-		saveChunkInfo(fout, offsetsForHoles);
+		saveChunkInfo(fout, offsets_for_holes);
 
-		long unsigned int len    = total;
-		char*             ptrLen = reinterpret_cast<char*>(&len);
-		fout.write(ptrLen, sizeof(len));
+		long unsigned int len     = total;
+		char*             ptr_len = reinterpret_cast<char*>(&len);
+		fout.write(ptr_len, sizeof(len));
 
-		SizeType total2 = saveChunkData(fout, offsetsForHoles);
+		SizeType total2 = saveChunkData(fout, offsets_for_holes);
 		std::cout << "Saved " << total2 << " bytes to " << filename << "\n";
 		fout.close();
 	}
@@ -204,18 +204,18 @@ public:
 
 	unsigned char* dup()
 	{
-		SizeType       total       = 0;
-		SizeType       maxHoleSize = 0;
-		VectorPairType offsetsForHoles;
-		findSizes(total, maxHoleSize, offsetsForHoles);
-		std::cout << "total = " << total << " maxHoleSize= " << maxHoleSize << "\n";
+		SizeType       total         = 0;
+		SizeType       max_hole_size = 0;
+		VectorPairType offsets_for_holes;
+		findSizes(total, max_hole_size, offsets_for_holes);
+		std::cout << "total = " << total << " maxHoleSize= " << max_hole_size << "\n";
 		unsigned char* ptr = new unsigned char[total];
 		garbage_.push_back(ptr);
 		garbageSize_.push_back(total);
 
-		updateZeroes(maxHoleSize + 1);
+		updateZeroes(max_hole_size + 1);
 
-		deepCopy(ptr, total, offsetsForHoles);
+		deepCopy(ptr, total, offsets_for_holes);
 
 		return ptr + intoOffset_;
 	}
@@ -226,11 +226,11 @@ public:
 	{
 		SizeType tmp = sizeof(NoClassType);
 		assert(x >= tmp);
-		SizeType r    = x - tmp;
-		char*    cPtr = (char*)c;
+		SizeType r     = x - tmp;
+		char*    c_ptr = (char*)c;
 		updateZeroes(r + 1, 0);
-		cPtr += tmp;
-		memcpy(cPtr, zeroes_, r);
+		c_ptr += tmp;
+		memcpy(c_ptr, zeroes_, r);
 		tmp += r;
 		push(MemResolv::MEMORY_DATA, tmp, c, msg + " fundamental type");
 		return tmp;
@@ -341,9 +341,9 @@ public:
 
 		if (vv.size() == 0)
 			return total;
-		SizeType elementSize = sizeof(vv[0]);
+		SizeType element_size = sizeof(vv[0]);
 		for (SizeType i = 0; i < vv.size(); ++i)
-			memResolv(&vv[i], elementSize, msg);
+			memResolv(&vv[i], element_size, msg);
 
 		return total;
 	}
@@ -452,7 +452,7 @@ private:
 		std::vector<SizeType>       iperm(rankVector_.size());
 		Sort<std::vector<SizeType>> sort;
 		sort.sort(rankVector_, iperm);
-		unsigned int long oldStart = pointerToLui(reinterpret_cast<void*>(vmptr_[0].ptr));
+		unsigned int long old_start = pointerToLui(reinterpret_cast<void*>(vmptr_[0].ptr));
 		VectorMemoryPointerType vmptr(vmptr_.size());
 		std::cout << "Chunks in order\n";
 		for (SizeType i = 0; i < iperm.size(); ++i) {
@@ -465,25 +465,26 @@ private:
 			std::cout << " " << vmptr[i].length << "\n";
 		}
 
-		vmptr_                     = vmptr;
-		unsigned int long newStart = pointerToLui(reinterpret_cast<void*>(vmptr_[0].ptr));
-		intoOffset_ = (newStart > oldStart) ? newStart - oldStart : oldStart - newStart;
+		vmptr_                      = vmptr;
+		unsigned int long new_start = pointerToLui(reinterpret_cast<void*>(vmptr_[0].ptr));
+		intoOffset_
+		    = (new_start > old_start) ? new_start - old_start : old_start - new_start;
 
-		SizeType       total       = 0;
-		SizeType       maxHoleSize = 0;
-		VectorPairType offsetsForHoles;
-		findSizes(total, maxHoleSize, offsetsForHoles);
+		SizeType       total         = 0;
+		SizeType       max_hole_size = 0;
+		VectorPairType offsets_for_holes;
+		findSizes(total, max_hole_size, offsets_for_holes);
 
-		int long correctedIntoOffset = intoOffset_;
-		int long correctedOldStart   = oldStart;
-		adjustPointer(reinterpret_cast<unsigned char*>(&correctedOldStart),
-		              sizeof(correctedOldStart),
+		int long corrected_into_offset = intoOffset_;
+		int long corrected_old_start   = old_start;
+		adjustPointer(reinterpret_cast<unsigned char*>(&corrected_old_start),
+		              sizeof(corrected_old_start),
 		              0,
-		              &offsetsForHoles);
-		correctedIntoOffset -= oldStart;
-		correctedIntoOffset += correctedOldStart;
+		              &offsets_for_holes);
+		corrected_into_offset -= old_start;
+		corrected_into_offset += corrected_old_start;
 
-		intoOffset_ = correctedIntoOffset;
+		intoOffset_ = corrected_into_offset;
 	}
 
 	void saveChunkInfo(std::ofstream& fout, const VectorPairType& offsetsForHoles) const
@@ -508,16 +509,16 @@ private:
 		for (SizeType i = 0; i < vmptr_.size(); ++i) {
 			if (i > 0) {
 				long unsigned int end = vmptr_[i - 1].ptr + vmptr_[i - 1].length;
-				SizeType          srcHoleSize  = vmptr_[i].ptr - end;
-				SizeType          destHoleSize = srcHoleSize % 8;
+				SizeType          src_hole_size  = vmptr_[i].ptr - end;
+				SizeType          dest_hole_size = src_hole_size % 8;
 
-				if (lenOfZeroes_ <= destHoleSize)
+				if (lenOfZeroes_ <= dest_hole_size)
 					throw RuntimeError("lenZeroes\n");
-				if (destHoleSize > 0) {
-					fout.write(zeroes_, destHoleSize);
+				if (dest_hole_size > 0) {
+					fout.write(zeroes_, dest_hole_size);
 				}
 
-				total += destHoleSize;
+				total += dest_hole_size;
 			}
 
 			SizeType len       = vmptr_[i].length;
@@ -571,14 +572,14 @@ private:
 				throw RuntimeError("findTotal end\n");
 
 			total += vmptr_[i].length;
-			long int srcHoleSize  = start2 - end;
-			long int destHoleSize = srcHoleSize % 8;
-			long int offset       = destHoleSize - srcHoleSize;
-			PairType offsetForHole(start2, offset);
-			offsetsForHoles.push_back(offsetForHole);
-			total += destHoleSize;
-			if (static_cast<long unsigned int>(destHoleSize) > maxHoleSize)
-				maxHoleSize = destHoleSize;
+			long int src_hole_size  = start2 - end;
+			long int dest_hole_size = src_hole_size % 8;
+			long int offset         = dest_hole_size - src_hole_size;
+			PairType offset_for_hole(start2, offset);
+			offsetsForHoles.push_back(offset_for_hole);
+			total += dest_hole_size;
+			if (static_cast<long unsigned int>(dest_hole_size) > maxHoleSize)
+				maxHoleSize = dest_hole_size;
 
 			end   = end2;
 			start = start2;
@@ -590,9 +591,9 @@ private:
 		if (vmptr_.size() == 0)
 			return;
 
-		long unsigned int newStart = pointerToLui(reinterpret_cast<void*>(ptr));
-		long unsigned int oldStart = vmptr_[0].ptr;
-		long int          offset   = newStart - oldStart;
+		long unsigned int new_start = pointerToLui(reinterpret_cast<void*>(ptr));
+		long unsigned int old_start = vmptr_[0].ptr;
+		long int          offset    = new_start - old_start;
 
 		long unsigned int start = vmptr_[0].ptr;
 		SizeType          len   = vmptr_[0].length;
@@ -608,17 +609,17 @@ private:
 			long unsigned int end2   = start2 + len;
 			if (start2 < end)
 				throw RuntimeError("deepCopy\n");
-			SizeType srcHoleSize  = start2 - end;
-			SizeType destHoleSize = srcHoleSize % 8;
+			SizeType src_hole_size  = start2 - end;
+			SizeType dest_hole_size = src_hole_size % 8;
 
-			if (lenOfZeroes_ <= destHoleSize)
+			if (lenOfZeroes_ <= dest_hole_size)
 				throw RuntimeError("lenZeroes\n");
-			if (destHoleSize > 0) {
-				memcpy(ptr, zeroes_, destHoleSize);
+			if (dest_hole_size > 0) {
+				memcpy(ptr, zeroes_, dest_hole_size);
 			}
 
-			ptr += destHoleSize;
-			total2 += destHoleSize;
+			ptr += dest_hole_size;
+			total2 += dest_hole_size;
 
 			total2 += copyData(&ptr, i, offset, offsetsForHoles);
 
@@ -685,17 +686,17 @@ private:
 		SizeType counter = 0;
 
 		do {
-			void*              p        = reinterpret_cast<void*>(ptr);
-			long unsigned int* ptrToLui = reinterpret_cast<long unsigned int*>(ptr);
-			long unsigned int  value    = *ptrToLui;
+			void*              p          = reinterpret_cast<void*>(ptr);
+			long unsigned int* ptr_to_lui = reinterpret_cast<long unsigned int*>(ptr);
+			long unsigned int  value      = *ptr_to_lui;
 
 			if (value != 0) {
-				long int correctForHoles
+				long int correct_for_holes
 				    = correctionForHoles(value, offsetsForHoles);
-				long int allOffsetCorrections = correctForHoles + offset;
-				value += allOffsetCorrections;
-				long unsigned int* valuePtr = &value;
-				memcpy(p, valuePtr, 8);
+				long int all_offset_corrections = correct_for_holes + offset;
+				value += all_offset_corrections;
+				long unsigned int* value_ptr = &value;
+				memcpy(p, value_ptr, 8);
 			}
 
 			ptr += 8;
@@ -708,13 +709,13 @@ private:
 	{
 		if (offsetsForHolesPtr == 0)
 			return 0;
-		const VectorPairType& offsetsForHoles = *offsetsForHolesPtr;
-		long int              c               = 0;
-		for (SizeType i = 0; i < offsetsForHoles.size(); ++i) {
-			SizeType start = offsetsForHoles[i].first;
+		const VectorPairType& offsets_for_holes = *offsetsForHolesPtr;
+		long int              c                 = 0;
+		for (SizeType i = 0; i < offsets_for_holes.size(); ++i) {
+			SizeType start = offsets_for_holes[i].first;
 			if (value < start)
 				return c;
-			c += offsetsForHoles[i].second;
+			c += offsets_for_holes[i].second;
 		}
 
 		return c;

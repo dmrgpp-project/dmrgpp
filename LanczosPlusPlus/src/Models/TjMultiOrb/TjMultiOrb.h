@@ -107,25 +107,25 @@ public:
 
 		matrix.resize(hilbert, hilbert);
 		// Calculate off-diagonal elements AND store matrix
-		SizeType nCounter = 0;
+		SizeType n_counter = 0;
 		for (SizeType ispace = 0; ispace < hilbert; ispace++) {
-			SparseRowType sparseRow;
-			matrix.setRow(ispace, nCounter);
+			SparseRowType sparse_row;
+			matrix.setRow(ispace, n_counter);
 			WordType ket1 = basis(ispace, SPIN_UP);
 			WordType ket2 = basis(ispace, SPIN_DOWN);
 			// Save diagonal
-			sparseRow.add(ispace, diag[ispace]);
+			sparse_row.add(ispace, diag[ispace]);
 			for (SizeType i = 0; i < nsite; i++) {
 				for (SizeType orb = 0; orb < mp_.orbitals; ++orb) {
-					setHoppingTerm(sparseRow, ket1, ket2, i, orb, basis);
+					setHoppingTerm(sparse_row, ket1, ket2, i, orb, basis);
 				}
-				setSplusSminus(sparseRow, ket1, ket2, i, basis);
+				setSplusSminus(sparse_row, ket1, ket2, i, basis);
 			}
 
-			nCounter += sparseRow.finalize(matrix);
+			n_counter += sparse_row.finalize(matrix);
 		}
 
-		matrix.setRow(hilbert, nCounter);
+		matrix.setRow(hilbert, n_counter);
 		matrix.checkValidity();
 		assert(isHermitian(matrix));
 		//		std::cout<<"MATRIX before rotation\n";
@@ -197,13 +197,13 @@ private:
 	{
 		SizeType         n = basis.size();
 		SparseMatrixType rot(n, n);
-		SparseMatrixType rotT;
+		SparseMatrixType rot_t;
 		VectorSizeType   targets;
-		buildRotation(rot, rotT, targets, basis);
+		buildRotation(rot, rot_t, targets, basis);
 		//		std::cout<<"Rotation\n";
 		//		std::cout<<rot.toDense();
 		SparseMatrixType tmp;
-		multiply(tmp, matrix, rotT);
+		multiply(tmp, matrix, rot_t);
 		multiply(matrix, rot, tmp);
 		assert(isHermitian(matrix));
 		//		std::cout<<"Matrix after rotation\n";
@@ -215,13 +215,13 @@ private:
 	void truncateMatrix(SparseMatrixType& matrix, const VectorSizeType& targets) const
 	{
 		assert(matrix.rows() > targets.size());
-		SizeType         nFull  = matrix.rows();
-		SizeType         nTrunc = matrix.rows() - targets.size();
-		SparseMatrixType matrix2(nTrunc, nTrunc);
+		SizeType         n_full  = matrix.rows();
+		SizeType         n_trunc = matrix.rows() - targets.size();
+		SparseMatrixType matrix2(n_trunc, n_trunc);
 
-		VectorSizeType remap(nFull, 0);
+		VectorSizeType remap(n_full, 0);
 		SizeType       ii = 0;
-		for (SizeType i = 0; i < nFull; ++i) {
+		for (SizeType i = 0; i < n_full; ++i) {
 			if (std::find(targets.begin(), targets.end(), i) != targets.end())
 				continue;
 			remap[i] = ii;
@@ -230,7 +230,7 @@ private:
 
 		assert(ii == nTrunc);
 		SizeType counter = 0;
-		for (SizeType i = 0; i < nFull; ++i) {
+		for (SizeType i = 0; i < n_full; ++i) {
 			if (std::find(targets.begin(), targets.end(), i) != targets.end())
 				continue;
 			matrix2.setRow(remap[i], counter);
@@ -244,7 +244,7 @@ private:
 			}
 		}
 
-		matrix2.setRow(nTrunc, counter);
+		matrix2.setRow(n_trunc, counter);
 		matrix2.checkValidity();
 		matrix = matrix2;
 	}
@@ -254,31 +254,31 @@ private:
 	                   VectorSizeType&      targets,
 	                   const BasisBaseType& basis) const
 	{
-		SizeType nCounter = 0;
-		SizeType hilbert  = basis.size();
+		SizeType n_counter = 0;
+		SizeType hilbert   = basis.size();
 		for (SizeType ispace = 0; ispace < hilbert; ispace++) {
-			SparseRowType sparseRow;
-			rot.setRow(ispace, nCounter);
+			SparseRowType sparse_row;
+			rot.setRow(ispace, n_counter);
 			WordType       ket1 = basis(ispace, SPIN_UP);
 			WordType       ket2 = basis(ispace, SPIN_DOWN);
 			VectorSizeType k;
 			breakIntoSites(k, ket1, ket2);
 			SizeType       branches = getBranchesFromVector(k);
-			VectorType     braValues(branches, 1.0);
-			MatrixSizeType braMatrix(branches, k.size());
-			getBrasFromVector(braMatrix, braValues, k);
+			VectorType     bra_values(branches, 1.0);
+			MatrixSizeType bra_matrix(branches, k.size());
+			getBrasFromVector(bra_matrix, bra_values, k);
 			for (SizeType b = 0; b < branches; ++b) {
-				PairWordType bra  = fromMatrixToBra(braMatrix, b);
+				PairWordType bra  = fromMatrixToBra(bra_matrix, b);
 				SizeType     temp = basis.perfectIndex(bra.first, bra.second);
-				sparseRow.add(temp, braValues[b]);
+				sparse_row.add(temp, bra_values[b]);
 				if (isToBeRemoved(bra.first, bra.second))
 					targets.push_back(temp);
 			}
 
-			nCounter += sparseRow.finalize(rot);
+			n_counter += sparse_row.finalize(rot);
 		}
 
-		rot.setRow(hilbert, nCounter);
+		rot.setRow(hilbert, n_counter);
 		rot.checkValidity();
 		transposeConjugate(rotT, rot);
 
@@ -286,8 +286,8 @@ private:
 		VectorSizeType                   iperm(targets.size(), 0);
 		sort.sort(targets, iperm);
 		typename VectorSizeType::iterator it = std::unique(targets.begin(), targets.end());
-		SizeType                          newSize = it - targets.begin();
-		targets.resize(newSize);
+		SizeType                          new_size = it - targets.begin();
+		targets.resize(new_size);
 	}
 
 	bool isToBeRemoved(WordType bra1, WordType bra2) const
@@ -369,52 +369,54 @@ private:
 	                       VectorType&           braValues,
 	                       const VectorSizeType& k) const
 	{
-		SizeType   n               = k.size();
-		SizeType   b               = 0;
-		SizeType   currentBranches = 1;
-		SizeType   j               = 0;
-		RealType   oneOverSqrt2    = 1.0 / sqrt(2.0);
-		MatrixType mValues(braMatrix.n_row(), braMatrix.n_col());
-		mValues.setTo(1.0);
+		SizeType   n                = k.size();
+		SizeType   b                = 0;
+		SizeType   current_branches = 1;
+		SizeType   j                = 0;
+		RealType   one_over_sqrt2   = 1.0 / sqrt(2.0);
+		MatrixType m_values(braMatrix.n_row(), braMatrix.n_col());
+		m_values.setTo(1.0);
 
 		for (SizeType i = 0; i < n; ++i) {
 			switch (k[i]) {
 			// we're expanding old 6  = (new 6 + new 9)/sqrt(2)
 			case REINTERPRET_6:
-				for (b = 0; b < currentBranches; ++b) {
-					braMatrix(b, i)                   = REINTERPRET_6;
-					braMatrix(currentBranches + b, i) = REINTERPRET_9;
-					mValues(b, i) *= oneOverSqrt2;
-					mValues(currentBranches + b, i) *= oneOverSqrt2;
+				for (b = 0; b < current_branches; ++b) {
+					braMatrix(b, i)                    = REINTERPRET_6;
+					braMatrix(current_branches + b, i) = REINTERPRET_9;
+					m_values(b, i) *= one_over_sqrt2;
+					m_values(current_branches + b, i) *= one_over_sqrt2;
 
 					for (j = 0; j < i; ++j) {
-						braMatrix(currentBranches + b, j) = braMatrix(b, j);
-						mValues(currentBranches + b, j)   = mValues(b, j);
+						braMatrix(current_branches + b, j)
+						    = braMatrix(b, j);
+						m_values(current_branches + b, j) = m_values(b, j);
 					}
 				}
 
-				currentBranches *= 2;
+				current_branches *= 2;
 				break;
 				// we're expanding old 9  = (new 6 - new 9)/sqrt(2)
 			case REINTERPRET_9:
-				for (b = 0; b < currentBranches; ++b) {
-					braMatrix(b, i)                   = REINTERPRET_6;
-					braMatrix(currentBranches + b, i) = REINTERPRET_9;
-					mValues(b, i) *= oneOverSqrt2;
-					mValues(currentBranches + b, i) *= (-oneOverSqrt2);
+				for (b = 0; b < current_branches; ++b) {
+					braMatrix(b, i)                    = REINTERPRET_6;
+					braMatrix(current_branches + b, i) = REINTERPRET_9;
+					m_values(b, i) *= one_over_sqrt2;
+					m_values(current_branches + b, i) *= (-one_over_sqrt2);
 
 					for (j = 0; j < i; ++j) {
-						braMatrix(currentBranches + b, j) = braMatrix(b, j);
-						mValues(currentBranches + b, j)   = mValues(b, j);
+						braMatrix(current_branches + b, j)
+						    = braMatrix(b, j);
+						m_values(current_branches + b, j) = m_values(b, j);
 					}
 				}
 
-				currentBranches *= 2;
+				current_branches *= 2;
 				break;
 			default:
-				for (b = 0; b < currentBranches; ++b) {
+				for (b = 0; b < current_branches; ++b) {
 					braMatrix(b, i) = k[i];
-					mValues(b, i)   = 1.0;
+					m_values(b, i)  = 1.0;
 				}
 
 				break;
@@ -423,10 +425,10 @@ private:
 
 		assert(currentBranches == braMatrix.n_row());
 
-		for (SizeType b = 0; b < mValues.n_row(); ++b) {
+		for (SizeType b = 0; b < m_values.n_row(); ++b) {
 			ComplexOrRealType prod = 1;
-			for (SizeType i = 0; i < mValues.n_col(); ++i)
-				prod *= mValues(b, i);
+			for (SizeType i = 0; i < m_values.n_col(); ++i)
+				prod *= m_values(b, i);
 			braValues[b] = prod;
 		}
 	}
@@ -483,10 +485,10 @@ private:
 	{
 		if (mp_.orbitals != 1)
 			return;
-		SizeType        hilbertDest = basis.size();
-		SizeType        hilbertSrc  = basis_.size();
-		SizeType        nsite       = geometry_.numberOfSites();
-		LabeledOperator lOperator(operatorName);
+		SizeType        hilbert_dest = basis.size();
+		SizeType        hilbert_src  = basis_.size();
+		SizeType        nsite        = geometry_.numberOfSites();
+		LabeledOperator l_operator(operatorName);
 		if (operatorName != "c") {
 			PsimagLite::String str(__FILE__);
 			str += " " + ttos(__LINE__) + "\n";
@@ -511,16 +513,16 @@ private:
 		}
 
 		SizeType spin = operatorOptions[1];
-		matrix.resize(hilbertSrc, hilbertDest);
+		matrix.resize(hilbert_src, hilbert_dest);
 		matrix.setTo(0.0);
 		SizeType orb = 0;
 
-		for (SizeType ispace = 0; ispace < hilbertSrc; ispace++) {
+		for (SizeType ispace = 0; ispace < hilbert_src; ispace++) {
 			WordType ket1 = basis_(ispace, SPIN_UP);
 			WordType ket2 = basis_(ispace, SPIN_DOWN);
 			WordType bra  = ket1;
 			// assumes OPERATOR_C
-			bool b = basis.getBra(bra, ket1, ket2, lOperator, site, spin);
+			bool b = basis.getBra(bra, ket1, ket2, l_operator, site, spin);
 			if (!b)
 				continue;
 			SizeType index = basis.perfectIndex(bra, ket2);
@@ -534,25 +536,25 @@ private:
 	                           const LabeledOperator&               lOperator,
 	                           SizeType                             spin) const
 	{
-		int newPart1 = oldParts.first;
-		int newPart2 = oldParts.second;
+		int new_part1 = oldParts.first;
+		int new_part2 = oldParts.second;
 		int c = (lOperator.id() == LabeledOperator::Label::OPERATOR_CDAGGER) ? 1 : -1;
 		if (spin == SPIN_UP)
-			newPart1 += c;
+			new_part1 += c;
 		else
-			newPart2 += c;
+			new_part2 += c;
 
-		if (newPart1 < 0 || newPart2 < 0)
+		if (new_part1 < 0 || new_part2 < 0)
 			return false;
 		SizeType nsite = geometry_.numberOfSites();
-		if (SizeType(newPart1) > nsite || SizeType(newPart2) > nsite)
+		if (SizeType(new_part1) > nsite || SizeType(new_part2) > nsite)
 			return false;
-		if (newPart1 == 0 && newPart2 == 0)
+		if (new_part1 == 0 && new_part2 == 0)
 			return false;
-		if (SizeType(newPart1 + newPart2) > nsite)
+		if (SizeType(new_part1 + new_part2) > nsite)
 			return false; // no double occupancy
-		newParts.first  = SizeType(newPart1);
-		newParts.second = SizeType(newPart2);
+		newParts.first  = SizeType(new_part1);
+		newParts.second = SizeType(new_part2);
 		return true;
 	}
 
@@ -561,38 +563,38 @@ private:
 	                             const LabeledOperator&               lOperator,
 	                             SizeType                             spin) const
 	{
-		int newPart1 = oldParts.first;
-		int newPart2 = oldParts.second;
-		int c        = (lOperator.id() == LabeledOperator::Label::OPERATOR_SPLUS) ? 1 : -1;
+		int new_part1 = oldParts.first;
+		int new_part2 = oldParts.second;
+		int c         = (lOperator.id() == LabeledOperator::Label::OPERATOR_SPLUS) ? 1 : -1;
 		if (spin == SPIN_UP) {
-			newPart1 += c;
-			newPart2 -= c;
+			new_part1 += c;
+			new_part2 -= c;
 		} else {
-			newPart2 += c;
-			newPart1 -= c;
+			new_part2 += c;
+			new_part1 -= c;
 		}
 
-		if (newPart1 < 0 || newPart2 < 0)
+		if (new_part1 < 0 || new_part2 < 0)
 			return false;
 
 		SizeType nsite = geometry_.numberOfSites();
-		if (SizeType(newPart1) > nsite || SizeType(newPart2) > nsite)
+		if (SizeType(new_part1) > nsite || SizeType(new_part2) > nsite)
 			return false;
-		if (newPart1 == 0 && newPart2 == 0)
+		if (new_part1 == 0 && new_part2 == 0)
 			return false;
-		if (SizeType(newPart1 + newPart2) > nsite)
+		if (SizeType(new_part1 + new_part2) > nsite)
 			return false; // no double occupancy
-		newParts.first  = SizeType(newPart1);
-		newParts.second = SizeType(newPart2);
+		newParts.first  = SizeType(new_part1);
+		newParts.second = SizeType(new_part2);
 		return true;
 	}
 
 	void calcDiagonalElements(typename PsimagLite::Vector<RealType>::Type& diag,
 	                          const BasisBaseType&                         basis) const
 	{
-		const RealType zeroPointTwentyFive = 0.25;
-		SizeType       hilbert             = basis.size();
-		SizeType       nsite               = geometry_.numberOfSites();
+		const RealType zero_point_twenty_five = 0.25;
+		SizeType       hilbert                = basis.size();
+		SizeType       nsite                  = geometry_.numberOfSites();
 
 		// Calculate diagonal elements
 		for (SizeType ispace = 0; ispace < hilbert; ispace++) {
@@ -654,7 +656,7 @@ private:
 							    * (njup - njdown)
 							    * jzz_(i + j * nsite,
 							           orb + orb2 * mp_.orbitals)
-							    * zeroPointTwentyFive;
+							    * zero_point_twenty_five;
 							// ni nj term
 							s += proij * (niup + nidown)
 							    * (njup + njdown)
@@ -708,12 +710,12 @@ private:
 					    ^ (BasisType::bitmask(i * mp_.orbitals + orb)
 					       | BasisType::bitmask(j * mp_.orbitals + orb2));
 					SizeType temp = basis.perfectIndex(bra1, ket2);
-					RealType extraSign
+					RealType extra_sign
 					    = (s1i == 1) ? LanczosGlobals::FERMION_SIGN : 1;
 					RealType tmp2
 					    = basis_.doSign(ket1, ket2, i, orb, j, orb2, SPIN_UP);
-					ComplexOrRealType cTemp = h * extraSign * tmp2;
-					sparseRow.add(temp, cTemp);
+					ComplexOrRealType c_temp = h * extra_sign * tmp2;
+					sparseRow.add(temp, c_temp);
 				}
 
 				if (s2i + s2j == 1 && !(s2j == 0 && s1j > 0)
@@ -722,12 +724,12 @@ private:
 					    ^ (BasisType::bitmask(i * mp_.orbitals + orb)
 					       | BasisType::bitmask(j * mp_.orbitals + orb2));
 					SizeType temp = basis.perfectIndex(ket1, bra2);
-					RealType extraSign
+					RealType extra_sign
 					    = (s2i == 1) ? LanczosGlobals::FERMION_SIGN : 1;
 					RealType tmp2
 					    = basis_.doSign(ket1, ket2, i, orb, j, orb2, SPIN_DOWN);
-					ComplexOrRealType cTemp = h * extraSign * tmp2;
-					sparseRow.add(temp, cTemp);
+					ComplexOrRealType c_temp = h * extra_sign * tmp2;
+					sparseRow.add(temp, c_temp);
 				}
 			}
 		}
@@ -739,9 +741,9 @@ private:
 	                    SizeType             i,
 	                    const BasisBaseType& basis) const
 	{
-		const RealType zeroPointFive = 0.5;
-		int            nniup         = 0;
-		int            nnidown       = 0;
+		const RealType zero_point_five = 0.5;
+		int            nniup           = 0;
+		int            nnidown         = 0;
 		for (SizeType orb = 0; orb < mp_.orbitals; ++orb) {
 			nniup += basis.isThereAnElectronAt(ket1, ket2, i, SPIN_UP, orb);
 			nnidown += basis.isThereAnElectronAt(ket1, ket2, i, SPIN_DOWN, orb);
@@ -778,7 +780,7 @@ private:
 				for (SizeType orb2 = 0; orb2 < mp_.orbitals; ++orb2) {
 					ComplexOrRealType h
 					    = jpm_(i + j * nsite, orb + orb2 * mp_.orbitals)
-					    * zeroPointFive;
+					    * zero_point_five;
 					if (PsimagLite::real(h) == 0 && PsimagLite::imag(h) == 0)
 						continue;
 					WordType s1j

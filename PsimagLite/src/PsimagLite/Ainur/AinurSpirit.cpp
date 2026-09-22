@@ -51,26 +51,26 @@ Ainur::Ainur(String str)
 
 	using SkipperType = BOOST_TYPEOF(AINUR_COMMENTS);
 
-	qi::rule<IteratorType, std::string(), qi::unused_type> aToZ;
-	qi::rule<IteratorType, std::string(), qi::unused_type> zeroToNine;
+	qi::rule<IteratorType, std::string(), qi::unused_type> a_to_z;
+	qi::rule<IteratorType, std::string(), qi::unused_type> zero_to_nine;
 	qi::rule<IteratorType, std::string(), qi::unused_type> keywords;
 	qi::rule<IteratorType, std::string(), qi::unused_type> value;
-	qi::rule<IteratorType, std::string(), qi::unused_type> typeQualifier;
+	qi::rule<IteratorType, std::string(), qi::unused_type> type_qualifier;
 	qi::rule<IteratorType, AttribType, SkipperType>        statement1;
 	qi::rule<IteratorType, AttribType, SkipperType>        statement2;
 	qi::rule<IteratorType, Attrib3Type, SkipperType>       statement3;
 	qi::rule<IteratorType, SkipperType>                    statement;
 	value %= qi::lexeme[+(qi::char_ - qi::char_(";"))];
-	aToZ       = ascii::char_("a", "z") | ascii::char_("A", "Z");
-	zeroToNine = ascii::char_("0", "9");
+	a_to_z       = ascii::char_("a", "z") | ascii::char_("A", "Z");
+	zero_to_nine = ascii::char_("0", "9");
 
-	typeQualifier %= +(aToZ | ascii::char_(".") | ascii::char_("!"));
-	keywords = *(ascii::char_("_")) >> +aToZ
+	type_qualifier %= +(a_to_z | ascii::char_(".") | ascii::char_("!"));
+	keywords = *(ascii::char_("_")) >> +a_to_z
 	    >> *(ascii::char_("a", "z") | ascii::char_("A", "Z") | ascii::char_("0", "9")
 	         | ascii::char_(":") | ascii::char_("_"));
 	statement1 %= keywords >> '=' >> value;
-	statement2 %= typeQualifier >> keywords;
-	statement3 %= typeQualifier >> keywords >> '=' >> value;
+	statement2 %= type_qualifier >> keywords;
+	statement3 %= type_qualifier >> keywords >> '=' >> value;
 
 	Action  action1("statement1", state_);
 	Action  action2("statement2", state_);
@@ -97,6 +97,6 @@ Ainur::Ainur(String str)
 	initMacros();
 }
 
-String AinurState::ZERO_CHAR_STRING_(1, ' ');
+String AinurState::zero_char_string(1, ' ');
 
 } // namespace PsimagLite

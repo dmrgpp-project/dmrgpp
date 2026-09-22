@@ -118,24 +118,24 @@ public:
 	{ }
 
 	Parallelizer(String codeSectionParams)
-	    : BaseType(codeSectionParamss_[codeSectionParams])
+	    : BaseType(CODE_SECTION_PARAMSS[codeSectionParams])
 	{ }
 
 	static bool exists(String name)
 	{
-		return (codeSectionParamss_.find(name) != codeSectionParamss_.end());
+		return (CODE_SECTION_PARAMSS.find(name) != CODE_SECTION_PARAMSS.end());
 	}
 
 	static void push(String name, const CodeSectionParams& cs)
 	{
-		codeSectionParamss_[name] = cs;
+		CODE_SECTION_PARAMSS[name] = cs;
 	}
 
-	static void clear() { codeSectionParamss_.clear(); }
+	static void clear() { CODE_SECTION_PARAMSS.clear(); }
 
 private:
 
-	static Map<String, CodeSectionParams>::Type codeSectionParamss_;
+	static Map<String, CodeSectionParams>::Type CODE_SECTION_PARAMSS;
 };
 } // namespace PsimagLite
 

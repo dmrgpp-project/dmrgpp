@@ -37,7 +37,7 @@ public:
 	typedef LanczosGlobals::WordType WordType;
 	typedef LabeledOperator          LabeledOperatorType;
 
-	static PsimagLite::Matrix<SizeType> comb_;
+	static PsimagLite::Matrix<SizeType> COMB;
 
 	BasisOneSpinFeAs(SizeType nsite, SizeType npart, SizeType orbitals)
 	    : orbitals_(orbitals)
@@ -70,12 +70,12 @@ public:
 
 		for (SizeType i = 0; i < partitions.size(); i++) {
 			const PsimagLite::Vector<SizeType>::Type& na = partitions(i);
-			PsimagLite::Vector<PsimagLite::Vector<WordType>::Type>::Type basisA(
+			PsimagLite::Vector<PsimagLite::Vector<WordType>::Type>::Type basis_a(
 			    orbitals_);
 			for (SizeType orb = 0; orb < orbitals_; orb++) {
-				fillPartialBasis(basisA[orb], na[orb]);
+				fillPartialBasis(basis_a[orb], na[orb]);
 			}
-			collateBasis(counter, basisA);
+			collateBasis(counter, basis_a);
 		}
 	}
 
@@ -124,11 +124,11 @@ public:
 		PsimagLite::Vector<WordType>::Type kets(orbitals_, 0);
 		uncollateKet(kets, myword);
 
-		WordType braA = kets[orb];
-		if (!getBraCorCdagger(braA, kets[orb], lOperator, site))
+		WordType bra_a = kets[orb];
+		if (!getBraCorCdagger(bra_a, kets[orb], lOperator, site))
 			return false;
 
-		kets[orb] = braA;
+		kets[orb] = bra_a;
 		bra       = getCollatedKet(kets);
 		return true;
 	}
@@ -167,12 +167,12 @@ public:
 
 	SizeType getNbyKet(SizeType ket) const
 	{
-		SizeType sum     = 0;
-		WordType ketCopy = ket;
-		while (ketCopy) {
-			if (ketCopy & 1)
+		SizeType sum      = 0;
+		WordType ket_copy = ket;
+		while (ket_copy) {
+			if (ket_copy & 1)
 				sum++;
-			ketCopy <<= 1;
+			ket_copy <<= 1;
 		}
 
 		return sum;
@@ -318,16 +318,15 @@ private:
 	void doCombinatorial()
 	{
 		/* look-up table for binomial coefficients */
-		comb_
-		    = PsimagLite::Matrix<SizeType>(orbitals_ * nsite_ + 1, orbitals_ * nsite_ + 1);
+		COMB = PsimagLite::Matrix<SizeType>(orbitals_ * nsite_ + 1, orbitals_ * nsite_ + 1);
 
-		for (SizeType n = 0; n < comb_.n_row(); n++) {
+		for (SizeType n = 0; n < COMB.n_row(); n++) {
 			SizeType m   = 0;
 			int      j   = n;
 			SizeType i   = 1;
 			SizeType cnm = 1;
 			for (; m <= n / 2; m++, cnm = cnm * j / i, i++, j--)
-				comb_(n, m) = comb_(n, n - m) = cnm;
+				COMB(n, m) = COMB(n, n - m) = cnm;
 		}
 	}
 
@@ -336,7 +335,7 @@ private:
 		SizeType n = 0;
 		for (SizeType b = 0, c = 1; state > 0; b++, state >>= 1)
 			if (state & 1)
-				n += comb_(b, c++);
+				n += COMB(b, c++);
 
 		return n;
 	}
@@ -346,16 +345,16 @@ private:
 		SizeType counter = 0;
 		WordType ket     = 0;
 
-		PsimagLite::Vector<WordType>::Type remA = kets;
+		PsimagLite::Vector<WordType>::Type rem_a = kets;
 
-		while (orAll(remA)) {
+		while (orAll(rem_a)) {
 			for (SizeType orb = 0; orb < kets.size(); orb++) {
-				SizeType bitA = (remA[orb] & 1);
-				if (bitA)
+				SizeType bit_a = (rem_a[orb] & 1);
+				if (bit_a)
 					ket |= LanczosGlobals::bitmask(counter);
 				counter++;
-				if (remA[orb])
-					remA[orb] >>= 1;
+				if (rem_a[orb])
+					rem_a[orb] >>= 1;
 			}
 		}
 
@@ -377,10 +376,10 @@ private:
 
 		while (ket) {
 			for (SizeType orb = 0; orb < kets.size(); orb++) {
-				SizeType mask = (1 << orb);
-				SizeType bitA = (ket & mask);
+				SizeType mask  = (1 << orb);
+				SizeType bit_a = (ket & mask);
 
-				if (bitA)
+				if (bit_a)
 					kets[orb] |= LanczosGlobals::bitmask(counter);
 			}
 			counter++;

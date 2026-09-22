@@ -42,7 +42,7 @@ public:
 
 	enum OpaqueEnum
 	{
-		True = false
+		TRUE = false
 	};
 };
 
@@ -51,14 +51,14 @@ public:
 
 	enum OpaqueEnum
 	{
-		True = Loki::TypeTraits<T>::isArith
+		TRUE = Loki::TypeTraits<T>::isArith
 	};
 };
 
 template <typename T> struct IsNumber {
 	enum
 	{
-		True = (IsComplexNumber<T>::True || Loki::TypeTraits<T>::isArith)
+		TRUE = (IsComplexNumber<T>::True || Loki::TypeTraits<T>::isArith)
 	};
 };
 

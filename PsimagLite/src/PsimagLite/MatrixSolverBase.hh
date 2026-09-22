@@ -110,9 +110,9 @@ public:
 		if (options.find("reortho") == PsimagLite::String::npos)
 			return false;
 
-		bool canReortho = (lotaMemory);
+		bool can_reortho = (lotaMemory);
 
-		if (!canReortho) {
+		if (!can_reortho) {
 			throw RuntimeError(
 			    "MatrixSolverBase: Reortho requested but cannot. Suggestion: Delete "
 			    "reortho from input or set lotaMemory=true\n");

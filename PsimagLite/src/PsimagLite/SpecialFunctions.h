@@ -4,9 +4,9 @@
 
 namespace PsimagLite {
 
-std::complex<double> LnGammaFunction(const std::complex<double>&);
+std::complex<double> lnGammaFunction(const std::complex<double>&);
 
-double Ci(const double& x);
+double ci(const double& x);
 
 } // namespace PsimagLite
 #endif // PSI_SPECIAL_FUNCTIONS_H

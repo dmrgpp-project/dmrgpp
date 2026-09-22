@@ -94,14 +94,14 @@ template <typename RealType_> struct ParametersForSolver {
 
 	using RealType = RealType_;
 
-	static const SizeType MaxLanczosSteps = 1000000; // max number of internal Lanczos steps
-	static const SizeType LanczosSteps    = 200; // max number of external Lanczos steps
+	static const SizeType MAX_LANCZOS_STEPS = 1000000; // max number of internal Lanczos steps
+	static const SizeType LANCZOS_STEPS     = 200; // max number of external Lanczos steps
 
 	ParametersForSolver()
-	    : steps(LanczosSteps)
+	    : steps(LANCZOS_STEPS)
 	    , minSteps(4)
 	    , tolerance(1e-12)
-	    , stepsForEnergyConvergence(MaxLanczosSteps)
+	    , stepsForEnergyConvergence(MAX_LANCZOS_STEPS)
 	    , eigsForStop(1)
 	    , options("")
 	    , oneOverA(0)
@@ -114,10 +114,10 @@ template <typename RealType_> struct ParametersForSolver {
 
 	template <typename IoInputType>
 	ParametersForSolver(IoInputType& io, String prefix, int ind = -1)
-	    : steps(LanczosSteps)
+	    : steps(LANCZOS_STEPS)
 	    , minSteps(4)
 	    , tolerance(1e-12)
-	    , stepsForEnergyConvergence(MaxLanczosSteps)
+	    , stepsForEnergyConvergence(MAX_LANCZOS_STEPS)
 	    , eigsForStop(1)
 	    , options("none")
 	    , oneOverA(0)

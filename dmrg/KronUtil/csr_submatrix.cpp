@@ -2,13 +2,13 @@
 #include <PsimagLite/PsimagLite.h>
 
 template <typename ComplexOrRealType>
-void csr_submatrix(const PsimagLite::CrsMatrix<ComplexOrRealType>& a,
-                   const int                                       nrow_B,
-                   const int                                       ncol_B,
-                   const int                                       max_nnz,
-                   const PsimagLite::Vector<int>::Type&            rindex,
-                   const PsimagLite::Vector<int>::Type&            cindex,
-                   PsimagLite::CrsMatrix<ComplexOrRealType>&       b)
+void csrSubmatrix(const PsimagLite::CrsMatrix<ComplexOrRealType>& a,
+                  const int                                       nrow_B,
+                  const int                                       ncol_B,
+                  const int                                       max_nnz,
+                  const PsimagLite::Vector<int>::Type&            rindex,
+                  const PsimagLite::Vector<int>::Type&            cindex,
+                  PsimagLite::CrsMatrix<ComplexOrRealType>&       b)
 {
 	/*
 	 * ---------------------------------------------------------------------------
@@ -27,16 +27,16 @@ void csr_submatrix(const PsimagLite::CrsMatrix<ComplexOrRealType>& a,
 	 * ----------------------------------------------------
 	 */
 
-	const int ncol_A = a.cols();
+	const int ncol_a = a.cols();
 
-	int* cmap = new int[ncol_A];
+	int* cmap = new int[ncol_a];
 	int* nnz  = new int[nrow_B];
 
 	int ja = 0;
 	int ib = 0;
 	int jb = 0;
 
-	for (ja = 0; ja < ncol_A; ja++) {
+	for (ja = 0; ja < ncol_a; ja++) {
 		cmap[ja] = -1;
 	};
 

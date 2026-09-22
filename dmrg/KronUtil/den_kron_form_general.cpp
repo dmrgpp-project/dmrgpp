@@ -1,15 +1,15 @@
 #include "util.h"
 
 template <typename ComplexOrRealType>
-void den_kron_form_general(const char                                   transA,
-                           const char                                   transB,
-                           const int                                    nrow_A,
-                           const int                                    ncol_A,
-                           const PsimagLite::Matrix<ComplexOrRealType>& a_,
-                           const int                                    nrow_B,
-                           const int                                    ncol_B,
-                           const PsimagLite::Matrix<ComplexOrRealType>& b_,
-                           PsimagLite::Matrix<ComplexOrRealType>&       c_)
+void denKronFormGeneral(const char                                   transA,
+                        const char                                   transB,
+                        const int                                    nrow_A,
+                        const int                                    ncol_A,
+                        const PsimagLite::Matrix<ComplexOrRealType>& a_,
+                        const int                                    nrow_B,
+                        const int                                    ncol_B,
+                        const PsimagLite::Matrix<ComplexOrRealType>& b_,
+                        PsimagLite::Matrix<ComplexOrRealType>&       c_)
 {
 	/*
 	 * ---------------------------------------
@@ -22,24 +22,24 @@ void den_kron_form_general(const char                                   transA,
 	const int  idebug     = 0;
 	const bool is_complex = PsimagLite::IsComplexNumber<ComplexOrRealType>::True;
 
-	const bool istransA     = (transA == 'T') || (transA == 't');
-	const bool istransB     = (transB == 'T') || (transB == 't');
-	const bool isConjtransA = (transA == 'C') || (transA == 'c');
-	const bool isConjtransB = (transB == 'C') || (transB == 'c');
+	const bool istrans_a      = (transA == 'T') || (transA == 't');
+	const bool istrans_b      = (transB == 'T') || (transB == 't');
+	const bool is_conjtrans_a = (transA == 'C') || (transA == 'c');
+	const bool is_conjtrans_b = (transB == 'C') || (transB == 'c');
 
 	int ia = 0;
 	int ja = 0;
 	int ib = 0;
 	int jb = 0;
 
-	int nrow_1 = (istransA || isConjtransA) ? ncol_A : nrow_A;
-	int nrow_2 = (istransB || isConjtransB) ? ncol_B : nrow_B;
+	int nrow_1 = (istrans_a || is_conjtrans_a) ? ncol_A : nrow_A;
+	int nrow_2 = (istrans_b || is_conjtrans_b) ? ncol_B : nrow_B;
 
-	int ncol_1 = (istransA || isConjtransA) ? nrow_A : ncol_A;
-	int ncol_2 = (istransB || isConjtransB) ? nrow_B : ncol_B;
+	int ncol_1 = (istrans_a || is_conjtrans_a) ? nrow_A : ncol_A;
+	int ncol_2 = (istrans_b || is_conjtrans_b) ? nrow_B : ncol_B;
 
-	int nrow_C = c_.rows();
-	int ncol_C = c_.cols();
+	int nrow_c = c_.rows();
+	int ncol_c = c_.cols();
 
 	assert(nrow_1 * nrow_2 == nrow_C);
 	assert(ncol_1 * ncol_2 == ncol_C);
@@ -53,8 +53,8 @@ void den_kron_form_general(const char                                   transA,
 		printf("nrow_B=%d, ncol_B=%d,    nrow_C=%d, ncol_C=%d\n",
 		       nrow_B,
 		       ncol_B,
-		       nrow_C,
-		       ncol_C);
+		       nrow_c,
+		       ncol_c);
 		printf("(nrow_1,nrow_2) = (%d,%d), (ncol_1,ncol2) = (%d,%d) \n",
 		       nrow_1,
 		       nrow_2,
@@ -68,18 +68,18 @@ void den_kron_form_general(const char                                   transA,
 				for (ib = 0; ib < nrow_B; ib++) {
 					ComplexOrRealType aij = a_(ia, ja);
 					ComplexOrRealType bij = b_(ib, jb);
-					if (is_complex && isConjtransA) {
+					if (is_complex && is_conjtrans_a) {
 						aij = PsimagLite::conj(aij);
 					};
-					if (is_complex && isConjtransB) {
+					if (is_complex && is_conjtrans_b) {
 						bij = PsimagLite::conj(bij);
 					};
 
-					int iia = (istransA || isConjtransA) ? ja : ia;
-					int jja = (istransA || isConjtransA) ? ia : ja;
+					int iia = (istrans_a || is_conjtrans_a) ? ja : ia;
+					int jja = (istrans_a || is_conjtrans_a) ? ia : ja;
 
-					int iib = (istransB || isConjtransB) ? jb : ib;
-					int jjb = (istransB || isConjtransB) ? ib : jb;
+					int iib = (istrans_b || is_conjtrans_b) ? jb : ib;
+					int jjb = (istrans_b || is_conjtrans_b) ? ib : jb;
 
 					// ------------------------------
 					// note index for B varies faster

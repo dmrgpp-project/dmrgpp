@@ -31,7 +31,7 @@ public:
 	void run(bool dryRun, PsimagLite::String root, const CmdLineOptions& cmdline_options)
 	{
 		// lambda
-		PsimagLite::InterNode<> internode(PsimagLite::MPI::COMM_WORLD);
+		PsimagLite::InterNode<> internode(PsimagLite::MPI::comm_world);
 
 		internode.parallelFor(
 		    omegaParams_.offset(),
@@ -52,7 +52,7 @@ public:
 			    std::cerr << "ManyOmegas.h:: omega = " << omega;
 			    std::cerr << " output=" << outputfile;
 			    std::cerr << " logfile=" << cmdline_options2.logfile << " MPI rank=";
-			    std::cerr << PsimagLite::MPI::commRank(PsimagLite::MPI::COMM_WORLD)
+			    std::cerr << PsimagLite::MPI::commRank(PsimagLite::MPI::comm_world)
 			              << "\n";
 
 			    if (dryRun) {

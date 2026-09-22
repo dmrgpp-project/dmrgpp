@@ -47,10 +47,10 @@ template <typename T> void fillRandom(T& v, typename EnableIf<IsVectorLike<T>::T
 		throw std::runtime_error("fillRandom must be called with size > 0\n");
 
 	Random48<typename T::value_type>                        myrng(time(0));
-	typename PsimagLite::Real<typename T::value_type>::Type sum           = 0;
-	const typename T::value_type                            zeroPointFive = 0.5;
+	typename PsimagLite::Real<typename T::value_type>::Type sum             = 0;
+	const typename T::value_type                            zero_point_five = 0.5;
 	for (SizeType i = 0; i < n; ++i) {
-		v[i] = myrng() - zeroPointFive;
+		v[i] = myrng() - zero_point_five;
 		sum += PsimagLite::real(v[i] * PsimagLite::conj(v[i]));
 	}
 
@@ -124,14 +124,14 @@ private:
 
 	void chekSizeType()
 	{
-		if (sizeof(SizeType) == libSizeOfSizeType_)
+		if (sizeof(SizeType) == LIB_SIZE_OF_SIZE_TYPE)
 			return;
 		std::string msg("PsimagLite compiled with -DUSE_SHORT but");
 		msg += "application without. Or viceversa.\n";
 		throw std::runtime_error(msg);
 	}
 
-	static const int libSizeOfSizeType_;
+	static const int LIB_SIZE_OF_SIZE_TYPE;
 
 	Concurrency        concurrency_;
 	String             appName_;

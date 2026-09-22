@@ -104,9 +104,9 @@ private:
 
 	void accumulate(PlotDataType& v1, const PlotDataType& v2) const
 	{
-		bool wasEmpty = false;
+		bool was_empty = false;
 		if (v1.size() == 0) {
-			wasEmpty = true;
+			was_empty = true;
 			v1.resize(v2.size());
 		} else {
 			if (v1.size() != v2.size()) {
@@ -117,7 +117,7 @@ private:
 		}
 		for (SizeType i = 0; i < v1.size(); i++) {
 
-			if (wasEmpty) {
+			if (was_empty) {
 				v1[i].first  = v2[i].first;
 				v1[i].second = v2[i].second;
 			} else {

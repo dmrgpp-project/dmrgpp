@@ -3,18 +3,18 @@
 
 void test1()
 {
-	PsimagLite::IoNg::Out ioOut("hello.hdf5", PsimagLite::IoNg::ACC_TRUNC);
+	PsimagLite::IoNg::Out io_out("hello.hdf5", PsimagLite::IoNg::ACC_TRUNC);
 
 	std::vector<double> v(10, 42.0);
-	ioOut.write(v, "MyVector");
+	io_out.write(v, "MyVector");
 
-	ioOut.close();
+	io_out.close();
 
-	PsimagLite::IoNg::In ioIn("hello.hdf5");
+	PsimagLite::IoNg::In io_in("hello.hdf5");
 
 	std::vector<double> w;
 
-	ioIn.read(w, "MyVector");
+	io_in.read(w, "MyVector");
 
 	std::cout << w;
 }

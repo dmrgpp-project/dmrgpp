@@ -4,20 +4,20 @@
 // SFINAE test
 // source:
 // https://stackoverflow.com/questions/257288/is-it-possible-to-write-a-template-to-check-for-a-functions-existence
-template <typename T> class has_helloworld {
-	typedef char one;
-	struct two {
+template <typename T> class HasHelloworld {
+	typedef char One;
+	struct Two {
 		char x[2];
 	};
 
-	template <typename C> static one test(typeof(&C::helloworld));
-	template <typename C> static two test(...);
+	template <typename C> static One test(typeof(&C::helloworld));
+	template <typename C> static Two test(...);
 
 public:
 
 	enum
 	{
-		value = sizeof(test<T>(0)) == sizeof(char)
+		VALUE = sizeof(test<T>(0)) == sizeof(char)
 	};
 };
 
@@ -29,7 +29,7 @@ public:
 
 class B { };
 
-template <typename T> typename std::enable_if<has_helloworld<T>::value, int>::type f(const T& t)
+template <typename T> typename std::enable_if<HasHelloworld<T>::VALUE, int>::type f(const T& t)
 {
 	return t.helloworld();
 }

@@ -91,16 +91,16 @@ public:
 		func.params = &function_;
 		gsl_multimin_fminimizer_set(gslS_, &func, x, xs);
 
-		SizeType iter      = 0;
-		RealType prevValue = 0;
+		SizeType iter       = 0;
+		RealType prev_value = 0;
 
 		for (; iter < maxIter_; iter++) {
 			status_ = gsl_multimin_fminimizer_iterate(gslS_);
 
 			if (status_) {
-				String gslError(gsl_strerror(status_));
+				String gsl_error(gsl_strerror(status_));
 				String msg("Minimizer::simplex(...): GSL Error: ");
-				msg += gslError + "\n";
+				msg += gsl_error + "\n";
 				throw RuntimeError(msg);
 			}
 
@@ -110,12 +110,12 @@ public:
 			if (verbose_) {
 				typename Vector<typename FunctionType::FieldType>::Type v(
 				    gslS_->x->data, gslS_->x->data + func.n);
-				RealType thisValue = function_(v);
-				RealType diff      = fabs(thisValue - prevValue);
-				std::cerr << "simplex: " << iter << " " << thisValue
+				RealType this_value = function_(v);
+				RealType diff       = fabs(this_value - prev_value);
+				std::cerr << "simplex: " << iter << " " << this_value
 				          << " diff= " << diff;
 				std::cerr << " status= " << status_ << " size=" << size << "\n";
-				prevValue = thisValue;
+				prev_value = this_value;
 			}
 
 			if (status_ == GSL_SUCCESS)
@@ -149,17 +149,17 @@ public:
 
 		gsl_multimin_fdfminimizer_set(gslDs_, &func, x, delta, delta2);
 
-		RealType prevValue = 0;
-		SizeType iter      = 0;
+		RealType prev_value = 0;
+		SizeType iter       = 0;
 		for (; iter < maxIter_; iter++) {
 			status_ = gsl_multimin_fdfminimizer_iterate(gslDs_);
 
 			if (status_) {
-				String gslError(gsl_strerror(status_));
+				String gsl_error(gsl_strerror(status_));
 				String msg("Minimizer::conjugateGradient(...): "
 				           "GSL Error: ");
 				if (verbose_)
-					std::cerr << msg << gslError << "\n";
+					std::cerr << msg << gsl_error << "\n";
 				return -iter;
 			}
 
@@ -168,13 +168,13 @@ public:
 			if (verbose_) {
 				typename Vector<typename FunctionType::FieldType>::Type v(
 				    gslDs_->x->data, gslDs_->x->data + func.n);
-				RealType thisValue = function_(v);
-				RealType diff      = fabs(thisValue - prevValue);
-				std::cerr << "conjugateGradient: " << iter << " " << thisValue;
+				RealType this_value = function_(v);
+				RealType diff       = fabs(this_value - prev_value);
+				std::cerr << "conjugateGradient: " << iter << " " << this_value;
 				std::cerr << " diff= " << diff;
 				std::cerr << " gradientNorm= " << gradientNorm(gslDs_->x);
 				std::cerr << " status= " << status_ << "\n";
-				prevValue = thisValue;
+				prev_value = this_value;
 			}
 
 			if (status_ == GSL_SUCCESS)

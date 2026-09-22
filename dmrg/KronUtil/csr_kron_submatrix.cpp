@@ -1,17 +1,17 @@
 #include "util.h"
 
 template <typename ComplexOrRealType>
-void csr_kron_submatrix(const PsimagLite::CrsMatrix<ComplexOrRealType>& a,
+void csrKronSubmatrix(const PsimagLite::CrsMatrix<ComplexOrRealType>& a,
 
-                        const PsimagLite::CrsMatrix<ComplexOrRealType>& b,
+                      const PsimagLite::CrsMatrix<ComplexOrRealType>& b,
 
-                        const int                            nrindex,
-                        const int                            ncindex,
-                        const int                            max_nnz,
-                        const PsimagLite::Vector<int>::Type& rindex,
-                        const PsimagLite::Vector<int>::Type& cindex,
+                      const int                            nrindex,
+                      const int                            ncindex,
+                      const int                            max_nnz,
+                      const PsimagLite::Vector<int>::Type& rindex,
+                      const PsimagLite::Vector<int>::Type& cindex,
 
-                        PsimagLite::CrsMatrix<ComplexOrRealType>& h)
+                      PsimagLite::CrsMatrix<ComplexOrRealType>& h)
 {
 	/*
 	 * -------------------------------------------------
@@ -23,17 +23,17 @@ void csr_kron_submatrix(const PsimagLite::CrsMatrix<ComplexOrRealType>& a,
 	 * -------------------------------------------------
 	 */
 
-	const int ncol_A = a.cols();
-	const int nrow_B = b.rows();
-	const int ncol_B = b.cols();
+	const int ncol_a = a.cols();
+	const int nrow_b = b.rows();
+	const int ncol_b = b.cols();
 
-	const int ncol_C = ncol_A * ncol_B;
+	const int ncol_c = ncol_a * ncol_b;
 #ifndef NDEBUG
 	const int nrow_A = a.rows();
 	const int nrow_C = nrow_A * nrow_B;
 #endif
-	const int nrow_H = nrindex;
-	const int ncol_H = ncindex;
+	const int nrow_h = nrindex;
+	const int ncol_h = ncindex;
 
 	/*
 	 * -----------------------------
@@ -46,8 +46,8 @@ void csr_kron_submatrix(const PsimagLite::CrsMatrix<ComplexOrRealType>& a,
 	int k = 0;
 	for (k = 0; k < nrindex; k++) {
 		int ic = rindex[k];
-		int ib = (ic % nrow_B);
-		int ia = (ic - ib) / nrow_B;
+		int ib = (ic % nrow_b);
+		int ia = (ic - ib) / nrow_b;
 
 		assert((0 <= ia) && (ia < nrow_A));
 		assert((0 <= ib) && (ib < nrow_B));
@@ -62,9 +62,9 @@ void csr_kron_submatrix(const PsimagLite::CrsMatrix<ComplexOrRealType>& a,
 	 * setup mapping for column index
 	 * ------------------------------
 	 */
-	int* cmap = new int[ncol_C];
+	int* cmap = new int[ncol_c];
 	int  jc   = 0;
-	for (jc = 0; jc < ncol_C; jc++) {
+	for (jc = 0; jc < ncol_c; jc++) {
 		cmap[jc] = -1;
 	};
 
@@ -85,13 +85,13 @@ void csr_kron_submatrix(const PsimagLite::CrsMatrix<ComplexOrRealType>& a,
 	// note avoid zeroing out large arrays in sparse matrix
 	// ----------------------------------------------------
 	if (use_push) {
-		h.resize(nrow_H, ncol_H);
+		h.resize(nrow_h, ncol_h);
 		h.reserve(max_nnz);
 	} else {
-		h.resize(nrow_H, ncol_H, max_nnz);
+		h.resize(nrow_h, ncol_h, max_nnz);
 	};
 
-	for (ih = 0; ih < nrow_H; ih++) {
+	for (ih = 0; ih < nrow_h; ih++) {
 		h.setRow(ih, ifree);
 
 		int ia = ialist[ih];
@@ -113,10 +113,10 @@ void csr_kron_submatrix(const PsimagLite::CrsMatrix<ComplexOrRealType>& a,
 			for (kb = istartb; kb < iendb; kb++) {
 				int jb = b.getCol(kb);
 
-				int jc = jb + ja * ncol_B;
+				int jc = jb + ja * ncol_b;
 
 				int jh      = cmap[jc];
-				int isvalid = (0 <= jh) && (jh < ncol_H);
+				int isvalid = (0 <= jh) && (jh < ncol_h);
 				if (isvalid) {
 					ComplexOrRealType bij = b.getValue(kb);
 					ComplexOrRealType cij = aij * bij;
@@ -135,7 +135,7 @@ void csr_kron_submatrix(const PsimagLite::CrsMatrix<ComplexOrRealType>& a,
 			};
 		};
 	};
-	h.setRow(nrow_H, ifree);
+	h.setRow(nrow_h, ifree);
 	h.checkValidity();
 
 	delete[] ialist;

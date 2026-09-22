@@ -126,21 +126,21 @@ TEST_CASE("CrsMatrix multiply rejects incompatible dimensions", "[CrsMatrix][mul
 
 TEST_CASE("CrsMatrix multiply permits output to alias either input", "[CrsMatrix][multiply]")
 {
-	const auto originalA = makeCrs<double>(2, 2, { 1, 2, 0, 3 });
-	const auto originalB = makeCrs<double>(2, 2, { 4, 0, 5, 6 });
-	const auto expected  = denseMultiply(originalA.toDense(), originalB.toDense());
+	const auto original_a = makeCrs<double>(2, 2, { 1, 2, 0, 3 });
+	const auto original_b = makeCrs<double>(2, 2, { 4, 0, 5, 6 });
+	const auto expected   = denseMultiply(original_a.toDense(), original_b.toDense());
 
 	SECTION("Output aliases A")
 	{
-		auto a = originalA;
-		PsimagLite::multiply(a, a, originalB);
+		auto a = original_a;
+		PsimagLite::multiply(a, a, original_b);
 		requireEqual(a, expected);
 	}
 
 	SECTION("Output aliases B")
 	{
-		auto b = originalB;
-		PsimagLite::multiply(b, originalA, b);
+		auto b = original_b;
+		PsimagLite::multiply(b, original_a, b);
 		requireEqual(b, expected);
 	}
 }
@@ -153,20 +153,20 @@ TEST_CASE("CrsMatrix multiply agrees with dense multiplication on random small m
 	std::bernoulli_distribution        keep(0.4);
 
 	for (SizeType iteration = 0; iteration < 40; ++iteration) {
-		PsimagLite::Matrix<double> denseA(4, 5);
-		PsimagLite::Matrix<double> denseB(5, 3);
-		for (SizeType i = 0; i < denseA.rows(); ++i)
-			for (SizeType j = 0; j < denseA.cols(); ++j)
-				denseA(i, j) = keep(rng) ? value(rng) : 0;
-		for (SizeType i = 0; i < denseB.rows(); ++i)
-			for (SizeType j = 0; j < denseB.cols(); ++j)
-				denseB(i, j) = keep(rng) ? value(rng) : 0;
+		PsimagLite::Matrix<double> dense_a(4, 5);
+		PsimagLite::Matrix<double> dense_b(5, 3);
+		for (SizeType i = 0; i < dense_a.rows(); ++i)
+			for (SizeType j = 0; j < dense_a.cols(); ++j)
+				dense_a(i, j) = keep(rng) ? value(rng) : 0;
+		for (SizeType i = 0; i < dense_b.rows(); ++i)
+			for (SizeType j = 0; j < dense_b.cols(); ++j)
+				dense_b(i, j) = keep(rng) ? value(rng) : 0;
 
-		const PsimagLite::CrsMatrix<double> a(denseA);
-		const PsimagLite::CrsMatrix<double> b(denseB);
+		const PsimagLite::CrsMatrix<double> a(dense_a);
+		const PsimagLite::CrsMatrix<double> b(dense_b);
 		PsimagLite::CrsMatrix<double>       result;
 		PsimagLite::multiply(result, a, b);
 
-		requireEqual(result, denseMultiply(denseA, denseB));
+		requireEqual(result, denseMultiply(dense_a, dense_b));
 	}
 }

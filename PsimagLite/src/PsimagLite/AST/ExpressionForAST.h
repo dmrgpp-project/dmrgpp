@@ -35,22 +35,22 @@ public:
 
 	ExpressionForAST(const VectorStringType& vecStr, PrimitivesType& primitives)
 	{
-		constexpr bool                     verbose       = false; // FIXME
-		SizeType                           effectiveSize = vecStr.size();
+		constexpr bool                     verbose        = false; // FIXME
+		SizeType                           effective_size = vecStr.size();
 		PsimagLite::Vector<SizeType>::Type va;
 
-		SizeType sumOfA = 1;
-		for (SizeType i = 0; i < effectiveSize; i++) {
-			PsimagLite::String cStr = vecStr[i];
-			const NodeType&    node = primitives.findNodeFromCode(cStr);
+		SizeType sum_of_a = 1;
+		for (SizeType i = 0; i < effective_size; i++) {
+			PsimagLite::String c_str = vecStr[i];
+			const NodeType&    node  = primitives.findNodeFromCode(c_str);
 
 			SizeType a = node.arity();
-			sumOfA += (a - 1);
+			sum_of_a += (a - 1);
 			TreeType* tree = new TreeType(primitives, node, verbose);
 
 			va.push_back(a);
 			vecTree_.push_back(tree);
-			if (sumOfA == 0)
+			if (sum_of_a == 0)
 				break;
 		}
 

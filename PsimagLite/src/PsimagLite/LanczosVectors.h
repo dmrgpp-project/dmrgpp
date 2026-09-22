@@ -299,8 +299,8 @@ private:
 		progress_.printline(msg, std::cout);
 		return;
 
-		SizeType maxNstep = std::min(steps, mat_.rows());
-		overlap_          = new VectorType(maxNstep, 0);
+		SizeType max_nstep = std::min(steps, mat_.rows());
+		overlap_           = new VectorType(max_nstep, 0);
 	}
 
 	//! copy ctor and assigment operator are invalid

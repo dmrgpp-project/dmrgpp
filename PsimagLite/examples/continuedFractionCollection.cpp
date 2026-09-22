@@ -81,14 +81,14 @@ void plot(const SomeParamsType&                  params,
 
 int main(int argc, char* argv[])
 {
-	int      opt      = 0;
-	String   file     = "";
-	RealType wbegin   = 0;
-	SizeType total    = 0;
-	RealType wstep    = 0;
-	RealType delta    = 0;
-	RealType beta     = 0.0;
-	bool     oneByOne = false;
+	int      opt        = 0;
+	String   file       = "";
+	RealType wbegin     = 0;
+	SizeType total      = 0;
+	RealType wstep      = 0;
+	RealType delta      = 0;
+	RealType beta       = 0.0;
+	bool     one_by_one = false;
 	while ((opt = getopt(argc, argv, "f:b:t:s:d:B:1")) != -1) {
 		switch (opt) {
 		case 'f':
@@ -107,7 +107,7 @@ int main(int argc, char* argv[])
 			delta = atof(optarg);
 			break;
 		case '1':
-			oneByOne = true;
+			one_by_one = true;
 			break;
 		case 'B':
 			beta = atof(optarg);
@@ -126,14 +126,14 @@ int main(int argc, char* argv[])
 	}
 
 	IoSimple::In                    io(file);
-	ContinuedFractionCollectionType cfCollection(io);
+	ContinuedFractionCollectionType cf_collection(io);
 
 	bool is_matsubaras = (beta > 0);
 	if (is_matsubaras) {
 		PsimagLite::Matsubaras<RealType> matsubaras(beta, total, delta);
-		plot(matsubaras, cfCollection, oneByOne);
+		plot(matsubaras, cf_collection, one_by_one);
 	} else {
 		PsimagLite::RealFrequencyRange<RealType> real_freq(wbegin, wstep, total, delta);
-		plot<>(real_freq, cfCollection, oneByOne);
+		plot<>(real_freq, cf_collection, one_by_one);
 	}
 }

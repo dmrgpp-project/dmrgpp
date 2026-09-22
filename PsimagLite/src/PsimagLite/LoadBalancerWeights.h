@@ -22,7 +22,7 @@ public:
 		SizeType ntasks = weights.size();
 		if (ntasks < nthreads && ntasks > 0)
 			nthreads = ntasks;
-		VectorSizeType       workLoad(nthreads, 0);
+		VectorSizeType       work_load(nthreads, 0);
 		VectorSizeType       weights2 = weights;
 		VectorSizeType       iperm(ntasks, 0);
 		Sort<VectorSizeType> sort;
@@ -30,13 +30,13 @@ public:
 
 		for (SizeType iii = 0; iii < ntasks; ++iii) {
 			SizeType ii     = ntasks - 1 - iii; // because sort is ascending
-			SizeType thread = findThreadWithLightestWork(workLoad);
+			SizeType thread = findThreadWithLightestWork(work_load);
 			// assign work to thread
 			assert(thread < taskNumber_.size());
 			taskNumber_[thread].push_back(iperm[ii]);
 			// update work loads
 			assert(thread < workLoad.size());
-			workLoad[thread] += weights[iperm[ii]];
+			work_load[thread] += weights[iperm[ii]];
 		}
 
 #ifdef DEBUG_PTHREADS_NG

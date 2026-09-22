@@ -34,7 +34,7 @@ public:
 	                int const      ldC)
 	{
 		if (isSmall(m, n)) {
-			psimag::BLAS::GEMM(
+			psimag::BLAS::gemm(
 			    transA, transB, m, n, k, alpha, A, ldA, B, ldB, beta, C, ldC);
 			return;
 		}
@@ -73,13 +73,13 @@ private:
 		int const nb_i = ((m % nblocks_i) == 0) ? (m / nblocks_i) : ((m / nblocks_i) + 1);
 		int const nb_j = ((n % nblocks_j) == 0) ? (n / nblocks_j) : ((n / nblocks_j) + 1);
 
-		bool const is_transA   = (transA == 'T') || (transA == 't');
-		bool const is_conjA    = (transA == 'C') || (transA == 'c');
-		bool const is_notransA = (!is_transA) && (!is_conjA);
+		bool const is_trans_a   = (transA == 'T') || (transA == 't');
+		bool const is_conj_a    = (transA == 'C') || (transA == 'c');
+		bool const is_notrans_a = (!is_trans_a) && (!is_conj_a);
 
-		bool const is_transB   = (transB == 'T') || (transB == 't');
-		bool const is_conjB    = (transB == 'C') || (transB == 'c');
-		bool const is_notransB = (!is_transB) && (!is_conjB);
+		bool const is_trans_b   = (transB == 'T') || (transB == 't');
+		bool const is_conj_b    = (transB == 'C') || (transB == 'c');
+		bool const is_notrans_b = (!is_trans_b) && (!is_conj_b);
 
 		if (idebug_ >= 1) {
 			std::cout << " GEMMR: "
@@ -104,8 +104,8 @@ private:
 		               nblocks_i,
 		               nb_i,
 		               nb_j,
-		               is_notransA,
-		               is_notransB](SizeType ij_block, SizeType)
+		               is_notrans_a,
+		               is_notrans_b](SizeType ij_block, SizeType)
 		{
 			const SizeType i_block = (ij_block % nblocks_i);
 			const SizeType j_block = (ij_block - i_block) / nblocks_i;
@@ -130,20 +130,20 @@ private:
 			// -----------------
 			int const kk = k;
 
-			int const ia = (is_notransA) ? ic_start : 1;
-			int const ja = (is_notransA) ? 1 : ic_start;
+			int const ia = (is_notrans_a) ? ic_start : 1;
+			int const ja = (is_notrans_a) ? 1 : ic_start;
 
-			int const ib = (is_notransB) ? 1 : jc_start;
-			int const jb = (is_notransB) ? jc_start : 1;
+			int const ib = (is_notrans_b) ? 1 : jc_start;
+			int const jb = (is_notrans_b) ? jc_start : 1;
 
 			int const ic = ic_start;
 			int const jc = jc_start;
 
-			T const* const pA = &(A[ia - 1 + (ja - 1) * ldA]);
-			T const* const pB = &(B[ib - 1 + (jb - 1) * ldB]);
-			T* const       pC = &(C[ic - 1 + (jc - 1) * ldC]);
+			T const* const p_a = &(A[ia - 1 + (ja - 1) * ldA]);
+			T const* const p_b = &(B[ib - 1 + (jb - 1) * ldB]);
+			T* const       p_c = &(C[ic - 1 + (jc - 1) * ldC]);
 
-			psimag::BLAS::GEMM(
+			psimag::BLAS::gemm(
 			    transA, transB, mm, nn, kk, alpha, pA, ldA, pB, ldB, beta, pC, ldC);
 		};
 

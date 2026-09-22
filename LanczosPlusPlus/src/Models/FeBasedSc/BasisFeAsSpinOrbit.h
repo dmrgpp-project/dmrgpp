@@ -239,10 +239,10 @@ public:
 
 	void print(std::ostream& os, typename BaseType::PrintEnum binaryOrDecimal) const override
 	{
-		bool     isBinary = (binaryOrDecimal == BaseType::PRINT_BINARY);
-		SizeType hilbert  = 1;
+		bool     is_binary = (binaryOrDecimal == BaseType::PRINT_BINARY);
+		SizeType hilbert   = 1;
 		hilbert <<= (orbitals_ * geometry_.numberOfSites());
-		if (isBinary) {
+		if (is_binary) {
 			LanczosGlobals::printBasisBinary(os, hilbert, basis_);
 		} else {
 			LanczosGlobals::printBasisDecimal(os, 40, basis_);

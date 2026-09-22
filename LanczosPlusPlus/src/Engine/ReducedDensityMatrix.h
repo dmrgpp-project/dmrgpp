@@ -63,10 +63,10 @@ private:
 	{
 		SizeType hilbert = model.basis().size();
 		for (SizeType i = 0; i < hilbert; ++i) {
-			PairSizeType alphaBeta = unpack(model, i);
+			PairSizeType alpha_beta = unpack(model, i);
 			for (SizeType j = 0; j < hilbert; ++j) {
-				PairSizeType alphaPBeta = unpack(model, j);
-				if (alphaBeta.second != alphaPBeta.second)
+				PairSizeType alpha_p_beta = unpack(model, j);
+				if (alpha_beta.second != alphaPBeta.second)
 					continue;
 				rdm_(alphaBeta.first, alphaPBeta.first)
 				    += PsimagLite::conj(psi[i]) * psi[j];
@@ -76,11 +76,11 @@ private:
 
 	PairSizeType unpack(const ModelType& model, SizeType ind) const
 	{
-		PsimagLite::String modelName = model.name();
-		if (modelName.find("Heisenberg.h") != PsimagLite::String::npos)
+		PsimagLite::String model_name = model.name();
+		if (model_name.find("Heisenberg.h") != PsimagLite::String::npos)
 			return unpackHeisenberg(model, ind);
-		else if (modelName.find("HubbardOneOrbital.h") != PsimagLite::String::npos
-		         || modelName.find("FeBasedSc.h") != PsimagLite::String::npos)
+		else if (model_name.find("HubbardOneOrbital.h") != PsimagLite::String::npos
+		         || model_name.find("FeBasedSc.h") != PsimagLite::String::npos)
 			return unpackHubbard(model, ind);
 		else
 			throw PsimagLite::RuntimeError("RDM: Unsupported model\n");
@@ -116,9 +116,9 @@ private:
 			b[spin] >>= nabits_;
 		}
 
-		SizeType offsetA = (1 << nabits_);
-		SizeType offsetB = (1 << nbbits_);
-		return PairSizeType(a[0] + a[1] * offsetA, b[0] + b[1] * offsetB);
+		SizeType offset_a = (1 << nabits_);
+		SizeType offset_b = (1 << nbbits_);
+		return PairSizeType(a[0] + a[1] * offset_a, b[0] + b[1] * offset_b);
 	}
 
 	SizeType       row_;

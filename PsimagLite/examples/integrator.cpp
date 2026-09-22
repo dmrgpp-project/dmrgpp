@@ -42,8 +42,8 @@ int main(int argc, char** argv)
 	SizeType                                   total = atoi(argv[2]);
 	double                                     xstep = atof(argv[3]);
 	typedef SquareFunction<double>             SquareFunctionType;
-	SquareFunctionType                         squareFunction(3.0);
-	PsimagLite::Integrator<SquareFunctionType> integrator(squareFunction);
+	SquareFunctionType                         square_function(3.0);
+	PsimagLite::Integrator<SquareFunctionType> integrator(square_function);
 	PsimagLite::Vector<double>::Type           pts(2, 0);
 	for (SizeType i = 0; i < total; ++i) {
 		pts[1] = x0 + i * xstep;

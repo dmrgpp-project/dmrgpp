@@ -87,11 +87,11 @@ namespace PsimagLite {
 
 template <typename T> class Stack {
 
-	using DequeType_ = std::deque<T, typename Allocator<T>::Type>;
+	using DequeType = std::deque<T, typename Allocator<T>::Type>;
 
 public:
 
-	using Type = std::stack<T, DequeType_>;
+	using Type = std::stack<T, DequeType>;
 }; // class Stack
 
 template <typename T> class IsStackLike {
@@ -99,7 +99,7 @@ public:
 
 	enum
 	{
-		True = false
+		TRUE = false
 	};
 };
 
@@ -108,7 +108,7 @@ public:
 
 	enum
 	{
-		True = true
+		TRUE = true
 	};
 };
 
@@ -131,10 +131,10 @@ typename EnableIf<IsStackLike<StackType>::True, std::istream>::Type& operator>>(
                                                                                 StackType&    x)
 {
 	using ValueType = typename StackType::value_type;
-	typename Vector<ValueType>::Type tmpVec;
-	is >> tmpVec;
-	for (int i = tmpVec.size() - 1; i >= 0; i--) {
-		x.push(tmpVec[i]);
+	typename Vector<ValueType>::Type tmp_vec;
+	is >> tmp_vec;
+	for (int i = tmp_vec.size() - 1; i >= 0; i--) {
+		x.push(tmp_vec[i]);
 	}
 	return is;
 }

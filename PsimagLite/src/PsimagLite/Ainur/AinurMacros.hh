@@ -182,27 +182,27 @@ public:
 	// ("function.txt")(3.0)
 	std::string valueFromFunction(const std::string& line) const
 	{
-		std::pair<std::string, std::string> nameValue = getFunctionNameValue(line);
+		std::pair<std::string, std::string> name_value = getFunctionNameValue(line);
 
-		if (nameValue.second == "") {
-			return nameValue.first;
+		if (name_value.second == "") {
+			return name_value.first;
 		}
 
-		if (!isAfloat(nameValue.second)) {
+		if (!isAfloat(name_value.second)) {
 			return line;
 		}
 
 		// return value
-		std::string functionName = nameValue.first;
+		std::string function_name = name_value.first;
 
 		// using and defining in same line not allowed
-		if (functionNameToIndex_.count(functionName) == 0) {
-			throw RuntimeError("valueFromFunction: " + functionName + " undefined.\n");
+		if (functionNameToIndex_.count(function_name) == 0) {
+			throw RuntimeError("valueFromFunction: " + function_name + " undefined.\n");
 		}
 
-		SizeType index = functionNameToIndex_.at(functionName);
+		SizeType index = functionNameToIndex_.at(function_name);
 		assert(index < ainurFunctions_.size());
-		std::string argument = AinurFunction::deleteEnclosing(nameValue.second, '(', ')');
+		std::string argument = AinurFunction::deleteEnclosing(name_value.second, '(', ')');
 		double      x        = PsimagLite::atof(argument);
 		double      y        = ainurFunctions_[index](x);
 		return std::to_string(y);
@@ -245,8 +245,8 @@ private:
 		// Uniqueness
 		if (functionNameToIndex_.count(content) == 0) {
 			functionNameToIndex_[content] = ainurFunctions_.size();
-			AinurFunction ainurFunction(content);
-			ainurFunctions_.emplace_back(ainurFunction);
+			AinurFunction ainur_function(content);
+			ainurFunctions_.emplace_back(ainur_function);
 		}
 
 		return content;

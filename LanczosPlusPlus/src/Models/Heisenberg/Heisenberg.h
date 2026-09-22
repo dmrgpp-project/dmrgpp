@@ -85,26 +85,26 @@ public:
 
 		matrix.resize(hilbert, hilbert);
 		// Calculate off-diagonal elements AND store matrix
-		SizeType nCounter = 0;
+		SizeType n_counter = 0;
 		for (SizeType ispace = 0; ispace < hilbert; ispace++) {
-			SparseRowType sparseRow;
-			matrix.setRow(ispace, nCounter);
+			SparseRowType sparse_row;
+			matrix.setRow(ispace, n_counter);
 
 			WordType ket = basis(ispace, dummy);
 			// Save diagonal
-			sparseRow.add(ispace, diag[ispace]);
+			sparse_row.add(ispace, diag[ispace]);
 			for (SizeType i = 0; i < nsite; i++) {
 				SizeType val1 = basis.getN(ket, dummy, i, dummy, orb);
 				if (val1 == mp_.twiceTheSpin)
 					continue;
 				val1++;
-				setSplusSminus(sparseRow, ket, i, val1, basis);
+				setSplusSminus(sparse_row, ket, i, val1, basis);
 			}
 
-			nCounter += sparseRow.finalize(matrix);
+			n_counter += sparse_row.finalize(matrix);
 		}
 
-		matrix.setRow(hilbert, nCounter);
+		matrix.setRow(hilbert, n_counter);
 		matrix.checkValidity();
 		assert(isHermitian(matrix));
 	}

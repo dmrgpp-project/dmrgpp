@@ -46,9 +46,9 @@ int main(int argc, char* argv[])
 	typedef PsimagLite::ChebyshevSerializer<VectorType>   ChebyshevSerializerType;
 	typedef ChebyshevSerializerType::KernelParametersType KernelParametersType;
 	SizeType                                              type = KernelParametersType::JACKSON;
-	RealType                                              lambda   = 0.0;
-	bool                                                  makeZero = false;
-	SizeType                                              cutoff   = 0;
+	RealType                                              lambda    = 0.0;
+	bool                                                  make_zero = false;
+	SizeType                                              cutoff    = 0;
 	while ((opt = getopt(argc, argv, "f:b:t:s:c:l:zd")) != -1) {
 		switch (opt) {
 		case 'f':
@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
 			type = KernelParametersType::DIRICHLET;
 			break;
 		case 'z':
-			makeZero = true;
+			make_zero = true;
 			break;
 		default:
 			usage(argv[0]);
@@ -94,15 +94,15 @@ int main(int argc, char* argv[])
 	io.advance(ChebyshevSerializerType::stringMarker(),
 	           PsimagLite::IoSimple::In::LAST_INSTANCE);
 
-	ChebyshevSerializerType chebyshevSerializer(io);
+	ChebyshevSerializerType chebyshev_serializer(io);
 
 	PsimagLite::RealFrequencyRange<RealType> params(wbegin, wstep, total, 0);
 	ChebyshevSerializerType::PlotDataType    v;
-	KernelParametersType                     kernelParams(type, cutoff, lambda);
-	chebyshevSerializer.plot(v, params, kernelParams);
+	KernelParametersType                     kernel_params(type, cutoff, lambda);
+	chebyshev_serializer.plot(v, params, kernel_params);
 	for (SizeType x = 0; x < v.size(); x++) {
 		RealType tmp = v[x].second;
-		if (tmp < 0 && makeZero)
+		if (tmp < 0 && make_zero)
 			tmp = 0;
 		std::cout << v[x].first << " " << tmp << "\n";
 	}

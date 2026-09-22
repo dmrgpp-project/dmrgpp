@@ -96,7 +96,7 @@ int main(int argc, char* argv[])
 
 	typedef MyLoop                               HelperType;
 	typedef PsimagLite::Parallelizer<HelperType> ParallelizerType;
-	ParallelizerType threadObject(ConcurrencyType::codeSectionParams);
+	ParallelizerType                             threadObject(PsimagLite::CodeSectionParams);
 
 	HelperType helper(nthreads, total);
 
@@ -107,7 +107,7 @@ int main(int argc, char* argv[])
 	SizeType sum = helper.sum();
 
 	if (ConcurrencyType::root()) {
-		std::cout << "Using " << threadObject.name() << " mode= " << ConcurrencyType::mode;
+		std::cout << "Using " << threadObject.name() << " mode= " << modf;
 		std::cout << " with " << nthreads;
 		std::cout << " threads or mpi procs.\n";
 		std::cout << "sum=" << sum << "\n";

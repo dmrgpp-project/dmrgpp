@@ -120,8 +120,8 @@ public:
 
 	void print(std::ostream& os, typename BaseType::PrintEnum binaryOrDecimal) const override
 	{
-		bool isBinary = (binaryOrDecimal == BaseType::PRINT_BINARY);
-		basis_.print(os, isBinary);
+		bool is_binary = (binaryOrDecimal == BaseType::PRINT_BINARY);
+		basis_.print(os, is_binary);
 	}
 
 	SizeType electrons() const { return ne_; }

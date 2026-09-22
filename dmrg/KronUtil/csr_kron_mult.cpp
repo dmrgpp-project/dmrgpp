@@ -6,22 +6,22 @@
 #include <Kokkos_Profiling_ScopedRegion.hpp>
 
 template <typename ComplexOrRealType>
-void csr_to_den(const PsimagLite::CrsMatrix<ComplexOrRealType>& a,
-                PsimagLite::Matrix<ComplexOrRealType>&          a_)
+void csrToDen(const PsimagLite::CrsMatrix<ComplexOrRealType>& a,
+              PsimagLite::Matrix<ComplexOrRealType>&          a_)
 {
 	int ia = 0;
 	int ja = 0;
 
-	int nrow_A = a.row();
-	int ncol_A = a.col();
+	int nrow_a = a.row();
+	int ncol_a = a.col();
 
-	for (ja = 0; ja < ncol_A; ja++) {
-		for (ia = 0; ia < nrow_A; ia++) {
+	for (ja = 0; ja < ncol_a; ja++) {
+		for (ia = 0; ia < nrow_a; ia++) {
 			a_(ia, ja) = 0;
 		};
 	};
 
-	for (ia = 0; ia < nrow_A; ia++) {
+	for (ia = 0; ia < nrow_a; ia++) {
 		int istarta = a.getRowPtr(ia);
 		int ienda   = a.getRowPtr(ia + 1);
 		int ka      = 0;
@@ -34,38 +34,38 @@ void csr_to_den(const PsimagLite::CrsMatrix<ComplexOrRealType>& a,
 }
 
 template <typename ComplexOrRealType>
-void csr_kron_mult_method(const int  imethod,
-                          const char transA,
-                          const char transB,
+void csrKronMultMethod(const int  imethod,
+                       const char transA,
+                       const char transB,
 
-                          const PsimagLite::CrsMatrix<ComplexOrRealType>& a,
+                       const PsimagLite::CrsMatrix<ComplexOrRealType>& a,
 
-                          const PsimagLite::CrsMatrix<ComplexOrRealType>& b,
+                       const PsimagLite::CrsMatrix<ComplexOrRealType>& b,
 
-                          const PsimagLite::MatrixNonOwned<const ComplexOrRealType>& yin,
-                          PsimagLite::MatrixNonOwned<ComplexOrRealType>&             xout)
+                       const PsimagLite::MatrixNonOwned<const ComplexOrRealType>& yin,
+                       PsimagLite::MatrixNonOwned<ComplexOrRealType>&             xout)
 {
 	Kokkos::Profiling::ScopedRegion region("PsimagLite::csr_kron_mult_method");
 
-	const int isTransA     = (transA == 'T') || (transA == 't');
-	const int isTransB     = (transB == 'T') || (transB == 't');
-	const int isConjTransA = (transA == 'C') || (transA == 'c');
-	const int isConjTransB = (transB == 'C') || (transB == 'c');
+	const int is_trans_a      = (transA == 'T') || (transA == 't');
+	const int is_trans_b      = (transB == 'T') || (transB == 't');
+	const int is_conj_trans_a = (transA == 'C') || (transA == 'c');
+	const int is_conj_trans_b = (transB == 'C') || (transB == 'c');
 
-	const int nrow_A = a.rows();
-	const int ncol_A = a.cols();
-	const int nrow_B = b.rows();
-	const int ncol_B = b.cols();
+	const int nrow_a = a.rows();
+	const int ncol_a = a.cols();
+	const int nrow_b = b.rows();
+	const int ncol_b = b.cols();
 
-	const int nrow_1 = (isTransA || isConjTransA) ? ncol_A : nrow_A;
-	const int ncol_1 = (isTransA || isConjTransA) ? nrow_A : ncol_A;
-	const int nrow_2 = (isTransB || isConjTransB) ? ncol_B : nrow_B;
-	const int ncol_2 = (isTransB || isConjTransB) ? nrow_B : ncol_B;
+	const int nrow_1 = (is_trans_a || is_conj_trans_a) ? ncol_a : nrow_a;
+	const int ncol_1 = (is_trans_a || is_conj_trans_a) ? nrow_a : ncol_a;
+	const int nrow_2 = (is_trans_b || is_conj_trans_b) ? ncol_b : nrow_b;
+	const int ncol_2 = (is_trans_b || is_conj_trans_b) ? nrow_b : ncol_b;
 
-	const int nrow_X = nrow_2;
-	const int ncol_X = nrow_1;
-	const int nrow_Y = ncol_2;
-	const int ncol_Y = ncol_1;
+	const int nrow_x = nrow_2;
+	const int ncol_x = nrow_1;
+	const int nrow_y = ncol_2;
+	const int ncol_y = ncol_1;
 
 	assert((imethod == 1) || (imethod == 2) || (imethod == 3));
 
@@ -125,11 +125,11 @@ void csr_kron_mult_method(const int  imethod,
 		 *  --------------------------------------------
 		 */
 
-		int                                                 nrow_BY = nrow_X;
-		int                                                 ncol_BY = ncol_Y;
-		PsimagLite::Matrix<ComplexOrRealType>               by_(nrow_BY, ncol_BY);
-		PsimagLite::MatrixNonOwned<ComplexOrRealType>       byRef(by_);
-		PsimagLite::MatrixNonOwned<const ComplexOrRealType> byConstRef(by_);
+		int                                                 nrow_by = nrow_x;
+		int                                                 ncol_by = ncol_y;
+		PsimagLite::Matrix<ComplexOrRealType>               by(nrow_by, ncol_by);
+		PsimagLite::MatrixNonOwned<ComplexOrRealType>       by_ref(by);
+		PsimagLite::MatrixNonOwned<const ComplexOrRealType> by_const_ref(by);
 		/*
 		 * ---------------
 		 * setup BY
@@ -141,9 +141,9 @@ void csr_kron_mult_method(const int  imethod,
 			int jby = 0;
 
 			// not needed FIXME
-			for (jby = 0; jby < ncol_BY; jby++) {
-				for (iby = 0; iby < nrow_BY; iby++) {
-					by_(iby, jby) = 0;
+			for (jby = 0; jby < ncol_by; jby++) {
+				for (iby = 0; iby < nrow_by; iby++) {
+					by(iby, jby) = 0;
 				};
 			};
 		}
@@ -159,13 +159,13 @@ void csr_kron_mult_method(const int  imethod,
 			csr_matmul_pre(trans,
 			               b,
 
-			               nrow_Y,
-			               ncol_Y,
+			               nrow_y,
+			               ncol_y,
 			               yin,
 
-			               nrow_BY,
-			               ncol_BY,
-			               byRef);
+			               nrow_by,
+			               ncol_by,
+			               by_ref);
 		}
 
 		{
@@ -179,16 +179,16 @@ void csr_kron_mult_method(const int  imethod,
 			 * note trans = 'Z' mean use conj(A)
 			 * ---------------------------------
 			 */
-			const char trans = isTransA ? 'N' : (isConjTransA ? 'Z' : 'T');
+			const char trans = is_trans_a ? 'N' : (is_conj_trans_a ? 'Z' : 'T');
 			csr_matmul_post(trans,
 			                a,
 
-			                nrow_BY,
-			                ncol_BY,
-			                byConstRef,
+			                nrow_by,
+			                ncol_by,
+			                by_const_ref,
 
-			                nrow_X,
-			                ncol_X,
+			                nrow_x,
+			                ncol_x,
 			                xout);
 		}
 	} else if (imethod == 2) {
@@ -201,11 +201,11 @@ void csr_kron_mult_method(const int  imethod,
 		 * ---------------------
 		 */
 
-		int                                                 nrow_YAt = nrow_Y;
-		int                                                 ncol_YAt = ncol_X;
-		PsimagLite::Matrix<ComplexOrRealType>               yat_(nrow_YAt, ncol_YAt);
-		PsimagLite::MatrixNonOwned<ComplexOrRealType>       yatRef(yat_);
-		PsimagLite::MatrixNonOwned<const ComplexOrRealType> yatConstRef(yat_);
+		int                                                 nrow_y_at = nrow_y;
+		int                                                 ncol_y_at = ncol_x;
+		PsimagLite::Matrix<ComplexOrRealType>               yat(nrow_y_at, ncol_y_at);
+		PsimagLite::MatrixNonOwned<ComplexOrRealType>       yat_ref(yat);
+		PsimagLite::MatrixNonOwned<const ComplexOrRealType> yat_const_ref(yat);
 
 		/*
 		 * ----------------
@@ -218,9 +218,9 @@ void csr_kron_mult_method(const int  imethod,
 			int jy = 0;
 
 			// not needed FIXME
-			for (jy = 0; jy < ncol_YAt; jy++) {
-				for (iy = 0; iy < nrow_YAt; iy++) {
-					yat_(iy, jy) = 0;
+			for (jy = 0; jy < ncol_y_at; jy++) {
+				for (iy = 0; iy < nrow_y_at; iy++) {
+					yat(iy, jy) = 0;
 				};
 			};
 		}
@@ -236,17 +236,17 @@ void csr_kron_mult_method(const int  imethod,
 			 * note trans = 'Z' mean use conj(A)
 			 * ---------------------------------
 			 */
-			const char transa = isTransA ? 'N' : (isConjTransA ? 'Z' : 'T');
+			const char transa = is_trans_a ? 'N' : (is_conj_trans_a ? 'Z' : 'T');
 			csr_matmul_post(transa,
 			                a,
 
-			                nrow_Y,
-			                ncol_Y,
+			                nrow_y,
+			                ncol_y,
 			                yin,
 
-			                nrow_YAt,
-			                ncol_YAt,
-			                yatRef);
+			                nrow_y_at,
+			                ncol_y_at,
+			                yat_ref);
 		}
 
 		{
@@ -262,12 +262,12 @@ void csr_kron_mult_method(const int  imethod,
 			csr_matmul_pre(trans,
 			               b,
 
-			               nrow_YAt,
-			               ncol_YAt,
-			               yatConstRef,
+			               nrow_y_at,
+			               ncol_y_at,
+			               yat_const_ref,
 
-			               nrow_X,
-			               ncol_X,
+			               nrow_x,
+			               ncol_x,
 			               xout);
 		}
 	} else if (imethod == 3) {
@@ -285,25 +285,25 @@ void csr_kron_mult_method(const int  imethod,
 		using MemorySpace    = ExecutionSpace::memory_space;
 		using KokkosScalar   = typename PsimagLite::KokkosType<ComplexOrRealType>::type;
 
-		int nnzA = a.nonZeros();
-		int nnzB = b.nonZeros();
+		int nnz_a = a.nonZeros();
+		int nnz_b = b.nonZeros();
 
-		Kokkos::View<int*, Kokkos::HostSpace> A_row_h(
+		Kokkos::View<int*, Kokkos::HostSpace> a_row_h(
 		    Kokkos::view_alloc(Kokkos::WithoutInitializing,
 		                       "PsimgLite:csr_kron_mult::imethod3::A_row_h"),
-		    nnzA);
-		Kokkos::View<const int*, Kokkos::HostSpace, Kokkos::MemoryUnmanaged> A_col_h(
-		    &a.getCol(0), nnzA);
+		    nnz_a);
+		Kokkos::View<const int*, Kokkos::HostSpace, Kokkos::MemoryUnmanaged> a_col_h(
+		    &a.getCol(0), nnz_a);
 		Kokkos::View<const KokkosScalar*, Kokkos::HostSpace, Kokkos::MemoryUnmanaged>
-		    A_val_h(reinterpret_cast<const KokkosScalar*>(&a.getValue(0)), nnzA);
-		Kokkos::View<int*, Kokkos::HostSpace> B_row_h(
+		    a_val_h(reinterpret_cast<const KokkosScalar*>(&a.getValue(0)), nnz_a);
+		Kokkos::View<int*, Kokkos::HostSpace> b_row_h(
 		    Kokkos::view_alloc(Kokkos::WithoutInitializing,
 		                       "PsimgLite:csr_kron_mult::imethod3::B_row_h"),
-		    nnzB);
-		Kokkos::View<const int*, Kokkos::HostSpace, Kokkos::MemoryUnmanaged> B_col_h(
-		    &b.getCol(0), nnzB);
+		    nnz_b);
+		Kokkos::View<const int*, Kokkos::HostSpace, Kokkos::MemoryUnmanaged> b_col_h(
+		    &b.getCol(0), nnz_b);
 		Kokkos::View<const KokkosScalar*, Kokkos::HostSpace, Kokkos::MemoryUnmanaged>
-		    B_val_h(reinterpret_cast<const KokkosScalar*>(&b.getValue(0)), nnzB);
+		    b_val_h(reinterpret_cast<const KokkosScalar*>(&b.getValue(0)), nnz_b);
 
 		{
 			Kokkos::Profiling::ScopedRegion region(
@@ -311,81 +311,81 @@ void csr_kron_mult_method(const int  imethod,
 
 			// store row for every entry
 			int idx = 0;
-			for (int ia = 0; ia < nrow_A; ++ia) {
+			for (int ia = 0; ia < nrow_a; ++ia) {
 				int istart = a.getRowPtr(ia);
 				int iend   = a.getRowPtr(ia + 1);
 				for (int ka = istart; ka < iend; ++ka) {
-					A_row_h[idx] = ia;
+					a_row_h[idx] = ia;
 					++idx;
 				}
 			}
 
 			idx = 0;
-			for (int ib = 0; ib < nrow_B; ++ib) {
+			for (int ib = 0; ib < nrow_b; ++ib) {
 				int istart = b.getRowPtr(ib);
 				int iend   = b.getRowPtr(ib + 1);
 				for (int kb = istart; kb < iend; ++kb) {
-					B_row_h[idx] = ib;
+					b_row_h[idx] = ib;
 					++idx;
 				}
 			}
 		}
 
-		auto A_row_dev = Kokkos::create_mirror_view_and_copy(
-		    Kokkos::view_alloc(ExecutionSpace {}, MemorySpace {}), A_row_h);
-		auto A_col_dev = Kokkos::create_mirror_view_and_copy(
-		    Kokkos::view_alloc(ExecutionSpace {}, MemorySpace {}), A_col_h);
-		auto A_val_dev = Kokkos::create_mirror_view_and_copy(
-		    Kokkos::view_alloc(ExecutionSpace {}, MemorySpace {}), A_val_h);
-		auto B_row_dev = Kokkos::create_mirror_view_and_copy(
-		    Kokkos::view_alloc(ExecutionSpace {}, MemorySpace {}), B_row_h);
-		auto B_col_dev = Kokkos::create_mirror_view_and_copy(
-		    Kokkos::view_alloc(ExecutionSpace {}, MemorySpace {}), B_col_h);
-		auto B_val_dev = Kokkos::create_mirror_view_and_copy(
-		    Kokkos::view_alloc(ExecutionSpace {}, MemorySpace {}), B_val_h);
+		auto a_row_dev = Kokkos::create_mirror_view_and_copy(
+		    Kokkos::view_alloc(ExecutionSpace {}, MemorySpace {}), a_row_h);
+		auto a_col_dev = Kokkos::create_mirror_view_and_copy(
+		    Kokkos::view_alloc(ExecutionSpace {}, MemorySpace {}), a_col_h);
+		auto a_val_dev = Kokkos::create_mirror_view_and_copy(
+		    Kokkos::view_alloc(ExecutionSpace {}, MemorySpace {}), a_val_h);
+		auto b_row_dev = Kokkos::create_mirror_view_and_copy(
+		    Kokkos::view_alloc(ExecutionSpace {}, MemorySpace {}), b_row_h);
+		auto b_col_dev = Kokkos::create_mirror_view_and_copy(
+		    Kokkos::view_alloc(ExecutionSpace {}, MemorySpace {}), b_col_h);
+		auto b_val_dev = Kokkos::create_mirror_view_and_copy(
+		    Kokkos::view_alloc(ExecutionSpace {}, MemorySpace {}), b_val_h);
 
 		auto yin_host = Kokkos::View<const KokkosScalar**,
 		                             Kokkos::LayoutLeft,
 		                             Kokkos::HostSpace,
 		                             Kokkos::MemoryUnmanaged>(
-		    reinterpret_cast<const KokkosScalar*>(&yin(0, 0)), nrow_Y, ncol_Y);
+		    reinterpret_cast<const KokkosScalar*>(&yin(0, 0)), nrow_y, ncol_y);
 
 		auto y_dev = Kokkos::create_mirror_view_and_copy(
 		    Kokkos::view_alloc(ExecutionSpace {}, MemorySpace {}), yin_host);
 
 		auto x_dev = Kokkos::View<KokkosScalar**>(
-		    "PsimgLite:csr_kron_mult::imethod3::x_dev", nrow_X, ncol_X);
+		    "PsimgLite:csr_kron_mult::imethod3::x_dev", nrow_x, ncol_x);
 
 		Kokkos::parallel_for(
 		    "PsimgLite:csr_kron_mult::imethod3::spmv_kernel",
 		    Kokkos::MDRangePolicy<ExecutionSpace, Kokkos::Rank<2>>({ 0, 0 },
-		                                                           { nnzB, nnzA }),
+		                                                           { nnz_b, nnz_a }),
 		    KOKKOS_LAMBDA(const size_t ib_idx, const size_t ia_idx) {
 			    constexpr bool is_complex
 			        = PsimagLite::IsComplexNumber<ComplexOrRealType>::True;
-			    const int isConjTransA = (transA == 'C') || (transA == 'c');
-			    const int isConjTransB = (transB == 'C') || (transB == 'c');
+			    const int is_conj_trans_a = (transA == 'C') || (transA == 'c');
+			    const int is_conj_trans_b = (transB == 'C') || (transB == 'c');
 
-			    int          ia  = A_row_dev(ia_idx);
-			    int          ja  = A_col_dev(ia_idx);
-			    KokkosScalar aij = A_val_dev(ia_idx);
+			    int          ia  = a_row_dev(ia_idx);
+			    int          ja  = a_col_dev(ia_idx);
+			    KokkosScalar aij = a_val_dev(ia_idx);
 			    if constexpr (is_complex)
-				    if (isConjTransA)
+				    if (is_conj_trans_a)
 					    aij = Kokkos::conj(aij);
 
-			    int          ib  = B_row_dev(ib_idx);
-			    int          jb  = B_col_dev(ib_idx);
-			    KokkosScalar bij = B_val_dev(ib_idx);
+			    int          ib  = b_row_dev(ib_idx);
+			    int          jb  = b_col_dev(ib_idx);
+			    KokkosScalar bij = b_val_dev(ib_idx);
 			    if constexpr (is_complex)
-				    if (isConjTransB)
+				    if (is_conj_trans_b)
 					    bij = Kokkos::conj(bij);
 
 			    KokkosScalar cij = aij * bij;
 
-			    int ix = (isTransB || isConjTransB) ? jb : ib;
-			    int jx = (isTransA || isConjTransA) ? ja : ia;
-			    int iy = (isTransB || isConjTransB) ? ib : jb;
-			    int jy = (isTransA || isConjTransA) ? ia : ja;
+			    int ix = (is_trans_b || is_conj_trans_b) ? jb : ib;
+			    int jx = (is_trans_a || is_conj_trans_a) ? ja : ia;
+			    int iy = (is_trans_b || is_conj_trans_b) ? ib : jb;
+			    int jy = (is_trans_a || is_conj_trans_a) ? ia : ja;
 
 			    KokkosScalar prod = cij * y_dev(iy, jy);
 			    Kokkos::atomic_add(&x_dev(ix, jx), prod);
@@ -395,8 +395,8 @@ void csr_kron_mult_method(const int  imethod,
 			    "PsimgLite::csr_kron_mult_method::imethod3::copy_results");
 			auto xhost
 			    = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace {}, x_dev);
-			for (int ix = 0; ix < nrow_X; ++ix) {
-				for (int jx = 0; jx < ncol_X; ++jx)
+			for (int ix = 0; ix < nrow_x; ++ix) {
+				for (int jx = 0; jx < ncol_x; ++jx)
 					xout(ix, jx)
 					    += static_cast<ComplexOrRealType>(xhost(ix, jx));
 			}
@@ -405,51 +405,51 @@ void csr_kron_mult_method(const int  imethod,
 }
 
 template <typename ComplexOrRealType>
-void csr_kron_mult_method(const int                                                   imethod,
-                          const char                                                  transA,
-                          const char                                                  transB,
-                          const PsimagLite::CrsMatrix<ComplexOrRealType>&             a,
-                          const PsimagLite::CrsMatrix<ComplexOrRealType>&             b,
-                          const typename PsimagLite::Vector<ComplexOrRealType>::Type& yin_,
-                          SizeType                                                    offsetY,
-                          typename PsimagLite::Vector<ComplexOrRealType>::Type&       xout_,
-                          SizeType                                                    offsetX)
+void csrKronMultMethod(const int                                                   imethod,
+                       const char                                                  transA,
+                       const char                                                  transB,
+                       const PsimagLite::CrsMatrix<ComplexOrRealType>&             a,
+                       const PsimagLite::CrsMatrix<ComplexOrRealType>&             b,
+                       const typename PsimagLite::Vector<ComplexOrRealType>::Type& yin_,
+                       SizeType                                                    offsetY,
+                       typename PsimagLite::Vector<ComplexOrRealType>::Type&       xout_,
+                       SizeType                                                    offsetX)
 
 {
-	const int isTransA     = (transA == 'T') || (transA == 't');
-	const int isTransB     = (transB == 'T') || (transB == 't');
-	const int isConjTransA = (transA == 'C') || (transA == 'c');
-	const int isConjTransB = (transB == 'C') || (transB == 'c');
+	const int is_trans_a      = (transA == 'T') || (transA == 't');
+	const int is_trans_b      = (transB == 'T') || (transB == 't');
+	const int is_conj_trans_a = (transA == 'C') || (transA == 'c');
+	const int is_conj_trans_b = (transB == 'C') || (transB == 'c');
 
-	const int nrow_A = a.rows();
-	const int ncol_A = a.cols();
-	const int nrow_B = b.rows();
-	const int ncol_B = b.cols();
+	const int nrow_a = a.rows();
+	const int ncol_a = a.cols();
+	const int nrow_b = b.rows();
+	const int ncol_b = b.cols();
 
-	const int nrow_1 = (isTransA || isConjTransA) ? ncol_A : nrow_A;
-	const int ncol_1 = (isTransA || isConjTransA) ? nrow_A : ncol_A;
-	const int nrow_2 = (isTransB || isConjTransB) ? ncol_B : nrow_B;
-	const int ncol_2 = (isTransB || isConjTransB) ? nrow_B : ncol_B;
+	const int nrow_1 = (is_trans_a || is_conj_trans_a) ? ncol_a : nrow_a;
+	const int ncol_1 = (is_trans_a || is_conj_trans_a) ? nrow_a : ncol_a;
+	const int nrow_2 = (is_trans_b || is_conj_trans_b) ? ncol_b : nrow_b;
+	const int ncol_2 = (is_trans_b || is_conj_trans_b) ? nrow_b : ncol_b;
 
-	const int                                           nrow_X = nrow_2;
-	const int                                           ncol_X = nrow_1;
-	const int                                           nrow_Y = ncol_2;
-	const int                                           ncol_Y = ncol_1;
-	PsimagLite::MatrixNonOwned<const ComplexOrRealType> yin(nrow_Y, ncol_Y, yin_, offsetY);
-	PsimagLite::MatrixNonOwned<ComplexOrRealType>       xout(nrow_X, ncol_X, xout_, offsetX);
+	const int                                           nrow_x = nrow_2;
+	const int                                           ncol_x = nrow_1;
+	const int                                           nrow_y = ncol_2;
+	const int                                           ncol_y = ncol_1;
+	PsimagLite::MatrixNonOwned<const ComplexOrRealType> yin(nrow_y, ncol_y, yin_, offsetY);
+	PsimagLite::MatrixNonOwned<ComplexOrRealType>       xout(nrow_x, ncol_x, xout_, offsetX);
 	csr_kron_mult_method(imethod, transA, transB, a, b, yin, xout);
 }
 
 template <typename ComplexOrRealType>
-void csr_kron_mult(const char                                                  transA,
-                   const char                                                  transB,
-                   const PsimagLite::CrsMatrix<ComplexOrRealType>&             a,
-                   const PsimagLite::CrsMatrix<ComplexOrRealType>&             b,
-                   const typename PsimagLite::Vector<ComplexOrRealType>::Type& yin,
-                   SizeType                                                    offsetY,
-                   typename PsimagLite::Vector<ComplexOrRealType>::Type&       xout,
-                   SizeType                                                    offsetX,
-                   const typename PsimagLite::Real<ComplexOrRealType>::Type    denseFlopDiscount)
+void csrKronMult(const char                                                  transA,
+                 const char                                                  transB,
+                 const PsimagLite::CrsMatrix<ComplexOrRealType>&             a,
+                 const PsimagLite::CrsMatrix<ComplexOrRealType>&             b,
+                 const typename PsimagLite::Vector<ComplexOrRealType>::Type& yin,
+                 SizeType                                                    offsetY,
+                 typename PsimagLite::Vector<ComplexOrRealType>::Type&       xout,
+                 SizeType                                                    offsetX,
+                 const typename PsimagLite::Real<ComplexOrRealType>::Type    denseFlopDiscount)
 {
 	/*
 	 *   -------------------------------------------------------------
@@ -480,10 +480,10 @@ void csr_kron_mult(const char                                                  t
 	 *   this is feasible only if A and B are very sparse, need nnz(A)*nnz(B) flops
 	 *   -------------------------------------------------------------
 	 */
-	int nnz_A = csr_nnz(a);
-	int nnz_B = csr_nnz(b);
+	int nnz_a = csrNnz(a);
+	int nnz_b = csrNnz(b);
 
-	bool no_work = (csr_is_zeros(a) || csr_is_zeros(b));
+	bool no_work = (csrIsZeros(a) || csrIsZeros(b));
 	if (no_work) {
 		return;
 	};
@@ -492,36 +492,36 @@ void csr_kron_mult(const char                                                  t
 	ComplexOrRealType kron_flops = 0;
 	int               imethod    = 1;
 
-	const int isTransA     = (transA == 'T') || (transA == 't');
-	const int isTransB     = (transB == 'T') || (transB == 't');
-	const int isConjTransA = (transA == 'C') || (transA == 'c');
-	const int isConjTransB = (transB == 'C') || (transB == 'c');
+	const int is_trans_a      = (transA == 'T') || (transA == 't');
+	const int is_trans_b      = (transB == 'T') || (transB == 't');
+	const int is_conj_trans_a = (transA == 'C') || (transA == 'c');
+	const int is_conj_trans_b = (transB == 'C') || (transB == 'c');
 
-	const int nrow_A = a.rows();
-	const int ncol_A = a.cols();
-	const int nrow_B = b.rows();
-	const int ncol_B = b.cols();
+	const int nrow_a = a.rows();
+	const int ncol_a = a.cols();
+	const int nrow_b = b.rows();
+	const int ncol_b = b.cols();
 
 	// -----------------------------------
 	// both A and B are considered sparse
 	// -----------------------------------
 
-	const int nrow_1 = (isTransA || isConjTransA) ? ncol_A : nrow_A;
-	const int ncol_1 = (isTransA || isConjTransA) ? nrow_A : ncol_A;
+	const int nrow_1 = (is_trans_a || is_conj_trans_a) ? ncol_a : nrow_a;
+	const int ncol_1 = (is_trans_a || is_conj_trans_a) ? nrow_a : ncol_a;
 
-	const int nrow_2 = (isTransB || isConjTransB) ? ncol_B : nrow_B;
-	const int ncol_2 = (isTransB || isConjTransB) ? nrow_B : ncol_B;
+	const int nrow_2 = (is_trans_b || is_conj_trans_b) ? ncol_b : nrow_b;
+	const int ncol_2 = (is_trans_b || is_conj_trans_b) ? nrow_b : ncol_b;
 
-	estimate_kron_cost(nrow_1,
-	                   ncol_1,
-	                   nnz_A,
-	                   nrow_2,
-	                   ncol_2,
-	                   nnz_B,
-	                   &kron_nnz,
-	                   &kron_flops,
-	                   &imethod,
-	                   denseFlopDiscount);
+	estimateKronCost(nrow_1,
+	                 ncol_1,
+	                 nnz_a,
+	                 nrow_2,
+	                 ncol_2,
+	                 nnz_b,
+	                 &kron_nnz,
+	                 &kron_flops,
+	                 &imethod,
+	                 denseFlopDiscount);
 
-	csr_kron_mult_method(imethod, transA, transB, a, b, yin, offsetY, xout, offsetX);
+	csrKronMultMethod(imethod, transA, transB, a, b, yin, offsetY, xout, offsetX);
 }

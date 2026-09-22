@@ -29,8 +29,8 @@ int main()
 	std::cout << s;
 
 	std::cout << "\n\nFallback\n";
-	PsimagLite::Svd<double> svdFallback("gesvd");
-	svdFallback('A', m, s, vt);
+	PsimagLite::Svd<double> svd_fallback("gesvd");
+	svd_fallback('A', m, s, vt);
 	std::cout << "U\n";
 	std::cout << m;
 	std::cout << "S\n";

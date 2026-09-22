@@ -31,23 +31,23 @@ public:
 	// contains the multiplier
 	bool actOn(bool& bit, ComplexOrRealType& result) const
 	{
-		static const ComplexOrRealType zeroPointFive = 0.5;
-		result                                       = 1;
-		const bool bitSaved                          = bit;
+		static const ComplexOrRealType zero_point_five = 0.5;
+		result                                         = 1;
+		const bool bit_saved                           = bit;
 		switch (label_) {
 		case Label::IDENTITY:
 			return true;
 			break;
 		case Label::N:
-			return (bitSaved);
+			return (bit_saved);
 			break;
 		case Label::SZ:
-			result = (bitSaved) ? -zeroPointFive : zeroPointFive;
+			result = (bit_saved) ? -zero_point_five : zero_point_five;
 			return true;
 			break;
 		case Label::C:
 			bit = !bit;
-			return ((bitSaved && !transpose_) || (!bitSaved && transpose_));
+			return ((bit_saved && !transpose_) || (!bit_saved && transpose_));
 			break;
 		default:
 			throw PsimagLite::RuntimeError("RahulOperator::actOn internal error\n");

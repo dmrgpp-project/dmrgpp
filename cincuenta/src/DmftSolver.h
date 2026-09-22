@@ -271,7 +271,7 @@ private:
 
 	void logDebug() const
 	{
-		SizeType mpiRank = PsimagLite::MPI::commRank(PsimagLite::MPI::COMM_WORLD);
+		SizeType mpiRank = PsimagLite::MPI::commRank(PsimagLite::MPI::comm_world);
 
 		if (mpiRank != 0) {
 			return;

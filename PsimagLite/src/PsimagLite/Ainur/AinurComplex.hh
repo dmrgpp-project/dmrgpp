@@ -49,11 +49,11 @@ private:
 		const SizeType n     = str.length();
 		RealType       real1 = 0;
 		for (SizeType i = 0; i < n; ++i) {
-			bool isSqrtMinus1 = (str[i] == 'i');
-			if (isSqrtMinus1 && flag)
+			bool is_sqrt_minus1 = (str[i] == 'i');
+			if (is_sqrt_minus1 && flag)
 				throw RuntimeError("Error parsing number " + str + "\n");
 
-			if (isSqrtMinus1) {
+			if (is_sqrt_minus1) {
 				flag   = true;
 				real1  = (buffer == "") ? 0 : atof(buffer.c_str());
 				buffer = "";

@@ -219,18 +219,18 @@ public:
 	                        SizeType                   spin,
 	                        SizeType                   orb) const override
 	{
-		LabeledOperatorType opC(LabeledOperatorType::Label::OPERATOR_C);
+		LabeledOperatorType op_c(LabeledOperatorType::Label::OPERATOR_C);
 
 		assert(orbitals_ == 1);
 		if (lOperator.id() == LabeledOperatorType::Label::OPERATOR_SPLUS) {
 			WordType bra1 = ket1;
 			WordType bra2 = ket2;
 
-			int value1 = getBraC(bra2, ket2, opC, site);
+			int value1 = getBraC(bra2, ket2, op_c, site);
 			if (value1 == 0)
 				return PairIntType(-1, value1);
 
-			int value2 = getBraC(bra1, ket1, opC.transposeConjugate(), site);
+			int value2 = getBraC(bra1, ket1, op_c.transposeConjugate(), site);
 			if (value2 == 0)
 				return PairIntType(-1, value2);
 
@@ -241,11 +241,11 @@ public:
 			WordType bra1 = ket1;
 			WordType bra2 = ket2;
 
-			int value1 = getBraC(bra1, ket1, opC, site);
+			int value1 = getBraC(bra1, ket1, op_c, site);
 			if (value1 == 0)
 				return PairIntType(-1, value1);
 
-			int value2 = getBraC(bra2, ket2, opC.transposeConjugate(), site);
+			int value2 = getBraC(bra2, ket2, op_c.transposeConjugate(), site);
 			if (value2 == 0)
 				return PairIntType(-1, value2);
 
@@ -253,7 +253,7 @@ public:
 			return PairIntType(tmp, 1);
 		}
 
-		return getBraIndex_(ket1, ket2, lOperator, site, spin, orb);
+		return getBraIndex(ket1, ket2, lOperator, site, spin, orb);
 	}
 
 	SizeType orbsPerSite(SizeType) const override { return orbitals_; }
@@ -305,12 +305,12 @@ public:
 
 private:
 
-	PairIntType getBraIndex_(const WordType&            ket1,
-	                         const WordType&            ket2,
-	                         const LabeledOperatorType& lOperator,
-	                         SizeType                   site,
-	                         SizeType                   spin,
-	                         SizeType) const
+	PairIntType getBraIndex(const WordType&            ket1,
+	                        const WordType&            ket2,
+	                        const LabeledOperatorType& lOperator,
+	                        SizeType                   site,
+	                        SizeType                   spin,
+	                        SizeType) const
 	{
 		assert(orbitals_ == 1);
 		WordType bra1  = ket1;

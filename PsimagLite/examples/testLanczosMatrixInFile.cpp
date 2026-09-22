@@ -48,7 +48,7 @@ int main(int argc, char** argv)
 
 	typedef PsimagLite::LanczosSolver<PsimagLite::CrsMatrix<ComplexType>> LanczosSolverType;
 
-	LanczosSolverType lanczosSolver(msparse, params);
+	LanczosSolverType lanczos_solver(msparse, params);
 
 	VectorType initial(n);
 	PsimagLite::fillRandom(initial);
@@ -62,7 +62,7 @@ int main(int argc, char** argv)
 
 	std::cout << "LANCZ: ";
 	LanczosSolverType::VectorVectorType zz;
-	lanczosSolver.computeAllStatesBelow(eigs, zz, initial, n);
+	lanczos_solver.computeAllStatesBelow(eigs, zz, initial, n);
 
 	std::cout << "LANCZOS: \n";
 	for (SizeType excited = 0; excited < n; ++excited) {

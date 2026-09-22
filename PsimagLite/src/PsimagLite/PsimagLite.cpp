@@ -40,17 +40,17 @@ SizeType log2Integer(SizeType x)
 void split(Vector<String>::Type& tokens, String str, String delimiters)
 {
 	// Skip delimiters at beginning.
-	String::size_type lastPos = str.find_first_not_of(delimiters, 0);
+	String::size_type last_pos = str.find_first_not_of(delimiters, 0);
 	// Find first "non-delimiter".
-	String::size_type pos = str.find_first_of(delimiters, lastPos);
+	String::size_type pos = str.find_first_of(delimiters, last_pos);
 
-	while (String::npos != pos || String::npos != lastPos) {
+	while (String::npos != pos || String::npos != last_pos) {
 		// Found a token, add it to the vector.
-		tokens.push_back(str.substr(lastPos, pos - lastPos));
+		tokens.push_back(str.substr(last_pos, pos - last_pos));
 		// Skip delimiters.  Note the "not_of"
-		lastPos = str.find_first_not_of(delimiters, pos);
+		last_pos = str.find_first_not_of(delimiters, pos);
 		// Find next "non-delimiter"
-		pos = str.find_first_of(delimiters, lastPos);
+		pos = str.find_first_of(delimiters, last_pos);
 	}
 }
 
@@ -88,11 +88,11 @@ bool isAnInteger(String str)
 
 bool isAfloat(String str)
 {
-	const SizeType n        = str.length();
-	bool           hasDigit = false;
+	const SizeType n         = str.length();
+	bool           has_digit = false;
 	for (SizeType i = 0; i < n; ++i) {
 		if (isdigit(str[i])) {
-			hasDigit = true;
+			has_digit = true;
 			continue;
 		}
 
@@ -102,7 +102,7 @@ bool isAfloat(String str)
 		return false;
 	}
 
-	return hasDigit;
+	return has_digit;
 }
 
 double atof(String str)
@@ -128,7 +128,7 @@ void replaceAll(String& str, const String& from, const String& to)
 	}
 }
 
-const int PsiApp::libSizeOfSizeType_ = sizeof(SizeType);
+const int PsiApp::lib_size_of_size_type = sizeof(SizeType);
 
 } // namespace PsimagLite
 

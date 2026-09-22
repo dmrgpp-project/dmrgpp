@@ -1,26 +1,26 @@
 #include "util.h"
 
 template <typename ComplexOrRealType>
-bool csr_is_eye(const PsimagLite::CrsMatrix<ComplexOrRealType>& a)
+bool csrIsEye(const PsimagLite::CrsMatrix<ComplexOrRealType>& a)
 {
 	// ----------------------------------------------------
 	// check whether a sparse matrix is the identity matrix
 	// ----------------------------------------------------
 
-	const int nrow_A = a.rows();
-	const int ncol_A = a.cols();
+	const int nrow_a = a.rows();
+	const int ncol_a = a.cols();
 
-	bool is_eye = (nrow_A == ncol_A);
+	bool is_eye = (nrow_a == ncol_a);
 
 	if (!is_eye) {
 		return (false);
 	};
 
-	if ((nrow_A <= 0) || (ncol_A <= 0)) {
+	if ((nrow_a <= 0) || (ncol_a <= 0)) {
 		return (false);
 	};
 
-	for (int ia = 0; ia < nrow_A; ia++) {
+	for (int ia = 0; ia < nrow_a; ia++) {
 		int istart = a.getRowPtr(ia);
 		int iend   = a.getRowPtr(ia + 1);
 

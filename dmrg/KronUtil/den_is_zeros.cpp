@@ -1,10 +1,10 @@
 #include "util.h"
 
 template <typename ComplexOrRealType>
-bool den_is_zeros(const PsimagLite::Matrix<ComplexOrRealType>& a_)
+bool denIsZeros(const PsimagLite::Matrix<ComplexOrRealType>& a_)
 {
-	const int nrow_A = a_.n_row();
-	const int ncol_A = a_.n_col();
+	const int nrow_a = a_.n_row();
+	const int ncol_a = a_.n_col();
 	/*
 	 * -------------------------
 	 * return whether A is the zero matrix
@@ -15,9 +15,9 @@ bool den_is_zeros(const PsimagLite::Matrix<ComplexOrRealType>& a_)
 	const ComplexOrRealType zero = 0;
 
 	int ja = 0;
-	for (ja = 0; ja < ncol_A; ja++) {
+	for (ja = 0; ja < ncol_a; ja++) {
 		int ia = 0;
-		for (ia = 0; ia < nrow_A; ia++) {
+		for (ia = 0; ia < nrow_a; ia++) {
 			ComplexOrRealType aij = a_(ia, ja);
 			if (aij != zero) {
 				return (false);

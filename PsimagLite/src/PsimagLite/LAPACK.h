@@ -27,6 +27,7 @@ namespace LAPACK {
 	using IntegerForLapackType = long int;
 #endif
 	// ============================================================================
+	// NOLINTBEGIN
 	extern "C" void sgesv_(IntegerForLapackType*,
 	                       IntegerForLapackType*,
 	                       float*,
@@ -324,20 +325,20 @@ namespace LAPACK {
 	                        IntegerForLapackType*,
 	                        float*,
 	                        IntegerForLapackType*);
-
+	// NOLINTEND
 	// ============================================================================
 
-	inline void STERF(IntegerForLapackType* n, double* d, double* e, IntegerForLapackType* info)
+	inline void sterf(IntegerForLapackType* n, double* d, double* e, IntegerForLapackType* info)
 	{
 		dsterf_(n, d, e, info);
 	}
 
-	inline void STERF(IntegerForLapackType* n, float* d, float* e, IntegerForLapackType* info)
+	inline void sterf(IntegerForLapackType* n, float* d, float* e, IntegerForLapackType* info)
 	{
 		ssterf_(n, d, e, info);
 	}
 
-	inline void STEQR(char                  jobz,
+	inline void steqr(char                  jobz,
 	                  IntegerForLapackType  n,
 	                  double*               d,
 	                  double*               e,
@@ -349,7 +350,7 @@ namespace LAPACK {
 		dsteqr_(&jobz, &n, d, e, z, &ldz, work, info);
 	}
 
-	inline void STEQR(char                  jobz,
+	inline void steqr(char                  jobz,
 	                  IntegerForLapackType  n,
 	                  float*                d,
 	                  float*                e,
@@ -361,7 +362,7 @@ namespace LAPACK {
 		ssteqr_(&jobz, &n, d, e, z, &ldz, work, info);
 	}
 
-	inline void GESV(IntegerForLapackType  ma,
+	inline void gesv(IntegerForLapackType  ma,
 	                 IntegerForLapackType  mb,
 	                 float*                a,
 	                 IntegerForLapackType  lda,
@@ -373,7 +374,7 @@ namespace LAPACK {
 		sgesv_(&ma, &mb, a, &lda, pivot, b, &ldb, &info);
 	}
 
-	inline void GESV(IntegerForLapackType  ma,
+	inline void gesv(IntegerForLapackType  ma,
 	                 IntegerForLapackType  mb,
 	                 double*               a,
 	                 IntegerForLapackType  lda,
@@ -385,7 +386,7 @@ namespace LAPACK {
 		dgesv_(&ma, &mb, a, &lda, pivot, b, &ldb, &info);
 	}
 
-	inline void GESV(IntegerForLapackType  ma,
+	inline void gesv(IntegerForLapackType  ma,
 	                 IntegerForLapackType  mb,
 	                 std::complex<float>*  a,
 	                 IntegerForLapackType  lda,
@@ -397,7 +398,7 @@ namespace LAPACK {
 		cgesv_(&ma, &mb, a, &lda, pivot, b, &ldb, &info);
 	}
 
-	inline void GESV(IntegerForLapackType  ma,
+	inline void gesv(IntegerForLapackType  ma,
 	                 IntegerForLapackType  mb,
 	                 std::complex<double>* a,
 	                 IntegerForLapackType  lda,
@@ -409,7 +410,7 @@ namespace LAPACK {
 		zgesv_(&ma, &mb, a, &lda, pivot, b, &ldb, &info);
 	}
 
-	inline void GETRF(IntegerForLapackType  ma,
+	inline void getrf(IntegerForLapackType  ma,
 	                  IntegerForLapackType  na,
 	                  double*               a,
 	                  IntegerForLapackType  lda,
@@ -419,7 +420,7 @@ namespace LAPACK {
 		dgetrf_(&ma, &na, a, &lda, pivot, &info);
 	}
 
-	inline void GETRF(IntegerForLapackType  ma,
+	inline void getrf(IntegerForLapackType  ma,
 	                  IntegerForLapackType  na,
 	                  std::complex<double>* a,
 	                  IntegerForLapackType  lda,
@@ -429,7 +430,7 @@ namespace LAPACK {
 		zgetrf_(&ma, &na, a, &lda, pivot, &info);
 	}
 
-	inline void GETRF(IntegerForLapackType  ma,
+	inline void getrf(IntegerForLapackType  ma,
 	                  IntegerForLapackType  na,
 	                  float*                a,
 	                  IntegerForLapackType  lda,
@@ -439,7 +440,7 @@ namespace LAPACK {
 		sgetrf_(&ma, &na, a, &lda, pivot, &info);
 	}
 
-	inline void GETRF(IntegerForLapackType  ma,
+	inline void getrf(IntegerForLapackType  ma,
 	                  IntegerForLapackType  na,
 	                  std::complex<float>*  a,
 	                  IntegerForLapackType  lda,
@@ -449,7 +450,7 @@ namespace LAPACK {
 		cgetrf_(&ma, &na, a, &lda, pivot, &info);
 	}
 
-	inline void GETRI(IntegerForLapackType  na,
+	inline void getri(IntegerForLapackType  na,
 	                  double*               a,
 	                  IntegerForLapackType  lda,
 	                  IntegerForLapackType* pivot,
@@ -460,7 +461,7 @@ namespace LAPACK {
 		dgetri_(&na, a, &lda, pivot, work, &lwork, &info);
 	}
 
-	inline void GETRI(IntegerForLapackType  na,
+	inline void getri(IntegerForLapackType  na,
 	                  std::complex<double>* a,
 	                  IntegerForLapackType  lda,
 	                  IntegerForLapackType* pivot,
@@ -471,7 +472,7 @@ namespace LAPACK {
 		zgetri_(&na, a, &lda, pivot, work, &lwork, &info);
 	}
 
-	inline void GETRI(IntegerForLapackType  na,
+	inline void getri(IntegerForLapackType  na,
 	                  float*                a,
 	                  IntegerForLapackType  lda,
 	                  IntegerForLapackType* pivot,
@@ -482,7 +483,7 @@ namespace LAPACK {
 		sgetri_(&na, a, &lda, pivot, work, &lwork, &info);
 	}
 
-	inline void GETRI(IntegerForLapackType  na,
+	inline void getri(IntegerForLapackType  na,
 	                  std::complex<float>*  a,
 	                  IntegerForLapackType  lda,
 	                  IntegerForLapackType* pivot,
@@ -493,7 +494,7 @@ namespace LAPACK {
 		cgetri_(&na, a, &lda, pivot, work, &lwork, &info);
 	}
 
-	inline void GESDD(char*                 jobz,
+	inline void gesdd(char*                 jobz,
 	                  IntegerForLapackType* m,
 	                  IntegerForLapackType* n,
 	                  double*               a,
@@ -518,7 +519,7 @@ namespace LAPACK {
 		dgesdd_(jobz, m, n, a, lda, s, u, ldu, vt, ldvt, work, lwork, iwork, info);
 	}
 
-	inline void GESDD(char*                 jobz,
+	inline void gesdd(char*                 jobz,
 	                  IntegerForLapackType* m,
 	                  IntegerForLapackType* n,
 	                  float*                a,
@@ -543,7 +544,7 @@ namespace LAPACK {
 		sgesdd_(jobz, m, n, a, lda, s, u, ldu, vt, ldvt, work, lwork, iwork, info);
 	}
 
-	inline void GESDD(char*                 jobz,
+	inline void gesdd(char*                 jobz,
 	                  IntegerForLapackType* m,
 	                  IntegerForLapackType* n,
 	                  std::complex<double>* a,
@@ -567,7 +568,7 @@ namespace LAPACK {
 		zgesdd_(jobz, m, n, a, lda, s, u, ldu, vt, ldvt, work, lwork, rwork, iwork, info);
 	}
 
-	inline void GESDD(char*                 jobz,
+	inline void gesdd(char*                 jobz,
 	                  IntegerForLapackType* m,
 	                  IntegerForLapackType* n,
 	                  std::complex<float>*  a,
@@ -592,7 +593,7 @@ namespace LAPACK {
 		cgesdd_(jobz, m, n, a, lda, s, u, ldu, vt, ldvt, work, lwork, rwork, iwork, info);
 	}
 
-	inline void GESVD(char*                 jobz,
+	inline void gesvd(char*                 jobz,
 	                  char*                 jobvt,
 	                  IntegerForLapackType* m,
 	                  IntegerForLapackType* n,
@@ -616,7 +617,7 @@ namespace LAPACK {
 		dgesvd_(jobz, jobvt, m, n, a, lda, s, u, ldu, vt, ldvt, work, lwork, info);
 	}
 
-	inline void GESVD(char*                 jobz,
+	inline void gesvd(char*                 jobz,
 	                  char*                 jobvt,
 	                  IntegerForLapackType* m,
 	                  IntegerForLapackType* n,
@@ -640,7 +641,7 @@ namespace LAPACK {
 		sgesvd_(jobz, jobvt, m, n, a, lda, s, u, ldu, vt, ldvt, work, lwork, info);
 	}
 
-	inline void GESVD(char*                 jobz,
+	inline void gesvd(char*                 jobz,
 	                  char*                 jobvt,
 	                  IntegerForLapackType* m,
 	                  IntegerForLapackType* n,
@@ -664,7 +665,7 @@ namespace LAPACK {
 		zgesvd_(jobz, jobvt, m, n, a, lda, s, u, ldu, vt, ldvt, work, lwork, rwork, info);
 	}
 
-	inline void GESVD(char*                 jobz,
+	inline void gesvd(char*                 jobz,
 	                  char*                 jobvt,
 	                  IntegerForLapackType* m,
 	                  IntegerForLapackType* n,

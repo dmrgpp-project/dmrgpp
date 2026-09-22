@@ -108,11 +108,11 @@ public:
 			throw RuntimeError("LinearPrediction::ctor(...): data set must "
 			                   "contain an even number of points\n");
 		SizeType                         n = ysize / 2;
-		MatrixType                       A(p, p);
-		typename Vector<FieldType>::Type B(p);
-		computeA(A, n);
-		computeB(B, n);
-		computeD(A, B);
+		MatrixType                       a(p, p);
+		typename Vector<FieldType>::Type b(p);
+		computeA(a, n);
+		computeB(b, n);
+		computeD(a, b);
 	}
 
 	const FieldType& operator()(SizeType i) const { return y_[i]; }
@@ -124,11 +124,11 @@ public:
 			throw RuntimeError("LinearPrediction::ctor(...): data set must "
 			                   "contain an even number of points\n");
 		SizeType                         n = ysize / 2;
-		MatrixType                       A(p, p);
-		typename Vector<FieldType>::Type B(p);
-		computeA(A, n);
-		computeB(B, n);
-		computeD(A, B);
+		MatrixType                       a(p, p);
+		typename Vector<FieldType>::Type b(p);
+		computeA(a, n);
+		computeB(b, n);
+		computeD(a, b);
 	}
 
 	void predict(SizeType p)

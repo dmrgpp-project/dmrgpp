@@ -47,7 +47,7 @@ public:
 	                          || mp_.model == "SuperHubbardExtended")
 	    , hasRashba_(mp_.model == "HubbardOneBandRashbaSOC")
 	{
-		const bool hasSpinOrbitKaneMele = (mp_.model == "KaneMeleHubbard");
+		const bool has_spin_orbit_kane_mele = (mp_.model == "KaneMeleHubbard");
 
 		if (hasCoulombCoupling_ && geometry_.terms() < 2)
 			err("HubbardHelper::ctor(): ColoumbCoupling\n");
@@ -55,7 +55,7 @@ public:
 		if (hasJcoupling_ && geometry_.terms() < 3)
 			err("HubbardHelper::ctor(): jCoupling\n");
 
-		if (hasSpinOrbitKaneMele && geometry_.terms() != 2)
+		if (has_spin_orbit_kane_mele && geometry_.terms() != 2)
 			err("HubbardHelper::ctor(): KaneMeleHubbard\n");
 
 		if (hasRashba_ && geometry_.terms() != 2)
@@ -69,7 +69,7 @@ public:
 
 				hoppings_(i, j) = geometry_(i, 0, j, 0, 0);
 
-				if (hasSpinOrbitKaneMele)
+				if (has_spin_orbit_kane_mele)
 					hoppings_(i, j) += geometry_(i, 0, j, 0, 1);
 
 				if (hasRashba_)
@@ -89,23 +89,23 @@ public:
 
 		matrix.resize(hilbert, hilbert);
 		// Calculate off-diagonal elements AND store matrix
-		SizeType nCounter = 0;
+		SizeType n_counter = 0;
 		for (SizeType ispace = 0; ispace < hilbert; ispace++) {
-			SparseRowType sparseRow;
-			matrix.setRow(ispace, nCounter);
+			SparseRowType sparse_row;
+			matrix.setRow(ispace, n_counter);
 			WordType ket1 = basis(ispace, SPIN_UP);
 			WordType ket2 = basis(ispace, SPIN_DOWN);
 			// Save diagonal
-			sparseRow.add(ispace, diag[ispace]);
+			sparse_row.add(ispace, diag[ispace]);
 			for (SizeType i = 0; i < nsite; i++) {
-				setHoppingTerm(sparseRow, ket1, ket2, i, basis);
-				setJTermOffDiagonal(sparseRow, ket1, ket2, i, basis);
+				setHoppingTerm(sparse_row, ket1, ket2, i, basis);
+				setJTermOffDiagonal(sparse_row, ket1, ket2, i, basis);
 			}
 
-			nCounter += sparseRow.finalize(matrix);
+			n_counter += sparse_row.finalize(matrix);
 		}
 
-		matrix.setRow(hilbert, nCounter);
+		matrix.setRow(hilbert, n_counter);
 	}
 
 	void
@@ -123,15 +123,15 @@ public:
 		// Calculate off-diagonal elements AND store matrix
 		auto lambda = [&basis, nsite, &x, &y, this](SizeType ispace, SizeType)
 		{
-			SparseRowType sparseRow;
+			SparseRowType sparse_row;
 			WordType      ket1 = basis(ispace, SPIN_UP);
 			WordType      ket2 = basis(ispace, SPIN_DOWN);
 			for (SizeType i = 0; i < nsite; ++i) {
-				setHoppingTerm(sparseRow, ket1, ket2, i, basis);
-				setJTermOffDiagonal(sparseRow, ket1, ket2, i, basis);
+				setHoppingTerm(sparse_row, ket1, ket2, i, basis);
+				setJTermOffDiagonal(sparse_row, ket1, ket2, i, basis);
 			}
 
-			x[ispace] += sparseRow.finalize(y);
+			x[ispace] += sparse_row.finalize(y);
 		};
 
 		PsimagLite::Parallelizer2<> parallelizer2(
@@ -145,10 +145,10 @@ private:
 	void calcDiagonalElements(typename PsimagLite::Vector<RealType>::Type& diag,
 	                          const BasisBaseType&                         basis) const
 	{
-		const RealType zeroPointFive = 0.5;
-		SizeType       hilbert       = basis.size();
-		SizeType       nsite         = geometry_.numberOfSites();
-		SizeType       orb           = 0;
+		const RealType zero_point_five = 0.5;
+		SizeType       hilbert         = basis.size();
+		SizeType       nsite           = geometry_.numberOfSites();
+		SizeType       orb             = 0;
 
 		// Calculate diagonal elements
 		for (SizeType ispace = 0; ispace < hilbert; ispace++) {
@@ -168,7 +168,7 @@ private:
 					if (PsimagLite::real(value) == 0
 					    && PsimagLite::imag(value) == 0)
 						continue;
-					s += value * zeroPointFive * // double counting i,j
+					s += value * zero_point_five * // double counting i,j
 					    szTerm(ket1, ket2, i, basis)
 					    * szTerm(ket1, ket2, j, basis);
 				}
@@ -179,7 +179,7 @@ private:
 
 				for (SizeType j = 0; j < nsite; j++) {
 					ComplexOrRealType value
-					    = zeroPointFive * coulombCoupling(i, j);
+					    = zero_point_five * coulombCoupling(i, j);
 					if (PsimagLite::real(value) == 0
 					    && PsimagLite::imag(value) == 0)
 						continue;
@@ -219,8 +219,8 @@ private:
 		// Hopping term
 		for (SizeType j = 0; j < nsite; ++j) {
 			const ComplexOrRealType& h = hoppings_(i, j);
-			const bool hasHop = (PsimagLite::real(h) != 0 || PsimagLite::imag(h) != 0);
-			WordType   s1j    = (ket1 & BasisType::bitmask(j));
+			const bool has_hop = (PsimagLite::real(h) != 0 || PsimagLite::imag(h) != 0);
+			WordType   s1j     = (ket1 & BasisType::bitmask(j));
 			if (s1j > 0)
 				s1j = 1;
 			WordType s2j = (ket2 & BasisType::bitmask(j));
@@ -228,7 +228,7 @@ private:
 				s2j = 1;
 
 			// Apply c^\dagger_j c_i
-			if (hasHop && s1i == 1 && s1j == 0) {
+			if (has_hop && s1i == 1 && s1j == 0) {
 				// apply i
 				WordType bra1 = ket1 ^ BasisType::bitmask(i);
 				RealType tmp2 = LanczosGlobals::doSign(ket1, i)
@@ -240,14 +240,14 @@ private:
 				SizeType temp = basis.perfectIndex(bra1, ket2);
 				// RealType extraSign = (s1j == 1) ? LanczosGlobals::FERMION_SIGN :
 				// 1;
-				ComplexOrRealType cTemp = h * tmp2; //*extraSign;
+				ComplexOrRealType c_temp = h * tmp2; //*extraSign;
 				// if (s1j == 1) cTemp = PsimagLite::conj(cTemp);
 				assert(temp < basis.size());
-				sparseRow.add(temp, cTemp);
+				sparseRow.add(temp, c_temp);
 			}
 
 			// Apply c^\dagger_j c_i DOWN
-			if (hasHop && s2i == 1 && s2j == 0) {
+			if (has_hop && s2i == 1 && s2j == 0) {
 				WordType bra2 = ket2 ^ BasisType::bitmask(i);
 				RealType tmp2 = LanczosGlobals::doSign(ket2, i)
 				    * LanczosGlobals::doSign(bra2, j);
@@ -257,10 +257,10 @@ private:
 				SizeType temp = basis.perfectIndex(ket1, bra2);
 				// RealType extraSign = (s2j == 1) ? LanczosGlobals::FERMION_SIGN :
 				// 1;
-				ComplexOrRealType cTemp = h * tmp2; //*extraSign;
+				ComplexOrRealType c_temp = h * tmp2; //*extraSign;
 				// if (s2j == 1) cTemp = PsimagLite::conj(cTemp);
 				assert(temp < basis.size());
-				sparseRow.add(temp, cTemp);
+				sparseRow.add(temp, c_temp);
 			}
 
 			if (!hasRashba_)
@@ -282,10 +282,10 @@ private:
 				const SizeType count1 = PsimagLite::BitManip::count(ket1); // + s1i;
 				if (count1 & 1)
 					tmp2 *= LanczosGlobals::FERMION_SIGN;
-				ComplexOrRealType cTemp = hr * tmp2; //*extraSign;
+				ComplexOrRealType c_temp = hr * tmp2; //*extraSign;
 				// if (s1i == 1) cTemp = PsimagLite::conj(rashbaHoppings_(j, i));
 				assert(temp < basis.size());
-				sparseRow.add(temp, cTemp);
+				sparseRow.add(temp, c_temp);
 			}
 
 			// c^\dagger_j DOWN c_i UP
@@ -300,10 +300,11 @@ private:
 				const SizeType count1 = PsimagLite::BitManip::count(ket1); // + s1j;
 				if (count1 & 1)
 					tmp2 *= LanczosGlobals::FERMION_SIGN;
-				ComplexOrRealType cTemp = PsimagLite::conj(hr) * tmp2; //*extraSign;
+				ComplexOrRealType c_temp
+				    = PsimagLite::conj(hr) * tmp2; //*extraSign;
 				// if (s1j == 1) cTemp = PsimagLite::conj(rashbaHoppings_(j, i));
 				assert(temp < basis.size());
-				sparseRow.add(temp, cTemp);
+				sparseRow.add(temp, c_temp);
 			}
 		}
 	}
@@ -314,9 +315,9 @@ private:
 	                         SizeType             i,
 	                         const BasisBaseType& basis) const
 	{
-		const RealType zeroPointFive = 0.5;
+		const RealType zero_point_five = 0.5;
 		for (SizeType j = 0; j < geometry_.numberOfSites(); j++) {
-			ComplexOrRealType value = jCoupling(i, j) * zeroPointFive;
+			ComplexOrRealType value = jCoupling(i, j) * zero_point_five;
 			if (PsimagLite::real(value) == 0 && PsimagLite::imag(value) == 0)
 				continue;
 			value *= 0.5; // double counting i,j

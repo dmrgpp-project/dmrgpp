@@ -129,8 +129,8 @@ public:
 	SizeType getVectorSize(SizeType dirId) const override
 	{
 		assert(dirId == DIRECTION_X);
-		const SizeType oneOrZero = (isPeriodic_) ? 1 : 0;
-		return linSize_ - distance_ + oneOrZero;
+		const SizeType one_or_zero = (isPeriodic_) ? 1 : 0;
+		return linSize_ - distance_ + one_or_zero;
 	}
 
 	bool connected(SizeType i1, SizeType i2) const override
@@ -153,8 +153,8 @@ public:
 	{
 		SizeType emin2 = smax + 1;
 		if (i <= smax) {
-			SizeType iPlus = i + distance_;
-			return (iPlus < linSize_ && iPlus >= emin2);
+			SizeType i_plus = i + distance_;
+			return (i_plus < linSize_ && i_plus >= emin2);
 		}
 
 		return (i >= distance_ && (i - distance_) < emin);

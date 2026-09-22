@@ -74,7 +74,7 @@ template <typename VectorType_> class ChebyshevSerializer {
 	using VectorElementType = typename VectorType_::value_type;
 	using RealType          = typename Real<VectorElementType>::Type;
 
-	static const String stringMarker_;
+	static const String STRING_MARKER;
 
 public:
 
@@ -116,14 +116,14 @@ public:
 
 	void write(IoSimple::Out& io, String) const
 	{
-		io.write(0, stringMarker_);
+		io.write(0, STRING_MARKER);
 		io.write(params_.Eg, "#ChebyshevEnergy=");
 		io.write(params_.oneOverA, "#ChebyshevOneOverA=");
 		io.write(params_.b, "#ChebyshevB=");
 		io.write(moments_, "#ChebyshevMoments");
 	}
 
-	static const String& stringMarker() { return stringMarker_; }
+	static const String& stringMarker() { return STRING_MARKER; }
 
 	template <typename SomePlotParamsType>
 	void plot(PlotDataType&               result,
@@ -205,12 +205,12 @@ private:
 
 	void initKernelJackson(VectorRealType& gn) const
 	{
-		SizeType nPlus1 = gn.size() + 1;
-		RealType cot1   = 1.0 / tan(M_PI / nPlus1);
+		SizeType n_plus1 = gn.size() + 1;
+		RealType cot1    = 1.0 / tan(M_PI / n_plus1);
 		for (SizeType i = 0; i < gn.size(); i++) {
-			gn[i]
-			    = (nPlus1 - i) * cos(M_PI * i / nPlus1) + sin(M_PI * i / nPlus1) * cot1;
-			gn[i] /= nPlus1;
+			gn[i] = (n_plus1 - i) * cos(M_PI * i / n_plus1)
+			    + sin(M_PI * i / n_plus1) * cot1;
+			gn[i] /= n_plus1;
 		}
 	}
 
@@ -230,7 +230,7 @@ private:
 }; // class ChebyshevSerializer
 
 template <typename VectorType>
-const String ChebyshevSerializer<VectorType>::stringMarker_ = "#ChebyshevSerializerMarker";
+const String ChebyshevSerializer<VectorType>::STRING_MARKER = "#ChebyshevSerializerMarker";
 } // namespace PsimagLite
 /*@}*/
 #endif // CHEBYSHEV_SERIALIZER_H

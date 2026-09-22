@@ -73,7 +73,7 @@ class FeBasedSc
 		void doTask(SizeType taskNumber, SizeType)
 		{
 			SizeType      nsite = myself_.geometry_.numberOfSites();
-			SparseRowType sparseRow;
+			SparseRowType sparse_row;
 
 			WordType ket1 = basis_.operator()(taskNumber, SPIN_UP);
 			WordType ket2 = basis_.operator()(taskNumber, SPIN_DOWN);
@@ -84,17 +84,17 @@ class FeBasedSc
 			for (SizeType i = 0; i < nsite; i++) {
 				for (SizeType orb = 0; orb < myself_.mp_.orbitals; orb++) {
 					myself_.setHoppingTerm(
-					    sparseRow, ket1, ket2, i, orb, basis_);
+					    sparse_row, ket1, ket2, i, orb, basis_);
 
 					if (myself_.mp_.feAsMode
 					    == ParametersModelType::IntEnum::INT_PAPER33) {
 						myself_.setU2OffDiagonalTerm(
-						    sparseRow, ket1, ket2, i, orb, basis_);
+						    sparse_row, ket1, ket2, i, orb, basis_);
 
 						for (SizeType orb2 = orb + 1;
 						     orb2 < myself_.mp_.orbitals;
 						     orb2++) {
-							myself_.setU3Term(sparseRow,
+							myself_.setU3Term(sparse_row,
 							                  ket1,
 							                  ket2,
 							                  i,
@@ -104,26 +104,26 @@ class FeBasedSc
 						}
 
 						myself_.setJTermOffDiagonal(
-						    sparseRow, ket1, ket2, i, orb, basis_);
+						    sparse_row, ket1, ket2, i, orb, basis_);
 					} else if (myself_.mp_.feAsMode
 					               == ParametersModelType::IntEnum::INT_V
 					           || myself_.mp_.feAsMode
 					               == ParametersModelType::IntEnum::INT_CODE2) {
 						myself_.setOffDiagonalDecay(
-						    sparseRow, ket1, ket2, i, orb, basis_);
+						    sparse_row, ket1, ket2, i, orb, basis_);
 					} else if (myself_.mp_.feAsMode
 					           == ParametersModelType::IntEnum::INT_IMPURITY) {
 						myself_.setOffDiagonalJimpurity(
-						    sparseRow, ket1, ket2, i, orb, basis_);
+						    sparse_row, ket1, ket2, i, orb, basis_);
 					} else if (myself_.mp_.feAsMode
 					           == ParametersModelType::IntEnum::INT_KSPACE) {
 						myself_.setOffDiagonalKspace(
-						    sparseRow, ket1, ket2, i, orb, basis_);
+						    sparse_row, ket1, ket2, i, orb, basis_);
 					}
 				}
 			}
 
-			x_[taskNumber] += sparseRow.finalize(y_);
+			x_[taskNumber] += sparse_row.finalize(y_);
 		}
 
 		SizeType tasks() const { return x_.size(); }
@@ -192,28 +192,28 @@ public:
 		matrix.resize(hilbert, hilbert);
 
 		// Calculate off-diagonal elements AND store matrix
-		SizeType nCounter = 0;
+		SizeType n_counter = 0;
 		for (SizeType ispace = 0; ispace < hilbert; ispace++) {
-			SparseRowType sparseRow;
-			matrix.setRow(ispace, nCounter);
+			SparseRowType sparse_row;
+			matrix.setRow(ispace, n_counter);
 			WordType ket1 = basis(ispace, SPIN_UP);
 			WordType ket2 = basis(ispace, SPIN_DOWN);
 			// Save diagonal
-			sparseRow.add(ispace, diag[ispace]);
+			sparse_row.add(ispace, diag[ispace]);
 			for (SizeType i = 0; i < nsite; i++) {
 				for (SizeType orb = 0; orb < mp_.orbitals; orb++) {
-					setHoppingTerm(sparseRow, ket1, ket2, i, orb, basis);
+					setHoppingTerm(sparse_row, ket1, ket2, i, orb, basis);
 
 					if (mp_.feAsMode
 					    == ParametersModelType::IntEnum::INT_PAPER33) {
 						setU2OffDiagonalTerm(
-						    sparseRow, ket1, ket2, i, orb, basis);
+						    sparse_row, ket1, ket2, i, orb, basis);
 						for (SizeType orb2 = 0; orb2 < mp_.orbitals;
 						     orb2++) {
 							if (orb == orb2)
 								continue;
 
-							setU3Term(sparseRow,
+							setU3Term(sparse_row,
 							          ket1,
 							          ket2,
 							          i,
@@ -223,33 +223,33 @@ public:
 						}
 
 						setJTermOffDiagonal(
-						    sparseRow, ket1, ket2, i, orb, basis);
+						    sparse_row, ket1, ket2, i, orb, basis);
 
 						setSpinOrbitOffDiagonal(
-						    sparseRow, ket1, ket2, i, orb, basis);
+						    sparse_row, ket1, ket2, i, orb, basis);
 
 					} else if (mp_.feAsMode
 					               == ParametersModelType::IntEnum::INT_V
 					           || mp_.feAsMode
 					               == ParametersModelType::IntEnum::INT_CODE2) {
 						setOffDiagonalDecay(
-						    sparseRow, ket1, ket2, i, orb, basis);
+						    sparse_row, ket1, ket2, i, orb, basis);
 					} else if (mp_.feAsMode
 					           == ParametersModelType::IntEnum::INT_IMPURITY) {
 						setOffDiagonalJimpurity(
-						    sparseRow, ket1, ket2, i, orb, basis);
+						    sparse_row, ket1, ket2, i, orb, basis);
 					} else if (mp_.feAsMode
 					           == ParametersModelType::IntEnum::INT_KSPACE) {
 						setOffDiagonalKspace(
-						    sparseRow, ket1, ket2, i, orb, basis);
+						    sparse_row, ket1, ket2, i, orb, basis);
 					}
 				}
 			}
 
-			nCounter += sparseRow.finalize(matrix);
+			n_counter += sparse_row.finalize(matrix);
 		}
 
-		matrix.setRow(hilbert, nCounter);
+		matrix.setRow(hilbert, n_counter);
 	}
 
 	void matrixVectorProduct(VectorType& x, const VectorType& y) const override
@@ -264,7 +264,7 @@ public:
 		// Calculate off-diagonal elements AND store matrix
 		typedef MatrixVectorHelper                   HelperType;
 		typedef PsimagLite::Parallelizer<HelperType> ParallelizerType;
-		ParallelizerType threadObject(PsimagLite::Concurrency::codeSectionParams);
+		ParallelizerType threadObject(PsimagLite::CodeSectionParams);
 		HelperType       helper(
                     PsimagLite::Concurrency::codeSectionParams.npthreads, x, y, basis, *this);
 
@@ -397,12 +397,12 @@ private:
 					WordType bra1 = ket1
 					    ^ (BasisType::bitmask(ii) | BasisType::bitmask(jj));
 					SizeType temp = basis.perfectIndex(bra1, ket2);
-					RealType extraSign
+					RealType extra_sign
 					    = (s1i == 1) ? LanczosGlobals::FERMION_SIGN : 1;
 					RealType tmp2
 					    = basis_.doSign(ket1, ket2, i, orb, j, orb2, SPIN_UP);
-					ComplexOrRealType cTemp = h * extraSign * tmp2;
-					sparseRow.add(temp, cTemp);
+					ComplexOrRealType c_temp = h * extra_sign * tmp2;
+					sparseRow.add(temp, c_temp);
 				}
 
 				if (s2i + s2j == 1) {
@@ -411,12 +411,12 @@ private:
 					WordType bra2 = ket2
 					    ^ (BasisType::bitmask(ii) | BasisType::bitmask(jj));
 					SizeType temp = basis.perfectIndex(ket1, bra2);
-					RealType extraSign
+					RealType extra_sign
 					    = (s2i == 1) ? LanczosGlobals::FERMION_SIGN : 1;
 					RealType tmp2
 					    = basis_.doSign(ket1, ket2, i, orb, j, orb2, SPIN_DOWN);
-					ComplexOrRealType cTemp = h * extraSign * tmp2;
-					sparseRow.add(temp, cTemp);
+					ComplexOrRealType c_temp = h * extra_sign * tmp2;
+					sparseRow.add(temp, c_temp);
 				}
 			}
 		}
@@ -532,10 +532,10 @@ private:
 
 					RealType s = basis_.doSignSpinOrbit(
 					    ket1, ket2, i, spin1, orb1, spin2, orb2);
-					ComplexOrRealType cTemp = value * s;
-					if (cTemp == zero)
+					ComplexOrRealType c_temp = value * s;
+					if (c_temp == zero)
 						continue;
-					sparseRow.add(temp, cTemp);
+					sparseRow.add(temp, c_temp);
 				}
 			}
 		}
@@ -548,10 +548,10 @@ private:
 	                         SizeType             orb,
 	                         const BasisBaseType& basis) const
 	{
-		const RealType zeroPointFive = 0.5;
+		const RealType zero_point_five = 0.5;
 
 		for (SizeType j = 0; j < geometry_.numberOfSites(); j++) {
-			ComplexOrRealType value = jCoupling(i, j, TermEnum::J_PM) * zeroPointFive;
+			ComplexOrRealType value = jCoupling(i, j, TermEnum::J_PM) * zero_point_five;
 			if (PsimagLite::real(value) == 0 && PsimagLite::imag(value) == 0)
 				continue;
 			value *= 0.5; // double counting i,j
@@ -603,7 +603,7 @@ private:
 	{
 		RealType s = 0;
 		for (SizeType i = 0; i < nsite; i++) {
-			RealType szOrb = 0;
+			RealType sz_orb = 0;
 
 			for (SizeType orb = 0; orb < mp_.orbitals; orb++) {
 
@@ -627,10 +627,10 @@ private:
 				    + mp_.potentialV[i + (orb + mp_.orbitals * 1) * nsite]
 				        * basis.getN(ket2, ket2, i, SPIN_DOWN, orb);
 
-				szOrb += szTerm(ket1, ket2, i, orb, basis);
+				sz_orb += szTerm(ket1, ket2, i, orb, basis);
 			}
 
-			s += mp_.anisotropyD * szOrb * szOrb;
+			s += mp_.anisotropyD * sz_orb * sz_orb;
 		}
 
 		return s;
@@ -643,7 +643,7 @@ private:
 	                      SizeType             orb,
 	                      const BasisBaseType& basis) const
 	{
-		const RealType zeroPointFive = 0.5;
+		const RealType zero_point_five = 0.5;
 		// Hubbard term U0
 		ComplexOrRealType s = mp_.hubbardU[0]
 		    * basis.isThereAnElectronAt(ket1, ket2, i, SPIN_UP, orb)
@@ -673,7 +673,7 @@ private:
 				ComplexOrRealType value = jCoupling(i, j, TermEnum::J_ZZ);
 				if (PsimagLite::real(value) == 0 && PsimagLite::imag(value) == 0)
 					continue;
-				s += value * zeroPointFive * // RealType counting i,j
+				s += value * zero_point_five * // RealType counting i,j
 				    szTerm(ket1, ket2, i, orb, basis)
 				    * szTerm(ket1, ket2, j, orb2, basis);
 			}

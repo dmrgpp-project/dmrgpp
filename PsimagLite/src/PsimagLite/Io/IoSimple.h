@@ -97,7 +97,7 @@ class IoSimple {
 	template <typename T> struct PrintWithEqualSign {
 		enum
 		{
-			True = Loki::TypeTraits<T>::isArith || std::is_enum<T>::value
+			TRUE = Loki::TypeTraits<T>::isArith || std::is_enum<T>::value
 			    || IsComplexNumber<T>::True
 		};
 	};
@@ -293,9 +293,9 @@ public:
 		SizeType readline(X& x, const String& s, LongIntegerType level = 0)
 		{
 			String       temp;
-			bool         found     = false;
-			bool         foundOnce = false;
-			LongSizeType counter   = 0;
+			bool         found      = false;
+			bool         found_once = false;
+			LongSizeType counter    = 0;
 			if (fin_.bad() || !fin_.good())
 				throw RuntimeError("Readline\n");
 			while (!fin_.eof()) {
@@ -303,7 +303,7 @@ public:
 				if (fin_.eof())
 					break;
 				if (temp.substr(0, s.size()) == s) {
-					foundOnce = true;
+					found_once = true;
 					IstringStream temp2(temp.substr(s.size(), temp.size()));
 					temp2 >> x;
 					if (level >= 0 && counter == LongSizeType(level)) {
@@ -314,7 +314,7 @@ public:
 				}
 			}
 
-			if (!foundOnce || (!found && level != LAST_INSTANCE)) {
+			if (!found_once || (!found && level != LAST_INSTANCE)) {
 				String emessage = "IoSimple::In::readline(): Not found " + s
 				    + " in file " + filename_;
 				throw RuntimeError(emessage.c_str());
@@ -370,10 +370,10 @@ public:
 		advance(String const& s, LongIntegerType level = 0, bool beQuiet = false)
 		{
 
-			String       temp      = "NOTFOUND";
-			String       tempSaved = "NOTFOUND";
-			LongSizeType counter   = 0;
-			bool         found     = false;
+			String       temp       = "NOTFOUND";
+			String       temp_saved = "NOTFOUND";
+			LongSizeType counter    = 0;
+			bool         found      = false;
 
 			while (!fin_.eof()) {
 				fin_ >> temp;
@@ -381,7 +381,7 @@ public:
 					break;
 
 				if (temp.substr(0, s.size()) == s) {
-					tempSaved = temp;
+					temp_saved = temp;
 					if (level >= 0 && counter == LongSizeType(level)) {
 						found = true;
 						break;
@@ -390,15 +390,15 @@ public:
 				}
 			}
 
-			if (level == LAST_INSTANCE && tempSaved != "NOTFOUND") {
+			if (level == LAST_INSTANCE && temp_saved != "NOTFOUND") {
 				fin_.close();
 				fin_.open(filename_.c_str());
 				if (counter > 1)
 					advance(s, counter - 2);
-				return std::pair<String, SizeType>(tempSaved, counter);
+				return std::pair<String, SizeType>(temp_saved, counter);
 			}
 
-			if (!found && tempSaved == "NOTFOUND") {
+			if (!found && temp_saved == "NOTFOUND") {
 				if (!beQuiet) {
 					std::cerr << "Not found " << s << " in file " << filename_;
 					std::cerr << " level=" << level << " counter=" << counter
@@ -407,7 +407,7 @@ public:
 				throw RuntimeError("IoSimple::In::read()\n");
 			}
 
-			return std::pair<String, SizeType>(tempSaved, counter);
+			return std::pair<String, SizeType>(temp_saved, counter);
 		}
 
 		SizeType count(const String& s)
@@ -448,14 +448,14 @@ public:
 template <> struct IsInputLike<IoSimple::In> {
 	enum
 	{
-		True = true
+		TRUE = true
 	};
 };
 
 template <> struct IsOutputLike<IoSimple::Out> {
 	enum
 	{
-		True = true
+		TRUE = true
 	};
 };
 

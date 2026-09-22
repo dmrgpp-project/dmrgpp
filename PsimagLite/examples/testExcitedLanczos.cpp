@@ -38,17 +38,17 @@ int main(int argc, char* argv[])
 	params.lotaMemory = true;
 	params.tolerance  = -1;
 	params.options    = "reortho";
-	PsimagLite::LanczosSolver<PsimagLite::CrsMatrix<ComplexType>> lanczosSolver(msparse,
-	                                                                            params);
+	PsimagLite::LanczosSolver<PsimagLite::CrsMatrix<ComplexType>> lanczos_solver(msparse,
+	                                                                             params);
 
 	PsimagLite::Random48<double> myrng(time(0));
-	VectorComplexType            initialV(n, 0.0);
+	VectorComplexType            initial_v(n, 0.0);
 	for (SizeType i = 0; i < n; ++i)
-		initialV[i] = myrng() - 0.5;
+		initial_v[i] = myrng() - 0.5;
 
 	double            e1 = 0;
 	VectorComplexType z1(n, 0.0);
-	lanczosSolver.computeOneState(e1, z1, initialV, excited);
+	lanczos_solver.computeOneState(e1, z1, initial_v, excited);
 	std::cout << "energy1=" << e1 << "\n";
 	std::cout << z1 << "\n";
 

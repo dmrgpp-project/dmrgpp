@@ -35,11 +35,11 @@ void testMatrix()
 	SizeType                   n = 4;
 	PsimagLite::Matrix<double> m1(n, n);
 	for (SizeType i = 0; i < n; ++i) {
-		m1(i, i)        = i;
-		SizeType iPlus1 = i + 1;
-		if (iPlus1 >= n)
-			iPlus1 = 0;
-		m1(i, iPlus1) = m1(iPlus1, i) = 0.1;
+		m1(i, i)         = i;
+		SizeType i_plus1 = i + 1;
+		if (i_plus1 >= n)
+			i_plus1 = 0;
+		m1(i, i_plus1) = m1(i_plus1, i) = 0.1;
 	}
 
 	PsimagLite::Matrix<double> m2;
@@ -119,13 +119,13 @@ bool checkCrs(const PsimagLite::CrsMatrix<T>& m, const PsimagLite::Matrix<T>& fm
 
 void testCrsMatrix()
 {
-	SizeType                      n        = 10;
-	unsigned int long             seed     = 343981;
-	double                        ratio    = 0.5;
-	SizeType                      nonZeros = SizeType(ratio * n * n);
-	double                        maxValue = 10.0;
+	SizeType                      n         = 10;
+	unsigned int long             seed      = 343981;
+	double                        ratio     = 0.5;
+	SizeType                      non_zeros = SizeType(ratio * n * n);
+	double                        max_value = 10.0;
 	PsimagLite::CrsMatrix<double> m1(n, n);
-	createRandomCrs(m1, seed, nonZeros, maxValue);
+	createRandomCrs(m1, seed, non_zeros, max_value);
 	PsimagLite::Matrix<double> fm1;
 	crsMatrixToFullMatrix(fm1, m1);
 	// std::cout<<m1;
@@ -133,7 +133,7 @@ void testCrsMatrix()
 
 	seed += 111;
 	PsimagLite::CrsMatrix<double> m2(n, n);
-	createRandomCrs(m2, seed, nonZeros, maxValue);
+	createRandomCrs(m2, seed, non_zeros, max_value);
 	PsimagLite::Matrix<double> fm2;
 	crsMatrixToFullMatrix(fm2, m2);
 	// std::cout<<m2;

@@ -68,13 +68,13 @@ int main(int argc, char* argv[])
 	typedef PsimagLite::Parallelizer<HelperType> ParallelizerType;
 
 	PsimagLite::CodeSectionParams csp(nthreads, 1, true, 0);
-	ParallelizerType              threadObject(csp);
+	ParallelizerType              thread_object(csp);
 
 	HelperType helper(ntasks, nthreads);
 
-	std::cout << "Using " << threadObject.name();
+	std::cout << "Using " << thread_object.name();
 	std::cout << " with " << nthreads << " threads.\n";
-	threadObject.loopCreate(helper);
+	thread_object.loopCreate(helper);
 	helper.sync();
 	std::cout << "Sum of all tasks= " << helper.result() << "\n";
 }

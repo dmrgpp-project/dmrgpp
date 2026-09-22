@@ -135,7 +135,7 @@ public:
 	write(String    name2,
 	      const T&  what,
 	      WriteMode allowOverwrite = NO_OVERWRITE,
-	      typename EnableIf<Loki::TypeTraits<T>::isArith || std::is_enum<T>::value, int*>::Type
+	      typename EnableIf<Loki::TypeTraits<T>::IS_ARITH || std::is_enum<T>::value, int*>::Type
 	      = 0)
 	{
 		String      name = "Def/" + name2;
@@ -235,8 +235,8 @@ public:
 	template <typename T>
 	void write(String                name2,
 	           const std::vector<T>& what,
-	           WriteMode             allowOverwrite                        = NO_OVERWRITE,
-	           typename EnableIf<Loki::TypeTraits<T>::isArith, int*>::Type = 0)
+	           WriteMode             allowOverwrite                         = NO_OVERWRITE,
+	           typename EnableIf<Loki::TypeTraits<T>::IS_ARITH, int*>::Type = 0)
 	{
 		if (what.size() == 0)
 			return;
@@ -246,7 +246,7 @@ public:
 		assert(0 < what.size());
 		const void* ptr = static_cast<const void*>(&what[0]);
 
-		if (Loki::TypeTraits<T>::isFloat)
+		if (Loki::TypeTraits<T>::IS_FLOAT)
 			writeComplexOrReal(name2, 'R');
 		if (allowOverwrite == ALLOW_OVERWRITE)
 			overwrite<T>(name, ptr, dims, 1);
@@ -361,15 +361,15 @@ public:
 	                                 int*>::Type
 	               = 0)
 	{
-		SizeType n    = what.size();
-		SizeType oldN = 0;
-		read(oldN, name2 + "/Size");
-		SizeType min = std::min(oldN, n);
+		SizeType n     = what.size();
+		SizeType old_n = 0;
+		read(old_n, name2 + "/Size");
+		SizeType min = std::min(old_n, n);
 		write(name2 + "/Size", n, ALLOW_OVERWRITE);
 		for (SizeType i = 0; i < min; ++i)
 			what[i].overwrite(name2 + "/" + typeToString(i), *this);
 
-		if (n <= oldN)
+		if (n <= old_n)
 			return;
 
 		for (SizeType i = min; i < n; ++i) {
@@ -418,12 +418,12 @@ public:
 	// read functions START
 
 	template <typename SomeType>
-	void read(
-	    SomeType& value,
-	    String    name,
-	    typename EnableIf<Loki::TypeTraits<SomeType>::isArith && !std::is_enum<SomeType>::value,
-	                      int*>::Type
-	    = 0)
+	void read(SomeType& value,
+	          String    name,
+	          typename EnableIf<Loki::TypeTraits<SomeType>::IS_ARITH
+	                                && !std::is_enum<SomeType>::value,
+	                            int*>::Type
+	          = 0)
 	{
 		void*       ptr     = static_cast<void*>(&value);
 		H5::DataSet dataset = hdf5file_->openDataSet("Def/" + name);
@@ -486,7 +486,7 @@ public:
 	template <typename T>
 	void read(std::vector<T>& what,
 	          String          name,
-	          typename EnableIf<Loki::TypeTraits<T>::isArith, int*>::Type = 0)
+	          typename EnableIf<Loki::TypeTraits<T>::IS_ARITH, int*>::Type = 0)
 	{
 		readInternal(what, name);
 	}
@@ -639,21 +639,22 @@ private:
 			throw RuntimeError("IoNgSerializer: problem reading "
 			                   "vector dims[0] == 0\n");
 
-		const ReadEnum        readEnumOnDisk = getReadEnumOnDisk(name);
-		static const ReadEnum readEnumDest
+		const ReadEnum        read_enum_on_disk = getReadEnumOnDisk(name);
+		static const ReadEnum read_enum_dest
 		    = getReadEnumDestination<typename SomeVectorType::value_type>();
 
-		if (readEnumOnDisk == readEnumDest) {
-			SizeType complexSize
-			    = (readEnumDest == ReadEnum::COMPLEX) ? getHalfSize(n) : n;
-			what.resize(complexSize, 0);
+		if (read_enum_on_disk == read_enum_dest) {
+			SizeType complex_size
+			    = (read_enum_dest == ReadEnum::COMPLEX) ? getHalfSize(n) : n;
+			what.resize(complex_size, 0);
 			void* ptr = static_cast<void*>(&(what[0]));
 			dataset.read(ptr, typeToH5<UnderlyingType>());
 			return;
 		}
 
 		// only other case is from real --> complex
-		if (readEnumOnDisk == ReadEnum::FLOATING && readEnumDest == ReadEnum::COMPLEX) {
+		if (read_enum_on_disk == ReadEnum::FLOATING
+		    && read_enum_dest == ReadEnum::COMPLEX) {
 			// this type is complex; but what's on disk is real
 			typename Vector<UnderlyingType>::Type temporary(dims[0]);
 			void* ptr2 = static_cast<void*>(&(temporary[0]));
@@ -690,11 +691,11 @@ private:
 	bool internalWrite(String name, const void* ptr, hsize_t dims[], SizeType ndims)
 	{
 		H5::DataSpace         dataspace(ndims, dims); // create new dspace
-		H5::DSetCreatPropList dsCreatPlist; // What properties here? FIXME
+		H5::DSetCreatPropList ds_creat_plist; // What properties here? FIXME
 		H5::DataSet           dataset;
 		try {
 			dataset = hdf5file_->createDataSet(
-			    name, typeToH5<SomeType>(), dataspace, dsCreatPlist);
+			    name, typeToH5<SomeType>(), dataspace, ds_creat_plist);
 		} catch (H5::Exception& e) {
 			std::cerr << "H5 Exception createDataSet starts "
 			             "<-------------\n";
@@ -714,16 +715,16 @@ private:
 		dims[0]                    = 1;
 		const String          name = "/Def/Canary";
 		H5::DataSpace         dataspace(1, dims); // create new dspace
-		H5::DSetCreatPropList dsCreatPlist; // What properties here? FIXME
+		H5::DSetCreatPropList ds_creat_plist; // What properties here? FIXME
 
-		H5::DataSet dataset = [this, &name, &dataspace, &dsCreatPlist]()
+		H5::DataSet dataset = [this, &name, &dataspace, &ds_creat_plist]()
 		{
 			try {
 				HDF5DisableExceptionPrinting disable;
 				return hdf5file_->openDataSet(name);
 			} catch (H5::Exception&) {
 				return hdf5file_->createDataSet(
-				    name, typeToH5<unsigned char>(), dataspace, dsCreatPlist);
+				    name, typeToH5<unsigned char>(), dataspace, ds_creat_plist);
 			}
 		}();
 
@@ -763,17 +764,17 @@ private:
 		SizeType total  = src.size();
 
 		if (total == 0)
-			return VectorOfBoolInternalType(booleanEncodedSize_, 0);
+			return VectorOfBoolInternalType(BOOLEAN_ENCODED_SIZE, 0);
 
-		SizeType bytesNeeded = total / 8;
-		bytesNeeded += 5;
+		SizeType bytes_needed = total / 8;
+		bytes_needed += 5;
 
-		VectorOfBoolInternalType c(bytesNeeded, 0);
+		VectorOfBoolInternalType c(bytes_needed, 0);
 		encodeBooleanSize(c, total);
-		SizeType blockSize = sizeof(ValueType);
+		SizeType block_size = sizeof(ValueType);
 
 		ValueType mask  = 1;
-		SizeType  j     = booleanEncodedStart_;
+		SizeType  j     = BOOLEAN_ENCODED_START;
 		SizeType  bytes = 0;
 		for (SizeType i = 0; i < total; ++i) {
 			assert(j < c.size());
@@ -783,7 +784,7 @@ private:
 			mask <<= 1;
 			if (i > 0 && ((i + 1) % 8 == 0))
 				++bytes;
-			if (bytes == blockSize) {
+			if (bytes == block_size) {
 				bytes = 0;
 				++j;
 				mask = 1;
@@ -795,28 +796,28 @@ private:
 
 	static void convertToBoolean(std::vector<bool>& dest, const VectorOfBoolInternalType& x)
 	{
-		using ValueType       = VectorOfBoolInternalType::value_type;
-		SizeType numberOfBits = sizeof(ValueType) * 8 * x.size();
-		SizeType blockSize    = sizeof(ValueType);
+		using ValueType         = VectorOfBoolInternalType::value_type;
+		SizeType number_of_bits = sizeof(ValueType) * 8 * x.size();
+		SizeType block_size     = sizeof(ValueType);
 
-		SizeType encodedSize = decodeBooleanSize(x);
+		SizeType encoded_size = decodeBooleanSize(x);
 		assert(encodedSize <= numberOfBits);
 
-		numberOfBits = encodedSize;
+		number_of_bits = encoded_size;
 
-		dest.resize(numberOfBits);
+		dest.resize(number_of_bits);
 
 		ValueType mask  = 1;
-		SizeType  j     = booleanEncodedStart_;
+		SizeType  j     = BOOLEAN_ENCODED_START;
 		SizeType  bytes = 0;
-		for (SizeType i = 0; i < numberOfBits; ++i) {
+		for (SizeType i = 0; i < number_of_bits; ++i) {
 			assert(j < x.size());
 			assert(mask > 0);
 			dest[i] = (x[j] & mask);
 			mask <<= 1;
 			if (i > 0 && ((i + 1) % 8 == 0))
 				++bytes;
-			if (bytes == blockSize) {
+			if (bytes == block_size) {
 				bytes = 0;
 				++j;
 				mask = 1;
@@ -826,12 +827,12 @@ private:
 
 	static void encodeBooleanSize(VectorOfBoolInternalType& x, SizeType total)
 	{
-		static short int byteSize = 256;
+		static short int byte_size = 256;
 		assert(x.size() >= booleanEncodedSize_);
 		SizeType tmp = total;
-		std::fill(x.begin(), x.begin() + booleanEncodedSize_, 0);
-		for (SizeType i = 0; i < booleanEncodedSize_; ++i) {
-			x[i] = (tmp % byteSize);
+		std::fill(x.begin(), x.begin() + BOOLEAN_ENCODED_SIZE, 0);
+		for (SizeType i = 0; i < BOOLEAN_ENCODED_SIZE; ++i) {
+			x[i] = (tmp % byte_size);
 			tmp >>= 8;
 			if (tmp == 0)
 				break;
@@ -840,13 +841,13 @@ private:
 
 	static SizeType decodeBooleanSize(const VectorOfBoolInternalType& x)
 	{
-		static short int byteSize = 256;
+		static short int byte_size = 256;
 		assert(x.size() >= booleanEncodedSize_);
 		SizeType tmp   = 0;
 		SizeType level = 1;
-		for (SizeType i = 0; i < booleanEncodedSize_; ++i) {
+		for (SizeType i = 0; i < BOOLEAN_ENCODED_SIZE; ++i) {
 			tmp += x[i] * level;
-			level *= byteSize;
+			level *= byte_size;
 		}
 
 		return tmp;
@@ -862,17 +863,17 @@ private:
 
 	void writeComplexOrReal(String name2, char content)
 	{
-		String nameComplexOrReal = name2 + "ComplexOrReal";
-		write(nameComplexOrReal, content);
+		String name_complex_or_real = name2 + "ComplexOrReal";
+		write(name_complex_or_real, content);
 	}
 
 	ReadEnum getReadEnumOnDisk(String name2)
 	{
-		const String nameComplexOrReal = name2 + "ComplexOrReal";
+		const String name_complex_or_real = name2 + "ComplexOrReal";
 		char         tmp;
 		try {
 			HDF5DisableExceptionPrinting disable;
-			read(tmp, nameComplexOrReal);
+			read(tmp, name_complex_or_real);
 		} catch (...) {
 			return ReadEnum::OTHER;
 		}
@@ -882,16 +883,16 @@ private:
 
 	template <typename T> ReadEnum getReadEnumDestination()
 	{
-		if (IsComplexNumber<T>::True)
+		if (IsComplexNumber<T>::TRUE)
 			return ReadEnum::COMPLEX;
-		return (Loki::TypeTraits<T>::isFloat) ? ReadEnum::FLOATING : ReadEnum::OTHER;
+		return (Loki::TypeTraits<T>::IS_FLOAT) ? ReadEnum::FLOATING : ReadEnum::OTHER;
 	}
 
 	std::unique_ptr<H5::H5File> hdf5file_;
 	String                      filename_;
 	unsigned int                mode_;
-	static const SizeType       booleanEncodedSize_  = 4;
-	static const SizeType       booleanEncodedStart_ = 4;
+	static const SizeType       BOOLEAN_ENCODED_SIZE  = 4;
+	static const SizeType       BOOLEAN_ENCODED_START = 4;
 };
 } // namespace PsimagLite
 #endif // IONGSERIALIZER_H

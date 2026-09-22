@@ -71,8 +71,8 @@ private:
 
 	void checkIfPvector(bool b) const
 	{
-		bool isP = (kind_ == Kind::P || kind_ == Kind::R);
-		if (isP == b)
+		bool is_p = (kind_ == Kind::P || kind_ == Kind::R);
+		if (is_p == b)
 			return;
 		throw PsimagLite::RuntimeError("Internal ERROR: checkIfPpvector\n");
 	}

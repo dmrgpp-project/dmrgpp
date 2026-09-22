@@ -68,11 +68,11 @@ TEST_CASE("GetBraOrKet .last suffix", "[GetBraOrKet]")
 
 	SECTION("bra <P2.last|")
 	{
-		G p2lastBra("<P2.last|");
-		CHECK(p2lastBra.isPvector() == true);
-		CHECK(p2lastBra.pIndex() == 2);
-		CHECK(p2lastBra.isLastKrylov() == true);
-		CHECK(p2lastBra.isKet() == false);
+		G p2last_bra("<P2.last|");
+		CHECK(p2last_bra.isPvector() == true);
+		CHECK(p2last_bra.pIndex() == 2);
+		CHECK(p2last_bra.isLastKrylov() == true);
+		CHECK(p2last_bra.isKet() == false);
 	}
 
 	SECTION("P0.last")

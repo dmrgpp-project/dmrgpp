@@ -177,11 +177,11 @@ public:
 
 	void print(std::ostream& os, typename BaseType::PrintEnum binaryOrDecimal) const override
 	{
-		bool isBinary = (binaryOrDecimal == BaseType::PRINT_BINARY);
+		bool is_binary = (binaryOrDecimal == BaseType::PRINT_BINARY);
 		os << "\tUp sector\n";
-		basis1_.print(os, isBinary);
+		basis1_.print(os, is_binary);
 		os << "\tDown sector\n";
-		basis2_.print(os, isBinary);
+		basis2_.print(os, is_binary);
 	}
 
 private:
@@ -199,10 +199,10 @@ private:
 
 	PairIntType getBraIndexSz(WordType ket1, WordType ket2, SizeType site) const
 	{
-		LabeledOperatorType opN(LabeledOperatorType::Label::OPERATOR_N);
+		LabeledOperatorType op_n(LabeledOperatorType::Label::OPERATOR_N);
 		WordType            bra = 0;
-		bool                b1  = basis1_.getBra(bra, ket1, opN, site);
-		bool                b2  = basis2_.getBra(bra, ket2, opN, site);
+		bool                b1  = basis1_.getBra(bra, ket1, op_n, site);
+		bool                b2  = basis2_.getBra(bra, ket2, op_n, site);
 		if (!b1 && !b2)
 			return PairIntType(-1, 1);
 		if (b1 && b2)
@@ -221,14 +221,14 @@ private:
 		    ? SPIN_UP
 		    : SPIN_DOWN;
 
-		LabeledOperatorType opC(LabeledOperatorType::Label::OPERATOR_C);
+		LabeledOperatorType op_c(LabeledOperatorType::Label::OPERATOR_C);
 		WordType            brar1 = 0;
-		bool b = getBra(brar1, ket1, ket2, opC.transposeConjugate(), site, spin);
+		bool b = getBra(brar1, ket1, ket2, op_c.transposeConjugate(), site, spin);
 		if (!b)
 			return PairIntType(-1, 1);
 
 		WordType brar2 = 0;
-		b              = getBra(brar2, ket1, ket2, opC, site, 1 - spin);
+		b              = getBra(brar2, ket1, ket2, op_c, site, 1 - spin);
 		if (!b)
 			return PairIntType(-1, 1);
 

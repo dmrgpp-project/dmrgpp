@@ -45,12 +45,12 @@ int main(int argc, char* argv[])
 	constexpr unsigned int  nthreads = 1;
 	PsimagLite::Concurrency concurrency(&argc, &argv, nthreads);
 
-	int      opt        = 0;
-	SizeType n          = 0;
-	RealType maxValue   = 0;
-	SizeType maxCol     = 0;
-	SizeType seed       = 0;
-	bool     lotaMemory = true;
+	int      opt         = 0;
+	SizeType n           = 0;
+	RealType max_value   = 0;
+	SizeType max_col     = 0;
+	SizeType seed        = 0;
+	bool     lota_memory = true;
 
 	while ((opt = getopt(argc, argv, "n:c:m:r:x")) != -1) {
 		switch (opt) {
@@ -58,16 +58,16 @@ int main(int argc, char* argv[])
 			n = atoi(optarg);
 			break;
 		case 'c':
-			maxCol = atoi(optarg);
+			max_col = atoi(optarg);
 			break;
 		case 'm':
-			maxValue = atof(optarg);
+			max_value = atof(optarg);
 			break;
 		case 'r':
 			seed = atoi(optarg);
 			break;
 		case 'x':
-			lotaMemory = false;
+			lota_memory = false;
 			break;
 		default:
 			usage(argv[0]);
@@ -78,30 +78,30 @@ int main(int argc, char* argv[])
 	// sanity checks
 	if (n == 0)
 		usage(argv[0]);
-	if (maxCol == 0)
-		maxCol = 1 + SizeType(0.1 * n);
-	if (PsimagLite::norm(maxValue) < 1e-6)
-		maxValue = 1.0;
+	if (max_col == 0)
+		max_col = 1 + SizeType(0.1 * n);
+	if (PsimagLite::norm(max_value) < 1e-6)
+		max_value = 1.0;
 	if (seed == 0)
 		seed = 3443331;
 
 	// create a random matrix:
 	Random48<RealType> random(seed);
 	SparseMatrixType   sparse(n, n);
-	Vector<bool>::Type seenThisColumn(n);
+	Vector<bool>::Type seen_this_column(n);
 	SizeType           counter = 0;
 	for (SizeType i = 0; i < n; i++) {
 		sparse.setRow(i, counter);
 		// random vector:
-		SizeType x = 1 + SizeType(random() * maxCol);
-		for (SizeType j = 0; j < seenThisColumn.size(); j++)
-			seenThisColumn[j] = false;
+		SizeType x = 1 + SizeType(random() * max_col);
+		for (SizeType j = 0; j < seen_this_column.size(); j++)
+			seen_this_column[j] = false;
 		for (SizeType j = 0; j < x; j++) {
 			SizeType col = SizeType(random() * n);
-			if (seenThisColumn[col])
+			if (seen_this_column[col])
 				continue;
-			seenThisColumn[col]   = true;
-			ComplexOrRealType val = random() * maxValue;
+			seen_this_column[col] = true;
+			ComplexOrRealType val = random() * max_value;
 
 			sparse.pushValue(val);
 			sparse.pushCol(col);
@@ -119,16 +119,16 @@ int main(int argc, char* argv[])
 
 	// sparse solver setup
 	PsimagLite::ParametersForSolver<RealType> params;
-	params.lotaMemory = lotaMemory;
-	LanczosSolverType lanczosSolver(sparse, params);
+	params.lotaMemory = lota_memory;
+	LanczosSolverType lanczos_solver(sparse, params);
 
 	// diagonalize matrix
-	RealType                       gsEnergy = 0;
-	std::vector<ComplexOrRealType> gsVector(n);
+	RealType                       gs_energy = 0;
+	std::vector<ComplexOrRealType> gs_vector(n);
 
 	std::vector<ComplexOrRealType> initial(n);
 	PsimagLite::fillRandom(initial);
-	lanczosSolver.computeOneState(gsEnergy, gsVector, initial, 0);
+	lanczos_solver.computeOneState(gs_energy, gsVector, initial, 0);
 
-	std::cout << "Energy=" << gsEnergy << "\n";
+	std::cout << "Energy=" << gs_energy << "\n";
 }

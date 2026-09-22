@@ -45,7 +45,7 @@ namespace Loki {
 template <typename T> struct IsCustomUnsignedInt {
 	enum
 	{
-		value = 0
+		VALUE = 0
 	};
 };
 
@@ -64,7 +64,7 @@ template <typename T> struct IsCustomUnsignedInt {
 template <typename T> struct IsCustomSignedInt {
 	enum
 	{
-		value = 0
+		VALUE = 0
 	};
 };
 
@@ -82,7 +82,7 @@ template <typename T> struct IsCustomSignedInt {
 template <typename T> struct IsCustomFloat {
 	enum
 	{
-		value = 0
+		VALUE = 0
 	};
 };
 
@@ -140,21 +140,21 @@ namespace Private {
 	template <typename T> struct IsFunctionPointerRaw {
 		enum
 		{
-			result = 0
+			RESULT = 0
 		};
 	};
 
 	template <typename T> struct IsFunctionPointerRaw<T (*)()> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
 	template <typename T, typename P01> struct IsFunctionPointerRaw<T (*)(P01)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -162,7 +162,7 @@ namespace Private {
 	struct IsFunctionPointerRaw<T (*)(P01, P02)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -170,7 +170,7 @@ namespace Private {
 	struct IsFunctionPointerRaw<T (*)(P01, P02, P03)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -178,7 +178,7 @@ namespace Private {
 	struct IsFunctionPointerRaw<T (*)(P01, P02, P03, P04)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -186,7 +186,7 @@ namespace Private {
 	struct IsFunctionPointerRaw<T (*)(P01, P02, P03, P04, P05)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -200,7 +200,7 @@ namespace Private {
 	struct IsFunctionPointerRaw<T (*)(P01, P02, P03, P04, P05, P06)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -215,7 +215,7 @@ namespace Private {
 	struct IsFunctionPointerRaw<T (*)(P01, P02, P03, P04, P05, P06, P07)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -231,7 +231,7 @@ namespace Private {
 	struct IsFunctionPointerRaw<T (*)(P01, P02, P03, P04, P05, P06, P07, P08)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -248,7 +248,7 @@ namespace Private {
 	struct IsFunctionPointerRaw<T (*)(P01, P02, P03, P04, P05, P06, P07, P08, P09)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -266,7 +266,7 @@ namespace Private {
 	struct IsFunctionPointerRaw<T (*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -285,7 +285,7 @@ namespace Private {
 	struct IsFunctionPointerRaw<T (*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -306,7 +306,7 @@ namespace Private {
 	    T (*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -328,7 +328,7 @@ namespace Private {
 	    T (*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -351,7 +351,7 @@ namespace Private {
 	    T (*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, P14)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -375,7 +375,7 @@ namespace Private {
 	    T (*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, P14, P15)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -400,7 +400,7 @@ namespace Private {
 	    T (*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, P14, P15, P16)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -441,7 +441,7 @@ namespace Private {
 	                                  P17)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -484,7 +484,7 @@ namespace Private {
 	                                  P18)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -529,7 +529,7 @@ namespace Private {
 	                                  P19)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -576,21 +576,21 @@ namespace Private {
 	                                  P20)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
 	template <typename T> struct IsFunctionPointerRaw<T (*)(...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
 	template <typename T, typename P01> struct IsFunctionPointerRaw<T (*)(P01, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -598,7 +598,7 @@ namespace Private {
 	struct IsFunctionPointerRaw<T (*)(P01, P02, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -606,7 +606,7 @@ namespace Private {
 	struct IsFunctionPointerRaw<T (*)(P01, P02, P03, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -614,7 +614,7 @@ namespace Private {
 	struct IsFunctionPointerRaw<T (*)(P01, P02, P03, P04, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -622,7 +622,7 @@ namespace Private {
 	struct IsFunctionPointerRaw<T (*)(P01, P02, P03, P04, P05, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -636,7 +636,7 @@ namespace Private {
 	struct IsFunctionPointerRaw<T (*)(P01, P02, P03, P04, P05, P06, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -651,7 +651,7 @@ namespace Private {
 	struct IsFunctionPointerRaw<T (*)(P01, P02, P03, P04, P05, P06, P07, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -667,7 +667,7 @@ namespace Private {
 	struct IsFunctionPointerRaw<T (*)(P01, P02, P03, P04, P05, P06, P07, P08, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -684,7 +684,7 @@ namespace Private {
 	struct IsFunctionPointerRaw<T (*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -702,7 +702,7 @@ namespace Private {
 	struct IsFunctionPointerRaw<T (*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -722,7 +722,7 @@ namespace Private {
 	    T (*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -743,7 +743,7 @@ namespace Private {
 	    T (*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -765,7 +765,7 @@ namespace Private {
 	    T (*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -788,7 +788,7 @@ namespace Private {
 	    T (*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, P14, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -812,7 +812,7 @@ namespace Private {
 	    T (*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, P14, P15, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -852,7 +852,7 @@ namespace Private {
 	                                  ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -894,7 +894,7 @@ namespace Private {
 	                                  ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -938,7 +938,7 @@ namespace Private {
 	                                  ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -984,7 +984,7 @@ namespace Private {
 	                                  ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1032,21 +1032,21 @@ namespace Private {
 	                                  ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
 	template <typename T> struct IsMemberFunctionPointerRaw {
 		enum
 		{
-			result = 0
+			RESULT = 0
 		};
 	};
 
 	template <typename T, typename S> struct IsMemberFunctionPointerRaw<T (S::*)()> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1054,7 +1054,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1062,7 +1062,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1070,7 +1070,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1078,7 +1078,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1092,7 +1092,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, P05)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1107,7 +1107,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, P05, P06)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1123,7 +1123,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, P05, P06, P07)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1140,7 +1140,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, P05, P06, P07, P08)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1158,7 +1158,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1178,7 +1178,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1199,7 +1199,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1221,7 +1221,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1244,7 +1244,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1268,7 +1268,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, P14)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1293,7 +1293,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, P14, P15)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1319,7 +1319,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, P14, P15, P16)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1361,7 +1361,7 @@ namespace Private {
 	                                           P17)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1405,7 +1405,7 @@ namespace Private {
 	                                           P18)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1451,7 +1451,7 @@ namespace Private {
 	                                           P19)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1499,14 +1499,14 @@ namespace Private {
 	                                           P20)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
 	template <typename T, typename S> struct IsMemberFunctionPointerRaw<T (S::*)(...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1514,7 +1514,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1522,7 +1522,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1530,7 +1530,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1538,7 +1538,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1552,7 +1552,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, P05, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1567,7 +1567,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, P05, P06, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1583,7 +1583,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, P05, P06, P07, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1600,7 +1600,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, P05, P06, P07, P08, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1619,7 +1619,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1639,7 +1639,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1660,7 +1660,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1682,7 +1682,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1705,7 +1705,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1729,7 +1729,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, P14, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1754,7 +1754,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, P14, P15, ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1795,7 +1795,7 @@ namespace Private {
 	                                           ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1838,7 +1838,7 @@ namespace Private {
 	                                           ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1883,7 +1883,7 @@ namespace Private {
 	                                           ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1930,7 +1930,7 @@ namespace Private {
 	                                           ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1979,7 +1979,7 @@ namespace Private {
 	                                           ...)> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1988,7 +1988,7 @@ namespace Private {
 	template <typename T, typename S> struct IsMemberFunctionPointerRaw<T (S::*)() const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -1996,7 +1996,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2004,7 +2004,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2012,7 +2012,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2020,7 +2020,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2034,7 +2034,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, P05) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2049,7 +2049,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, P05, P06) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2065,7 +2065,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, P05, P06, P07) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2082,7 +2082,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, P05, P06, P07, P08) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2101,7 +2101,7 @@ namespace Private {
 	                                      const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2121,7 +2121,7 @@ namespace Private {
 	                                      const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2142,7 +2142,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2164,7 +2164,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2187,7 +2187,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2211,7 +2211,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, P14) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2237,7 +2237,7 @@ namespace Private {
 	                                      const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2264,7 +2264,7 @@ namespace Private {
 	                                      const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2306,7 +2306,7 @@ namespace Private {
 	                                           P17) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2350,7 +2350,7 @@ namespace Private {
 	                                           P18) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2396,7 +2396,7 @@ namespace Private {
 	                                           P19) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2444,14 +2444,14 @@ namespace Private {
 	                                           P20) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
 	template <typename T, typename S> struct IsMemberFunctionPointerRaw<T (S::*)(...) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2459,7 +2459,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, ...) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2467,7 +2467,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, ...) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2475,7 +2475,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, ...) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2483,7 +2483,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, ...) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2497,7 +2497,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, P05, ...) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2512,7 +2512,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, P05, P06, ...) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2528,7 +2528,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, P05, P06, P07, ...) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2546,7 +2546,7 @@ namespace Private {
 	                                      const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2565,7 +2565,7 @@ namespace Private {
 	                                      const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2585,7 +2585,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, ...) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2606,7 +2606,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, ...) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2628,7 +2628,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, ...) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2651,7 +2651,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, ...) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2676,7 +2676,7 @@ namespace Private {
 	                                      const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2702,7 +2702,7 @@ namespace Private {
 	                                      const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2743,7 +2743,7 @@ namespace Private {
 	                                           ...) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2786,7 +2786,7 @@ namespace Private {
 	                                           ...) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2831,7 +2831,7 @@ namespace Private {
 	                                           ...) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2878,7 +2878,7 @@ namespace Private {
 	                                           ...) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2927,7 +2927,7 @@ namespace Private {
 	                                           ...) const> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2936,7 +2936,7 @@ namespace Private {
 	template <typename T, typename S> struct IsMemberFunctionPointerRaw<T (S::*)() volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2944,7 +2944,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2952,7 +2952,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2960,7 +2960,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2968,7 +2968,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2982,7 +2982,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, P05) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -2997,7 +2997,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, P05, P06) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3013,7 +3013,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, P05, P06, P07) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3031,7 +3031,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3050,7 +3050,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3070,7 +3070,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3091,7 +3091,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3113,7 +3113,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3136,7 +3136,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3160,7 +3160,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, P14) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3198,7 +3198,7 @@ namespace Private {
 	                                           P15) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3238,7 +3238,7 @@ namespace Private {
 	                                           P16) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3280,7 +3280,7 @@ namespace Private {
 	                                           P17) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3324,7 +3324,7 @@ namespace Private {
 	                                           P18) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3370,7 +3370,7 @@ namespace Private {
 	                                           P19) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3418,7 +3418,7 @@ namespace Private {
 	                                           P20) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3426,7 +3426,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(...) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3434,7 +3434,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, ...) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3442,7 +3442,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, ...) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3450,7 +3450,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, ...) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3458,7 +3458,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, ...) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3472,7 +3472,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, P05, ...) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3487,7 +3487,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, P05, P06, ...) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3504,7 +3504,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, ...) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3522,7 +3522,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, ...) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3541,7 +3541,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, ...) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3561,7 +3561,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, ...) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3582,7 +3582,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, ...) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3604,7 +3604,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, ...) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3627,7 +3627,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, ...) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3664,7 +3664,7 @@ namespace Private {
 	                                           ...) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3703,7 +3703,7 @@ namespace Private {
 	                                           ...) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3744,7 +3744,7 @@ namespace Private {
 	                                           ...) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3787,7 +3787,7 @@ namespace Private {
 	                                           ...) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3832,7 +3832,7 @@ namespace Private {
 	                                           ...) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3879,7 +3879,7 @@ namespace Private {
 	                                           ...) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3928,7 +3928,7 @@ namespace Private {
 	                                           ...) volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3938,7 +3938,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)() const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3946,7 +3946,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3954,7 +3954,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3962,7 +3962,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3970,7 +3970,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3984,7 +3984,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, P05) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -3999,7 +3999,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, P05, P06) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4016,7 +4016,7 @@ namespace Private {
 	                                      const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4034,7 +4034,7 @@ namespace Private {
 	                                      const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4053,7 +4053,7 @@ namespace Private {
 	                                      const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4073,7 +4073,7 @@ namespace Private {
 	                                      const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4094,7 +4094,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4116,7 +4116,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4139,7 +4139,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4164,7 +4164,7 @@ namespace Private {
 	                                      const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4190,7 +4190,7 @@ namespace Private {
 	                                      const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4217,7 +4217,7 @@ namespace Private {
 	                                      const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4259,7 +4259,7 @@ namespace Private {
 	                                           P17) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4303,7 +4303,7 @@ namespace Private {
 	                                           P18) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4349,7 +4349,7 @@ namespace Private {
 	                                           P19) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4397,7 +4397,7 @@ namespace Private {
 	                                           P20) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4405,7 +4405,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(...) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4413,7 +4413,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, ...) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4421,7 +4421,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, ...) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4429,7 +4429,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, ...) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4437,7 +4437,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, ...) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4451,7 +4451,7 @@ namespace Private {
 	struct IsMemberFunctionPointerRaw<T (S::*)(P01, P02, P03, P04, P05, ...) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4467,7 +4467,7 @@ namespace Private {
 	                                      const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4484,7 +4484,7 @@ namespace Private {
 	                                      const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4502,7 +4502,7 @@ namespace Private {
 	                                      const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4521,7 +4521,7 @@ namespace Private {
 	                                      const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4541,7 +4541,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, ...) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4562,7 +4562,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, ...) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4584,7 +4584,7 @@ namespace Private {
 	    S::*)(P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, ...) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4608,7 +4608,7 @@ namespace Private {
 	                                      const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4633,7 +4633,7 @@ namespace Private {
 	                                      const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4659,7 +4659,7 @@ namespace Private {
 	                                      const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4700,7 +4700,7 @@ namespace Private {
 	                                           ...) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4743,7 +4743,7 @@ namespace Private {
 	                                           ...) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4788,7 +4788,7 @@ namespace Private {
 	                                           ...) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4835,7 +4835,7 @@ namespace Private {
 	                                           ...) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4884,7 +4884,7 @@ namespace Private {
 	                                           ...) const volatile> {
 		enum
 		{
-			result = 1
+			RESULT = 1
 		};
 	};
 
@@ -4934,7 +4934,7 @@ private:
 	template <class U> struct ReferenceTraits {
 		enum
 		{
-			result = false
+			RESULT = false
 		};
 		typedef U ReferredType;
 	};
@@ -4942,7 +4942,7 @@ private:
 	template <class U> struct ReferenceTraits<U&> {
 		enum
 		{
-			result = true
+			RESULT = true
 		};
 		typedef U ReferredType;
 	};
@@ -4950,7 +4950,7 @@ private:
 	template <class U> struct PointerTraits {
 		enum
 		{
-			result = false
+			RESULT = false
 		};
 		typedef NullType PointeeType;
 	};
@@ -4958,7 +4958,7 @@ private:
 	template <class U> struct PointerTraits<U*> {
 		enum
 		{
-			result = true
+			RESULT = true
 		};
 		typedef U PointeeType;
 	};
@@ -4966,7 +4966,7 @@ private:
 	template <class U> struct PointerTraits<U*&> {
 		enum
 		{
-			result = true
+			RESULT = true
 		};
 		typedef U PointeeType;
 	};
@@ -4974,35 +4974,35 @@ private:
 	template <class U> struct PToMTraits {
 		enum
 		{
-			result = false
+			RESULT = false
 		};
 	};
 
 	template <class U, class V> struct PToMTraits<U V::*> {
 		enum
 		{
-			result = true
+			RESULT = true
 		};
 	};
 
 	template <class U, class V> struct PToMTraits<U V::*&> {
 		enum
 		{
-			result = true
+			RESULT = true
 		};
 	};
 
 	template <class U> struct FunctionPointerTraits {
 		enum
 		{
-			result = Private::IsFunctionPointerRaw<U>::result
+			RESULT = Private::IsFunctionPointerRaw<U>::RESULT
 		};
 	};
 
 	template <typename U> struct PToMFunctionTraits {
 		enum
 		{
-			result = Private::IsMemberFunctionPointerRaw<U>::result
+			RESULT = Private::IsMemberFunctionPointerRaw<U>::RESULT
 		};
 	};
 
@@ -5010,7 +5010,7 @@ private:
 		typedef U Result;
 		enum
 		{
-			isConst = 0
+			IS_CONST = 0
 		};
 	};
 
@@ -5018,7 +5018,7 @@ private:
 		typedef U Result;
 		enum
 		{
-			isConst = 1
+			IS_CONST = 1
 		};
 	};
 
@@ -5026,7 +5026,7 @@ private:
 		typedef U& Result;
 		enum
 		{
-			isConst = 1
+			IS_CONST = 1
 		};
 	};
 
@@ -5034,7 +5034,7 @@ private:
 		typedef U Result;
 		enum
 		{
-			isVolatile = 0
+			IS_VOLATILE = 0
 		};
 	};
 
@@ -5042,7 +5042,7 @@ private:
 		typedef U Result;
 		enum
 		{
-			isVolatile = 1
+			IS_VOLATILE = 1
 		};
 	};
 
@@ -5050,7 +5050,7 @@ private:
 		typedef U& Result;
 		enum
 		{
-			isVolatile = 1
+			IS_VOLATILE = 1
 		};
 	};
 
@@ -5064,109 +5064,109 @@ public:
 
 	enum
 	{
-		isConst = UnConst<T>::isConst
+		IS_CONST = UnConst<T>::IS_CONST
 	};
 	enum
 	{
-		isVolatile = UnVolatile<T>::isVolatile
+		IS_VOLATILE = UnVolatile<T>::IS_VOLATILE
 	};
 	enum
 	{
-		isReference = ReferenceTraits<UnqualifiedType>::result
+		IS_REFERENCE = ReferenceTraits<UnqualifiedType>::RESULT
 	};
 	enum
 	{
-		isFunction = FunctionPointerTraits<typename Private::AddPointer<T>::Result>::result
+		IS_FUNCTION = FunctionPointerTraits<typename Private::AddPointer<T>::Result>::RESULT
 	};
 	enum
 	{
-		isFunctionPointer = FunctionPointerTraits<
-		    typename ReferenceTraits<UnqualifiedType>::ReferredType>::result
+		IS_FUNCTION_POINTER = FunctionPointerTraits<
+		    typename ReferenceTraits<UnqualifiedType>::ReferredType>::RESULT
 	};
 	enum
 	{
-		isMemberFunctionPointer = PToMFunctionTraits<
-		    typename ReferenceTraits<UnqualifiedType>::ReferredType>::result
+		IS_MEMBER_FUNCTION_POINTER = PToMFunctionTraits<
+		    typename ReferenceTraits<UnqualifiedType>::ReferredType>::RESULT
 	};
 	enum
 	{
-		isMemberPointer
-		= PToMTraits<typename ReferenceTraits<UnqualifiedType>::ReferredType>::result
-		    || isMemberFunctionPointer
+		IS_MEMBER_POINTER
+		= PToMTraits<typename ReferenceTraits<UnqualifiedType>::ReferredType>::RESULT
+		    || IS_MEMBER_FUNCTION_POINTER
 	};
 	enum
 	{
-		isPointer
-		= PointerTraits<typename ReferenceTraits<UnqualifiedType>::ReferredType>::result
-		    || isFunctionPointer
+		IS_POINTER
+		= PointerTraits<typename ReferenceTraits<UnqualifiedType>::ReferredType>::RESULT
+		    || IS_FUNCTION_POINTER
 	};
 
 	enum
 	{
-		isStdUnsignedInt
-		= TL::IndexOf<Private::StdUnsignedInts, UnqualifiedType>::value >= 0
+		IS_STD_UNSIGNED_INT
+		= TL::IndexOf<Private::StdUnsignedInts, UnqualifiedType>::VALUE >= 0
 		    || TL::IndexOf<Private::StdUnsignedInts,
-		                   typename ReferenceTraits<UnqualifiedType>::ReferredType>::value
+		                   typename ReferenceTraits<UnqualifiedType>::ReferredType>::VALUE
 		        >= 0
 	};
 	enum
 	{
-		isStdSignedInt = TL::IndexOf<Private::StdSignedInts, UnqualifiedType>::value >= 0
+		IS_STD_SIGNED_INT = TL::IndexOf<Private::StdSignedInts, UnqualifiedType>::VALUE >= 0
 		    || TL::IndexOf<Private::StdSignedInts,
-		                   typename ReferenceTraits<UnqualifiedType>::ReferredType>::value
+		                   typename ReferenceTraits<UnqualifiedType>::ReferredType>::VALUE
 		        >= 0
 	};
 	enum
 	{
-		isStdIntegral = isStdUnsignedInt || isStdSignedInt
-		    || TL::IndexOf<Private::StdOtherInts, UnqualifiedType>::value >= 0
+		IS_STD_INTEGRAL = IS_STD_UNSIGNED_INT || IS_STD_SIGNED_INT
+		    || TL::IndexOf<Private::StdOtherInts, UnqualifiedType>::VALUE >= 0
 		    || TL::IndexOf<Private::StdOtherInts,
-		                   typename ReferenceTraits<UnqualifiedType>::ReferredType>::value
+		                   typename ReferenceTraits<UnqualifiedType>::ReferredType>::VALUE
 		        >= 0
 	};
 	enum
 	{
-		isStdFloat = TL::IndexOf<Private::StdFloats, UnqualifiedType>::value >= 0
+		IS_STD_FLOAT = TL::IndexOf<Private::StdFloats, UnqualifiedType>::VALUE >= 0
 		    || TL::IndexOf<Private::StdFloats,
-		                   typename ReferenceTraits<UnqualifiedType>::ReferredType>::value
+		                   typename ReferenceTraits<UnqualifiedType>::ReferredType>::VALUE
 		        >= 0
 	};
 	enum
 	{
-		isStdArith = isStdIntegral || isStdFloat
+		IS_STD_ARITH = IS_STD_INTEGRAL || IS_STD_FLOAT
 	};
 	enum
 	{
-		isStdFundamental = isStdArith || isStdFloat || Conversion<T, void>::sameType
+		IS_STD_FUNDAMENTAL = IS_STD_ARITH || IS_STD_FLOAT || Conversion<T, void>::SAME_TYPE
 	};
 
 	enum
 	{
-		isUnsignedInt = isStdUnsignedInt || IsCustomUnsignedInt<UnqualifiedType>::value
+		IS_UNSIGNED_INT = IS_STD_UNSIGNED_INT || IsCustomUnsignedInt<UnqualifiedType>::VALUE
 	};
 	enum
 	{
-		isSignedInt = isStdSignedInt || IsCustomSignedInt<UnqualifiedType>::value
+		IS_SIGNED_INT = IS_STD_SIGNED_INT || IsCustomSignedInt<UnqualifiedType>::VALUE
 	};
 	enum
 	{
-		isIntegral = isStdIntegral || isUnsignedInt || isSignedInt
+		IS_INTEGRAL = IS_STD_INTEGRAL || IS_UNSIGNED_INT || IS_SIGNED_INT
 	};
 	enum
 	{
-		isFloat = isStdFloat || IsCustomFloat<UnqualifiedType>::value
+		IS_FLOAT = IS_STD_FLOAT || IsCustomFloat<UnqualifiedType>::VALUE
 	};
 	enum
 	{
-		isArith = isIntegral || isFloat
+		IS_ARITH = IS_INTEGRAL || IS_FLOAT
 	};
 	enum
 	{
-		isFundamental = isStdFundamental || isArith
+		IS_FUNDAMENTAL = IS_STD_FUNDAMENTAL || IS_ARITH
 	};
 
 	typedef
-	    typename Select<isStdArith || isPointer || isMemberPointer,
+	    typename Select<IS_STD_ARITH || IS_POINTER || IS_MEMBER_POINTER,
 	                    T,
 	                    typename Private::AddParameterType<T>::Result>::Result ParameterType;
 };

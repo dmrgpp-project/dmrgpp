@@ -1,7 +1,6 @@
 #include "PredicateSimple.h"
 
 namespace PsimagLite {
-PredicateSimple::VectorStringType PredicateSimple::ops_
-    = { "==", "!=", "<=", ">=", ">", "<", "%%" };
+PredicateSimple::VectorStringType PredicateSimple::ops = { "==", "!=", "<=", ">=", ">", "<", "%%" };
 
 }

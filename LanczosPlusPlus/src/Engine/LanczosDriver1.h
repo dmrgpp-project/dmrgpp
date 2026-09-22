@@ -65,9 +65,9 @@ void mainLoop3(const ModelType&                 model,
 	EngineType          engine(model, io);
 
 	//! get the g.s.:
-	RealType Eg = engine.energies(0);
+	RealType eg = engine.energies(0);
 	std::cout.precision(8);
-	std::cout << "Energy=" << Eg << "\n";
+	std::cout << "Energy=" << eg << "\n";
 	PsimagLite::String filename = PsimagLite::basenameOf(io.filename());
 
 	const SizeType nmeas = lanczosOptions.measure.size();
@@ -76,27 +76,27 @@ void mainLoop3(const ModelType&                 model,
 		PsimagLite::split(tokens, lanczosOptions.measure[i], ",");
 		const SizeType ntokens = tokens.size();
 		for (SizeType j = 0; j < ntokens; ++j) {
-			VectorStringType braOpKet;
-			PsimagLite::split(braOpKet, tokens[j], "|");
-			engine.measure(braOpKet);
+			VectorStringType bra_op_ket;
+			PsimagLite::split(bra_op_ket, tokens[j], "|");
+			engine.measure(bra_op_ket);
 		}
 	}
 
-	bool needsDos = false;
+	bool needs_dos = false;
 	try {
 		int tmp = 0;
 		io.readline(tmp, "ComputeDensityOfStates=");
-		needsDos = (tmp > 0);
+		needs_dos = (tmp > 0);
 	} catch (std::exception&) { }
 
 	typedef std::pair<SizeType, SizeType>  PairSizeType;
-	PsimagLite::Vector<PairSizeType>::Type pairOfSites;
+	PsimagLite::Vector<PairSizeType>::Type pair_of_sites;
 	const SizeType                         n = geometry.numberOfSites();
 
-	if (needsDos) {
+	if (needs_dos) {
 		lanczosOptions.gf.push_back(LanczosPlusPlus::LabeledOperator("c"));
 		for (SizeType i = 0; i < n; ++i)
-			pairOfSites.push_back(PairSizeType(i, i));
+			pair_of_sites.push_back(PairSizeType(i, i));
 	}
 
 	try {
@@ -108,56 +108,56 @@ void mainLoop3(const ModelType&                 model,
 		if (lanczosOptions.sites.size() == 1)
 			lanczosOptions.sites.push_back(lanczosOptions.sites[0]);
 
-		pairOfSites.push_back(
+		pair_of_sites.push_back(
 		    PairSizeType(lanczosOptions.sites[0], lanczosOptions.sites[1]));
 	} catch (std::exception&) { }
 
-	bool     hasCenter  = false;
-	SizeType centerSite = 0;
+	bool     has_center  = false;
+	SizeType center_site = 0;
 	try {
-		io.readline(centerSite, "TSPCenter=");
-		std::cout << "TSPCenter=" << centerSite << "\n";
+		io.readline(center_site, "TSPCenter=");
+		std::cout << "TSPCenter=" << center_site << "\n";
 
 		for (SizeType i = 0; i < n; ++i)
-			pairOfSites.push_back(PairSizeType(centerSite, i));
-		hasCenter = true;
+			pair_of_sites.push_back(PairSizeType(center_site, i));
+		has_center = true;
 	} catch (std::exception&) { }
 
-	bool doAllPairs = false;
+	bool do_all_pairs = false;
 	try {
 		int tmp = 0;
 		io.readline(tmp, "DoAllPairs=");
-		doAllPairs = (tmp > 0);
+		do_all_pairs = (tmp > 0);
 	} catch (std::exception&) { }
 
-	if (doAllPairs && hasCenter)
+	if (do_all_pairs && has_center)
 		err("You cannot have both TSPCenter and DoAllPairs\n");
 
-	if (doAllPairs) {
+	if (do_all_pairs) {
 		for (SizeType i = 0; i < n; ++i)
 			for (SizeType j = 0; j < n; ++j)
-				pairOfSites.push_back(PairSizeType(i, j));
+				pair_of_sites.push_back(PairSizeType(i, j));
 	}
 
 	for (SizeType gfi = 0; gfi < lanczosOptions.gf.size(); ++gfi) {
-		SizeType       counter  = 0;
-		const SizeType nIndices = pairOfSites.size();
-		for (SizeType sIndex = 0; sIndex < nIndices; ++sIndex) {
-			const SizeType site0 = pairOfSites[sIndex].first;
-			const SizeType site1 = pairOfSites[sIndex].second;
+		SizeType       counter   = 0;
+		const SizeType n_indices = pairOfSites.size();
+		for (SizeType s_index = 0; s_index < n_indices; ++s_index) {
+			const SizeType site0 = pairOfSites[s_index].first;
+			const SizeType site1 = pairOfSites[s_index].second;
 
 			std::cout << "#gf(i=" << site0 << ", j=" << site1 << ")\n";
 
 			typename EngineType::VectorStringType vstr;
-			PsimagLite::IoSimple::Out ioOut(filename + ttos(counter) + ".comb");
+			PsimagLite::IoSimple::Out io_out(filename + ttos(counter) + ".comb");
 
-			ioOut.write(site0, "Site0");
-			ioOut.write(site1, "Site1");
+			io_out.write(site0, "Site0");
+			io_out.write(site1, "Site1");
 
-			if (hasCenter)
-				ioOut.write(centerSite, "TSPCenter");
+			if (has_center)
+				io_out.write(center_site, "TSPCenter");
 
-			ContinuedFractionCollectionType cfCollection(PsimagLite::FreqEnum::REAL);
+			ContinuedFractionCollectionType cf_collection(PsimagLite::FreqEnum::REAL);
 			SizeType                        norbitals = maxOrbitals(model);
 			for (SizeType orb1 = 0; orb1 < norbitals; orb1++) {
 				for (SizeType orb2 = orb1; orb2 < norbitals; orb2++) {
@@ -172,36 +172,36 @@ void mainLoop3(const ModelType&                 model,
 				}
 			}
 
-			ioOut << "#INDEXTOCF ";
+			io_out << "#INDEXTOCF ";
 			for (SizeType i = 0; i < vstr.size(); ++i)
-				ioOut << vstr[i] << " ";
-			ioOut << "\n";
-			cfCollection.write(ioOut);
-			std::cerr << "LanczosDriver1.h: Written to " << ioOut.filename() << "\n";
+				io_out << vstr[i] << " ";
+			io_out << "\n";
+			cf_collection.write(io_out);
+			std::cerr << "LanczosDriver1.h: Written to " << io_out.filename() << "\n";
 			++counter;
 		}
 	}
 
 	for (SizeType cicji = 0; cicji < lanczosOptions.cicj.size(); cicji++) {
 		SizeType                              total = geometry.numberOfSites();
-		PsimagLite::Matrix<ComplexOrRealType> cicjMatrix(total, total);
+		PsimagLite::Matrix<ComplexOrRealType> cicj_matrix(total, total);
 		SizeType                              norbitals = maxOrbitals(model);
 		for (SizeType orb1 = 0; orb1 < norbitals; orb1++) {
 			for (SizeType orb2 = 0; orb2 < norbitals; orb2++) {
-				engine.twoPoint(cicjMatrix,
+				engine.twoPoint(cicj_matrix,
 				                lanczosOptions.cicj[cicji],
 				                lanczosOptions.spins,
 				                std::pair<SizeType, SizeType>(orb1, orb2),
 				                std::pair<SizeType, SizeType>(0, 0));
-				std::cout << cicjMatrix;
+				std::cout << cicj_matrix;
 			}
 		}
 	}
 
 	if (lanczosOptions.split >= 0) {
-		LanczosPlusPlus::ReducedDensityMatrix<ModelType> reducedDensityMatrix(
+		LanczosPlusPlus::ReducedDensityMatrix<ModelType> reduced_density_matrix(
 		    model, engine.eigenvector(0), lanczosOptions.split);
-		reducedDensityMatrix.printAll(std::cout);
+		reduced_density_matrix.printAll(std::cout);
 	}
 
 	if (lanczosOptions.extendedStatic != "") {

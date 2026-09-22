@@ -59,7 +59,7 @@ public:
 	           SizeType              iter) override
 	{
 		ModelParamsType model_params(bathParams, io_);
-		SizeType        mpiRank = PsimagLite::MPI::commRank(PsimagLite::MPI::COMM_WORLD);
+		SizeType        mpiRank = PsimagLite::MPI::commRank(PsimagLite::MPI::comm_world);
 
 		if (mpiRank == 0) {
 			PsimagLite::String data2 = BaseType::createGsInput(model_params, io_);
@@ -73,7 +73,7 @@ public:
 			runner.doOneRun();
 		}
 
-		PsimagLite::MPI::barrier(PsimagLite::MPI::COMM_WORLD);
+		PsimagLite::MPI::barrier(PsimagLite::MPI::comm_world);
 
 		PsimagLite::String data3 = createOmegaInput(model_params, freq_enum);
 
@@ -85,7 +85,7 @@ public:
 
 		freq_enum_ = freq_enum;
 
-		PsimagLite::MPI::barrier(PsimagLite::MPI::COMM_WORLD);
+		PsimagLite::MPI::barrier(PsimagLite::MPI::comm_world);
 	}
 
 	const VectorComplexType& gimp() const override { return gimp_; }
@@ -220,7 +220,7 @@ private:
 
 	void procOmegas(const std::string& data2, DmrgType t, PsimagLite::FreqEnum freq_enum)
 	{
-		SizeType mpiRank = PsimagLite::MPI::commRank(PsimagLite::MPI::COMM_WORLD);
+		SizeType mpiRank = PsimagLite::MPI::commRank(PsimagLite::MPI::comm_world);
 
 		if (mpiRank != 0)
 			return;

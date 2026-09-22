@@ -25,10 +25,10 @@ TEST_CASE("Full ArnoldiIteration of a random matrix", "[ArnoldiIteration]")
 	PsimagLite::Matrix<ComplexOrRealType> m(n, n);
 	// fill m
 	// A fixed seed value for reproducibility
-	constexpr unsigned int SEED = 12345;
+	constexpr unsigned int seed = 12345;
 
 	// 1. Seed the random number engine with the fixed value
-	std::mt19937                           rng(SEED);
+	std::mt19937                           rng(seed);
 	std::uniform_real_distribution<double> dist(min, max);
 
 	for (SizeType i = 0; i < n; ++i) {

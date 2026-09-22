@@ -1,7 +1,7 @@
 #include "util.h"
 
 template <typename ComplexOrRealType>
-void csr_eye(const int nrow_B, const int ncol_B, PsimagLite::CrsMatrix<ComplexOrRealType>& b)
+void csrEye(const int nrow_B, const int ncol_B, PsimagLite::CrsMatrix<ComplexOrRealType>& b)
 {
 	/*
 	 * ---------------------------------------------------------------------------
@@ -9,9 +9,9 @@ void csr_eye(const int nrow_B, const int ncol_B, PsimagLite::CrsMatrix<ComplexOr
 	 * ---------------------------------------------------------------------------
 	 */
 
-	const int nnz_B = std::min(nrow_B, ncol_B);
+	const int nnz_b = std::min(nrow_B, ncol_B);
 	b.resize(nrow_B, ncol_B);
-	b.reserve(nnz_B);
+	b.reserve(nnz_b);
 
 	int ip = 0;
 	for (int irow = 0; irow < nrow_B; irow++) {

@@ -27,7 +27,7 @@ int main(int argc, char** argv)
 	PsimagLite::split(ve, str, ":");
 
 	PrimitivesType                               primitives;
-	PsimagLite::ExpressionForAST<PrimitivesType> expresionForAST(ve, primitives);
+	PsimagLite::ExpressionForAST<PrimitivesType> expresion_for_ast(ve, primitives);
 
-	std::cout << argv[1] << "\t" << expresionForAST.exec() << "\n";
+	std::cout << argv[1] << "\t" << expresion_for_ast.exec() << "\n";
 }

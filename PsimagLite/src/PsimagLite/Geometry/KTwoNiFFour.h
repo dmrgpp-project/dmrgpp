@@ -315,8 +315,8 @@ public:
 	//! If first number == TYPE_O then second number is the subtype
 	static PairType findTypeOfSite(SizeType site)
 	{
-		SizeType sitePlusOne = site + 1;
-		SizeType r           = sitePlusOne % 4;
+		SizeType site_plus_one = site + 1;
+		SizeType r             = site_plus_one % 4;
 		if (r == 0)
 			return PairType(TYPE_C, SUBTYPE_X);
 

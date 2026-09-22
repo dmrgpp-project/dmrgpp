@@ -51,9 +51,9 @@ public:
 		PsimagLite::String model("");
 		io.readline(model, "Model=");
 
-		SizeType nup         = 0;
-		SizeType ndown       = 0;
-		SizeType szPlusConst = 0;
+		SizeType nup           = 0;
+		SizeType ndown         = 0;
+		SizeType sz_plus_const = 0;
 
 		if (model != "Kitaev" && model != "HubbardOneBandRashbaSOC"
 		    && model != "FermionSpinless") {
@@ -61,16 +61,16 @@ public:
 				io.readline(nup, "TargetElectronsUp=");
 				io.readline(ndown, "TargetElectronsDown=");
 			} catch (std::exception&) {
-				io.readline(szPlusConst, "TargetSzPlusConst=");
+				io.readline(sz_plus_const, "TargetSzPlusConst=");
 			}
 		}
 
 		if (model == "HubbardOneBandRashbaSOC" || model == "FermionSpinless")
-			io.readline(szPlusConst, "TargetElectronsTotal=");
+			io.readline(sz_plus_const, "TargetElectronsTotal=");
 
-		PsimagLite::Matrix<ComplexOrRealType> spinOrbit;
+		PsimagLite::Matrix<ComplexOrRealType> spin_orbit;
 		try {
-			io.read(spinOrbit, "SpinOrbit");
+			io.read(spin_orbit, "SpinOrbit");
 		} catch (std::exception&) { }
 
 		if (model == "TjMultiOrb") {
@@ -81,18 +81,18 @@ public:
 		           || model == "SuperHubbardExtended" || model == "KaneMeleHubbard") {
 			modelPtr_ = new HubbardOneOrbitalType(nup, ndown, io, geometry);
 		} else if (model == "FeAsBasedSc" || model == "FeAsBasedScExtended") {
-			if (spinOrbit.n_row() != 4)
+			if (spin_orbit.n_row() != 4)
 				modelPtr_ = new FeBasedScType(nup, ndown, io, geometry);
 			else
 				modelPtr_ = new FeBasedScSpinOrbitType(nup, ndown, io, geometry);
 		} else if (model == "Heisenberg") {
-			modelPtr_ = new HeisenbergType(szPlusConst, io, geometry);
+			modelPtr_ = new HeisenbergType(sz_plus_const, io, geometry);
 		} else if (model == "Kitaev") {
 			modelPtr_ = new KitaevType(io, geometry);
 		} else if (model == "HubbardOneBandRashbaSOC") {
-			modelPtr_ = new HubbardOneBandRashbaSOCType(szPlusConst, io, geometry);
+			modelPtr_ = new HubbardOneBandRashbaSOCType(sz_plus_const, io, geometry);
 		} else if (model == "FermionSpinless") {
-			modelPtr_ = new FermionSpinlessType(szPlusConst, io, geometry);
+			modelPtr_ = new FermionSpinlessType(sz_plus_const, io, geometry);
 		} else {
 			PsimagLite::String str("No known model " + model + "\n");
 			throw PsimagLite::RuntimeError(str);

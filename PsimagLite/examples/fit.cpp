@@ -283,8 +283,8 @@ int main(int argc, char** argv)
 
 	Fitter<OracleData<double>, FitData<double>> fitter(od, fit);
 
-	SizeType maxIter = 1000;
-	fitter.fit(maxIter);
+	SizeType max_iter = 1000;
+	fitter.fit(max_iter);
 
 	fitter.print(std::cout);
 }

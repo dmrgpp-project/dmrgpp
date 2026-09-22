@@ -167,11 +167,11 @@ public:
 		}
 
 		result.resize(n);
-		for (SizeType omegaIndex = 0; omegaIndex < n; ++omegaIndex) {
-			ComplexType z(matsubaras.delta(), matsubaras.omega(omegaIndex));
+		for (SizeType omega_index = 0; omega_index < n; ++omega_index) {
+			ComplexType z(matsubaras.delta(), matsubaras.omega(omega_index));
 			ComplexType res = iOfOmega(z, Eg_, isign_);
 			std::pair<RealType, ComplexType> p(PsimagLite::imag(z), res);
-			result[omegaIndex] = p;
+			result[omega_index] = p;
 		}
 	}
 
@@ -206,13 +206,13 @@ private:
 		if (PsimagLite::real(weight_) == 0 && PsimagLite::imag(weight_) == 0)
 			return;
 
-		MatrixType T;
-		ab_.buildDenseMatrix(T);
-		eigs_.resize(T.rows());
-		diag(T, eigs_, 'V');
-		intensity_.resize(T.rows());
-		for (SizeType i = 0; i < T.rows(); i++) {
-			intensity_[i] = T(0, i) * T(0, i);
+		MatrixType t;
+		ab_.buildDenseMatrix(t);
+		eigs_.resize(t.rows());
+		diag(t, eigs_, 'V');
+		intensity_.resize(t.rows());
+		for (SizeType i = 0; i < t.rows(); i++) {
+			intensity_[i] = t(0, i) * t(0, i);
 		}
 	}
 

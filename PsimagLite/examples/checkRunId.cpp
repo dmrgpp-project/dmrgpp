@@ -66,8 +66,8 @@ int main(int argc, char** argv)
 	}
 
 	for (int i = 0; i < g; ++i) {
-		PsimagLite::ApplicationInfo appInfo("test");
-		bool                        b = checkRunId(appInfo.runId(), argv[0]);
+		PsimagLite::ApplicationInfo app_info("test");
+		bool                        b = checkRunId(app_info.runId(), argv[0]);
 		if (!b) {
 			std::cerr << "Found invalid number\n";
 			return 4;

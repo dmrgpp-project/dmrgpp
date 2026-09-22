@@ -1,29 +1,29 @@
 #include "util.h"
 
 template <typename ComplexOrRealType>
-void csc_kron_mult_method(const int                                                   imethod,
-                          const int                                                   nrow_A,
-                          const int                                                   ncol_A,
-                          const PsimagLite::Vector<int>::Type&                        acolptr,
-                          const PsimagLite::Vector<int>::Type&                        arow,
-                          const typename PsimagLite::Vector<ComplexOrRealType>::Type& aval,
-                          const int                                                   nrow_B,
-                          const int                                                   ncol_B,
-                          const PsimagLite::Vector<int>::Type&                        bcolptr,
-                          const PsimagLite::Vector<int>::Type&                        brow,
-                          const typename PsimagLite::Vector<ComplexOrRealType>::Type& bval,
-                          const PsimagLite::Matrix<ComplexOrRealType>&                yin,
-                          PsimagLite::Matrix<ComplexOrRealType>&                      xout)
+void cscKronMultMethod(const int                                                   imethod,
+                       const int                                                   nrow_A,
+                       const int                                                   ncol_A,
+                       const PsimagLite::Vector<int>::Type&                        acolptr,
+                       const PsimagLite::Vector<int>::Type&                        arow,
+                       const typename PsimagLite::Vector<ComplexOrRealType>::Type& aval,
+                       const int                                                   nrow_B,
+                       const int                                                   ncol_B,
+                       const PsimagLite::Vector<int>::Type&                        bcolptr,
+                       const PsimagLite::Vector<int>::Type&                        brow,
+                       const typename PsimagLite::Vector<ComplexOrRealType>::Type& bval,
+                       const PsimagLite::Matrix<ComplexOrRealType>&                yin,
+                       PsimagLite::Matrix<ComplexOrRealType>&                      xout)
 {
-	const int nrow_X = nrow_B;
-	const int ncol_X = nrow_A;
+	const int nrow_x = nrow_B;
+	const int ncol_x = nrow_A;
 
-	const int nrow_Y = ncol_B;
-	const int ncol_Y = ncol_A;
+	const int nrow_y = ncol_B;
+	const int ncol_y = ncol_A;
 
-	int nnz_A    = csc_nnz(ncol_A, acolptr);
-	int nnz_B    = csc_nnz(ncol_B, bcolptr);
-	int has_work = (nnz_A >= 1) && (nnz_B >= 1);
+	int nnz_a    = cscNnz(ncol_A, acolptr);
+	int nnz_b    = cscNnz(ncol_B, bcolptr);
+	int has_work = (nnz_a >= 1) && (nnz_b >= 1);
 
 	assert((imethod == 1) || (imethod == 2) || (imethod == 3));
 
@@ -75,18 +75,18 @@ void csc_kron_mult_method(const int                                             
 		 * setup BY(ib,ja)
 		 * ---------------
 		 */
-		const int                             nrow_BY = nrow_B;
-		const int                             ncol_BY = ncol_A;
-		PsimagLite::Matrix<ComplexOrRealType> by_(nrow_BY, ncol_BY);
+		const int                             nrow_by = nrow_B;
+		const int                             ncol_by = ncol_A;
+		PsimagLite::Matrix<ComplexOrRealType> by(nrow_by, ncol_by);
 
 		{
 			int iby = 0;
 			int jby = 0;
 
 			// not needed, FIXME
-			for (jby = 0; jby < ncol_BY; jby++) {
-				for (iby = 0; iby < nrow_BY; iby++) {
-					by_(iby, jby) = 0;
+			for (jby = 0; jby < ncol_by; jby++) {
+				for (iby = 0; iby < nrow_by; iby++) {
+					by(iby, jby) = 0;
 				};
 			};
 		}
@@ -105,13 +105,13 @@ void csc_kron_mult_method(const int                                             
 			               brow,
 			               bval,
 
-			               nrow_Y,
-			               ncol_Y,
+			               nrow_y,
+			               ncol_y,
 			               yin,
 
-			               nrow_BY,
-			               ncol_BY,
-			               by_);
+			               nrow_by,
+			               ncol_by,
+			               by);
 		}
 
 		{
@@ -129,12 +129,12 @@ void csc_kron_mult_method(const int                                             
 			                arow,
 			                aval,
 
-			                nrow_BY,
-			                ncol_BY,
-			                by_,
+			                nrow_by,
+			                ncol_by,
+			                by,
 
-			                nrow_X,
-			                ncol_X,
+			                nrow_x,
+			                ncol_x,
 			                xout);
 		}
 	} else if (imethod == 2) {
@@ -151,10 +151,10 @@ void csc_kron_mult_method(const int                                             
 		 * ----------------
 		 */
 
-		PsimagLite::Matrix<ComplexOrRealType> yat_(ncol_B, nrow_A);
+		PsimagLite::Matrix<ComplexOrRealType> yat(ncol_B, nrow_A);
 
-		int nrow_YAt = ncol_B;
-		int ncol_YAt = nrow_A;
+		int nrow_y_at = ncol_B;
+		int ncol_y_at = nrow_A;
 
 		{
 			int jb = 0;
@@ -163,7 +163,7 @@ void csc_kron_mult_method(const int                                             
 			// not needed, FIXME
 			for (ia = 0; ia < ncol_A; ia++) {
 				for (jb = 0; jb < ncol_B; jb++) {
-					yat_(jb, ia) = 0;
+					yat(jb, ia) = 0;
 				};
 			};
 		}
@@ -183,13 +183,13 @@ void csc_kron_mult_method(const int                                             
 			                arow,
 			                aval,
 
-			                nrow_Y,
-			                ncol_Y,
+			                nrow_y,
+			                ncol_y,
 			                yin,
 
-			                nrow_YAt,
-			                ncol_YAt,
-			                yat_);
+			                nrow_y_at,
+			                ncol_y_at,
+			                yat);
 		}
 
 		{
@@ -207,12 +207,12 @@ void csc_kron_mult_method(const int                                             
 			               brow,
 			               bval,
 
-			               nrow_YAt,
-			               ncol_YAt,
-			               yat_,
+			               nrow_y_at,
+			               ncol_y_at,
+			               yat,
 
-			               nrow_X,
-			               ncol_X,
+			               nrow_x,
+			               ncol_x,
 			               xout);
 		}
 	} else if (imethod == 3) {
@@ -251,19 +251,19 @@ void csc_kron_mult_method(const int                                             
 }
 
 template <typename ComplexOrRealType>
-void csc_kron_mult(const int                                                   nrow_A,
-                   const int                                                   ncol_A,
-                   const PsimagLite::Vector<int>::Type&                        acolptr,
-                   const PsimagLite::Vector<int>::Type&                        arow,
-                   const typename PsimagLite::Vector<ComplexOrRealType>::Type& aval,
-                   const int                                                   nrow_B,
-                   const int                                                   ncol_B,
-                   const PsimagLite::Vector<int>::Type&                        bcolptr,
-                   const PsimagLite::Vector<int>::Type&                        brow,
-                   const typename PsimagLite::Vector<ComplexOrRealType>::Type& bval,
-                   const PsimagLite::Matrix<ComplexOrRealType>&                yin,
-                   PsimagLite::Matrix<ComplexOrRealType>&                      xout,
-                   const typename PsimagLite::Real<ComplexOrRealType>::Type    denseFlopDiscount)
+void cscKronMult(const int                                                   nrow_A,
+                 const int                                                   ncol_A,
+                 const PsimagLite::Vector<int>::Type&                        acolptr,
+                 const PsimagLite::Vector<int>::Type&                        arow,
+                 const typename PsimagLite::Vector<ComplexOrRealType>::Type& aval,
+                 const int                                                   nrow_B,
+                 const int                                                   ncol_B,
+                 const PsimagLite::Vector<int>::Type&                        bcolptr,
+                 const PsimagLite::Vector<int>::Type&                        brow,
+                 const typename PsimagLite::Vector<ComplexOrRealType>::Type& bval,
+                 const PsimagLite::Matrix<ComplexOrRealType>&                yin,
+                 PsimagLite::Matrix<ComplexOrRealType>&                      xout,
+                 const typename PsimagLite::Real<ComplexOrRealType>::Type    denseFlopDiscount)
 
 {
 	/*
@@ -296,9 +296,9 @@ void csc_kron_mult(const int                                                   n
 	 *   -------------------------------------------------------------
 	 */
 
-	int nnz_A    = csc_nnz(ncol_A, acolptr);
-	int nnz_B    = csc_nnz(ncol_B, bcolptr);
-	int has_work = (nnz_A >= 1) && (nnz_B >= 1);
+	int nnz_a    = cscNnz(ncol_A, acolptr);
+	int nnz_b    = cscNnz(ncol_B, bcolptr);
+	int has_work = (nnz_a >= 1) && (nnz_b >= 1);
 
 	ComplexOrRealType kron_nnz   = 0;
 	ComplexOrRealType kron_flops = 0;
@@ -310,10 +310,10 @@ void csc_kron_mult(const int                                                   n
 
 	estimate_kron_cost(nrow_A,
 	                   ncol_A,
-	                   nnz_A,
+	                   nnz_a,
 	                   nrow_B,
 	                   ncol_B,
-	                   nnz_B,
+	                   nnz_b,
 	                   &kron_nnz,
 	                   &kron_flops,
 	                   &imethod,

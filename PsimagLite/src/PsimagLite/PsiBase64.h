@@ -43,7 +43,7 @@ namespace PsimagLite {
 
 class PsiBase64 {
 
-	static const String base64Chars_;
+	static const String BASE64_CHARS;
 
 public:
 
@@ -53,12 +53,12 @@ public:
 
 		Encode(const String& str)
 		{
-			encode_(reinterpret_cast<const unsigned char*>(str.c_str()), str.length());
+			encode(reinterpret_cast<const unsigned char*>(str.c_str()), str.length());
 		}
 
 		Encode(unsigned char const* bytesToEncode, unsigned int inLen)
 		{
-			encode_(bytesToEncode, inLen);
+			encode(bytesToEncode, inLen);
 		}
 
 		const String& operator()() const { return buffer_; }
@@ -78,43 +78,43 @@ public:
 
 	private:
 
-		void encode_(unsigned char const* bytesToEncode, unsigned int inLen)
+		void encode(unsigned char const* bytesToEncode, unsigned int inLen)
 		{
 			buffer_         = "";
 			int           i = 0;
 			int           j = 0;
-			unsigned char charArray3[3];
-			unsigned char charArray4[4];
+			unsigned char char_array3[3];
+			unsigned char char_array4[4];
 
 			while (inLen--) {
-				charArray3[i++] = *(bytesToEncode++);
+				char_array3[i++] = *(bytesToEncode++);
 				if (i == 3) {
-					charArray4[0] = (charArray3[0] & 0xfc) >> 2;
-					charArray4[1] = ((charArray3[0] & 0x03) << 4)
-					    + ((charArray3[1] & 0xf0) >> 4);
-					charArray4[2] = ((charArray3[1] & 0x0f) << 2)
-					    + ((charArray3[2] & 0xc0) >> 6);
-					charArray4[3] = charArray3[2] & 0x3f;
+					char_array4[0] = (char_array3[0] & 0xfc) >> 2;
+					char_array4[1] = ((char_array3[0] & 0x03) << 4)
+					    + ((char_array3[1] & 0xf0) >> 4);
+					char_array4[2] = ((char_array3[1] & 0x0f) << 2)
+					    + ((char_array3[2] & 0xc0) >> 6);
+					char_array4[3] = char_array3[2] & 0x3f;
 
 					for (i = 0; (i < 4); i++)
-						buffer_ += base64Chars_[charArray4[i]];
+						buffer_ += BASE64_CHARS[char_array4[i]];
 					i = 0;
 				}
 			}
 
 			if (i) {
 				for (j = i; j < 3; j++)
-					charArray3[j] = '\0';
+					char_array3[j] = '\0';
 
-				charArray4[0] = (charArray3[0] & 0xfc) >> 2;
-				charArray4[1]
-				    = ((charArray3[0] & 0x03) << 4) + ((charArray3[1] & 0xf0) >> 4);
-				charArray4[2]
-				    = ((charArray3[1] & 0x0f) << 2) + ((charArray3[2] & 0xc0) >> 6);
-				charArray4[3] = charArray3[2] & 0x3f;
+				char_array4[0] = (char_array3[0] & 0xfc) >> 2;
+				char_array4[1] = ((char_array3[0] & 0x03) << 4)
+				    + ((char_array3[1] & 0xf0) >> 4);
+				char_array4[2] = ((char_array3[1] & 0x0f) << 2)
+				    + ((char_array3[2] & 0xc0) >> 6);
+				char_array4[3] = char_array3[2] & 0x3f;
 
 				for (j = 0; (j < i + 1); j++)
-					buffer_ += base64Chars_[charArray4[j]];
+					buffer_ += BASE64_CHARS[char_array4[j]];
 
 				while ((i++ < 3))
 					buffer_ += '=';
@@ -130,49 +130,49 @@ public:
 
 		Decode(const String& encodedString)
 		{
-			buffer_             = "";
-			int           inLen = encodedString.size();
-			int           i     = 0;
-			int           j     = 0;
-			int           in_   = 0;
-			unsigned char charArray4[4], charArray3[3];
+			buffer_              = "";
+			int           in_len = encodedString.size();
+			int           i      = 0;
+			int           j      = 0;
+			int           in     = 0;
+			unsigned char char_array4[4], char_array3[3];
 
-			while (inLen-- && (encodedString[in_] != '=')
-			       && isBase64(encodedString[in_])) {
-				charArray4[i++] = encodedString[in_];
-				in_++;
+			while (in_len-- && (encodedString[in] != '=')
+			       && isBase64(encodedString[in])) {
+				char_array4[i++] = encodedString[in];
+				in++;
 				if (i == 4) {
 					for (i = 0; i < 4; i++)
-						charArray4[i] = base64Chars_.find(charArray4[i]);
+						char_array4[i] = BASE64_CHARS.find(char_array4[i]);
 
-					charArray3[0]
-					    = (charArray4[0] << 2) + ((charArray4[1] & 0x30) >> 4);
-					charArray3[1] = ((charArray4[1] & 0xf) << 4)
-					    + ((charArray4[2] & 0x3c) >> 2);
-					charArray3[2]
-					    = ((charArray4[2] & 0x3) << 6) + charArray4[3];
+					char_array3[0] = (char_array4[0] << 2)
+					    + ((char_array4[1] & 0x30) >> 4);
+					char_array3[1] = ((char_array4[1] & 0xf) << 4)
+					    + ((char_array4[2] & 0x3c) >> 2);
+					char_array3[2]
+					    = ((char_array4[2] & 0x3) << 6) + char_array4[3];
 
 					for (i = 0; (i < 3); i++)
-						buffer_ += charArray3[i];
+						buffer_ += char_array3[i];
 					i = 0;
 				}
 			}
 
 			if (i) {
 				for (j = i; j < 4; j++)
-					charArray4[j] = 0;
+					char_array4[j] = 0;
 
 				for (j = 0; j < 4; j++)
-					charArray4[j] = base64Chars_.find(charArray4[j]);
+					char_array4[j] = BASE64_CHARS.find(char_array4[j]);
 
-				charArray3[0]
-				    = (charArray4[0] << 2) + ((charArray4[1] & 0x30) >> 4);
-				charArray3[1]
-				    = ((charArray4[1] & 0xf) << 4) + ((charArray4[2] & 0x3c) >> 2);
-				charArray3[2] = ((charArray4[2] & 0x3) << 6) + charArray4[3];
+				char_array3[0]
+				    = (char_array4[0] << 2) + ((char_array4[1] & 0x30) >> 4);
+				char_array3[1] = ((char_array4[1] & 0xf) << 4)
+				    + ((char_array4[2] & 0x3c) >> 2);
+				char_array3[2] = ((char_array4[2] & 0x3) << 6) + char_array4[3];
 
 				for (j = 0; (j < i - 1); j++)
-					buffer_ += charArray3[j];
+					buffer_ += char_array3[j];
 			}
 		}
 

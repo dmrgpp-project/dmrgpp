@@ -50,8 +50,8 @@ public:
 	    , jpm_(geometry_.numberOfSites(), geometry_.numberOfSites())
 	    , jzz_(geometry_.numberOfSites(), geometry_.numberOfSites())
 	{
-		const RealType zeroPointTwentyFive = 0.25;
-		SizeType       n                   = geometry_.numberOfSites();
+		const RealType zero_point_twenty_five = 0.25;
+		SizeType       n                      = geometry_.numberOfSites();
 
 		if (geometry_.terms() != 3) {
 			PsimagLite::String msg("Kitaev: must have 3 terms\n");
@@ -63,8 +63,8 @@ public:
 				// FIXME: MAKE SURE THAT WHEN i==j ALL CONNECTIONS ARE ZERO HERE
 				ComplexOrRealType jxx = geometry_(i, 0, j, 0, 0);
 				ComplexOrRealType jyy = geometry_(i, 0, j, 0, 1);
-				jpm_(i, j)            = zeroPointTwentyFive * (jxx + jyy);
-				jpp_(i, j) = zeroPointTwentyFive * (jxx - jyy); // = jmm_(i,j)
+				jpm_(i, j)            = zero_point_twenty_five * (jxx + jyy);
+				jpp_(i, j) = zero_point_twenty_five * (jxx - jyy); // = jmm_(i,j)
 				jzz_(i, j) = geometry_(i, 0, j, 0, 2);
 			}
 		}
@@ -94,31 +94,31 @@ public:
 
 		matrix.resize(hilbert, hilbert);
 		// Calculate off-diagonal elements AND store matrix
-		SizeType nCounter = 0;
+		SizeType n_counter = 0;
 		for (SizeType ispace = 0; ispace < hilbert; ++ispace) {
-			SparseRowType sparseRow;
-			matrix.setRow(ispace, nCounter);
+			SparseRowType sparse_row;
+			matrix.setRow(ispace, n_counter);
 
 			WordType ket = basis(ispace, dummy);
 			// Save diagonal
-			sparseRow.add(ispace, diag[ispace]);
+			sparse_row.add(ispace, diag[ispace]);
 
 			// s+s-
 			for (SizeType i = 0; i < nsite; ++i) {
 				SizeType val1 = basis.getN(ket, dummy, i, dummy, orb);
 				if (val1 != TWICE_THE_SPIN) {
-					setSplusSminus(sparseRow, ket, i, val1 + 1, basis);
-					setSplusSplus(sparseRow, ket, i, val1 + 1, basis);
+					setSplusSminus(sparse_row, ket, i, val1 + 1, basis);
+					setSplusSplus(sparse_row, ket, i, val1 + 1, basis);
 				}
 
 				if (val1 != 0)
-					setSminusSminus(sparseRow, ket, i, val1 - 1, basis);
+					setSminusSminus(sparse_row, ket, i, val1 - 1, basis);
 			}
 
-			nCounter += sparseRow.finalize(matrix);
+			n_counter += sparse_row.finalize(matrix);
 		}
 
-		matrix.setRow(hilbert, nCounter);
+		matrix.setRow(hilbert, n_counter);
 		matrix.checkValidity();
 		assert(isHermitian(matrix));
 	}

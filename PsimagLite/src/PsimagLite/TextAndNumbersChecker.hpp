@@ -88,23 +88,23 @@ public:
 		for (;;) {
 			std::string token1;
 			std::string token2;
-			const bool  hasToken1 = reader1.read(token1);
-			if (!hasToken1 && !stream1.eof())
+			const bool  has_token1 = reader1.read(token1);
+			if (!has_token1 && !stream1.eof())
 				throw std::runtime_error("Error while reading first file: "
 				                         + file1.string());
-			const bool hasToken2 = reader2.read(token2);
-			if (!hasToken2 && !stream2.eof())
+			const bool has_token2 = reader2.read(token2);
+			if (!has_token2 && !stream2.eof())
 				throw std::runtime_error("Error while reading second file: "
 				                         + file2.string());
 
-			if (!hasToken1 && !hasToken2)
+			if (!has_token1 && !has_token2)
 				return;
 
-			if (hasToken1 != hasToken2) {
+			if (has_token1 != has_token2) {
 				const std::string shown1
-				    = hasToken1 ? quote(token1) : "<end of file>";
+				    = has_token1 ? quote(token1) : "<end of file>";
 				const std::string shown2
-				    = hasToken2 ? quote(token2) : "<end of file>";
+				    = has_token2 ? quote(token2) : "<end of file>";
 				fail(position,
 				     shown1,
 				     shown2,
@@ -144,25 +144,25 @@ public:
 		    = readObservables(referenceFile, observableLabel, "reference");
 		const ObservableMap actual = readObservables(actualFile, observableLabel, "actual");
 
-		auto referenceIter = reference.begin();
-		auto actualIter    = actual.begin();
-		while (referenceIter != reference.end() || actualIter != actual.end()) {
-			if (actualIter == actual.end()
-			    || (referenceIter != reference.end()
-			        && referenceIter->first < actualIter->first))
+		auto reference_iter = reference.begin();
+		auto actual_iter    = actual.begin();
+		while (reference_iter != reference.end() || actual_iter != actual.end()) {
+			if (actual_iter == actual.end()
+			    || (reference_iter != reference.end()
+			        && reference_iter->first < actual_iter->first))
 				throw std::runtime_error(
 				    "Observable index missing from actual file: "
-				    + formatIndex(referenceIter->first));
+				    + formatIndex(reference_iter->first));
 
-			if (referenceIter == reference.end()
-			    || actualIter->first < referenceIter->first)
+			if (reference_iter == reference.end()
+			    || actual_iter->first < reference_iter->first)
 				throw std::runtime_error("Observable index extra in actual file: "
-				                         + formatIndex(actualIter->first));
+				                         + formatIndex(actual_iter->first));
 
 			compareObservableData(
-			    referenceIter->first, referenceIter->second, actualIter->second);
-			++referenceIter;
-			++actualIter;
+			    reference_iter->first, reference_iter->second, actual_iter->second);
+			++reference_iter;
+			++actual_iter;
 		}
 	}
 
@@ -179,10 +179,10 @@ private:
 
 	enum class TokenClass
 	{
-		Word,
-		Integer,
-		Double,
-		Complex
+		WORD,
+		INTEGER,
+		DOUBLE,
+		COMPLEX
 	};
 
 	//---------------------------------------------------------------------------//
@@ -309,10 +309,10 @@ private:
 		    || equalsAsciiNoCase(component, position, "nan"))
 			return true;
 
-		bool hasDigits = false;
+		bool has_digits = false;
 		while (position < component.size()
 		       && std::isdigit(static_cast<unsigned char>(component[position]))) {
-			hasDigits = true;
+			has_digits = true;
 			++position;
 		}
 
@@ -320,12 +320,12 @@ private:
 			++position;
 			while (position < component.size()
 			       && std::isdigit(static_cast<unsigned char>(component[position]))) {
-				hasDigits = true;
+				has_digits = true;
 				++position;
 			}
 		}
 
-		if (!hasDigits)
+		if (!has_digits)
 			return false;
 
 		if (position < component.size()
@@ -335,11 +335,11 @@ private:
 			    && (component[position] == '+' || component[position] == '-'))
 				++position;
 
-			const std::size_t exponentStart = position;
+			const std::size_t exponent_start = position;
 			while (position < component.size()
 			       && std::isdigit(static_cast<unsigned char>(component[position])))
 				++position;
-			if (position == exponentStart)
+			if (position == exponent_start)
 				return false;
 		}
 
@@ -398,41 +398,41 @@ private:
 		if (token[position] == '+' || token[position] == '-')
 			++position;
 
-		const std::size_t integerStart = position;
+		const std::size_t integer_start = position;
 		while (position < token.size()
 		       && std::isdigit(static_cast<unsigned char>(token[position])))
 			++position;
-		const bool hasIntegerDigits = position != integerStart;
+		const bool has_integer_digits = position != integer_start;
 
-		bool hasDecimalPoint = false;
+		bool has_decimal_point = false;
 		if (position < token.size() && token[position] == '.') {
-			hasDecimalPoint = true;
+			has_decimal_point = true;
 			++position;
-			const std::size_t fractionStart = position;
+			const std::size_t fraction_start = position;
 			while (position < token.size()
 			       && std::isdigit(static_cast<unsigned char>(token[position])))
 				++position;
-			if (!hasIntegerDigits && position == fractionStart)
+			if (!has_integer_digits && position == fraction_start)
 				return false;
 		}
 
-		bool hasExponent = false;
+		bool has_exponent = false;
 		if (position < token.size() && (token[position] == 'e' || token[position] == 'E')) {
-			hasExponent = true;
+			has_exponent = true;
 			++position;
 			if (position < token.size()
 			    && (token[position] == '+' || token[position] == '-'))
 				++position;
-			const std::size_t exponentStart = position;
+			const std::size_t exponent_start = position;
 			while (position < token.size()
 			       && std::isdigit(static_cast<unsigned char>(token[position])))
 				++position;
-			if (position == exponentStart)
+			if (position == exponent_start)
 				return false;
 		}
 
-		return position == token.size() && (hasDecimalPoint || hasExponent)
-		    && (hasDecimalPoint || hasIntegerDigits);
+		return position == token.size() && (has_decimal_point || has_exponent)
+		    && (has_decimal_point || has_integer_digits);
 	}
 
 	//---------------------------------------------------------------------------//
@@ -446,12 +446,12 @@ private:
 	static TokenClass classify(const std::string& token)
 	{
 		if (isIntegerSyntax(token))
-			return TokenClass::Integer;
+			return TokenClass::INTEGER;
 		if (isDoubleSyntax(token))
-			return TokenClass::Double;
+			return TokenClass::DOUBLE;
 		if (isComplexSyntax(token))
-			return TokenClass::Complex;
-		return TokenClass::Word;
+			return TokenClass::COMPLEX;
+		return TokenClass::WORD;
 	}
 
 	//---------------------------------------------------------------------------//
@@ -465,13 +465,13 @@ private:
 	static const char* className(TokenClass tokenClass)
 	{
 		switch (tokenClass) {
-		case TokenClass::Word:
+		case TokenClass::WORD:
 			return "word";
-		case TokenClass::Integer:
+		case TokenClass::INTEGER:
 			return "integer";
-		case TokenClass::Double:
+		case TokenClass::DOUBLE:
 			return "double";
-		case TokenClass::Complex:
+		case TokenClass::COMPLEX:
 			return "complex";
 		}
 
@@ -574,10 +574,11 @@ private:
 		    || comma == std::string::npos)
 			throw std::runtime_error("Invalid complex token: " + quote(token));
 
-		const std::string realPart      = token.substr(1, comma - 1);
-		const std::string imaginaryPart = token.substr(comma + 1, token.size() - comma - 2);
-		return { parseComplexComponent(realPart, token),
-			 parseComplexComponent(imaginaryPart, token) };
+		const std::string real_part = token.substr(1, comma - 1);
+		const std::string imaginary_part
+		    = token.substr(comma + 1, token.size() - comma - 2);
+		return { parseComplexComponent(real_part, token),
+			 parseComplexComponent(imaginary_part, token) };
 	}
 
 	//---------------------------------------------------------------------------//
@@ -610,8 +611,8 @@ private:
 	 */
 	static RealType parseObservableTime(const std::string& token)
 	{
-		const TokenClass tokenClass = classify(token);
-		if (tokenClass != TokenClass::Integer && tokenClass != TokenClass::Double)
+		const TokenClass token_class = classify(token);
+		if (token_class != TokenClass::INTEGER && token_class != TokenClass::DOUBLE)
 			throw std::runtime_error("Invalid time token: " + quote(token));
 		return parseDouble(token);
 	}
@@ -638,23 +639,24 @@ private:
 	static bool isObservableCandidate(const std::vector<std::string>& tokens,
 	                                  const std::string&              observableLabel)
 	{
-		bool containsLabel         = false;
-		bool labelAtRecordPosition = false;
-		bool containsComplex       = false;
+		bool contains_label           = false;
+		bool label_at_record_position = false;
+		bool contains_complex         = false;
 		for (std::size_t index = 0; index < tokens.size(); ++index) {
 			const std::string& token = tokens[index];
 			if (token == observableLabel) {
-				containsLabel = true;
-				labelAtRecordPosition
-				    = labelAtRecordPosition || (index >= 2 && index <= 4);
+				contains_label = true;
+				label_at_record_position
+				    = label_at_record_position || (index >= 2 && index <= 4);
 			}
-			containsComplex = containsComplex || classify(token) == TokenClass::Complex;
+			contains_complex
+			    = contains_complex || classify(token) == TokenClass::COMPLEX;
 		}
 
-		return containsLabel
-		    && (labelAtRecordPosition
+		return contains_label
+		    && (label_at_record_position
 		        || (!tokens.empty() && isUnsignedDecimalSyntax(tokens.front()))
-		        || containsComplex);
+		        || contains_complex);
 	}
 
 	//---------------------------------------------------------------------------//
@@ -672,35 +674,35 @@ private:
 
 		ObservableMap data;
 		std::string   line;
-		std::size_t   lineNumber = 0;
+		std::size_t   line_number = 0;
 		while (std::getline(stream, line)) {
-			++lineNumber;
-			std::istringstream       lineStream(line);
+			++line_number;
+			std::istringstream       line_stream(line);
 			std::vector<std::string> tokens;
 			std::string              token;
-			while (lineStream >> token)
+			while (line_stream >> token)
 				tokens.push_back(token);
 
 			if (!isObservableCandidate(tokens, observableLabel))
 				continue;
 
 			const std::string location = "Malformed observable record in " + fileRole
-			    + " file at line " + std::to_string(lineNumber);
+			    + " file at line " + std::to_string(line_number);
 			if (tokens.size() != 5 || tokens[3] != observableLabel)
 				throw std::runtime_error(location + ": " + line);
 
 			try {
-				if (classify(tokens[1]) != TokenClass::Complex
-				    || classify(tokens[4]) != TokenClass::Complex)
+				if (classify(tokens[1]) != TokenClass::COMPLEX
+				    || classify(tokens[4]) != TokenClass::COMPLEX)
 					throw std::runtime_error(
 					    "value or superdensity is not complex");
 
 				const std::size_t     site = parseSite(tokens[0]);
 				const RealType        time = parseObservableTime(tokens[2]);
 				const ObservableIndex index { site, time, tokens[3] };
-				const ObservableData  observableData { parseComplex(tokens[1]),
-                                                                      parseComplex(tokens[4]) };
-				data[index] = observableData;
+				const ObservableData  observable_data { parseComplex(tokens[1]),
+                                                                       parseComplex(tokens[4]) };
+				data[index] = observable_data;
 			} catch (const std::exception& error) {
 				throw std::runtime_error(location + ": " + error.what());
 			}
@@ -737,19 +739,19 @@ private:
 	                           const ObservableData&  reference,
 	                           const ObservableData&  actual) const
 	{
-		const RealType valueError = std::abs(reference.value - actual.value);
-		if (valueError > tolerance_)
+		const RealType value_error = std::abs(reference.value - actual.value);
+		if (value_error > tolerance_)
 			failObservable(
-			    "observable value", index, reference.value, actual.value, valueError);
+			    "observable value", index, reference.value, actual.value, value_error);
 
-		const RealType superdensityError
+		const RealType superdensity_error
 		    = std::abs(reference.superdensity - actual.superdensity);
-		if (superdensityError > tolerance_)
+		if (superdensity_error > tolerance_)
 			failObservable("superdensity",
 			               index,
 			               reference.superdensity,
 			               actual.superdensity,
-			               superdensityError);
+			               superdensity_error);
 	}
 
 	//---------------------------------------------------------------------------//
@@ -794,11 +796,11 @@ private:
 		}
 
 		switch (class1) {
-		case TokenClass::Word:
+		case TokenClass::WORD:
 			if (token1 != token2)
 				fail(position, quote(token1), quote(token2), "words differ");
 			return;
-		case TokenClass::Integer:
+		case TokenClass::INTEGER:
 		{
 			const long long value1 = parseInteger(token1);
 			const long long value2 = parseInteger(token2);
@@ -809,7 +811,7 @@ private:
 				     "integer values differ");
 			return;
 		}
-		case TokenClass::Double:
+		case TokenClass::DOUBLE:
 		{
 			const RealType value1 = parseDouble(token1);
 			const RealType value2 = parseDouble(token2);
@@ -818,7 +820,7 @@ private:
 				    position, quote(token1), quote(token2), "double values differ");
 			return;
 		}
-		case TokenClass::Complex:
+		case TokenClass::COMPLEX:
 		{
 			const std::complex<RealType> value1 = parseComplex(token1);
 			const std::complex<RealType> value2 = parseComplex(token2);

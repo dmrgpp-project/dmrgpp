@@ -78,7 +78,7 @@ public:
 	using CollectionContFractionType = PsimagLite::ContinuedFractionCollection<RealType>;
 
 	// ContF needs to support concurrency FIXME
-	static const SizeType parallelRank_   = 0;
+	static const SizeType PARALLEL_RANK   = 0;
 	static const SizeType CHECK_HERMICITY = 1;
 
 	enum
@@ -152,56 +152,57 @@ public:
 		}
 
 		assert(0 < vectors_.size());
-		const VectorType&         gsVector   = vectors_[0];
-		const LabeledOperatorType lOperator2 = lOperator1.transposeConjugate();
+		const VectorType&         gs_vector   = vectors_[0];
+		const LabeledOperatorType l_operator2 = lOperator1.transposeConjugate();
 
-		const BasisType* basisNew   = 0;
-		bool             isDiagonal = (isite == jsite && orbs.first == orbs.second);
-		PairType         oldParts   = model_.basis().parts();
+		const BasisType* basis_new   = 0;
+		bool             is_diagonal = (isite == jsite && orbs.first == orbs.second);
+		PairType         old_parts   = model_.basis().parts();
 		for (SizeType type = 0; type < lOperator1.numberOfTypes(); ++type) {
-			if (isDiagonal && type > 1)
+			if (is_diagonal && type > 1)
 				continue;
 
-			const LabeledOperatorType& lOperator = (type & 1) ? lOperator1 : lOperator2;
+			const LabeledOperatorType& l_operator
+			    = (type & 1) ? lOperator1 : l_operator2;
 
-			if (lOperator.needsNewBasis()) {
+			if (l_operator.needsNewBasis()) {
 				assert(spins.first == spins.second);
-				std::pair<SizeType, SizeType> newParts(0, 0);
+				std::pair<SizeType, SizeType> new_parts(0, 0);
 				if (!model_.hasNewParts(
-				        newParts, oldParts, lOperator, spins.first, orbs.first))
+				        new_parts, old_parts, l_operator, spins.first, orbs.first))
 					continue;
 				// Create new bases
-				basisNew = model_.createBasis(newParts.first, newParts.second);
+				basis_new = model_.createBasis(new_parts.first, new_parts.second);
 			} else {
-				basisNew = &model_.basis();
+				basis_new = &model_.basis();
 			}
-			VectorType modifVector;
-			getModifiedState(modifVector,
-			                 lOperator,
-			                 gsVector,
-			                 *basisNew,
+			VectorType modif_vector;
+			getModifiedState(modif_vector,
+			                 l_operator,
+			                 gs_vector,
+			                 *basis_new,
 			                 type,
 			                 isite,
 			                 jsite,
 			                 spins.first,
 			                 orbs);
 
-			SpecialSymmetryType symm(*basisNew, model_.geometry(), "");
-			InternalProductType matrix(model_, *basisNew, symm);
+			SpecialSymmetryType symm(*basis_new, model_.geometry(), "");
+			InternalProductType matrix(model_, *basis_new, symm);
 			ContFractionType    cf(cfCollection.freqType());
 
-			if (PsimagLite::norm(modifVector) < 1e-10) {
+			if (PsimagLite::norm(modif_vector) < 1e-10) {
 				std::cerr << "spectralFunction: modifVector==0, type=" << type
 				          << "\n";
 			}
 
 			calcSpectral(cf,
-			             lOperator.isFermionic(),
-			             modifVector,
+			             l_operator.isFermionic(),
+			             modif_vector,
 			             matrix,
 			             type,
 			             spins.first,
-			             isDiagonal);
+			             is_diagonal);
 			PsimagLite::String str = ttos(spins.first) + "," + ttos(type) + ",";
 			str += ttos(orbs.first) + "," + ttos(orbs.second);
 			vstr.push_back(str);
@@ -223,12 +224,12 @@ public:
 		typedef typename OneOperatorSpecType::SiteSplit SiteSplitType;
 
 		for (SizeType i = 0; i < n; ++i) {
-			SiteSplitType siteSplit = OneOperatorSpecType::extractSiteIfAny(tokens[i]);
-			if (!siteSplit.hasSiteString)
+			SiteSplitType site_split = OneOperatorSpecType::extractSiteIfAny(tokens[i]);
+			if (!site_split.hasSiteString)
 				err("Operator " + tokens[i] + " needs a site in brackets\n");
-			tokens[i] = siteSplit.root;
+			tokens[i] = site_split.root;
 			assert(i < vsites.size());
-			vsites[i] = OneOperatorSpecType::strToNumberOrFail(siteSplit.siteString);
+			vsites[i] = OneOperatorSpecType::strToNumberOrFail(site_split.siteString);
 
 			OneOperatorSpecType opspec(tokens[i]);
 
@@ -237,19 +238,19 @@ public:
 		}
 
 		PsimagLite::GetBraOrKet myket("|" + braOpKet[2]);
-		SizeType                ketIndex = myket.levelIndex();
-		checkBraOrKet(braOpKet[2], ketIndex);
-		const VectorType& ketVector = vectors_[ketIndex];
-		VectorType        psiNew(ketVector.size());
+		SizeType                ket_index = myket.levelIndex();
+		checkBraOrKet(braOpKet[2], ket_index);
+		const VectorType& ket_vector = vectors_[ket_index];
+		VectorType        psi_new(ket_vector.size());
 
-		model_.rahulMethod(psiNew, vops, vsites, ketVector, model_.basis());
+		model_.rahulMethod(psi_new, vops, vsites, ket_vector, model_.basis());
 
 		PsimagLite::GetBraOrKet mybra(braOpKet[0] + "|");
-		SizeType                braIndex = mybra.levelIndex();
-		checkBraOrKet(braOpKet[0], braIndex);
-		const VectorType& braVector = vectors_[braIndex];
+		SizeType                bra_index = mybra.levelIndex();
+		checkBraOrKet(braOpKet[0], bra_index);
+		const VectorType& bra_vector = vectors_[bra_index];
 
-		const ComplexOrRealType result = braVector * psiNew;
+		const ComplexOrRealType result = bra_vector * psi_new;
 		std::cout << braOpKet[0] << "|" << meas << "|" << braOpKet[2] << " = " << result
 		          << "\n";
 	}
@@ -275,8 +276,8 @@ public:
 	              const PairType&                                      orbs,
 	              const PairType&                                      braAndKet) const
 	{
-		const BasisType* basisNew = 0;
-		PairType         oldParts = model_.basis().parts();
+		const BasisType* basis_new = 0;
+		PairType         old_parts = model_.basis().parts();
 
 		if (lOperator.needsNewBasis()) {
 			if (spins.first != spins.second) {
@@ -287,25 +288,25 @@ public:
 				throw std::runtime_error(str.c_str());
 			}
 
-			std::pair<SizeType, SizeType> newParts(0, 0);
+			std::pair<SizeType, SizeType> new_parts(0, 0);
 			if (!model_.hasNewParts(
-			        newParts, oldParts, lOperator, spins.first, orbs.first))
+			        new_parts, old_parts, lOperator, spins.first, orbs.first))
 				return;
 
-			basisNew = model_.createBasis(newParts.first, newParts.second);
+			basis_new = model_.createBasis(new_parts.first, new_parts.second);
 
-			std::cerr << "basisNew.size=" << basisNew->size() << " ";
-			std::cerr << "newparts.first=" << newParts.first << " ";
-			std::cerr << "newparts.second=" << newParts.second << "\n";
+			std::cerr << "basisNew.size=" << basis_new->size() << " ";
+			std::cerr << "newparts.first=" << new_parts.first << " ";
+			std::cerr << "newparts.second=" << new_parts.second << "\n";
 		} else {
-			basisNew = &model_.basis();
+			basis_new = &model_.basis();
 		}
 
 		checkBraOrKet("bra", braAndKet.first);
 		checkBraOrKet("ket", braAndKet.second);
-		const VectorType& braVector = vectors_[braAndKet.first];
-		const VectorType& ketVector = vectors_[braAndKet.second];
-		SizeType          total     = result.n_row();
+		const VectorType& bra_vector = vectors_[braAndKet.first];
+		const VectorType& ket_vector = vectors_[braAndKet.second];
+		SizeType          total      = result.n_row();
 
 		for (SizeType isite = 0; isite < total; isite++)
 			for (SizeType jsite = 0; jsite < total; jsite++)
@@ -316,30 +317,30 @@ public:
 		typename VectorType::value_type sum = 0;
 		std::cout << "orbs=" << orbs.first << " " << orbs.second << "\n";
 		for (SizeType isite = 0; isite < total; isite++) {
-			VectorType modifVector1(basisNew->size(), 0);
+			VectorType modif_vector1(basis_new->size(), 0);
 			if (orbs.first >= model_.orbitals(isite))
 				continue;
-			accModifiedState(modifVector1,
+			accModifiedState(modif_vector1,
 			                 lOperator,
-			                 *basisNew,
-			                 ketVector,
+			                 *basis_new,
+			                 ket_vector,
 			                 isite,
 			                 spins.first,
 			                 orbs.first,
 			                 isign);
 			for (SizeType jsite = 0; jsite < total; jsite++) {
-				VectorType modifVector2(basisNew->size(), 0);
+				VectorType modif_vector2(basis_new->size(), 0);
 				if (orbs.second >= model_.orbitals(jsite))
 					continue;
-				accModifiedState(modifVector2,
+				accModifiedState(modif_vector2,
 				                 lOperator,
-				                 *basisNew,
-				                 braVector,
+				                 *basis_new,
+				                 bra_vector,
 				                 jsite,
 				                 spins.second,
 				                 orbs.second,
 				                 isign);
-				result(isite, jsite) = modifVector2 * modifVector1;
+				result(isite, jsite) = modif_vector2 * modif_vector1;
 				if (isite == jsite)
 					sum += result(isite, isite);
 			}
@@ -355,47 +356,47 @@ public:
 	                            const PairType& braAndKet) const
 	{
 		checkBraOrKet("ket", braAndKet.second);
-		VectorType       tmpVector = vectors_[braAndKet.second];
-		const BasisType* basisOld  = &(model_.basis());
-		RealType         isign     = 1.0;
-		PairType         oldParts  = model_.basis().parts();
-		PairType         newParts  = oldParts;
+		VectorType       tmp_vector = vectors_[braAndKet.second];
+		const BasisType* basis_old  = &(model_.basis());
+		RealType         isign      = 1.0;
+		PairType         old_parts  = model_.basis().parts();
+		PairType         new_parts  = old_parts;
 
 		for (SizeType isite = 0; isite < sites.size(); ++isite) {
 			SizeType site = sites[isite];
 			if (orbs[isite] >= model_.orbitals(site))
 				continue;
 
-			const BasisType* basisNew = getNeededBasis(
-			    newParts, oldParts, what[isite], spins[isite], orbs[isite]);
+			const BasisType* basis_new = getNeededBasis(
+			    new_parts, old_parts, what[isite], spins[isite], orbs[isite]);
 
-			if (!basisNew)
+			if (!basis_new)
 				return 0.0;
 
-			VectorType modifVector(basisNew->size(), 0);
-			accModifiedState_(modifVector,
-			                  what[isite],
-			                  *basisNew,
-			                  tmpVector,
-			                  *basisOld,
-			                  site,
-			                  spins[isite],
-			                  orbs[isite],
-			                  isign);
+			VectorType modif_vector(basis_new->size(), 0);
+			accModifiedState(modif_vector,
+			                 what[isite],
+			                 *basis_new,
+			                 tmp_vector,
+			                 *basis_old,
+			                 site,
+			                 spins[isite],
+			                 orbs[isite],
+			                 isign);
 
-			tmpVector = modifVector;
-			basisOld  = basisNew;
-			oldParts  = newParts;
+			tmp_vector = modif_vector;
+			basis_old  = basis_new;
+			old_parts  = new_parts;
 		}
 
-		oldParts = model_.basis().parts();
-		if (oldParts != newParts)
+		old_parts = model_.basis().parts();
+		if (old_parts != new_parts)
 			return 0.0;
 
 		checkBraOrKet("bra", braAndKet.first);
-		const VectorType& braVector = vectors_[braAndKet.first];
+		const VectorType& bra_vector = vectors_[braAndKet.first];
 
-		return braVector * tmpVector;
+		return bra_vector * tmp_vector;
 	}
 
 	const BasisType* getNeededBasis(PairType&                  newParts,
@@ -412,31 +413,31 @@ public:
 		if (!model_.hasNewParts(newParts, oldParts, lOperator, spin, orb))
 			return 0;
 
-		BasisType* basisNew = model_.createBasis(newParts.first, newParts.second);
+		BasisType* basis_new = model_.createBasis(newParts.first, newParts.second);
 
-		std::cerr << "basisNew.size=" << basisNew->size() << " ";
+		std::cerr << "basisNew.size=" << basis_new->size() << " ";
 		std::cerr << "newparts.first=" << newParts.first << " ";
 		std::cerr << "newparts.second=" << newParts.second << "\n";
-		return basisNew;
+		return basis_new;
 	}
 
-	void accModifiedState_(VectorType&                z,
-	                       const LabeledOperatorType& lOperator,
-	                       const BasisType&           newBasis,
-	                       const VectorType&          srcVector,
-	                       const BasisType&           srcBasis,
-	                       SizeType                   site,
-	                       SizeType                   spin,
-	                       SizeType                   orb,
-	                       ComplexOrRealType          factor) const
+	void accModifiedState(VectorType&                z,
+	                      const LabeledOperatorType& lOperator,
+	                      const BasisType&           newBasis,
+	                      const VectorType&          srcVector,
+	                      const BasisType&           srcBasis,
+	                      SizeType                   site,
+	                      SizeType                   spin,
+	                      SizeType                   orb,
+	                      ComplexOrRealType          factor) const
 	{
 		for (SizeType ispace = 0; ispace < srcBasis.size(); ispace++) {
 			LanczosGlobals::WordType    ket1 = srcBasis(ispace, SPIN_UP);
 			LanczosGlobals::WordType    ket2 = srcBasis(ispace, SPIN_DOWN);
-			LanczosGlobals::PairIntType tempValue
+			LanczosGlobals::PairIntType temp_value
 			    = newBasis.getBraIndex(ket1, ket2, lOperator, site, spin, orb);
-			int      temp  = tempValue.first;
-			RealType value = tempValue.second;
+			int      temp  = temp_value.first;
+			RealType value = temp_value.second;
 			if (temp >= 0 && SizeType(temp) >= z.size()) {
 				PsimagLite::String s = "old basis=" + ttos(srcBasis.size());
 				s += " newbasis=" + ttos(newBasis.size());
@@ -473,23 +474,23 @@ public:
 	{
 		ParametersForSolverType params(io_, "Spectral");
 
-		LanczosSolverType lanczosSolver(matrix, params);
+		LanczosSolverType lanczos_solver(matrix, params);
 
 		PsimagLite::TridiagonalMatrix<RealType> ab;
 
-		lanczosSolver.decomposition(modifVector, ab);
+		lanczos_solver.decomposition(modifVector, ab);
 		typename VectorType::value_type weight = modifVector * modifVector;
 
 		int      s  = (type & 1) ? -1 : 1;
 		RealType s2 = (type > 1) ? -1 : 1;
 		if (!isFermionic)
 			s2 *= s;
-		RealType diagonalFactor = (isDiagonal) ? 1 : 0.5;
-		s2 *= diagonalFactor;
+		RealType diagonal_factor = (isDiagonal) ? 1 : 0.5;
+		s2 *= diagonal_factor;
 
 		assert(0 < energies_.size());
-		const RealType gsEnergy = energies_[0];
-		cf.set(ab, gsEnergy, PsimagLite::real(weight * s2), -s);
+		const RealType gs_energy = energies_[0];
+		cf.set(ab, gs_energy, PsimagLite::real(weight * s2), -s);
 	}
 
 private:
@@ -508,30 +509,30 @@ private:
 		for (SizeType temp = 0; temp < modifVector.size(); temp++)
 			modifVector[temp] = 0.0;
 
-		accModifiedState_(modifVector,
-		                  lOperator,
-		                  basisNew,
-		                  gsVector,
-		                  model_.basis(),
-		                  isite,
-		                  spin,
-		                  orbs.first,
-		                  1.0);
+		accModifiedState(modifVector,
+		                 lOperator,
+		                 basisNew,
+		                 gsVector,
+		                 model_.basis(),
+		                 isite,
+		                 spin,
+		                 orbs.first,
+		                 1.0);
 		std::cerr << "isite=" << isite << " type=" << type;
 		std::cerr << " modif=" << (modifVector * modifVector) << "\n";
 		if (model_.name() == "Tj1Orb.h" && isite == jsite)
 			return;
 
 		RealType isign = (type > 1) ? -1.0 : 1.0;
-		accModifiedState_(modifVector,
-		                  lOperator,
-		                  basisNew,
-		                  gsVector,
-		                  model_.basis(),
-		                  jsite,
-		                  spin,
-		                  orbs.second,
-		                  isign);
+		accModifiedState(modifVector,
+		                 lOperator,
+		                 basisNew,
+		                 gsVector,
+		                 model_.basis(),
+		                 jsite,
+		                 spin,
+		                 orbs.second,
+		                 isign);
 		std::cerr << "jsite=" << jsite << " type=" << type;
 		std::cerr << " modif=" << (modifVector * modifVector) << "\n";
 	}
@@ -545,70 +546,70 @@ private:
 	                      SizeType                   orb,
 	                      RealType                   isign) const
 	{
-		LabeledOperatorType opN(LabeledOperatorType::Label::OPERATOR_N);
+		LabeledOperatorType op_n(LabeledOperatorType::Label::OPERATOR_N);
 
 		if (model_.name() == "Tj1Orb.h")
-			accModifiedState_(z,
-			                  lOperator,
-			                  newBasis,
-			                  gsVector,
-			                  model_.basis(),
-			                  site,
-			                  spin,
-			                  orb,
-			                  isign);
+			accModifiedState(z,
+			                 lOperator,
+			                 newBasis,
+			                 gsVector,
+			                 model_.basis(),
+			                 site,
+			                 spin,
+			                 orb,
+			                 isign);
 
 		if (lOperator.id() == LabeledOperatorType::Label::OPERATOR_N) {
-			accModifiedState_(z,
-			                  lOperator,
-			                  newBasis,
-			                  gsVector,
-			                  model_.basis(),
-			                  site,
-			                  spin,
-			                  orb,
-			                  isign);
+			accModifiedState(z,
+			                 lOperator,
+			                 newBasis,
+			                 gsVector,
+			                 model_.basis(),
+			                 site,
+			                 spin,
+			                 orb,
+			                 isign);
 			return;
 		} else if (lOperator.id() == LabeledOperatorType::Label::OPERATOR_SZ) {
-			accModifiedState_(z,
-			                  opN,
-			                  newBasis,
-			                  gsVector,
-			                  model_.basis(),
-			                  site,
-			                  SPIN_UP,
-			                  orb,
-			                  isign * 0.5);
-			accModifiedState_(z,
-			                  opN,
-			                  newBasis,
-			                  gsVector,
-			                  model_.basis(),
-			                  site,
-			                  SPIN_DOWN,
-			                  orb,
-			                  -isign * 0.5);
+			accModifiedState(z,
+			                 op_n,
+			                 newBasis,
+			                 gsVector,
+			                 model_.basis(),
+			                 site,
+			                 SPIN_UP,
+			                 orb,
+			                 isign * 0.5);
+			accModifiedState(z,
+			                 op_n,
+			                 newBasis,
+			                 gsVector,
+			                 model_.basis(),
+			                 site,
+			                 SPIN_DOWN,
+			                 orb,
+			                 -isign * 0.5);
 			return;
 		}
 
-		accModifiedState_(
+		accModifiedState(
 		    z, lOperator, newBasis, gsVector, model_.basis(), site, spin, orb, isign);
 	}
 
 	void computeAllStatesBelow(SizeType excited)
 	{
-		const SizeType excitedPlusOne = excited + 1;
-		energies_.resize(excitedPlusOne);
-		vectors_.resize(excitedPlusOne);
+		const SizeType excited_plus_one = excited + 1;
+		energies_.resize(excited_plus_one);
+		vectors_.resize(excited_plus_one);
 
 		SpecialSymmetryType     rs(model_.basis(), model_.geometry(), options_);
 		InternalProductType     hamiltonian(model_, rs);
 		ParametersForSolverType params(io_, "Lanczos");
-		LanczosSolverType       lanczosSolver(hamiltonian, params);
+		LanczosSolverType       lanczos_solver(hamiltonian, params);
 
-		SizeType offset                 = model_.size();
-		SizeType currentOffset          = 0;
-		bool     firstNonZeroSectorSeen = false;
+		SizeType offset                     = model_.size();
+		SizeType current_offset             = 0;
+		bool     first_non_zero_sector_seen = false;
 
 		for (SizeType i = 0; i < rs.sectors(); ++i) {
 			hamiltonian.specialSymmetrySector(i);
@@ -617,12 +618,12 @@ private:
 				continue;
 			VectorType initial(n);
 			PsimagLite::fillRandom(initial);
-			VectorVectorType zs(excitedPlusOne, VectorType(n));
-			VectorRealType   eigs(excitedPlusOne);
+			VectorVectorType zs(excited_plus_one, VectorType(n));
+			VectorRealType   eigs(excited_plus_one);
 
 			try {
-				lanczosSolver.computeAllStatesBelow(
-				    eigs, zs, initial, excitedPlusOne);
+				lanczos_solver.computeAllStatesBelow(
+				    eigs, zs, initial, excited_plus_one);
 			} catch (std::exception&) {
 
 				std::cerr << "Engine: Lanczos Solver failed ";
@@ -630,24 +631,24 @@ private:
 				VectorRealType eigs2(n);
 				MatrixType     fm;
 				hamiltonian.fullDiag(eigs2, fm);
-				for (SizeType k = 0; k < excitedPlusOne; ++k) {
+				for (SizeType k = 0; k < excited_plus_one; ++k) {
 					for (SizeType j = 0; j < n; ++j)
 						zs[k][j] = fm(j, k);
 					eigs[k] = eigs2[k];
 				}
 			}
 
-			if (eigs[0] < energies_[0] || !firstNonZeroSectorSeen) {
-				for (SizeType j = 0; j < excitedPlusOne; ++j) {
+			if (eigs[0] < energies_[0] || !first_non_zero_sector_seen) {
+				for (SizeType j = 0; j < excited_plus_one; ++j) {
 					vectors_[j]  = zs[j];
 					energies_[j] = eigs[j];
 				}
 
-				offset                 = currentOffset;
-				firstNonZeroSectorSeen = true;
+				offset                     = current_offset;
+				first_non_zero_sector_seen = true;
 			}
 
-			currentOffset += zs[0].size();
+			current_offset += zs[0].size();
 		}
 
 		rs.transform(vectors_, offset);

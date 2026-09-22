@@ -45,7 +45,7 @@ class Ainur {
 		AinurState& state_;
 	};
 
-	struct myprint {
+	struct Myprint {
 		template <typename T> void operator()(const T& t) const
 		{
 			std::cout << " --------> " << t << '\n';

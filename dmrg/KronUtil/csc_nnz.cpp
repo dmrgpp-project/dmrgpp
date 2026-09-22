@@ -1,5 +1,5 @@
 #include "util.h"
-int csc_nnz(const int ncol_A, const PsimagLite::Vector<int>::Type& acolptr)
+int cscNnz(const int ncol_A, const PsimagLite::Vector<int>::Type& acolptr)
 {
 	/*
 	 * ---------------------------------

@@ -99,17 +99,17 @@ public:
 	    : linSize_(linSize)
 	    , maxConnections_(0)
 	{
-		bool                                   hasEntangler = false;
-		typename Real<ComplexOrRealType>::Type entangler    = 0;
+		bool                                   has_entangler = false;
+		typename Real<ComplexOrRealType>::Type entangler     = 0;
 
 		try {
 			io.readline(entangler, "GeometryEntangler=");
-			hasEntangler = true;
+			has_entangler = true;
 		} catch (std::exception&) { }
 
 		io.readline(dofs_, "DegreesOfFreedom=");
 
-		if (hasEntangler) {
+		if (has_entangler) {
 			const SizeType n = dofs_ * linSize;
 			matrix_.resize(n, n);
 			setEntangler(entangler);
@@ -136,7 +136,7 @@ public:
 		try {
 			io.readline(maxConnections_, "GeometryMaxConnections=");
 		} catch (std::exception& e) {
-			if (!hasEntangler) {
+			if (!has_entangler) {
 				std::cerr << "Please add GeometryMaxConnections=0 or "
 				             "some other number\n";
 				throw e;
@@ -316,8 +316,8 @@ private:
 			    + +" with compact option, not a floating point number\n");
 		}
 
-		SizeType valInt = static_cast<SizeType>(val);
-		return valInt;
+		SizeType val_int = static_cast<SizeType>(val);
+		return val_int;
 	}
 
 	// Credit for the idea: https://sillycross.github.io/index.html

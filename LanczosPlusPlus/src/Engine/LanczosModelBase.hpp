@@ -91,7 +91,7 @@ public:
 	                 const VectorType&              psi,
 	                 const BasisBaseType&           basis) const
 	{
-		static const int FERMION_SIGN = LanczosGlobals::FERMION_SIGN;
+		static const int fermion_sign = LanczosGlobals::FERMION_SIGN;
 
 		std::fill(psiNew.begin(), psiNew.end(), 0.0);
 		const SizeType hilbert = basis.size();
@@ -100,10 +100,10 @@ public:
 			WordType ket1 = basis(ispace, LanczosGlobals::SPIN_UP);
 			WordType ket2 = basis(ispace, LanczosGlobals::SPIN_DOWN);
 			assert(ispace < psi.size());
-			ComplexOrRealType value   = psi[ispace];
-			WordType          ketp1   = ket1;
-			WordType          ketp2   = ket2;
-			bool              nonZero = false;
+			ComplexOrRealType value    = psi[ispace];
+			WordType          ketp1    = ket1;
+			WordType          ketp2    = ket2;
+			bool              non_zero = false;
 			for (SizeType jj = 0; jj < nops; ++jj) {
 				const SizeType           j  = nops - jj - 1; // start from the end
 				const RahulOperatorType& op = vops[j];
@@ -111,20 +111,20 @@ public:
 				const SizeType site = vsites[j];
 
 				ComplexOrRealType result = 0;
-				nonZero                  = (op.dof() == LanczosGlobals::SPIN_UP)
-				                     ? applyOperator(ketp1, result, op, site)
-				                     : applyOperator(ketp2, result, op, site);
-				if (!nonZero)
+				non_zero                 = (op.dof() == LanczosGlobals::SPIN_UP)
+				                    ? applyOperator(ketp1, result, op, site)
+				                    : applyOperator(ketp2, result, op, site);
+				if (!non_zero)
 					break;
 
 				if (op.isFermionic()) {
-					const SizeType overUp
+					const SizeType over_up
 					    = (op.dof() == LanczosGlobals::SPIN_UP)
 					    ? 0
 					    : PsimagLite::BitManip::count(ketp1);
 
-					if (overUp & 1)
-						result *= FERMION_SIGN;
+					if (over_up & 1)
+						result *= fermion_sign;
 
 					const WordType ket1or2
 					    = (op.dof() == LanczosGlobals::SPIN_UP) ? ketp1 : ketp2;
@@ -136,11 +136,11 @@ public:
 				value *= result;
 			}
 
-			if (!nonZero)
+			if (!non_zero)
 				continue;
-			SizeType newI = basis.perfectIndex(ketp1, ketp2);
+			SizeType new_i = basis.perfectIndex(ketp1, ketp2);
 			assert(newI < psiNew.size());
-			psiNew[newI] += value;
+			psiNew[new_i] += value;
 		}
 	}
 
@@ -172,15 +172,15 @@ private:
 	                          const RahulOperatorType& op,
 	                          SizeType                 site)
 	{
-		const WordType ket       = ketp;
-		const WordType mask      = LanczosGlobals::bitmask(site);
-		WordType       s         = (ket & mask);
-		bool           sbit      = (s > 0);
-		bool           sbitSaved = sbit;
-		bool           nonZero   = op.actOn(sbit, result);
-		if (!nonZero)
+		const WordType ket        = ketp;
+		const WordType mask       = LanczosGlobals::bitmask(site);
+		WordType       s          = (ket & mask);
+		bool           sbit       = (s > 0);
+		bool           sbit_saved = sbit;
+		bool           non_zero   = op.actOn(sbit, result);
+		if (!non_zero)
 			return false;
-		if (sbitSaved != sbit)
+		if (sbit_saved != sbit)
 			ketp ^= mask;
 		return true;
 	}

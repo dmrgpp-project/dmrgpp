@@ -68,9 +68,9 @@ public:
 			model.printOperators(std::cout);
 
 			assert(isHermitian(matrixStored_, true));
-			PsimagLite::Matrix<ComplexOrRealType> matrixCopy;
+			PsimagLite::Matrix<ComplexOrRealType> matrix_copy;
 			VectorRealType                        eigs;
-			fullDiag(eigs, matrixCopy);
+			fullDiag(eigs, matrix_copy);
 		}
 	}
 

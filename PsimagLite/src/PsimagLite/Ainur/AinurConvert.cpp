@@ -33,8 +33,8 @@ void AinurConvert::ActionMatrix<T>::operator()(A& attr, ContextType&, bool&) con
 		if (attr[i].size() != cols)
 			err("Ainur: Problem reading matrix\n");
 		for (SizeType j = 0; j < cols; ++j) {
-			String attrAfter = ainurMacros_.valueFromFunction(attr[i][j]);
-			AinurComplex::convert(t_(i, j), attrAfter);
+			String attr_after = ainurMacros_.valueFromFunction(attr[i][j]);
+			AinurComplex::convert(t_(i, j), attr_after);
 		}
 	}
 }
@@ -65,8 +65,8 @@ storeMaybeExpression(SomeArithType& t, const std::string& str)
 		std::vector<std::string> ve;
 		PsimagLite::split(ve, str, ":");
 		PrimitivesType                   primitives;
-		ExpressionForAST<PrimitivesType> expresion_AST(ve, primitives);
-		t = expresion_AST.exec();
+		ExpressionForAST<PrimitivesType> expresion_ast(ve, primitives);
+		t = expresion_ast.exec();
 	} else {
 		// assume it's a complex number
 		AinurComplex::convert(t, str);
@@ -131,14 +131,14 @@ template <typename T> void AinurConvert::convert(Matrix<T>& t, const AinurVariab
 
 	String value = ainurVariable.value;
 
-	IteratorType                                               it     = value.begin();
-	qi::rule<IteratorType, VectorStringType(), qi::space_type> ruRows = ruleRows();
+	IteratorType                                               it      = value.begin();
+	qi::rule<IteratorType, VectorStringType(), qi::space_type> ru_rows = ruleRows();
 
 	qi::rule<IteratorType, VectorVectorVectorType(), qi::space_type> full
-	    = "[" >> -(ruRows % ",") >> "]";
+	    = "[" >> -(ru_rows % ",") >> "]";
 
-	ActionMatrix<T> actionMatrix("matrix", t, ainurMacros_);
-	bool            r = qi::phrase_parse(it, value.end(), full[actionMatrix], qi::space);
+	ActionMatrix<T> action_matrix("matrix", t, ainurMacros_);
+	bool            r = qi::phrase_parse(it, value.end(), full[action_matrix], qi::space);
 
 	// check if we have a match
 	if (!r) {
@@ -162,13 +162,13 @@ void AinurConvert::convert(
 	using IteratorType     = std::string::iterator;
 	using VectorStringType = std::vector<std::string>;
 
-	String                                                     value  = ainurVariable.value;
-	IteratorType                                               it     = value.begin();
-	qi::rule<IteratorType, VectorStringType(), qi::space_type> ruRows = ruleRows();
+	String                                                     value   = ainurVariable.value;
+	IteratorType                                               it      = value.begin();
+	qi::rule<IteratorType, VectorStringType(), qi::space_type> ru_rows = ruleRows();
 
-	Action<T> actionRows("rows", t, ainurMacros_);
+	Action<T> action_rows("rows", t, ainurMacros_);
 
-	bool r = qi::phrase_parse(it, value.end(), ruRows[actionRows], qi::space);
+	bool r = qi::phrase_parse(it, value.end(), ru_rows[action_rows], qi::space);
 
 	// check if we have a match
 	if (!r)

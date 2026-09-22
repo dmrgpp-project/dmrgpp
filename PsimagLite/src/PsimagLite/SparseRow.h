@@ -119,22 +119,22 @@ public:
 		Sort<ColumnsType> s;
 		ColumnsType       iperm(cols_.size());
 		s.sort(cols_, iperm);
-		SizeType  prevCol = cols_[0];
-		SizeType  counter = 0;
-		ValueType value   = 0;
+		SizeType  prev_col = cols_[0];
+		SizeType  counter  = 0;
+		ValueType value    = 0;
 		for (SizeType i = 0; i < cols_.size(); i++) {
 			assert(cols_[i] < matrix.cols());
-			if (cols_[i] == prevCol) {
+			if (cols_[i] == prev_col) {
 				value += values_[iperm[i]];
 				continue;
 			}
-			matrix.pushCol(prevCol);
+			matrix.pushCol(prev_col);
 			matrix.pushValue(value);
 			counter++;
-			value   = values_[iperm[i]];
-			prevCol = cols_[i];
+			value    = values_[iperm[i]];
+			prev_col = cols_[i];
 		}
-		matrix.pushCol(prevCol);
+		matrix.pushCol(prev_col);
 		matrix.pushValue(value);
 		counter++;
 		return counter;

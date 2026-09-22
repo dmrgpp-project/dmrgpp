@@ -84,11 +84,11 @@ void findOperatorAndMatrix(MatrixType&                a,
 	PsimagLite::String label = "#Operator_c_";
 	label += ttos(spin) + "_" + ttos(site);
 	io.advance(label, 0);
-	VectorSizeType jndVector;
-	io.read(jndVector, "#SectorDest");
-	if (jndVector.size() == 0)
+	VectorSizeType jnd_vector;
+	io.read(jnd_vector, "#SectorDest");
+	if (jnd_vector.size() == 0)
 		return;
-	jnd = findJnd(sectors, jndVector);
+	jnd = findJnd(sectors, jnd_vector);
 
 	io.read(a, "#Matrix");
 }
@@ -195,30 +195,30 @@ RealType computeThisSector(SizeType                   ind,
 
 void computeAverageFor(const ThermalOptions& opt, const VectorOneSectorType& sectors, InputType& io)
 {
-	ThermalOptions optZ = opt;
-	optZ.operatorName   = "i";
-	VectorSizeType nupAndDown;
-	VectorRealType muFactors(sectors.size(), 0);
+	ThermalOptions opt_z = opt;
+	opt_z.operatorName   = "i";
+	VectorSizeType nup_and_down;
+	VectorRealType mu_factors(sectors.size(), 0);
 
-	RealType zPartition = 0.0;
-	RealType numerator  = 0.0;
-	RealType energy     = 0.0;
+	RealType z_partition = 0.0;
+	RealType numerator   = 0.0;
+	RealType energy      = 0.0;
 	for (SizeType i = 0; i < sectors.size(); ++i) {
-		io.read(nupAndDown, "#SectorSource");
-		if (nupAndDown.size() != 2) {
+		io.read(nup_and_down, "#SectorSource");
+		if (nup_and_down.size() != 2) {
 			throw PsimagLite::RuntimeError("#SectorSource\n");
 		}
 
-		muFactors[i] = opt.mu * (nupAndDown[0] + nupAndDown[1]) + opt.constant;
-		RealType tmp = computePartialZ(i, optZ, sectors, muFactors[i]);
-		numerator += tmp * (nupAndDown[0] + nupAndDown[1]);
-		energy += computePartialE(i, optZ, sectors, muFactors[i]);
-		zPartition += tmp;
+		mu_factors[i] = opt.mu * (nup_and_down[0] + nup_and_down[1]) + opt.constant;
+		RealType tmp  = computePartialZ(i, opt_z, sectors, mu_factors[i]);
+		numerator += tmp * (nup_and_down[0] + nup_and_down[1]);
+		energy += computePartialE(i, opt_z, sectors, mu_factors[i]);
+		z_partition += tmp;
 	}
 
-	RealType zInverse = 1.0 / zPartition;
-	std::cerr << "density=" << (numerator * zInverse) << " zPartition=" << zPartition << "\n";
-	std::cerr << "energy=" << (energy * zInverse) << " zPartition=" << zPartition << "\n";
+	RealType z_inverse = 1.0 / z_partition;
+	std::cerr << "density=" << (numerator * z_inverse) << " zPartition=" << z_partition << "\n";
+	std::cerr << "energy=" << (energy * z_inverse) << " zPartition=" << z_partition << "\n";
 
 	if (opt.sites.size() < 2)
 		return;
@@ -226,12 +226,12 @@ void computeAverageFor(const ThermalOptions& opt, const VectorOneSectorType& sec
 	io.rewind();
 	RealType sum = 0.0;
 	for (SizeType i = 0; i < sectors.size(); ++i) {
-		sum += computeThisSector(i, opt, sectors, io, muFactors[i], zInverse);
+		sum += computeThisSector(i, opt, sectors, io, mu_factors[i], z_inverse);
 	}
 
 	std::cerr << "operator=" << opt.operatorName;
 	std::cerr << " beta=" << opt.beta << " mu=" << opt.mu;
-	std::cerr << " partition=" << zPartition << " sum=" << sum << "\n";
+	std::cerr << " partition=" << z_partition << " sum=" << sum << "\n";
 }
 
 void usage(char* name, PsimagLite::String msg = "")
@@ -245,7 +245,7 @@ void usage(char* name, PsimagLite::String msg = "")
 int main(int argc, char** argv)
 {
 	int                                          opt = 0;
-	PsimagLite::String                           operatorName;
+	PsimagLite::String                           operator_name;
 	PsimagLite::String                           file;
 	PsimagLite::Vector<PsimagLite::String>::Type tokens;
 	VectorSizeType                               sites(2, 0);
@@ -256,7 +256,7 @@ int main(int argc, char** argv)
 	while ((opt = getopt(argc, argv, "f:c:b:s:m:C:")) != -1) {
 		switch (opt) {
 		case 'c':
-			operatorName = optarg;
+			operator_name = optarg;
 			break;
 		case 'f':
 			file = optarg;
@@ -279,7 +279,7 @@ int main(int argc, char** argv)
 		}
 	}
 
-	if (file == "" || operatorName == "") {
+	if (file == "" || operator_name == "") {
 		usage(argv[0]);
 		return 2;
 	}
@@ -309,7 +309,7 @@ int main(int argc, char** argv)
 		// sectors[i]->info(std::cout);
 	}
 
-	ThermalOptions options(operatorName, beta, mu, constant, sites);
+	ThermalOptions options(operator_name, beta, mu, constant, sites);
 	io.rewind();
 	computeAverageFor(options, sectors, io);
 

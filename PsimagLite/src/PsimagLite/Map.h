@@ -40,7 +40,7 @@ public:
 
 	enum
 	{
-		True = false
+		TRUE = false
 	};
 };
 
@@ -50,7 +50,7 @@ public:
 
 	enum
 	{
-		True = true
+		TRUE = true
 	};
 };
 

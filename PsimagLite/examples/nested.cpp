@@ -81,9 +81,9 @@ public:
 	{
 		typedef PsimagLite::Parallelizer<InnerHelper> ParallelizerType;
 		PsimagLite::CodeSectionParams                 cs(nthreadsInner_);
-		ParallelizerType                              threadObject(cs);
+		ParallelizerType                              thread_object(cs);
 		InnerHelper helper(ntasksInner_, nthreadsInner_, taskNumber);
-		threadObject.loopCreate(helper);
+		thread_object.loopCreate(helper);
 		helper.sync();
 		x_[threadNum] += helper.result();
 	}
@@ -112,23 +112,23 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	SizeType nthreadsOuter = atoi(argv[1]);
-	SizeType ntasks        = atoi(argv[2]);
-	SizeType nthreadsInner = atoi(argv[3]);
-	SizeType ntasksInner   = atoi(argv[4]);
+	SizeType nthreads_outer = atoi(argv[1]);
+	SizeType ntasks         = atoi(argv[2]);
+	SizeType nthreads_inner = atoi(argv[3]);
+	SizeType ntasks_inner   = atoi(argv[4]);
 
 	ConcurrencyType concurrency(&argc, &argv, 1);
 
 	typedef MyHelper                             HelperType;
 	typedef PsimagLite::Parallelizer<HelperType> ParallelizerType;
-	PsimagLite::CodeSectionParams                cs(nthreadsOuter);
-	ParallelizerType                             threadObject(cs);
+	PsimagLite::CodeSectionParams                cs(nthreads_outer);
+	ParallelizerType                             thread_object(cs);
 
-	HelperType helper(ntasks, nthreadsOuter, ntasksInner, nthreadsInner);
+	HelperType helper(ntasks, nthreads_outer, ntasks_inner, nthreads_inner);
 
-	std::cout << "Using " << threadObject.name();
-	std::cout << " with " << nthreadsOuter << " threads.\n";
-	threadObject.loopCreate(helper);
+	std::cout << "Using " << thread_object.name();
+	std::cout << " with " << nthreads_outer << " threads.\n";
+	thread_object.loopCreate(helper);
 	helper.sync();
 	std::cout << "Sum of all tasks= " << helper.result() << "\n";
 }

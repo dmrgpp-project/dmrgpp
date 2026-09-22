@@ -1,6 +1,6 @@
 #include "LanczosDriver.h"
 
-PsimagLite::String license = "Copyright (c) 2009-2012, UT-Battelle, LLC\n"
+PsimagLite::String LICENSE = "Copyright (c) 2009-2012, UT-Battelle, LLC\n"
                              "All rights reserved\n"
                              "\n"
                              "[Lanczos++, Version 1.0]\n"
@@ -22,13 +22,13 @@ void fillOrbsOrSpin(PsimagLite::Vector<LanczosPlusPlus::LanczosOptions::PairSize
                     const PsimagLite::Vector<PsimagLite::String>::Type&                      strV)
 {
 	for (SizeType i = 0; i < strV.size(); i++) {
-		PsimagLite::Vector<PsimagLite::String>::Type strV2;
-		PsimagLite::split(strV2, strV[i], ",");
-		if (strV2.size() != 2)
+		PsimagLite::Vector<PsimagLite::String>::Type str_v2;
+		PsimagLite::split(str_v2, strV[i], ",");
+		if (str_v2.size() != 2)
 			throw std::runtime_error("-o needs pairs\n");
 		LanczosPlusPlus::LanczosOptions::PairSizeType spins;
-		spins.first  = atoi(strV2[0].c_str());
-		spins.second = atoi(strV2[1].c_str());
+		spins.first  = atoi(str_v2[0].c_str());
+		spins.second = atoi(str_v2[1].c_str());
 		spinV.push_back(spins);
 	}
 }
@@ -46,19 +46,19 @@ void mainLoop(InputNgType::Readable&           io,
 		io.readline(tmp, "UseTranslationSymmetry=");
 	} catch (std::exception& e) { }
 
-	bool useTranslationSymmetry = (tmp == 1) ? true : false;
+	bool use_translation_symmetry = (tmp == 1) ? true : false;
 
 	try {
 		io.readline(tmp, "UseReflectionSymmetry=");
 	} catch (std::exception& e) { }
 
-	bool useReflectionSymmetry = (tmp == 1) ? true : false;
+	bool use_reflection_symmetry = (tmp == 1) ? true : false;
 
-	if (useTranslationSymmetry) {
+	if (use_translation_symmetry) {
 		mainLoop2<ModelType,
 		          LanczosPlusPlus::TranslationSymmetry<GeometryType, BasisBaseType>>(
 		    model, io, lanczosOptions);
-	} else if (useReflectionSymmetry) {
+	} else if (use_reflection_symmetry) {
 		mainLoop2<ModelType,
 		          LanczosPlusPlus::ReflectionSymmetry<GeometryType, BasisBaseType>>(
 		    model, io, lanczosOptions);
@@ -83,24 +83,24 @@ void mainLoop0(InputNgType::Readable& io, LanczosPlusPlus::LanczosOptions& lancz
 
 	std::cout << geometry;
 
-	ModelSelectorType    modelSelector(io, geometry);
-	const ModelBaseType& modelPtr = modelSelector();
+	ModelSelectorType    model_selector(io, geometry);
+	const ModelBaseType& model_ptr = model_selector();
 
-	std::cout << modelPtr;
-	mainLoop(io, modelPtr, lanczosOptions);
+	std::cout << model_ptr;
+	mainLoop(io, model_ptr, lanczosOptions);
 }
 
 int main(int argc, char** argv)
 {
 	PsimagLite::PsiApp                           application("lanczos++", &argc, &argv, 1);
 	int                                          opt = 0;
-	LanczosOptions                               lanczosOptions;
+	LanczosOptions                               lanczos_options;
 	PsimagLite::String                           file = "";
 	PsimagLite::Vector<PsimagLite::String>::Type str;
-	InputCheck                                   inputCheck;
-	int                                          precision        = 6;
-	bool                                         versionOnly      = false;
-	SizeType                                     threadsInCmdLine = 0;
+	InputCheck                                   input_check;
+	int                                          precision           = 6;
+	bool                                         version_only        = false;
+	SizeType                                     threads_in_cmd_line = 0;
 
 	/* PSIDOC LanczosDriver
 	\begin{itemize}
@@ -127,25 +127,25 @@ int main(int argc, char** argv)
 	while ((opt = getopt(argc, argv, "g:c:m:f:s:r:p:M:S:V")) != -1) {
 		switch (opt) {
 		case 'g':
-			lanczosOptions.gf.push_back(LabeledOperator(optarg));
+			lanczos_options.gf.push_back(LabeledOperator(optarg));
 			break;
 		case 'f':
 			file = optarg;
 			break;
 		case 'c':
-			lanczosOptions.cicj.push_back(LabeledOperator(optarg));
+			lanczos_options.cicj.push_back(LabeledOperator(optarg));
 			break;
 		case 'm':
-			lanczosOptions.measure.push_back(optarg);
+			lanczos_options.measure.push_back(optarg);
 			break;
 		case 's':
-			lanczosOptions.spins.clear();
+			lanczos_options.spins.clear();
 			PsimagLite::split(str, optarg, ";");
-			fillOrbsOrSpin(lanczosOptions.spins, str);
+			fillOrbsOrSpin(lanczos_options.spins, str);
 			str.clear();
 			break;
 		case 'r':
-			lanczosOptions.split = atoi(optarg);
+			lanczos_options.split = atoi(optarg);
 			break;
 		case 'p':
 			precision = atoi(optarg);
@@ -153,59 +153,59 @@ int main(int argc, char** argv)
 			std::cerr.precision(precision);
 			break;
 		case 'M':
-			lanczosOptions.extendedStatic = optarg;
+			lanczos_options.extendedStatic = optarg;
 			break;
 		case 'S':
-			threadsInCmdLine = atoi(optarg);
+			threads_in_cmd_line = atoi(optarg);
 			break;
 		case 'V':
-			versionOnly = true;
+			version_only = true;
 			break;
 		default: /* '?' */
-			inputCheck.usage(argv[0]);
+			input_check.usage(argv[0]);
 			return 1;
 		}
 	}
 
-	if (file == "" && !versionOnly) {
-		inputCheck.usage(argv[0]);
+	if (file == "" && !version_only) {
+		input_check.usage(argv[0]);
 		return 1;
 	}
 
 	// print license
 	if (ConcurrencyType::root()) {
-		std::cerr << license;
+		std::cerr << LICENSE;
 		std::cerr << "Lanczos++ Version " << LANCZOSPP_VERSION << "\n";
 		std::cerr << "PsimagLite version " << PSIMAGLITE_VERSION << "\n";
 	}
 
-	if (versionOnly)
+	if (version_only)
 		return 0;
 
 	// Setup the Geometry
 	InputNgType::Writeable ioWriteable(file, inputCheck);
 	InputNgType::Readable  io(ioWriteable);
 
-	bool isComplex     = false;
-	bool setAffinities = false;
+	bool is_complex     = false;
+	bool set_affinities = false;
 
-	PsimagLite::String solverOptions;
+	PsimagLite::String solver_options;
 	io.readline(solverOptions, "SolverOptions=");
 	try {
-		int fermionSign = -1;
+		int fermion_sign = -1;
 		io.readline(fermionSign, "FermionSign=");
-		std::cerr << "WARNING= FermionSign=" << fermionSign << "\n";
-		std::cout << "WARNING= FermionSign=" << fermionSign << "\n";
+		std::cerr << "WARNING= FermionSign=" << fermion_sign << "\n";
+		std::cout << "WARNING= FermionSign=" << fermion_sign << "\n";
 		LanczosPlusPlus::LanczosGlobals::FERMION_SIGN = fermionSign;
 	} catch (std::exception&) { }
 
 	PsimagLite::Vector<PsimagLite::String>::Type tokens;
-	PsimagLite::split(tokens, solverOptions, ",");
+	PsimagLite::split(tokens, solver_options, ",");
 	for (SizeType i = 0; i < tokens.size(); ++i) {
 		if (tokens[i] == "useComplex") {
-			isComplex = true;
+			is_complex = true;
 		} else if (tokens[i] == "setAffinities") {
-			setAffinities = true;
+			set_affinities = true;
 		}
 	}
 
@@ -215,16 +215,16 @@ int main(int argc, char** argv)
 		io.readline(npthreads, "Threads=");
 	} catch (std::exception&) { }
 
-	if (threadsInCmdLine > 0)
-		npthreads = threadsInCmdLine;
+	if (threads_in_cmd_line > 0)
+		npthreads = threads_in_cmd_line;
 
-	PsimagLite::CodeSectionParams codeSectionParams(npthreads, 1, setAffinities, 0);
-	ConcurrencyType::setOptions(codeSectionParams);
+	PsimagLite::CodeSectionParams code_section_params(npthreads, 1, set_affinities, 0);
+	ConcurrencyType::setOptions(code_section_params);
 
 	typedef std::complex<RealType> ComplexType;
 
-	if (isComplex)
-		mainLoop0<ComplexType>(io, lanczosOptions);
+	if (is_complex)
+		mainLoop0<ComplexType>(io, lanczos_options);
 	else
-		mainLoop0<RealType>(io, lanczosOptions);
+		mainLoop0<RealType>(io, lanczos_options);
 }

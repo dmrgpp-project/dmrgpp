@@ -37,9 +37,9 @@ int main()
 	for (SizeType i = 0; i < n; i++)
 		x[i] = drand48();
 
-	SizeType                            maxIter = 100;
+	SizeType                            max_iter = 100;
 	MyFunctionTest                      f;
-	Minimizer<RealType, MyFunctionTest> min(f, maxIter);
+	Minimizer<RealType, MyFunctionTest> min(f, max_iter);
 
 	int iter = min.simplex(x, 1e-3, 1e-5);
 	if (iter < 0) {

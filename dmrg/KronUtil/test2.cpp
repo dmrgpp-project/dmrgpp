@@ -7,68 +7,68 @@
 #include <catch2/catch_test_macros.hpp>
 #include <complex>
 
-template <typename ComplexOrRealType> void run_kron_submatrix_checks()
+template <typename ComplexOrRealType> void runKronSubmatrixChecks()
 {
 	using RealType = typename PsimagLite::Real<ComplexOrRealType>::Type;
 
-	for (int thresholdB_idx = 0; thresholdB_idx <= 11; ++thresholdB_idx) {
-		double thresholdB = .1 * thresholdB_idx;
-		for (int thresholdA_idx = 0; thresholdA_idx <= 11; ++thresholdA_idx) {
-			double thresholdA = .1 * thresholdA_idx;
-			for (int ncol_A = 1; ncol_A <= 10; ncol_A += 3) {
-				for (int nrow_A = 1; nrow_A <= 10; nrow_A += 3) {
-					for (int ncol_B = 1; ncol_B <= 10; ncol_B += 3) {
-						for (int nrow_B = 1; nrow_B <= 10; nrow_B += 3) {
-							PsimagLite::Matrix<ComplexOrRealType> a_(
-							    nrow_A, ncol_A);
-							PsimagLite::Matrix<ComplexOrRealType> b_(
-							    nrow_B, ncol_B);
+	for (int threshold_b_idx = 0; threshold_b_idx <= 11; ++threshold_b_idx) {
+		double threshold_b = .1 * threshold_b_idx;
+		for (int threshold_a_idx = 0; threshold_a_idx <= 11; ++threshold_a_idx) {
+			double threshold_a = .1 * threshold_a_idx;
+			for (int ncol_a = 1; ncol_a <= 10; ncol_a += 3) {
+				for (int nrow_a = 1; nrow_a <= 10; nrow_a += 3) {
+					for (int ncol_b = 1; ncol_b <= 10; ncol_b += 3) {
+						for (int nrow_b = 1; nrow_b <= 10; nrow_b += 3) {
+							PsimagLite::Matrix<ComplexOrRealType> a(
+							    nrow_a, ncol_a);
+							PsimagLite::Matrix<ComplexOrRealType> b(
+							    nrow_b, ncol_b);
 
-							if ((thresholdA == 0)
-							    && (nrow_A == ncol_A)) {
+							if ((threshold_a == 0)
+							    && (nrow_a == ncol_a)) {
 								/*
 								 * ------------------------------------
 								 * special case to test identity
 								 * matrix
 								 * ------------------------------------
 								 */
-								den_eye(nrow_A, ncol_A, a_);
-								REQUIRE(den_is_eye(a_));
+								den_eye(nrow_a, ncol_a, a);
+								REQUIRE(den_is_eye(a));
 								PsimagLite::CrsMatrix<
 								    ComplexOrRealType>
-								    a(a_);
+								    a(a);
 								REQUIRE(csr_is_eye(a));
 							} else {
 								den_gen_matrix(
-								    nrow_A, ncol_A, thresholdA, a_);
+								    nrow_a, ncol_a, threshold_a, a);
 
 								PsimagLite::CrsMatrix<
 								    ComplexOrRealType>
-								    a(a_);
-								REQUIRE(den_is_eye(a_)
+								    a(a);
+								REQUIRE(den_is_eye(a)
 								        == csr_is_eye(a));
-								REQUIRE(den_is_zeros(a_)
+								REQUIRE(den_is_zeros(a)
 								        == csr_is_zeros(a));
 							}
 
-							if ((thresholdB == 0)
-							    && (nrow_B == ncol_B)) {
-								den_eye(nrow_B, ncol_B, b_);
-								REQUIRE(den_is_eye(b_));
+							if ((threshold_b == 0)
+							    && (nrow_b == ncol_b)) {
+								den_eye(nrow_b, ncol_b, b);
+								REQUIRE(den_is_eye(b));
 								PsimagLite::CrsMatrix<
 								    ComplexOrRealType>
-								    b(b_);
+								    b(b);
 								REQUIRE(csr_is_eye(b));
 							} else {
 								den_gen_matrix(
-								    nrow_B, ncol_B, thresholdB, b_);
+								    nrow_b, ncol_b, threshold_b, b);
 
 								PsimagLite::CrsMatrix<
 								    ComplexOrRealType>
-								    b(b_);
-								REQUIRE(den_is_eye(b_)
+								    b(b);
+								REQUIRE(den_is_eye(b)
 								        == csr_is_eye(b));
-								REQUIRE(den_is_zeros(b_)
+								REQUIRE(den_is_zeros(b)
 								        == csr_is_zeros(b));
 							}
 							/*
@@ -78,12 +78,12 @@ template <typename ComplexOrRealType> void run_kron_submatrix_checks()
 							 * -----------------------------------
 							 */
 							PsimagLite::CrsMatrix<ComplexOrRealType> a(
-							    a_);
-							REQUIRE(den_is_eye(a_) == csr_is_eye(a));
+							    a);
+							REQUIRE(den_is_eye(a) == csr_is_eye(a));
 
 							PsimagLite::CrsMatrix<ComplexOrRealType> b(
-							    b_);
-							REQUIRE(den_is_eye(a_) == csr_is_eye(a));
+							    b);
+							REQUIRE(den_is_eye(a) == csr_is_eye(a));
 
 							/*
 							 * -----------------------------
@@ -91,20 +91,20 @@ template <typename ComplexOrRealType> void run_kron_submatrix_checks()
 							 * -----------------------------
 							 */
 
-							const int nrow_C = nrow_A * nrow_B;
-							const int ncol_C = ncol_A * ncol_B;
-							if (ncol_C < 2)
+							const int nrow_c = nrow_a * nrow_b;
+							const int ncol_c = ncol_a * ncol_b;
+							if (ncol_c < 2)
 								continue;
-							PsimagLite::Matrix<ComplexOrRealType> c_(
-							    nrow_C, ncol_C);
+							PsimagLite::Matrix<ComplexOrRealType> c(
+							    nrow_c, ncol_c);
 
-							den_kron_form(nrow_A,
-							              ncol_A,
-							              a_,
-							              nrow_B,
-							              ncol_B,
-							              b_,
-							              c_);
+							den_kron_form(nrow_a,
+							              ncol_a,
+							              a,
+							              nrow_b,
+							              ncol_b,
+							              b,
+							              c);
 
 							/*
 							 * ---------------------------------------
@@ -112,12 +112,12 @@ template <typename ComplexOrRealType> void run_kron_submatrix_checks()
 							 * ---------------------------------------
 							 */
 							PsimagLite::CrsMatrix<ComplexOrRealType> c(
-							    c_);
+							    c);
 
 							PsimagLite::Vector<int>::Type rindex(
-							    nrow_C);
+							    nrow_c);
 							PsimagLite::Vector<int>::Type cindex(
-							    ncol_C);
+							    ncol_c);
 
 							/*
 							 * --------------------
@@ -126,11 +126,11 @@ template <typename ComplexOrRealType> void run_kron_submatrix_checks()
 							 * --------------------
 							 */
 							int nrindex = 0;
-							for (int ic = 0; ic < nrow_C; ic += 2) {
+							for (int ic = 0; ic < nrow_c; ic += 2) {
 								rindex[nrindex++] = ic;
 							}
 							int ncindex = 0;
-							for (int jc = 1; jc < ncol_C; jc += 2) {
+							for (int jc = 1; jc < ncol_c; jc += 2) {
 								cindex[ncindex++] = jc;
 							}
 
@@ -140,35 +140,35 @@ template <typename ComplexOrRealType> void run_kron_submatrix_checks()
 							 * -------------------------------
 							 */
 
-							int nrow_D = nrindex;
-							int ncol_D = ncindex;
-							PsimagLite::Matrix<ComplexOrRealType> d_(
-							    nrow_D, ncol_D);
+							int nrow_d = nrindex;
+							int ncol_d = ncindex;
+							PsimagLite::Matrix<ComplexOrRealType> d(
+							    nrow_d, ncol_d);
 
-							den_submatrix(nrow_C,
-							              ncol_C,
-							              c_,
+							den_submatrix(nrow_c,
+							              ncol_c,
+							              c,
 							              nrindex,
 							              ncindex,
 							              rindex,
 							              cindex,
-							              d_);
+							              d);
 							/*
 							 * -------------------------------------
 							 * generate submatrix from sparse version C
 							 * -------------------------------------
 							 */
 
-							const int max_nnz_D = 1 + den_nnz(d_);
+							const int max_nnz_d = 1 + den_nnz(d);
 
 							PsimagLite::CrsMatrix<ComplexOrRealType> sd(
-							    d_.n_row(), d_.n_col());
+							    d.n_row(), d.n_col());
 
 							csr_submatrix(c,
 
 							              nrindex,
 							              ncindex,
-							              max_nnz_D,
+							              max_nnz_d,
 							              rindex,
 							              cindex,
 
@@ -179,9 +179,9 @@ template <typename ComplexOrRealType> void run_kron_submatrix_checks()
 							 * convert to dense matrix
 							 * -----------------------
 							 */
-							PsimagLite::Matrix<ComplexOrRealType> dd_(
-							    nrow_D, ncol_D);
-							crsMatrixToFullMatrix(dd_, sd);
+							PsimagLite::Matrix<ComplexOrRealType> dd(
+							    nrow_d, ncol_d);
+							crsMatrixToFullMatrix(dd, sd);
 
 							/*
 							 * --------------------------------------
@@ -189,27 +189,26 @@ template <typename ComplexOrRealType> void run_kron_submatrix_checks()
 							 * --------------------------------------
 							 */
 
-							for (int jd = 0; jd < ncol_D; ++jd) {
-								for (int id = 0; id < nrow_D;
+							for (int jd = 0; jd < ncol_d; ++jd) {
+								for (int id = 0; id < nrow_d;
 								     ++id) {
 									RealType diff = std::abs(
-									    dd_(id, jd)
-									    - d_(id, jd));
+									    dd(id, jd) - d(id, jd));
 									const RealType tol = 1.0
 									    / (1000.0 * 1000.0);
 									if (diff > tol) {
 										INFO("nrow_D "
-										     << nrow_D
+										     << nrow_d
 										     << " ncol_D "
-										     << ncol_D
+										     << ncol_d
 										     << " DD(" << id
 										     << "," << jd
 										     << ")"
-										     << dd_(id, jd)
+										     << dd(id, jd)
 										     << " D(" << id
 										     << "," << jd
 										     << ")"
-										     << d_(id, jd)
+										     << d(id, jd)
 										     << " di"
 										        "ff "
 										     << diff);
@@ -226,45 +225,45 @@ template <typename ComplexOrRealType> void run_kron_submatrix_checks()
 							 * E should be the same as matrix D
 							 * --------------------------------
 							 */
-							int nrow_E = nrindex;
-							int ncol_E = ncindex;
-							PsimagLite::Matrix<ComplexOrRealType> e_(
-							    nrow_E, ncol_E);
+							int nrow_e = nrindex;
+							int ncol_e = ncindex;
+							PsimagLite::Matrix<ComplexOrRealType> e(
+							    nrow_e, ncol_e);
 
-							den_kron_submatrix(nrow_A,
-							                   ncol_A,
-							                   a_,
-							                   nrow_B,
-							                   ncol_B,
-							                   b_,
+							den_kron_submatrix(nrow_a,
+							                   ncol_a,
+							                   a,
+							                   nrow_b,
+							                   ncol_b,
+							                   b,
 							                   nrindex,
 							                   ncindex,
 							                   rindex,
 							                   cindex,
-							                   e_);
+							                   e);
 
 							/*
 							 * --------------------------
 							 * check E and D are the same
 							 * --------------------------
 							 */
-							for (int je = 0; je < ncol_E; ++je) {
-								for (int ie = 0; ie < nrow_E;
+							for (int je = 0; je < ncol_e; ++je) {
+								for (int ie = 0; ie < nrow_e;
 								     ++ie) {
 									ComplexOrRealType eij
-									    = e_(ie, je);
+									    = e(ie, je);
 									ComplexOrRealType dij
-									    = d_(ie, je);
+									    = d(ie, je);
 
 									if (eij != dij) {
 										INFO("nrow_A="
-										     << nrow_A
+										     << nrow_a
 										     << " ncol_A="
-										     << ncol_A
+										     << ncol_a
 										     << " nrow_B="
-										     << nrow_B
+										     << nrow_b
 										     << " ncol_B="
-										     << ncol_B
+										     << ncol_b
 										     << "  nrindex "
 										     << nrindex
 										     << " ncindex "
@@ -289,13 +288,13 @@ template <typename ComplexOrRealType> void run_kron_submatrix_checks()
 							 */
 
 							PsimagLite::CrsMatrix<ComplexOrRealType> e(
-							    nrow_E, ncol_E);
-							const int max_nnz_E = 1 + den_nnz(e_);
+							    nrow_e, ncol_e);
+							const int max_nnz_e = 1 + den_nnz(e);
 							csr_kron_submatrix(a,
 							                   b,
 							                   nrindex,
 							                   ncindex,
-							                   max_nnz_E,
+							                   max_nnz_e,
 							                   rindex,
 							                   cindex,
 							                   e);
@@ -305,10 +304,10 @@ template <typename ComplexOrRealType> void run_kron_submatrix_checks()
 							 * convert from sparse back to dense
 							 * ---------------------------------
 							 */
-							PsimagLite::Matrix<ComplexOrRealType> se_(
-							    nrow_E, ncol_E);
+							PsimagLite::Matrix<ComplexOrRealType> se(
+							    nrow_e, ncol_e);
 
-							crsMatrixToFullMatrix(se_, e);
+							crsMatrixToFullMatrix(se, e);
 
 							/*
 							 * -----------------------------------------
@@ -316,29 +315,27 @@ template <typename ComplexOrRealType> void run_kron_submatrix_checks()
 							 * -----------------------------------------
 							 */
 
-							for (int je = 0; je < ncol_E; ++je) {
-								for (int ie = 0; ie < nrow_E;
+							for (int je = 0; je < ncol_e; ++je) {
+								for (int ie = 0; ie < nrow_e;
 								     ++ie) {
 									RealType diff = std::abs(
-									    e_(ie, je)
-									    - se_(ie, je));
+									    e(ie, je) - se(ie, je));
 									const RealType tol = 1.0
 									    / (1000.0 * 1000.0);
 									if (diff > tol) {
-										INFO(
-										    "nrow_E="
-										    << nrow_E
-										    << " ncol_E="
-										    << ncol_E
+										INFO("nrow_E="
+										     << nrow_e
+										     << " ncol_E="
+										     << ncol_e
 
-										    << " E(" << ie
-										    << "," << je
-										    << " "
-										    << e_(ie, je)
-										    << " SE(" << ie
-										    << "," << je
-										    << ")"
-										    << se_(ie, je));
+										     << " E(" << ie
+										     << "," << je
+										     << " "
+										     << e(ie, je)
+										     << " SE(" << ie
+										     << "," << je
+										     << ")"
+										     << se(ie, je));
 										REQUIRE(diff
 										        <= tol);
 									}
@@ -352,13 +349,10 @@ template <typename ComplexOrRealType> void run_kron_submatrix_checks()
 	}
 }
 
-TEST_CASE("kron_submatrix_test2_double", "[kron][submatrix]")
-{
-	run_kron_submatrix_checks<double>();
-}
+TEST_CASE("kron_submatrix_test2_double", "[kron][submatrix]") { runKronSubmatrixChecks<double>(); }
 TEST_CASE("kron_submatrix_test2_complex", "[kron][submatrix]")
 {
-	run_kron_submatrix_checks<std::complex<double>>();
+	runKronSubmatrixChecks<std::complex<double>>();
 }
 
 int main(int argc, char* argv[])

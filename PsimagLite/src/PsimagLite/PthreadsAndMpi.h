@@ -93,7 +93,7 @@ class PthreadsAndMpi : public Pthreads<PthreadFunctionHolderType> {
 
 public:
 
-	PthreadsAndMpi(SizeType npthreads, MPI::CommType comm = MPI::COMM_WORLD)
+	PthreadsAndMpi(SizeType npthreads, MPI::CommType comm = MPI::comm_world)
 	    : BaseType(npthreads)
 	    , nthreads_(npthreads)
 	    , comm_(comm)

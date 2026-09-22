@@ -46,7 +46,7 @@ template <typename T2> class MatrixNonOwned;
 template <typename T> class Matrix {
 public:
 
-	typedef T value_type; // legacy name
+	typedef T ValueType; // legacy name
 
 	Matrix()
 	    : nrow_(0)
@@ -236,9 +236,9 @@ public:
 	}
 
 #ifndef NO_DEPRECATED_ALLOWED
-	SizeType n_row() const { return nrow_; } // legacy name
+	SizeType nRow() const { return nrow_; } // legacy name
 
-	SizeType n_col() const { return ncol_; } // legacy name
+	SizeType nCol() const { return ncol_; } // legacy name
 #endif
 
 	SizeType rows() const { return nrow_; }
@@ -393,8 +393,8 @@ public:
 		nrow_ = c.r2.nrow_;
 		ncol_ = c.r2.ncol_;
 
-		const SizeType cSize = c.r2.data_.size();
-		resizeIfNeeded(cSize);
+		const SizeType c_size = c.r2.data_.size();
+		resizeIfNeeded(c_size);
 
 		this->data_ += c.r1 * c.r2.data_;
 		return *this;
@@ -407,8 +407,8 @@ public:
 		nrow_ = c.r1.nrow_;
 		ncol_ = c.r1.ncol_;
 
-		const SizeType cSize = c.r1.data_.size();
-		resizeIfNeeded(cSize);
+		const SizeType c_size = c.r1.data_.size();
+		resizeIfNeeded(c_size);
 
 		this->data_ += c.r2 * c.r1.data_;
 		return *this;
@@ -599,13 +599,13 @@ typename std::enable_if<IsComplexNumber<T>::True, void>::type inverse(Matrix<T>&
 	int               n    = m.rows();
 	int               info = 0;
 	Vector<int>::Type ipiv(n, 0);
-	psimag::LAPACK::GETRF(n, n, &(m(0, 0)), n, &(ipiv[0]), info);
+	psimag::LAPACK::getrf(n, n, &(m(0, 0)), n, &(ipiv[0]), info);
 	int                      lwork = -1;
 	typename Vector<T>::Type work(2);
-	psimag::LAPACK::GETRI(n, &(m(0, 0)), n, &(ipiv[0]), &(work[0]), lwork, info);
+	psimag::LAPACK::getri(n, &(m(0, 0)), n, &(ipiv[0]), &(work[0]), lwork, info);
 	lwork = static_cast<int>(PsimagLite::real(work[0]));
 	work.resize(lwork + 2);
-	psimag::LAPACK::GETRI(n, &(m(0, 0)), n, &(ipiv[0]), &(work[0]), lwork, info);
+	psimag::LAPACK::getri(n, &(m(0, 0)), n, &(ipiv[0]), &(work[0]), lwork, info);
 	String s = "[cz]getri_ failed\n";
 	if (info != 0)
 		throw RuntimeError(s.c_str());
@@ -621,13 +621,13 @@ typename std::enable_if<Loki::TypeTraits<T>::isArith, void>::type inverse(Matrix
 	int               n    = m.rows();
 	int               info = 0;
 	Vector<int>::Type ipiv(n, 0);
-	psimag::LAPACK::GETRF(n, n, &(m(0, 0)), n, &(ipiv[0]), info);
+	psimag::LAPACK::getrf(n, n, &(m(0, 0)), n, &(ipiv[0]), info);
 	int                      lwork = -1;
 	typename Vector<T>::Type work(2);
-	psimag::LAPACK::GETRI(n, &(m(0, 0)), n, &(ipiv[0]), &(work[0]), lwork, info);
+	psimag::LAPACK::getri(n, &(m(0, 0)), n, &(ipiv[0]), &(work[0]), lwork, info);
 	lwork = static_cast<int>(work[0]);
 	work.resize(lwork + 2);
-	psimag::LAPACK::GETRI(n, &(m(0, 0)), n, &(ipiv[0]), &(work[0]), lwork, info);
+	psimag::LAPACK::getri(n, &(m(0, 0)), n, &(ipiv[0]), &(work[0]), lwork, info);
 	String s = "[sd]getri_ failed\n";
 	if (info != 0)
 		throw RuntimeError(s.c_str());
@@ -641,7 +641,7 @@ public:
 
 	enum
 	{
-		True = false
+		TRUE = false
 	};
 };
 
@@ -650,7 +650,7 @@ public:
 
 	enum
 	{
-		True = true
+		TRUE = true
 	};
 };
 
@@ -688,8 +688,8 @@ template <typename T> void symbolicPrint(std::ostream& os, const Matrix<T>& A)
 	SizeType i, j;
 	os << A.rows() << " " << A.cols() << "\n";
 	typename Vector<T>::Type values;
-	String                   s             = "symbolicPrint: Not enough characters\n";
-	SizeType                 maxCharacters = 25;
+	String                   s              = "symbolicPrint: Not enough characters\n";
+	SizeType                 max_characters = 25;
 	for (i = 0; i < A.rows(); i++) {
 		for (j = 0; j < A.cols(); j++) {
 
@@ -715,7 +715,7 @@ template <typename T> void symbolicPrint(std::ostream& os, const Matrix<T>& A)
 			if (b1) {
 				if (b2) {
 					values.push_back(val);
-					if (values.size() > maxCharacters)
+					if (values.size() > max_characters)
 						throw RuntimeError(s.c_str());
 					char chark = k + 65;
 					os << " " << chark << " ";
@@ -866,10 +866,10 @@ template <typename T> bool isZero(const Matrix<T>& m)
 
 template <typename T> void rotate(Matrix<T>& m, const Matrix<T>& transform)
 {
-	Matrix<T> C(transform.cols(), m.cols());
+	Matrix<T> c(transform.cols(), m.cols());
 
 	// C = transform^\dagger * m
-	psimag::BLAS::GEMM('C',
+	psimag::BLAS::gemm('C',
 	                   'N',
 	                   transform.cols(),
 	                   m.cols(),
@@ -880,20 +880,20 @@ template <typename T> void rotate(Matrix<T>& m, const Matrix<T>& transform)
 	                   &(m(0, 0)),
 	                   m.rows(),
 	                   0.0,
-	                   &(C(0, 0)),
-	                   C.rows());
+	                   &(c(0, 0)),
+	                   c.rows());
 
 	// m = C * transform
 	m.clear();
-	m.resize(C.rows(), transform.cols());
-	psimag::BLAS::GEMM('N',
+	m.resize(c.rows(), transform.cols());
+	psimag::BLAS::gemm('N',
 	                   'N',
-	                   C.rows(),
+	                   c.rows(),
 	                   transform.cols(),
 	                   transform.rows(),
 	                   1.0,
-	                   &(C(0, 0)),
-	                   C.rows(),
+	                   &(c(0, 0)),
+	                   c.rows(),
 	                   &(transform(0, 0)),
 	                   transform.rows(),
 	                   0.0,

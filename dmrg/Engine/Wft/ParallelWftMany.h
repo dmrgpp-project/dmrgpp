@@ -110,7 +110,7 @@ public:
 	                      ConcurrencyType::MutexType*)
 	{
 		SizeType nk        = nk_;
-		SizeType mpiRank   = PsimagLite::MPI::commRank(PsimagLite::MPI::COMM_WORLD);
+		SizeType mpiRank   = PsimagLite::MPI::commRank(PsimagLite::MPI::comm_world);
 		SizeType npthreads = PsimagLite::Concurrency::npthreads;
 
 		ConcurrencyType::mpiDisableIfNeeded(mpiRank, blockSize, "ParallelWftMany", total);

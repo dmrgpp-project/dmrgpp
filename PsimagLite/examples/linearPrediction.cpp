@@ -70,16 +70,16 @@ int main(int argc, char* argv[])
 	io.read(y, label);
 	SizeType n = y.size();
 	std::cout << "#Found " << n << " points in file " << file << "\n";
-	LinearPredictionType linearPrediction(y, q);
-	linearPrediction.predict(q);
+	LinearPredictionType linear_prediction(y, q);
+	linear_prediction.predict(q);
 
 	for (SizeType i = 0; i < p; i++) {
-		linearPrediction.linearPredictionfunction(y, q);
-		linearPrediction.predict(q);
+		linear_prediction.linearPredictionfunction(y, q);
+		linear_prediction.predict(q);
 	}
 
 	for (SizeType i = 0; i < p + n; i++) {
-		std::cout << linearPrediction(i) << "\n";
+		std::cout << linear_prediction(i) << "\n";
 	}
 }
 

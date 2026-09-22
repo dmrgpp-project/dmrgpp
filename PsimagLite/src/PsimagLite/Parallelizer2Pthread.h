@@ -45,7 +45,7 @@ struct PthreadFunctionStruct2 {
 };
 
 template <typename SomeLambdaType, typename SomeLoadBalancer>
-void* thread_function_wrapper2(void* dummyPtr)
+void* threadFunctionWrapper2(void* dummyPtr)
 {
 	PthreadFunctionStruct2<SomeLambdaType, SomeLoadBalancer>* pfs
 	    = static_cast<PthreadFunctionStruct2<SomeLambdaType, SomeLoadBalancer>*>(dummyPtr);
@@ -59,13 +59,13 @@ void* thread_function_wrapper2(void* dummyPtr)
 	if (s >= 0)
 		pfs->cpu = s;
 
-	SizeType blockSize = pfs->loadBalancer->blockSize(pfs->threadNum);
+	SizeType block_size = pfs->loadBalancer->blockSize(pfs->threadNum);
 
-	for (SizeType p = 0; p < blockSize; ++p) {
-		SizeType taskNumber = pfs->loadBalancer->taskNumber(pfs->threadNum, p);
-		if (taskNumber + pfs->start >= pfs->end)
+	for (SizeType p = 0; p < block_size; ++p) {
+		SizeType task_number = pfs->loadBalancer->taskNumber(pfs->threadNum, p);
+		if (task_number + pfs->start >= pfs->end)
 			break;
-		(*pfh)(taskNumber + pfs->start, pfs->threadNum);
+		(*pfh)(task_number + pfs->start, pfs->threadNum);
 	}
 
 	int retval = 0;
@@ -95,10 +95,10 @@ public:
 	template <typename SomeLambdaType>
 	void parallelFor(SizeType start, SizeType end, const SomeLambdaType& lambda)
 	{
-		LoadBalancerType* loadBalancer = new LoadBalancerType(end - start, nthreads_);
-		parallelFor(start, end, lambda, *loadBalancer);
-		delete loadBalancer;
-		loadBalancer = 0;
+		LoadBalancerType* load_balancer = new LoadBalancerType(end - start, nthreads_);
+		parallelFor(start, end, lambda, *load_balancer);
+		delete load_balancer;
+		load_balancer = 0;
 	}
 
 	// weights, no balancer ==> create balancer with weights ==> delegate
@@ -108,11 +108,11 @@ public:
 	                 const SomeLambdaType& lambda,
 	                 const VectorSizeType& weights)
 	{
-		LoadBalancerType* loadBalancer = new LoadBalancerType(weights.size(), nthreads_);
-		loadBalancer->setWeights(weights);
-		parallelFor(start, end, lambda, *loadBalancer);
-		delete loadBalancer;
-		loadBalancer = 0;
+		LoadBalancerType* load_balancer = new LoadBalancerType(weights.size(), nthreads_);
+		load_balancer->setWeights(weights);
+		parallelFor(start, end, lambda, *load_balancer);
+		delete load_balancer;
+		load_balancer = 0;
 	}
 
 	template <typename SomeLambdaType>
@@ -157,7 +157,7 @@ public:
 			ret = pthread_create(
 			    &thread_id[j],
 			    attr[j],
-			    thread_function_wrapper2<SomeLambdaType, LoadBalancerType>,
+			    threadFunctionWrapper2<SomeLambdaType, LoadBalancerType>,
 			    &pfs[j]);
 			checkForError(ret);
 		}

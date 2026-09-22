@@ -92,9 +92,9 @@ namespace PsimagLite {
 
 class ProgressIndicator {
 
-	static MemoryUsage   musage_;
-	static OstringStream buffer_;
-	static bool          bufferActive_;
+	static MemoryUsage   MUSAGE;
+	static OstringStream BUFFER;
+	static bool          BUFFER_ACTIVE;
 
 public:
 
@@ -111,22 +111,22 @@ public:
 
 	static void updateBuffer(int signal)
 	{
-		if (bufferActive_) {
+		if (BUFFER_ACTIVE) {
 			pid_t  p = getpid();
-			String outName("buffer");
-			outName += ttos(p);
-			outName += ".txt";
-			std::ofstream fout(outName.c_str());
-			fout << buffer_().str() << "\n";
+			String out_name("buffer");
+			out_name += ttos(p);
+			out_name += ".txt";
+			std::ofstream fout(out_name.c_str());
+			fout << BUFFER().str() << "\n";
 			fout.close();
-			buffer_().str("");
+			BUFFER().str("");
 		}
 
-		bufferActive_ = !bufferActive_;
+		BUFFER_ACTIVE = !BUFFER_ACTIVE;
 
-		String bufferActive = (bufferActive_) ? "active" : "inactive";
+		String buffer_active = (buffer_active) ? "active" : "inactive";
 		std::cerr << "ProgressIndicator: signal " << signal << " received.";
-		std::cerr << " buffer is now " << bufferActive << "\n";
+		std::cerr << " buffer is now " << buffer_active << "\n";
 	}
 
 	template <typename SomeOutputType> void printline(const String& s, SomeOutputType& os) const
@@ -138,11 +138,11 @@ public:
 		prefix(os);
 		os << s << "\n";
 
-		if (!bufferActive_)
+		if (!BUFFER_ACTIVE)
 			return;
 
-		prefix(buffer_);
-		buffer_() << s << "\n";
+		prefix(BUFFER);
+		BUFFER() << s << "\n";
 	}
 
 	void printline(OstringStream& s, std::ostream& os) const
@@ -155,11 +155,11 @@ public:
 		os << s().str() << "\n";
 		s().seekp(std::ios_base::beg);
 
-		if (!bufferActive_)
+		if (!BUFFER_ACTIVE)
 			return;
 
-		prefix(buffer_);
-		buffer_() << s().str() << "\n";
+		prefix(BUFFER);
+		BUFFER() << s().str() << "\n";
 		s().seekp(std::ios_base::beg);
 	}
 
@@ -172,36 +172,36 @@ public:
 		prefix(os);
 		os << something;
 
-		if (!bufferActive_)
+		if (!BUFFER_ACTIVE)
 			return;
 
-		prefix(buffer_);
-		buffer_() << something;
+		prefix(BUFFER);
+		BUFFER() << something;
 	}
 
 	void printMemoryUsage()
 	{
-		musage_.update();
-		String        vmPeak = musage_.findEntry("VmPeak:");
-		String        vmSize = musage_.findEntry("VmSize:");
+		MUSAGE.update();
+		String        vm_peak = MUSAGE.findEntry("VmPeak:");
+		String        vm_size = MUSAGE.findEntry("VmSize:");
 		OstringStream msg(std::cout.precision());
-		msg() << "Current virtual memory is " << vmSize << " maximum was " << vmPeak;
+		msg() << "Current virtual memory is " << vm_size << " maximum was " << vm_peak;
 		printline(msg, std::cout);
 
-		if (!bufferActive_)
+		if (!BUFFER_ACTIVE)
 			return;
 
-		buffer_() << "Current virtual memory is " << vmSize << " maximum was " << vmPeak;
-		printline(buffer_, std::cout);
+		BUFFER() << "Current virtual memory is " << vm_size << " maximum was " << vm_peak;
+		printline(BUFFER, std::cout);
 	}
 
-	static MemoryUsage::TimeHandle time() { return musage_.time(); }
+	static MemoryUsage::TimeHandle time() { return MUSAGE.time(); }
 
 private:
 
 	template <typename SomeOutputStreamType> void prefix(SomeOutputStreamType& os) const
 	{
-		const MemoryUsage::TimeHandle t       = musage_.time();
+		const MemoryUsage::TimeHandle t       = MUSAGE.time();
 		const double                  seconds = t.millis();
 		const SizeType                prec    = os.precision(3);
 		prefixHelper(os) << caller_ << " "

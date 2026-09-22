@@ -3,10 +3,10 @@
 #include <random>
 
 template <typename ComplexOrRealType>
-void den_gen_matrix(const int                                                 nrow_A,
-                    const int                                                 ncol_A,
-                    const typename PsimagLite::Real<ComplexOrRealType>::Type& threshold,
-                    PsimagLite::Matrix<ComplexOrRealType>&                    a_)
+void denGenMatrix(const int                                                 nrow_A,
+                  const int                                                 ncol_A,
+                  const typename PsimagLite::Real<ComplexOrRealType>::Type& threshold,
+                  PsimagLite::Matrix<ComplexOrRealType>&                    a_)
 {
 	/*
 	 * -------------------------------

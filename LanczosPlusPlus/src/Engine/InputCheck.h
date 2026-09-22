@@ -201,7 +201,7 @@ public:
 	{
 		if (label != "SolverOptions")
 			return;
-		PsimagLite::Vector<PsimagLite::String>::Type registerOpts;
+		PsimagLite::Vector<PsimagLite::String>::Type register_opts;
 
 		/* PSIDOC LanczosSolverOptions
 		\begin{itemize}
@@ -216,16 +216,16 @@ public:
 		\item [setAffinities] TBW
 		\end{itemize}
 		*/
-		registerOpts.push_back("none");
-		registerOpts.push_back("InternalProductStored");
-		registerOpts.push_back("InternalProductOnTheFly");
-		registerOpts.push_back("printmatrix");
-		registerOpts.push_back("dumpmatrix");
-		registerOpts.push_back("setAffinities");
+		register_opts.push_back("none");
+		register_opts.push_back("InternalProductStored");
+		register_opts.push_back("InternalProductOnTheFly");
+		register_opts.push_back("printmatrix");
+		register_opts.push_back("dumpmatrix");
+		register_opts.push_back("setAffinities");
 
-		PsimagLite::Options::Writeable optWriteable(
-		    registerOpts, PsimagLite::Options::Writeable::PERMISSIVE);
-		optsReadable_ = new OptionsReadableType(optWriteable, val);
+		PsimagLite::Options::Writeable opt_writeable(
+		    register_opts, PsimagLite::Options::Writeable::PERMISSIVE);
+		optsReadable_ = new OptionsReadableType(opt_writeable, val);
 	}
 
 	bool isSet(const PsimagLite::String& thisOption) const

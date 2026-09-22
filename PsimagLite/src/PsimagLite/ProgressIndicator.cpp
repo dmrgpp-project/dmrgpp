@@ -78,8 +78,8 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 
 namespace PsimagLite {
 
-MemoryUsage   ProgressIndicator::musage_;
-OstringStream ProgressIndicator::buffer_(std::cout.precision());
-bool          ProgressIndicator::bufferActive_ = false;
+MemoryUsage   ProgressIndicator::MUSAGE;
+OstringStream ProgressIndicator::BUFFER(std::cout.precision());
+bool          ProgressIndicator::BUFFER_ACTIVE = false;
 
 } // namespace PsimagLite

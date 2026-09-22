@@ -10,9 +10,9 @@ namespace {
 
 enum class ComparisonMode
 {
-	Generic,
-	IgnoreLinePrefix,
-	Observable
+	GENERIC,
+	IGNORE_LINE_PREFIX,
+	OBSERVABLE
 };
 
 struct ParsedOption {
@@ -23,20 +23,21 @@ struct ParsedOption {
 ParsedOption parseOption(const char* text)
 {
 	const std::string argument(text);
-	const std::string ignoredLinePrefixOption = "--ignore-line-prefix=";
-	const std::string insituLabelOption       = "--insitu-label=";
+	const std::string ignored_line_prefix_option = "--ignore-line-prefix=";
+	const std::string insitu_label_option        = "--insitu-label=";
 
-	if (argument.compare(0, ignoredLinePrefixOption.size(), ignoredLinePrefixOption) == 0) {
-		if (argument.size() == ignoredLinePrefixOption.size())
+	if (argument.compare(0, ignored_line_prefix_option.size(), ignored_line_prefix_option)
+	    == 0) {
+		if (argument.size() == ignored_line_prefix_option.size())
 			throw std::invalid_argument("Invalid option: \"" + argument + "\"");
-		return { ComparisonMode::IgnoreLinePrefix,
-			 argument.substr(ignoredLinePrefixOption.size()) };
+		return { ComparisonMode::IGNORE_LINE_PREFIX,
+			 argument.substr(ignored_line_prefix_option.size()) };
 	}
 
-	if (argument.compare(0, insituLabelOption.size(), insituLabelOption) == 0) {
-		if (argument.size() == insituLabelOption.size())
+	if (argument.compare(0, insitu_label_option.size(), insitu_label_option) == 0) {
+		if (argument.size() == insitu_label_option.size())
 			throw std::invalid_argument("Invalid option: \"" + argument + "\"");
-		return { ComparisonMode::Observable, argument.substr(insituLabelOption.size()) };
+		return { ComparisonMode::OBSERVABLE, argument.substr(insitu_label_option.size()) };
 	}
 
 	throw std::invalid_argument("Invalid option: \"" + argument + "\"");
@@ -72,13 +73,13 @@ int main(int argc, char* argv[])
 	try {
 		const ParsedOption option = (argc == 5)
 		    ? parseOption(argv[4])
-		    : ParsedOption { ComparisonMode::Generic, "" };
-		const std::string  ignoredLinePrefix
-		    = (option.mode == ComparisonMode::IgnoreLinePrefix) ? option.value : "";
+		    : ParsedOption { ComparisonMode::GENERIC, "" };
+		const std::string  ignored_line_prefix
+		    = (option.mode == ComparisonMode::IGNORE_LINE_PREFIX) ? option.value : "";
 		const PsimagLite::TextAndNumbersChecker checker(parseTolerance(argv[3]),
-		                                                ignoredLinePrefix);
+		                                                ignored_line_prefix);
 
-		if (option.mode == ComparisonMode::Observable)
+		if (option.mode == ComparisonMode::OBSERVABLE)
 			checker.runObservables(argv[1], argv[2], option.value);
 		else
 			checker.run(argv[1], argv[2]);
