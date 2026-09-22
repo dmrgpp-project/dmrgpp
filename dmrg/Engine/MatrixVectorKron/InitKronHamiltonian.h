@@ -233,6 +233,10 @@ public:
 		return offsetForPatches_[ind];
 	}
 
+	const ModelType& model() const { return model_; }
+
+	ProgramGlobals::DirectionEnum direction() const { return hc_.direction(); }
+
 	const ParametersDmrgSolverType& params() const { return model_.params(); }
 
 private:
