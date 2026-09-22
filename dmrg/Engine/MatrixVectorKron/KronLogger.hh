@@ -296,11 +296,29 @@ private:
 
 		localOperator_.setRow(sectorSize, entry);
 		localOperator_.checkValidity();
+		printLocalOperator(direction, border);
 		progress_.printline("KronLogger: built " + init_kron_.params().dumperOperator
 		                        + " at site " + ttos(localOperatorSite_) + " as "
 		                        + ttos(sectorSize) + "x" + ttos(sectorSize) + " with "
 		                        + ttos(localOperator_.nonZeros()) + " nonzeros",
 		                    std::cout);
+	}
+
+	void printLocalOperator(ProgramGlobals::DirectionEnum          direction,
+	                        typename ApplyOperatorType::BorderEnum border)
+	{
+		assert(fout_.has_value());
+		*fout_ << "LocalOperator\n";
+		*fout_ << "OperatorName=" << init_kron_.params().dumperOperator << "\n";
+		*fout_ << "OperatorSite=" << localOperatorSite_ << "\n";
+		*fout_ << "Rows=" << localOperator_.rows() << " Cols=" << localOperator_.cols()
+		       << "\n";
+		*fout_ << "BasisOrder=KronPatchPacked\n";
+		*fout_ << "Direction=" << ProgramGlobals::toString(direction) << "\n";
+		*fout_ << "Border=" << (border == ApplyOperatorType::BORDER_YES) << "\n";
+		*fout_ << "MatrixAction=dest=O*src\n";
+		*fout_ << "MatrixFormat=matrix-market-coordinate\n";
+		MatrixMarketType(localOperator_).print(*fout_);
 	}
 
 	void printMetadata(const std::string& message)
