@@ -16,31 +16,80 @@ add_library(
   PsimagLite/Ainur/AinurSpirit.cpp
   PsimagLite/Ainur/AinurConvert.cpp)
 
-# Ensure Kokkos and KokkosKernels are available
+# Resolve Kokkos and KokkosKernels as a coherent pair. An installed
+# KokkosKernels package selects the Kokkos installation it was built with. If
+# that pair is unavailable, build both dependencies from source.
 include(FetchContent)
-list(APPEND CMAKE_MESSAGE_INDENT "[Kokkos] ")
-FetchContent_Declare(
-  Kokkos
-  GIT_REPOSITORY https://github.com/kokkos/kokkos
-  GIT_TAG 5.2.0
-  SYSTEM FIND_PACKAGE_ARGS 5.1 NAMES Kokkos)
-FetchContent_MakeAvailable(Kokkos)
-list(POP_BACK CMAKE_MESSAGE_INDENT)
 
-list(APPEND CMAKE_MESSAGE_INDENT "[KokkosKernels] ")
-FetchContent_Declare(
-  KokkosKernels
-  GIT_REPOSITORY https://github.com/kokkos/kokkos-kernels
-  GIT_TAG 5.2.0
-  SYSTEM FIND_PACKAGE_ARGS 5.1 NAMES KokkosKernels)
-# Since DRMGPP requires BLAS and LAPACK, we should also make sure KokkosKernels uses these as TPLs
-set(KokkosKernels_ENABLE_TPL_BLAS
-    ON
-    CACHE BOOL "Whether to enable the BLAS TPL" FORCE)
-set(KokkosKernels_ENABLE_TPL_LAPACK
-    ON
-    CACHE BOOL "Whether to enable the LAPACK TPL" FORCE)
-FetchContent_MakeAvailable(KokkosKernels)
+if(TARGET Kokkos::kokkos OR TARGET Kokkos::kokkoskernels)
+  message(FATAL_ERROR "Kokkos targets must not exist before DMRG++ resolves Kokkos and KokkosKernels as a pair")
+endif()
+
+set(_dmrgpp_kokkoskernels_package_found FALSE)
+if(NOT FETCHCONTENT_TRY_FIND_PACKAGE_MODE STREQUAL "NEVER"
+   AND NOT FETCHCONTENT_SOURCE_DIR_KOKKOS
+   AND NOT FETCHCONTENT_SOURCE_DIR_KOKKOSKERNELS)
+  list(APPEND CMAKE_MESSAGE_INDENT "[KokkosKernels] ")
+  find_package(KokkosKernels 5.2 QUIET CONFIG NAMES KokkosKernels)
+  list(POP_BACK CMAKE_MESSAGE_INDENT)
+  if(KokkosKernels_FOUND)
+    set(_dmrgpp_kokkoskernels_package_found TRUE)
+  endif()
+endif()
+
+if(_dmrgpp_kokkoskernels_package_found)
+  # Remove values forced for a source build by an earlier configure. Newer
+  # installed packages export these as normal variables that can be checked.
+  unset(KokkosKernels_ENABLE_TPL_BLAS CACHE)
+  unset(KokkosKernels_ENABLE_TPL_LAPACK CACHE)
+  if(KokkosKernels_VERSION VERSION_GREATER_EQUAL 5.2.99)
+    if(NOT KokkosKernels_ENABLE_TPL_BLAS)
+      message(FATAL_ERROR "KokkosKernels must be configured with BLAS support!")
+    endif()
+    if(NOT KokkosKernels_ENABLE_TPL_LAPACK)
+      message(FATAL_ERROR "KokkosKernels must be configured with LAPACK support!")
+    endif()
+  endif()
+else()
+  # Do not substitute either source dependency with an independently installed
+  # package; the two source builds must use the same Kokkos target.
+  block()
+  # variable setting local to the block, fetchcontent... setting outside of this block is preservered
+  set(FETCHCONTENT_TRY_FIND_PACKAGE_MODE NEVER)
+  FetchContent_Declare(
+    Kokkos
+    GIT_REPOSITORY https://github.com/kokkos/kokkos
+    GIT_TAG 5.2.0
+    SYSTEM)
+  FetchContent_Declare(
+    KokkosKernels
+    GIT_REPOSITORY https://github.com/kokkos/kokkos-kernels
+    GIT_TAG 5.2.0
+    SYSTEM)
+  endblock()
+
+  list(APPEND CMAKE_MESSAGE_INDENT "[Kokkos] ")
+  FetchContent_MakeAvailable(Kokkos)
+  list(POP_BACK CMAKE_MESSAGE_INDENT)
+
+  # Since DMRG++ requires BLAS and LAPACK, require the source build to use both
+  # as TPLs.
+  set(KokkosKernels_ENABLE_TPL_BLAS
+      ON
+      CACHE BOOL "Whether to enable the BLAS TPL" FORCE)
+  set(KokkosKernels_ENABLE_TPL_LAPACK
+      ON
+      CACHE BOOL "Whether to enable the LAPACK TPL" FORCE)
+  list(APPEND CMAKE_MESSAGE_INDENT "[KokkosKernels] ")
+  FetchContent_MakeAvailable(KokkosKernels)
+  list(POP_BACK CMAKE_MESSAGE_INDENT)
+endif()
+
+if(NOT TARGET Kokkos::kokkos OR NOT TARGET Kokkos::kokkoskernels)
+  message(FATAL_ERROR "Kokkos and KokkosKernels did not provide their required CMake targets")
+endif()
+
+# Third-party targets should not inherit this project's clang-tidy checks.
 set(KOKKOS_TARGETS kokkosalgorithms kokkoscontainers kokkoscore kokkossimd kokkoskernels)
 foreach(target ${KOKKOS_TARGETS})
   if(TARGET ${target})
@@ -50,22 +99,8 @@ endforeach()
 if(TARGET kokkoskernels)
   set_target_properties(kokkoskernels PROPERTIES CXX_CLANG_TIDY "")
 endif()
-if(NOT KokkosKernels_POPULATED)
-  unset(KokkosKernels_ENABLE_TPL_BLAS CACHE)
-  unset(KokkosKernels_ENABLE_TPL_LAPACK CACHE)
-  # Past version 5.2, KokkosKernels exports its TPLs as non-CACHE variables
-  if(KokkosKernels_VERSION VERSION_GREATER_EQUAL 5.2.99)
-    if(NOT KokkosKernels_ENABLE_TPL_BLAS)
-      message(FATAL_ERROR "KokkosKernels must be configured with BLAS support!")
-    endif()
-    if(NOT KokkosKernels_ENABLE_TPL_LAPACK)
-      message(FATAL_ERROR "KokkosKernels must be configured with LAPACK support!")
-    endif()
-  endif()
-endif()
-list(POP_BACK CMAKE_MESSAGE_INDENT)
 
-target_link_libraries(psimaglite PUBLIC Kokkos::kokkoskernels Kokkos::kokkos)
+target_link_libraries(psimaglite PUBLIC Kokkos::kokkoskernels)
 target_sources(psimaglite PRIVATE PsimagLite/KokkosGemm.cpp)
 
 target_include_directories(psimaglite PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/Io
