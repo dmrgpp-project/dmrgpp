@@ -265,6 +265,8 @@ public:
 
 	const ModelHelperType& modelHelper() const { return modelHelper_; }
 
+	ProgramGlobals::DirectionEnum direction() const { return superOpHelper_.dir(); }
+
 	SizeType tasks() const { return lps_.size(); }
 
 	void clearThreadSelves() const { operatorsCached_.clearThreadSelves(); }
