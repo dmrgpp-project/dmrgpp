@@ -157,7 +157,7 @@ public:
 	                 PsimagLite::String       p0PlusP1)
 	{
 		assert(ind0 < ind1);
-		if (pVectors_[ind0]->time() != pVectors_[ind1]->time())
+		if (!pVectors_[ind0]->hasSameTime(*pVectors_[ind1]))
 			err("Pvectors::sumPvectors: cannot sum vectors at different times\n");
 
 		VectorWithOffsetType& v0 = aoeNonConst().targetVectorsNonConst(ind0);
