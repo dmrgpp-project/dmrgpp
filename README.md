@@ -15,7 +15,7 @@ You are welcomed to use it and publish data
 
 ## License and Disclaimers
 
-The full software license for DMRG++ v7.00
+The full software license for DMRG++ v7.1
 can be found in file LICENSE in the root directory of the code,
 along with disclaimers.
 
