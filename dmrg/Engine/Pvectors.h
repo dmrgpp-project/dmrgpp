@@ -86,12 +86,43 @@ public:
 		pVectors_[ind]->pushString(str);
 	}
 
+	void setTime(SizeType ind, RealType time)
+	{
+		assert(ind < pVectors_.size());
+		assert(pVectors_[ind]);
+		pVectors_[ind]->setTime(time);
+	}
+
+	VectorRealType times(SizeType count) const
+	{
+		if (count > pVectors_.size())
+			err("Pvectors::times: requested count exceeds P-vector count\n");
+
+		VectorRealType result(count);
+		for (SizeType i = 0; i < count; ++i) {
+			assert(pVectors_[i]);
+			result[i] = pVectors_[i]->time();
+		}
+
+		return result;
+	}
+
+	void setTimes(const VectorRealType& times)
+	{
+		if (times.size() > pVectors_.size())
+			err("Pvectors::setTimes: time count exceeds P-vector count\n");
+
+		for (SizeType i = 0; i < times.size(); ++i)
+			setTime(i, times[i]);
+	}
+
 	template <typename SomeLambdaType>
-	void createNew(const VectorWithOffsetType& src, SomeLambdaType& lambda)
+	void createNew(const VectorWithOffsetType& src, RealType time, SomeLambdaType& lambda)
 	{
 		const SizeType           ind   = aoeNonConst().createPvector(src);
 		const PsimagLite::String ename = lambda(ind);
 		PvectorType*             pnew  = new PvectorType(ename);
+		pnew->setTime(time);
 		pnew->setAsDone();
 		pVectors_.push_back(pnew);
 
@@ -149,6 +180,9 @@ public:
 	                 PsimagLite::String       p0PlusP1)
 	{
 		assert(ind0 < ind1);
+		if (pVectors_[ind0]->time() != pVectors_[ind1]->time())
+			err("Pvectors::sumPvectors: cannot sum vectors at different times\n");
+
 		VectorWithOffsetType& v0 = aoeNonConst().targetVectorsNonConst(ind0);
 		VectorWithOffsetType  v1 = aoe_.targetVectors(ind1);
 		v0 *= val0;

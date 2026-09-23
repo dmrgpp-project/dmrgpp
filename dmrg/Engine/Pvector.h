@@ -16,6 +16,7 @@ public:
 	// The weight is optional
 	Pvector(PsimagLite::String str)
 	    : weight_(1.0)
+	    , time_(0)
 	{
 		// find the weight first
 		SizeType l = str.length();
@@ -40,6 +41,8 @@ public:
 		const SizeType n = vStr_.size();
 		if (n == 0 || vStr_[n - 1] != "DONE" || other.vStr_.size() == 0)
 			err("Pvector::sum\n");
+		if (time_ != other.time_)
+			err("Pvector::sum: cannot sum vectors at different times\n");
 
 		PsimagLite::String def = vStr_[0] + other.vStr_[0];
 		vStr_.clear();
@@ -75,6 +78,10 @@ public:
 	}
 
 	const RealType& weight() const { return weight_; }
+
+	RealType time() const { return time_; }
+
+	void setTime(RealType time) { time_ = time; }
 
 	SizeType size() const { return vStr_.size(); }
 
@@ -133,6 +140,7 @@ private:
 
 	VectorStringType vStr_;
 	RealType         weight_;
+	RealType         time_;
 };
 }
 #endif // PVECTOR_H
