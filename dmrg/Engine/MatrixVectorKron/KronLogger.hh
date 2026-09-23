@@ -133,7 +133,7 @@ public:
 		*fout_ << v;
 		if (!init_kron_.params().dumperOperator.empty()) {
 			const ComplexOrRealType expectation = verifyLocalOperator(v);
-			*fout_ << "OperatorExpectation=" << PsimagLite::real(expectation) << " "
+			*fout_ << "OperatorExpectation= " << PsimagLite::real(expectation) << " "
 			       << PsimagLite::imag(expectation) << "\n";
 		}
 		fout_->precision(oldPrecision);
