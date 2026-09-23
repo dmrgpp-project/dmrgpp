@@ -127,9 +127,8 @@ add_test(NAME introspect0_0 COMMAND diff -q ${PATH_TO_INPUTS}/introspect_ref0.tx
 
 # For dmrg main executable
 
-add_test(NAME dmrg_version_output
-         COMMAND ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg> -DEXPECTED_VERSION=7.01 -P
-                 ${CMAKE_SOURCE_DIR}/TestSuite/checkVersionOutput.cmake)
+add_test(NAME dmrg_version_output COMMAND ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg> -DEXPECTED_VERSION=7.1
+                                          -P ${CMAKE_SOURCE_DIR}/TestSuite/checkVersionOutput.cmake)
 
 function(add_lowest_eigenvalue_check_test name dependent_name expected output_file)
   set(options SHOULD_FAIL)
@@ -233,7 +232,7 @@ add_test(NAME input74 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input74.ain) # energy 
 add_lowest_eigenvalue_check_test(output74 input74 -0.707712 runForinput74.cout)
 add_test(NAME input74_dmrg_version COMMAND ${H5DUMP_EXECUTABLE} -r -d /Def/ApplicationInfo/DmrgVersion
                                            ${CMAKE_CURRENT_BINARY_DIR}/data74.hd5)
-set_tests_properties(input74_dmrg_version PROPERTIES DEPENDS input74 PASS_REGULAR_EXPRESSION "\"v7.01\"")
+set_tests_properties(input74_dmrg_version PROPERTIES DEPENDS input74 PASS_REGULAR_EXPRESSION "\"v7.1\"")
 add_test(NAME input75 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input75.ain) # energy -2.80627
 add_lowest_eigenvalue_check_test(output75 input75 -2.80627 runForinput75.cout)
 add_test(NAME input76 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input76.ain) # energy -0.707712
