@@ -91,10 +91,10 @@ public:
 		if (!std::isfinite(time_) || !std::isfinite(other.time_))
 			return false;
 
-		const RealType scale = std::max(RealType(1),
-		                                std::max(std::abs(time_), std::abs(other.time_)));
-		const RealType tolerance = RealType(64)
-		    * std::numeric_limits<RealType>::epsilon() * scale;
+		const RealType scale
+		    = std::max(RealType(1), std::max(std::abs(time_), std::abs(other.time_)));
+		const RealType tolerance
+		    = RealType(64) * std::numeric_limits<RealType>::epsilon() * scale;
 		return (std::abs(time_ - other.time_) <= tolerance);
 	}
 

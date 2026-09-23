@@ -70,10 +70,7 @@ TEMPLATE_TEST_CASE("Pvector rejects times beyond floating-point roundoff",
 	CHECK_THROWS(lhs.sum(rhs, "|P0>+|P1>"));
 }
 
-TEMPLATE_TEST_CASE("Pvector sums equal infinite times",
-                   "[Pvector]",
-                   double,
-                   std::complex<double>)
+TEMPLATE_TEST_CASE("Pvector sums equal infinite times", "[Pvector]", double, std::complex<double>)
 {
 	using RealType = typename PsimagLite::Real<TestType>::Type;
 
