@@ -106,7 +106,7 @@ public:
 		\item[TSPTau] [RealType], $\tau$ for the Krylov,
 		see \cite{re:alvarez11} Section II.B and II.C.
 		\item[TSPTimeSteps] [Integer]  $n_v$ as defined in
-		\cite{re:alvarez11} Section II.B
+		\cite{re:alvarez11} Section II.B. Must be greater than one.
 		\item[TSPAdvanceEach] [Integer] Number of sites to sweep before
 		advancing to the next time.
 		\item[TSPAlgorithm] [String] Either
@@ -120,6 +120,8 @@ public:
 		io.readline(tau_, "TSPTau=");
 		SizeType timeSteps = 0;
 		io.readline(timeSteps, "TSPTimeSteps=");
+		if (timeSteps <= 1)
+			err("TSPTimeSteps must be greater than 1\n");
 		times_.resize(timeSteps);
 		io.readline(advanceEach_, "TSPAdvanceEach=");
 		PsimagLite::String s = "";

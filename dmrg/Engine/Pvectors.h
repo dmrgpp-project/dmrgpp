@@ -86,12 +86,19 @@ public:
 		pVectors_[ind]->pushString(str);
 	}
 
+	void setTime(SizeType ind, RealType time)
+	{
+		assert(ind < pVectors_.size());
+		assert(pVectors_[ind]);
+		pVectors_[ind]->setTime(time);
+	}
+
 	template <typename SomeLambdaType>
-	void createNew(const VectorWithOffsetType& src, SomeLambdaType& lambda)
+	void createNew(const VectorWithOffsetType& src, RealType time, SomeLambdaType& lambda)
 	{
 		const SizeType           ind   = aoeNonConst().createPvector(src);
 		const PsimagLite::String ename = lambda(ind);
-		PvectorType*             pnew  = new PvectorType(ename);
+		PvectorType*             pnew  = new PvectorType(ename, time);
 		pnew->setAsDone();
 		pVectors_.push_back(pnew);
 
@@ -149,6 +156,9 @@ public:
 	                 PsimagLite::String       p0PlusP1)
 	{
 		assert(ind0 < ind1);
+		if (!pVectors_[ind0]->hasSameTime(*pVectors_[ind1]))
+			err("Pvectors::sumPvectors: cannot sum vectors at different times\n");
+
 		VectorWithOffsetType& v0 = aoeNonConst().targetVectorsNonConst(ind0);
 		VectorWithOffsetType  v1 = aoe_.targetVectors(ind1);
 		v0 *= val0;

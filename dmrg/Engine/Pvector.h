@@ -1,7 +1,10 @@
 #ifndef PVECTOR_H
 #define PVECTOR_H
 #include <PsimagLite/Vector.h>
+#include <algorithm>
+#include <cmath>
 #include <cstdlib>
+#include <limits>
 
 namespace Dmrg {
 
@@ -14,8 +17,9 @@ public:
 
 	// |P0>=(c?0[0]'*c?0[1]' +  c?1[0]'*c?1[1] - c?0[1]'*c?0[0] - c?1[1]'*c?1[0])|gs>*weight
 	// The weight is optional
-	Pvector(PsimagLite::String str)
+	Pvector(PsimagLite::String str, RealType time = 0)
 	    : weight_(1.0)
+	    , time_(time)
 	{
 		// find the weight first
 		SizeType l = str.length();
@@ -40,6 +44,8 @@ public:
 		const SizeType n = vStr_.size();
 		if (n == 0 || vStr_[n - 1] != "DONE" || other.vStr_.size() == 0)
 			err("Pvector::sum\n");
+		if (!hasSameTime(other))
+			err("Pvector::sum: cannot sum vectors at different times\n");
 
 		PsimagLite::String def = vStr_[0] + other.vStr_[0];
 		vStr_.clear();
@@ -75,6 +81,24 @@ public:
 	}
 
 	const RealType& weight() const { return weight_; }
+
+	RealType time() const { return time_; }
+
+	bool hasSameTime(const Pvector& other) const
+	{
+		if (time_ == other.time_)
+			return true;
+		if (!std::isfinite(time_) || !std::isfinite(other.time_))
+			return false;
+
+		const RealType scale
+		    = std::max(RealType(1), std::max(std::abs(time_), std::abs(other.time_)));
+		const RealType tolerance
+		    = RealType(64) * std::numeric_limits<RealType>::epsilon() * scale;
+		return (std::abs(time_ - other.time_) <= tolerance);
+	}
+
+	void setTime(RealType time) { time_ = time; }
 
 	SizeType size() const { return vStr_.size(); }
 
@@ -133,6 +157,7 @@ private:
 
 	VectorStringType vStr_;
 	RealType         weight_;
+	RealType         time_;
 };
 }
 #endif // PVECTOR_H

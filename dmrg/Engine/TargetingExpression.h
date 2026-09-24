@@ -372,6 +372,7 @@ private:
 			if (x < 0)
 				continue;
 			this->tvNonConst(x) = tempVectors[i];
+			pvectors_.setTime(x, pvectors_(pVectorIndex).time());
 			pvectors_.setAsDone(x);
 			removed_[i] = true;
 			tempToP[i]  = x;
@@ -390,7 +391,7 @@ private:
 				return this->expandExpression(tempNames[i], tempToP);
 			};
 
-			pvectors_.createNew(tempVectors[i], lambda);
+			pvectors_.createNew(tempVectors[i], pvectors_(pVectorIndex).time(), lambda);
 		}
 
 		AlgebraType newexpr(tempExpr);
