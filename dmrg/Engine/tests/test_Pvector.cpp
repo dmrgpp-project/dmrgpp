@@ -24,10 +24,8 @@ TEMPLATE_TEST_CASE("Pvector sums retain equal physical time",
                    double,
                    std::complex<double>)
 {
-	Dmrg::Pvector<TestType> lhs("|P0>");
-	Dmrg::Pvector<TestType> rhs("|P1>");
-	lhs.setTime(0.25);
-	rhs.setTime(0.25);
+	Dmrg::Pvector<TestType> lhs("|P0>", 0.25);
+	Dmrg::Pvector<TestType> rhs("|P1>", 0.25);
 	lhs.setAsDone();
 
 	lhs.sum(rhs, "|P0>+|P1>");
@@ -43,10 +41,8 @@ TEMPLATE_TEST_CASE("Pvector sums times equal within floating-point roundoff",
 {
 	using RealType = typename PsimagLite::Real<TestType>::Type;
 
-	Dmrg::Pvector<TestType> lhs("|P0>");
-	Dmrg::Pvector<TestType> rhs("|P1>");
-	lhs.setTime(RealType(0.1) + RealType(0.2));
-	rhs.setTime(RealType(0.3));
+	Dmrg::Pvector<TestType> lhs("|P0>", RealType(0.1) + RealType(0.2));
+	Dmrg::Pvector<TestType> rhs("|P1>", RealType(0.3));
 	lhs.setAsDone();
 
 	CHECK(lhs.hasSameTime(rhs));
@@ -60,10 +56,8 @@ TEMPLATE_TEST_CASE("Pvector rejects times beyond floating-point roundoff",
 {
 	using RealType = typename PsimagLite::Real<TestType>::Type;
 
-	Dmrg::Pvector<TestType> lhs("|P0>");
-	Dmrg::Pvector<TestType> rhs("|P1>");
-	lhs.setTime(RealType(0.25));
-	rhs.setTime(RealType(0.25) + RealType(1e-8));
+	Dmrg::Pvector<TestType> lhs("|P0>", RealType(0.25));
+	Dmrg::Pvector<TestType> rhs("|P1>", RealType(0.25) + RealType(1e-8));
 	lhs.setAsDone();
 
 	CHECK_FALSE(lhs.hasSameTime(rhs));
@@ -74,10 +68,8 @@ TEMPLATE_TEST_CASE("Pvector sums equal infinite times", "[Pvector]", double, std
 {
 	using RealType = typename PsimagLite::Real<TestType>::Type;
 
-	Dmrg::Pvector<TestType> lhs("|P0>");
-	Dmrg::Pvector<TestType> rhs("|P1>");
-	lhs.setTime(std::numeric_limits<RealType>::infinity());
-	rhs.setTime(std::numeric_limits<RealType>::infinity());
+	Dmrg::Pvector<TestType> lhs("|P0>", std::numeric_limits<RealType>::infinity());
+	Dmrg::Pvector<TestType> rhs("|P1>", std::numeric_limits<RealType>::infinity());
 	lhs.setAsDone();
 
 	CHECK(lhs.hasSameTime(rhs));
@@ -91,10 +83,8 @@ TEMPLATE_TEST_CASE("Pvector rejects unequal non-finite times",
 {
 	using RealType = typename PsimagLite::Real<TestType>::Type;
 
-	Dmrg::Pvector<TestType> lhs("|P0>");
-	Dmrg::Pvector<TestType> rhs("|P1>");
-	lhs.setTime(std::numeric_limits<RealType>::infinity());
-	rhs.setTime(RealType(0));
+	Dmrg::Pvector<TestType> lhs("|P0>", std::numeric_limits<RealType>::infinity());
+	Dmrg::Pvector<TestType> rhs("|P1>", RealType(0));
 	lhs.setAsDone();
 
 	CHECK_FALSE(lhs.hasSameTime(rhs));
@@ -110,10 +100,8 @@ TEMPLATE_TEST_CASE("Pvector rejects sums at different physical times",
                    double,
                    std::complex<double>)
 {
-	Dmrg::Pvector<TestType> lhs("|P0>");
-	Dmrg::Pvector<TestType> rhs("|P1>");
-	lhs.setTime(0.25);
-	rhs.setTime(0.5);
+	Dmrg::Pvector<TestType> lhs("|P0>", 0.25);
+	Dmrg::Pvector<TestType> rhs("|P1>", 0.5);
 	lhs.setAsDone();
 	const SizeType sizeBefore = lhs.size();
 
