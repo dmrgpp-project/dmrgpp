@@ -17,9 +17,9 @@ public:
 
 	// |P0>=(c?0[0]'*c?0[1]' +  c?1[0]'*c?1[1] - c?0[1]'*c?0[0] - c?1[1]'*c?1[0])|gs>*weight
 	// The weight is optional
-	Pvector(PsimagLite::String str)
+	Pvector(PsimagLite::String str, RealType time = 0)
 	    : weight_(1.0)
-	    , time_(0)
+	    , time_(time)
 	{
 		// find the weight first
 		SizeType l = str.length();

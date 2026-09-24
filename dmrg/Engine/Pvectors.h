@@ -98,8 +98,7 @@ public:
 	{
 		const SizeType           ind   = aoeNonConst().createPvector(src);
 		const PsimagLite::String ename = lambda(ind);
-		PvectorType*             pnew  = new PvectorType(ename);
-		pnew->setTime(time);
+		PvectorType*             pnew  = new PvectorType(ename, time);
 		pnew->setAsDone();
 		pVectors_.push_back(pnew);
 
