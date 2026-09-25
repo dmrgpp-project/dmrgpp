@@ -197,6 +197,7 @@ public:
 		knownLabels_.push_back("DegeneracyMax");
 		knownLabels_.push_back("KroneckerDumperBegin");
 		knownLabels_.push_back("KroneckerDumperEnd");
+		knownLabels_.push_back("KroneckerDumperOperator");
 		knownLabels_.push_back("LanczosEps");
 		knownLabels_.push_back("LanczosSteps");
 		knownLabels_.push_back("TridiagEps");

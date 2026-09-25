@@ -18,6 +18,11 @@ target_link_libraries(test_PermutationParity PRIVATE Catch2::Catch2WithMain psim
 target_include_directories(test_PermutationParity PRIVATE ${CMAKE_SOURCE_DIR}/dmrg/Engine)
 catch_discover_tests(test_PermutationParity)
 
+add_executable(test_MatrixMarket test_MatrixMarket.cpp)
+target_link_libraries(test_MatrixMarket PRIVATE Catch2::Catch2WithMain psimaglite)
+target_include_directories(test_MatrixMarket PRIVATE ${CMAKE_SOURCE_DIR}/dmrg/Engine)
+catch_discover_tests(test_MatrixMarket)
+
 # BatchedGemm test
 add_executable(test_BatchedGemm test_BatchedGemm.cpp)
 target_link_libraries(test_BatchedGemm PRIVATE Catch2::Catch2WithMain dmrgpp_utils psimaglite)
