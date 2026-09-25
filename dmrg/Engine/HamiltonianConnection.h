@@ -317,7 +317,7 @@ private:
 				    = hamAbstract_.superGeometry()
 				          .geometry()
 				          .term(termIndexForGeom)
-				          .factor(hItems[0], hItems[1]);
+				          .factor(smax_, emin_, hItems[0], hItems[1]);
 
 				// default_value = 1.0, that is, if factor is not present
 				ComplexOrRealType tmp2

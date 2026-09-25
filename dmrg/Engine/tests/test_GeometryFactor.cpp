@@ -12,7 +12,7 @@ using GeometryType
 PsimagLite::String twoTermInput()
 {
 	return R"(##Ainur1.0
-TotalNumberOfSites=8;
+TotalNumberOfSites=12;
 NumberOfTerms=2;
 gt0:GeometryKind="ladder";
 gt0:GeometryOptions="ConstantValues";
@@ -52,10 +52,11 @@ TEST_CASE("GeometryFactor is selected by term and direction", "[GeometryFactor]"
 	InputNgType::Readable  readable(writeable);
 	GeometryType           geometry(readable);
 
-	CHECK(geometry.term(0).factor(0, 2) == "11");
-	CHECK(geometry.term(0).factor(0, 1) == "12");
-	CHECK(geometry.term(1).factor(0, 2) == "21");
-	CHECK(geometry.term(1).factor(0, 1) == "22");
+	CHECK(geometry.term(0).factor(3, 8, 0, 2) == "11");
+	CHECK(geometry.term(0).factor(3, 8, 0, 1) == "12");
+	CHECK(geometry.term(1).factor(3, 8, 0, 2) == "21");
+	CHECK(geometry.term(1).factor(3, 8, 0, 1) == "22");
+	CHECK(geometry.term(0).factor(1, 10, 0, 10) == "11");
 }
 
 TEST_CASE("unqualified GeometryFactor aliases geometry term zero direction zero",
@@ -66,8 +67,8 @@ TEST_CASE("unqualified GeometryFactor aliases geometry term zero direction zero"
 	InputNgType::Readable  readable(writeable);
 	GeometryType           geometry(readable);
 
-	CHECK(geometry.term(0).factor(0, 2) == "legacy");
-	CHECK(geometry.term(0).factor(0, 1).empty());
+	CHECK(geometry.term(0).factor(3, 6, 0, 2) == "legacy");
+	CHECK(geometry.term(0).factor(3, 6, 0, 1).empty());
 }
 
 TEST_CASE("qualified GeometryFactor is accepted for a single geometry term", "[GeometryFactor]")
@@ -78,6 +79,6 @@ TEST_CASE("qualified GeometryFactor is accepted for a single geometry term", "[G
 	InputNgType::Readable  readable(writeable);
 	GeometryType           geometry(readable);
 
-	CHECK(geometry.term(0).factor(0, 2) == "explicit");
-	CHECK(geometry.term(0).factor(0, 1).empty());
+	CHECK(geometry.term(0).factor(3, 6, 0, 2) == "explicit");
+	CHECK(geometry.term(0).factor(3, 6, 0, 1).empty());
 }
