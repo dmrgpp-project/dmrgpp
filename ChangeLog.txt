@@ -1,3 +1,126 @@
+2026-09-17 Version 7.1
+
+New features
+
+* Hamiltonian connections can depend on simulation time, including time-dependent
+geometry-factor expressions [PR 126]
+
+* SolverOptions=LdaggerL supports factorized L^dagger L application for
+non-Hermitian open-system models on the supported stored-matrix path [PR 290]
+
+* TargetingExpression can address the last Krylov slot, for example
+<P2.last|P2>, in time-evolution observables [PR 202]
+
+* KronLogger can write Kronecker-product inputs in Matrix Market format for
+diagnostics and regression testing [PR 121, PR 221]
+
+* GPUPlugin, Kokkos batched GEMM, MAGMA, CUDA, and HIP build paths added
+[PR 179, PR 203, PR 240, PR 247, PR 274]
+
+Bug fixes
+
+* FiniteLoops=@auto corrected for small, restart, and general odd-site lattices
+[PR 283]
+
+* Time-evolution observations now handle unavailable vectors and output data
+correctly [PR 272]
+
+* Observable permutation parity no longer relies on a fixed-width bit mask and
+works for large permutations [PR 308]
+
+* VectorWithOffsets fixes for real scaling of complex vectors and for quantum
+numbers without default constructors [PR 275]
+
+* Sparse matrix multiplication now validates dimensions, supports aliased
+output and mixed real/complex inputs, sorts columns, and removes exact zeros
+[PR 307]
+
+* Matrix resize misuse in Lanczos++ corrected; the unsafe three-argument
+Matrix::resize overload was removed [PR 231, PR 232]
+
+* Compilation with clang++ 23 and several CUDA compilation and linking paths
+fixed [PR 182, PR 254, PR 295]
+
+Improvements and refactoring
+
+* Main source tree renamed from src to dmrg [PR 187]
+
+* DMRG++ command-line execution and introspection refactored around DmrgRunner
+[PR 157]
+
+* Stored, on-the-fly, and Kronecker matrix-vector implementations now use a
+scalar-templated runtime facade; active-sector dimensions are cached
+[PR 291, PR 292]
+
+* VectorWithOffsets was simplified and accelerated, and the singular
+VectorWithOffset implementation was removed [PR 262, PR 275]
+
+* Kronecker multiplication method 3 was ported to Kokkos device execution
+[PR 229]
+
+* Obsolete SU(2), custom allocation, and matrix-vector configuration code was
+removed [PR 230, PR 256, PR 270, PR 284, PR 296]
+
+Build, infrastructure, and tests
+
+* Kokkos and KokkosKernels are required; KokkosKernels uses its BLAS and LAPACK
+TPLs [PR 206, PR 218, PR 264]
+
+* Boost is now required and the obsolete non-Boost code paths were removed
+[PR 190]
+
+* build.sh added as the end-user CMake build helper [PR 263, PR 276]
+
+* Explicit MPI configuration and tests, MPI and CUDA CI, and expanded macOS,
+shared-library, and build-type CI coverage added [PR 185, PR 188, PR 241,
+PR 243]
+
+* The default CMake build type is RelWithDebInfo; compiler warning options can
+be promoted to errors with DMRG_WARNINGS_AS_ERRORS [PR 215, PR 236]
+
+* Catch2 and regression coverage expanded for matrix and vector contracts,
+batched GEMM, sparse multiplication, observables, open systems, and performance
+inputs
+
+* TextAndNumbersChecker added for portable tolerant checking of numeric,
+complex, metadata, and in-situ observable output [PR 176, PR 234, PR 298]
+
+PsimagLite
+
+* Headers reorganized under the PsimagLite package include path [PR 191]
+
+* InputPath search support and Unicode Ainur input added [PR 175, PR 212]
+
+* Kokkos profiling regions and documentation added [PR 224, PR 286]
+
+Lanczos++
+
+* Model interfaces and global state refactored for a more modular Lanczos++
+[PR 178]
+
+* Catch2 unit-test infrastructure added for combinatorial and basis operations
+[PR 231]
+
+Cincuenta
+
+* Equilibrium DMFT solvers corrected and refactored, including real-frequency
+support, Green-function normalization, chemical-potential handling, and
+particle-hole-symmetric bath fitting [PR 146, PR 169, PR 195, PR 288]
+
+* Non-equilibrium DMFT for exact diagonalization now uses the GBEK positive-rank 
+bath construction, with quench and ramp support, input validation, Catch2 tests, 
+and reproducible Python reference calculations; superseded frozen-bath paths were 
+removed [PR 199, PR 217, PR 228, PR 233, PR 261, PR 282]
+
+Documentation
+
+* README and build documentation updated, internal package layout documented,
+and documentation generation repaired with an optional BUILD_DOC target
+[PR 192, PR 201, PR 259]
+
+* CITATION.cff added and software authors and references updated [PR 281]
+
+
 2025-03-31 Version 7.00
 
 Infrastructure and tests
