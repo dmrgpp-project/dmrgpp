@@ -107,10 +107,10 @@ Cincuenta
 support, Green-function normalization, chemical-potential handling, and
 particle-hole-symmetric bath fitting [PR 146, PR 169, PR 195, PR 288]
 
-* Non-equilibrium DMFT now uses the GBEK positive-rank bath construction, with
-quench and ramp support, input validation, Catch2 tests, and reproducible Python
-reference calculations; superseded frozen-bath paths were removed
-[PR 199, PR 217, PR 228, PR 233, PR 261, PR 282]
+* Non-equilibrium DMFT for exact diagonalization now uses the GBEK positive-rank 
+bath construction, with quench and ramp support, input validation, Catch2 tests, 
+and reproducible Python reference calculations; superseded frozen-bath paths were 
+removed [PR 199, PR 217, PR 228, PR 233, PR 261, PR 282]
 
 Documentation
 
