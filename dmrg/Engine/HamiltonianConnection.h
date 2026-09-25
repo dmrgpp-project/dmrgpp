@@ -311,15 +311,17 @@ private:
 				if (tmp1 == 0.0)
 					continue;
 
-				// Factor added in the input file for this geometry term
-				const std::string& geometry_factor = hamAbstract_.superGeometry()
-				                                         .geometry()
-				                                         .term(termIndexForGeom)
-				                                         .factor();
+				// Factor added in the input file for this geometry term and
+				// direction
+				const std::string& geometryFactor
+				    = hamAbstract_.superGeometry()
+				          .geometry()
+				          .term(termIndexForGeom)
+				          .factor(hItems[0], hItems[1]);
 
 				// default_value = 1.0, that is, if factor is not present
 				ComplexOrRealType tmp2
-				    = cook_input_expression(geometry_factor, 1.0, time);
+				    = cook_input_expression(geometryFactor, 1.0, time);
 
 				if (tmp2 == 0.0)
 					continue;
