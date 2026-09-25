@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
 // [LanczosPlusPlus++, Version 1.0.0]
-// [by G.A., Oak Ridge National Laboratory]
+// [DMRG++ authors; see AUTHORS.]
 
 /** \ingroup LanczosPlusPlus */
 /*@{*/

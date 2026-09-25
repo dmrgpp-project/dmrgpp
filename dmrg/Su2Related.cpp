@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
 // [DMRG++, Version 5.]
-// [by G.A., Oak Ridge National Laboratory]
+// [DMRG++ authors; see AUTHORS.]
 
 /*! \file Su2Related.cpp
  *
