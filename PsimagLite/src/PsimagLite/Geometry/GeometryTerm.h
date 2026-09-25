@@ -314,21 +314,13 @@ public:
 	                                    SizeType edof2) const
 	{
 		assert(geometryBase_);
-		bool     bothFringe = (geometryBase_->fringe(i1, smax, emin)
-                                   && geometryBase_->fringe(i2, smax, emin));
-		SizeType siteNew1   = i1;
-		SizeType siteNew2   = i2;
-		SizeType edofNew1   = edof1;
-		SizeType edofNew2   = edof2;
-		if (bothFringe) {
-			if (i2 < i1) {
-				siteNew1 = i2;
-				siteNew2 = i1;
-				edofNew1 = edof2;
-				edofNew2 = edof1;
-			}
-
-			siteNew2 = geometryBase_->getSubstituteSite(smax, emin, siteNew2);
+		SizeType siteNew1 = i1;
+		SizeType siteNew2 = i2;
+		SizeType edofNew1 = edof1;
+		SizeType edofNew2 = edof2;
+		if (normalizeSites(smax, emin, siteNew1, siteNew2) && i2 < i1) {
+			edofNew1 = edof2;
+			edofNew2 = edof1;
 		}
 
 		return operator()(siteNew1, edofNew1, siteNew2, edofNew2);
@@ -423,9 +415,10 @@ public:
 
 	const std::string& options() const { return gOptions_; }
 
-	const std::string& factor(SizeType i, SizeType j) const
+	const std::string& factor(SizeType smax, SizeType emin, SizeType i, SizeType j) const
 	{
 		assert(geometryBase_);
+		normalizeSites(smax, emin, i, j);
 		SizeType dir = geometryBase_->calcDir(i, j);
 		assert(dir < directions_.size());
 		return directions_[dir].factor();
@@ -447,6 +440,24 @@ public:
 	}
 
 private:
+
+	bool normalizeSites(SizeType smax, SizeType emin, SizeType& site1, SizeType& site2) const
+	{
+		assert(geometryBase_);
+		bool bothFringe = (geometryBase_->fringe(site1, smax, emin)
+		                   && geometryBase_->fringe(site2, smax, emin));
+		if (!bothFringe)
+			return false;
+
+		if (site2 < site1) {
+			SizeType tmp = site1;
+			site1        = site2;
+			site2        = tmp;
+		}
+
+		site2 = geometryBase_->getSubstituteSite(smax, emin, site2);
+		return true;
+	}
 
 	void cacheValues()
 	{
