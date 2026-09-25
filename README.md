@@ -120,9 +120,9 @@ Example: `-DBoost_ROOT=/path/to/boost`
   The `Plugin` option has a dependent option `-DDMRG_BUILD_BATCHED_MAGMA=ON` to search for MAGMA. Build and
   install MAGMA with either `-DMAGMA_ENABLE_CUDA=ON` or `-DMAGMA_ENABLE_HIP=ON`. For DMRG++ to find MAGMA,
   set
-```
-export PKG_CONFIG_PATH=<MAGMA_INSTALL_PREFIX>/lib/pkgconfig:$PKG_CONFIG_PATH
-```
+  ```
+  export PKG_CONFIG_PATH=<MAGMA_INSTALL_PREFIX>/lib/pkgconfig:$PKG_CONFIG_PATH
+  ```
   replacing `<MAGMA_INSTALL_PREFIX>` with the appropriate directory. Kokkos is used for memory managment, so
   either `-DKokkos_ENABLE_CUDA=ON`(NVIDIA) or `-DKokkos_ENABLE_HIP=ON`(AMD) must be set.
 
