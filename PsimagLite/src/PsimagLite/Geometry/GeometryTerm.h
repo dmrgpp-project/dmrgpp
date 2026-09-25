@@ -150,7 +150,13 @@ public:
 	    , geometryBase_(0)
 	    , gOptions_("none")
 	{
-		String savedPrefix = io.prefix();
+		String      savedPrefix = io.prefix();
+		std::string legacyFactor;
+		if (aux.termId == 0) {
+			try {
+				io.readline(legacyFactor, "GeometryFactor=");
+			} catch (std::exception&) { }
+		}
 		io.prefix() += (aux.numberOfTerms > 1) ? "gt" + ttos(aux.termId) + ":" : "";
 
 		InternalDofEnum idof = GeometryDirectionType::SPECIFIC;
@@ -167,10 +173,6 @@ public:
 
 		String s;
 		io.readline(s, "GeometryKind=");
-
-		try {
-			io.readline(gFactor_, "GeometryFactor=");
-		} catch (std::exception&) { }
 
 		io.readline(gOptions_, "GeometryOptions=");
 		bool constantValues = (gOptions_.find("ConstantValues") != String::npos);
@@ -210,8 +212,13 @@ public:
 
 		const SizeType ndirs = (geometryBase_) ? geometryBase_->dirs() : 0;
 		for (SizeType i = 0; i < ndirs; ++i) {
-			typename GeometryDirectionType::Auxiliary aux(
-			    constantValues, i, idof, orbitals_);
+			typename GeometryDirectionType::Auxiliary aux(constantValues,
+			                                              i,
+			                                              idof,
+			                                              orbitals_,
+			                                              aux_.termId,
+			                                              savedPrefix,
+			                                              legacyFactor);
 
 			directions_.push_back(GeometryDirectionType(io, aux, geometryBase_));
 		}
@@ -249,7 +256,6 @@ public:
 		ioSerializer.createGroup(label);
 		aux_.write(label + "/aux_", ioSerializer);
 		ioSerializer.write(label + "/orbitals_", orbitals_);
-		ioSerializer.write(label + "/gFactor_", gFactor_);
 		ioSerializer.write(label + "/gOptions_", gOptions_);
 		ioSerializer.write(label + "/directions_", directions_);
 		cachedValues_.write(label + "/cachedValues_", ioSerializer);
@@ -266,7 +272,6 @@ public:
 			str += "integer " + istr + "DegreesOfFreedom;\n";
 			str += "string " + istr + "GeometryKind;\n";
 			str += "string " + istr + "GeometryOptions;\n";
-			str += "string " + istr + "GeometryFactor;\n";
 			str += "integer " + istr + "LadderLeg;\n";
 			str += "integer " + istr + "LongChainDistance;\n";
 			str += "integer " + istr + "BathSitesPerSite;\n";
@@ -274,8 +279,10 @@ public:
 			for (SizeType j = 0; j < 9; ++j) {
 				String jstr = "dir" + ttos(j) + ":";
 				str += "vector " + istr + jstr + "Connectors;\n";
+				str += "string " + istr + jstr + "GeometryFactor;\n";
 			}
 		}
+		str += "string GeometryFactor;\n";
 
 		return str;
 	}
@@ -416,7 +423,13 @@ public:
 
 	const std::string& options() const { return gOptions_; }
 
-	const std::string& factor() const { return gFactor_; }
+	const std::string& factor(SizeType i, SizeType j) const
+	{
+		assert(geometryBase_);
+		SizeType dir = geometryBase_->calcDir(i, j);
+		assert(dir < directions_.size());
+		return directions_[dir].factor();
+	}
 
 	friend std::ostream& operator<<(std::ostream& os, const GeometryTerm& gt)
 	{
@@ -483,7 +496,6 @@ private:
 	SizeType                                     orbitals_;
 	GeometryBaseType*                            geometryBase_;
 	String                                       gOptions_;
-	std::string                                  gFactor_;
 	typename Vector<GeometryDirectionType>::Type directions_;
 	Matrix<ComplexOrRealType>                    cachedValues_;
 }; // class GeometryTerm

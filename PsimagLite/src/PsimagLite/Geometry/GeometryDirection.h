@@ -98,11 +98,20 @@ public:
 
 	struct Auxiliary {
 
-		Auxiliary(bool c, SizeType d, InternalDofEnum idof_, SizeType orbitals_)
+		Auxiliary(bool               c,
+		          SizeType           d,
+		          InternalDofEnum    idof_,
+		          SizeType           orbitals_,
+		          SizeType           termId_,
+		          const String&      inputPrefix_,
+		          const std::string& legacyFactor_)
 		    : constantValues(c)
 		    , dirId(d)
 		    , idof(idof_)
 		    , orbitals(orbitals_)
+		    , termId(termId_)
+		    , inputPrefix(inputPrefix_)
+		    , legacyFactor(legacyFactor_)
 		{ }
 
 		void write(PsimagLite::String label, IoSerializer& ioSerializer) const
@@ -117,6 +126,9 @@ public:
 		SizeType        dirId;
 		InternalDofEnum idof;
 		SizeType        orbitals;
+		SizeType        termId;
+		String          inputPrefix;
+		std::string     legacyFactor;
 	}; // struct Auxiliary
 
 	template <typename IoInputter>
@@ -162,6 +174,16 @@ public:
 		}
 
 		io.prefix() = savedPrefix;
+
+		io.prefix()
+		    = aux.inputPrefix + "gt" + ttos(aux.termId) + ":dir" + ttos(aux.dirId) + ":";
+		try {
+			io.readline(gFactor_, "GeometryFactor=");
+		} catch (std::exception&) { }
+		io.prefix() = savedPrefix;
+
+		if (gFactor_.empty() && aux.termId == 0 && aux.dirId == 0)
+			gFactor_ = aux.legacyFactor;
 	}
 
 	void write(PsimagLite::String label, IoSerializer& ioSerializer) const
@@ -172,6 +194,7 @@ public:
 		ioSerializer.write(label + "/dataNumbers_", dataNumbers_);
 		ioSerializer.write(label + "/dataMatrices_", dataMatrices_);
 		rawHoppings_.write(label + "/rawHoppings_", ioSerializer);
+		ioSerializer.write(label + "/gFactor_", gFactor_);
 	}
 
 	template <typename SomeMemResolvType>
@@ -216,6 +239,8 @@ public:
 
 	bool constantValues() const { return aux_.constantValues; }
 
+	const std::string& factor() const { return gFactor_; }
+
 	friend std::ostream& operator<<(std::ostream& os, const Auxiliary& a)
 	{
 		os << "constantValues=" << a.constantValues << "\n";
@@ -259,6 +284,7 @@ private:
 	typename Vector<ComplexOrRealType>::Type dataNumbers_;
 	typename Vector<MatrixType>::Type        dataMatrices_;
 	MatrixType                               rawHoppings_;
+	std::string                              gFactor_;
 }; // class GeometryDirection
 } // namespace PsimagLite
 
