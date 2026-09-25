@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
 // [DMRG++, Version 6.]
-// [by G.A., Oak Ridge National Laboratory]
+// [DMRG++ authors; see AUTHORS.]
 
 #ifndef TARGETING_CVEvolution_H
 #define TARGETING_CVEvolution_H

@@ -4,7 +4,7 @@
 // [MPS++, Version 0.1]
 // [by K. Al-Hassanieh, Oak Ridge National Laboratory]
 // [by J. Rincon, Oak Ridge National Laboratory]
-// [by G.A., Oak Ridge National Laboratory]
+// [DMRG++ authors; see AUTHORS.]
 
 /** \ingroup Dmrg */
 /*@{*/

@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
 // [DMRG++, Version 5.]
-// [by G.A., Oak Ridge National Laboratory]
+// [DMRG++ authors; see AUTHORS.]
 
 #ifndef DENSITY_MATRIX_LOCAL_H
 #define DENSITY_MATRIX_LOCAL_H
