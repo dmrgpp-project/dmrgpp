@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
 // [PsimagLite, Version 0.0.1]
-// [by G.A., Oak Ridge National Laboratory]
+// [DMRG++ authors; see AUTHORS.]
 
 #ifndef SAMPLE_CRSMATRIX_HEADER_H
 #define SAMPLE_CRSMATRIX_HEADER_H
