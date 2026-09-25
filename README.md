@@ -13,11 +13,14 @@ You are welcomed to use it and publish data
  obtained with DMRG++. If you do,
 *please cite this work* (see [`CITATION.cff`](CITATION.cff)).
 
-## License and Disclaimers
+## License
 
-The full software license for DMRG++ v7.00
-can be found in file LICENSE in the root directory of the code,
-along with disclaimers.
+DMRG++ first-party software is licensed under the GNU General Public License,
+version 3 or, at your option, any later version (`GPL-3.0-or-later`). See the
+root [`LICENSE`](LICENSE) file. This software comes with absolutely no warranty;
+see the GNU General Public License for details. Institutional notices are in
+[`NOTICE`](NOTICE), and terms for bundled third-party material are in
+[`THIRD_PARTY_NOTICES`](THIRD_PARTY_NOTICES).
 
 ## Building and Running DMRG++
 
