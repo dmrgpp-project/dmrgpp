@@ -180,9 +180,11 @@ public:
 		// FIXME: No support for site varying operators
 		if (label == "cc") {
 			BraketType braket(model_, "<gs|c?0;c?0'|gs>");
-			manyPoint(nullptr, braket, rows, cols, manyPointAction); // c_{0,0} spin down
+			manyPoint(
+			    nullptr, braket, rows, cols, manyPointAction); // c_{0,0} spin down
 			BraketType braket2(model_, "<gs|c?1;c?1'|gs>");
-			manyPoint(nullptr, braket2, rows, cols, manyPointAction); // c_{0,0} spin down
+			manyPoint(
+			    nullptr, braket2, rows, cols, manyPointAction); // c_{0,0} spin down
 		} else if (label == "nn") {
 			MatrixType out(rows, cols);
 			SizeType   site = 1;
