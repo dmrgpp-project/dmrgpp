@@ -60,7 +60,7 @@ private:
 	                                             char                               modifier,
 	                                             const ProgramGlobals::SysOrEnvEnum type) const
 	{
-		const OperatorStorageType* m = 0;
+		const OperatorStorageType* m = nullptr;
 		if (type == ProgramGlobals::SysOrEnvEnum::SYSTEM) {
 			m = &(lrs_.left().localOperator(iifirst).getStorage());
 		} else {

@@ -386,7 +386,7 @@ private:
 
 			if (!isVwoS) {
 				delete initialBySector;
-				initialBySector = 0;
+				initialBySector = nullptr;
 			}
 
 		} // end sectors

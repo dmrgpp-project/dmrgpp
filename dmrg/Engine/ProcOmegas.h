@@ -261,7 +261,7 @@ private:
 		}
 
 		delete[] ss;
-		ss = 0;
+		ss = nullptr;
 		checkSites(defined, inFile);
 		// print LOGFILEOUT "$0: correctionVectorRead maxsite= $maxSite\n";
 	}

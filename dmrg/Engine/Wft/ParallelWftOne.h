@@ -115,8 +115,8 @@ public:
 	    , i0_(i0)
 	    , oneSiteSpaces_(oneSiteSpaces)
 	    , dmrgWaveStruct_(dmrgWaveStruct)
-	    , pack1_(0)
-	    , pack2_(0)
+	    , pack1_(nullptr)
+	    , pack2_(nullptr)
 	{
 		dmrgWaveStruct_.getTransform(ProgramGlobals::SysOrEnvEnum::ENVIRON).toSparse(we_);
 		dmrgWaveStruct_.getTransform(ProgramGlobals::SysOrEnvEnum::SYSTEM).toSparse(ws_);

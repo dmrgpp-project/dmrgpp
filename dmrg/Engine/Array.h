@@ -15,7 +15,7 @@ public:
 
 	Array()
 	    : size_(0)
-	    , data_(0)
+	    , data_(nullptr)
 	{ }
 
 	Array(SizeType n)
@@ -27,7 +27,7 @@ public:
 
 	Array(const Array& other)
 	    : size_(0)
-	    , data_(0)
+	    , data_(nullptr)
 	{
 		assert(other.data_ || other.size_ == 0);
 		clear();
@@ -37,7 +37,7 @@ public:
 
 	Array(const std::vector<T>& other)
 	    : size_(0)
-	    , data_(0)
+	    , data_(nullptr)
 	{
 		fromStdVector(other);
 	}
@@ -45,7 +45,7 @@ public:
 	~Array()
 	{
 		delete[] data_;
-		data_ = 0;
+		data_ = nullptr;
 	}
 
 	Array& operator=(const Array& other)
@@ -61,7 +61,7 @@ public:
 	{
 		size_ = 0;
 		delete[] data_;
-		data_ = 0;
+		data_ = nullptr;
 	}
 
 	void resize(SizeType n)

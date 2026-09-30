@@ -147,7 +147,7 @@ public:
 	GeometryTerm(InputType& io, const Auxiliary& aux)
 	    : aux_(aux)
 	    , orbitals_(1)
-	    , geometryBase_(0)
+	    , geometryBase_(nullptr)
 	    , gOptions_("none")
 	{
 		String savedPrefix = io.prefix();

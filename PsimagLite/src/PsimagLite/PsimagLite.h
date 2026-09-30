@@ -46,7 +46,7 @@ template <typename T> void fillRandom(T& v, typename EnableIf<IsVectorLike<T>::T
 	if (n == 0)
 		throw std::runtime_error("fillRandom must be called with size > 0\n");
 
-	Random48<typename T::value_type>                        myrng(time(0));
+	Random48<typename T::value_type>                        myrng(time(nullptr));
 	typename PsimagLite::Real<typename T::value_type>::Type sum           = 0;
 	const typename T::value_type                            zeroPointFive = 0.5;
 	for (SizeType i = 0; i < n; ++i) {

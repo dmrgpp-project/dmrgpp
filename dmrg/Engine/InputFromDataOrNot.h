@@ -16,7 +16,7 @@ public:
 	InputFromDataOrNot(PsimagLite::String    filename,
 	                   const InputCheckType& inputCheck,
 	                   bool                  filenameIsCout)
-	    : ioWriteable_(0)
+	    : ioWriteable_(nullptr)
 	    , isData_(false)
 	{
 
@@ -34,7 +34,7 @@ public:
 	~InputFromDataOrNot()
 	{
 		delete ioWriteable_;
-		ioWriteable_ = 0;
+		ioWriteable_ = nullptr;
 	}
 
 	const typename InputNgType::Writeable& ioWriteable() const
@@ -48,7 +48,7 @@ private:
 
 	void internal(PsimagLite::String filename)
 	{
-		IoNgInType* io = 0;
+		IoNgInType* io = nullptr;
 		try {
 			io      = new IoNgInType(filename);
 			isData_ = true;
@@ -59,7 +59,7 @@ private:
 		PsimagLite::String buffer;
 		io->read(buffer, "InputBase64Encoded");
 		delete io;
-		io = 0;
+		io = nullptr;
 
 		PsimagLite::PsiBase64::Decode base64decode(buffer);
 		data_ = base64decode();

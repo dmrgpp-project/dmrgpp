@@ -150,7 +150,7 @@ public:
 	                       ProgramGlobals::DirectionEnum direction)
 	{
 		PsimagLite::Profiling  profiling("TruncationChangeBasis", std::cout);
-		DensityMatrixBaseType* dmS = 0;
+		DensityMatrixBaseType* dmS = nullptr;
 
 		if (direction == ProgramGlobals::DirectionEnum::EXPAND_SYSTEM) {
 			changeBasis(pS, target, keptStates, truncationControl, direction, &dmS);
@@ -163,7 +163,7 @@ public:
 		}
 
 		delete dmS;
-		dmS = 0;
+		dmS = nullptr;
 	}
 
 	const TransformType& transform(ProgramGlobals::DirectionEnum direction) const
@@ -183,7 +183,7 @@ public:
 	{
 		PsimagLite::Profiling profiling("TruncationChangeBasis", std::cout);
 
-		DensityMatrixBaseType* dmS = 0;
+		DensityMatrixBaseType* dmS = nullptr;
 		changeBasis(sBasis,
 		            target,
 		            keptStates,
@@ -194,9 +194,9 @@ public:
 		truncateBasis(
 		    sBasis, lrs_.right(), *dmS, ProgramGlobals::DirectionEnum::EXPAND_SYSTEM);
 		delete dmS;
-		dmS = 0;
+		dmS = nullptr;
 
-		DensityMatrixBaseType* dmE = 0;
+		DensityMatrixBaseType* dmE = nullptr;
 		changeBasis(eBasis,
 		            target,
 		            keptStates,
@@ -207,7 +207,7 @@ public:
 		truncateBasis(
 		    eBasis, lrs_.left(), *dmE, ProgramGlobals::DirectionEnum::EXPAND_ENVIRON);
 		delete dmE;
-		dmE = 0;
+		dmE = nullptr;
 	}
 
 private:
@@ -316,7 +316,7 @@ private:
 		                     PsimagLite::Concurrency::codeSectionParams.npthreadsLevelTwo,
 		                     parameters_.opOnSiteThreshold);
 
-		LeftRightSuperType* lrs = 0;
+		LeftRightSuperType* lrs = nullptr;
 		if (expandSys)
 			lrs = new LeftRightSuperType(rPrime,
 			                             const_cast<BasisWithOperatorsType&>(oppoBasis),
@@ -340,7 +340,7 @@ private:
 		progress_.printline(msgg, std::cout);
 
 		delete lrs;
-		lrs = 0;
+		lrs = nullptr;
 	}
 
 	// there is no right

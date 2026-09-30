@@ -436,7 +436,7 @@ for (SizeType dof = 0; dof < numberOfDofs; ++dof) {
 		assert(lrs.super().partition() > 0);
 		SizeType total = lrs.super().partition() - 1;
 
-		typename PsimagLite::Vector<VerySparseMatrixType*>::Type vvsm(total, 0);
+		typename PsimagLite::Vector<VerySparseMatrixType*>::Type vvsm(total, nullptr);
 		VectorSizeType                                           nzs(total, 0);
 
 		HamiltonianConnectionType hc(lrs, modelLinks_, currentTime, superOpHelper(), ioIn_);

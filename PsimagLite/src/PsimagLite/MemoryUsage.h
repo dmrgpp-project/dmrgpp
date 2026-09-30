@@ -97,7 +97,7 @@ public:
 		{
 			startTime_.tv_sec  = 0;
 			startTime_.tv_usec = 0;
-			gettimeofday(&startTime_, 0);
+			gettimeofday(&startTime_, nullptr);
 		}
 
 		TimeHandle(time_t s, suseconds_t u)

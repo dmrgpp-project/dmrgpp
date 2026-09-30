@@ -9,12 +9,12 @@
 #include <PsimagLite/PsimagLite.h>
 #include <unistd.h>
 
-std::streambuf* GlobalCoutBuffer = 0;
+std::streambuf* GlobalCoutBuffer = nullptr;
 std::ofstream   GlobalCoutStream;
 
 void restoreCoutBuffer()
 {
-	if (GlobalCoutBuffer == 0)
+	if (GlobalCoutBuffer == nullptr)
 		return;
 	GlobalCoutStream.close();
 	std::cout.rdbuf(GlobalCoutBuffer);

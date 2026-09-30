@@ -188,7 +188,7 @@ public:
 		void write(const T&                  what,
 		           String                    name2,
 		           IoNgSerializer::WriteMode mode = IoNgSerializer::NO_OVERWRITE,
-		           typename EnableIf<IsRootUnDelegated<T>::True, int*>::Type = 0)
+		           typename EnableIf<IsRootUnDelegated<T>::True, int*>::Type = nullptr)
 		{
 			ioNgSerializer_.write(name2, what, mode);
 		}
@@ -196,7 +196,7 @@ public:
 		template <typename T>
 		void write(const T& what,
 		           String   name2,
-		           typename EnableIf<!IsRootUnDelegated<T>::True, int*>::Type = 0)
+		           typename EnableIf<!IsRootUnDelegated<T>::True, int*>::Type = nullptr)
 		{
 			what.write(name2, ioNgSerializer_);
 		}
@@ -205,7 +205,7 @@ public:
 		void write(const T&                  what,
 		           String                    name2,
 		           IoNgSerializer::WriteMode mode,
-		           typename EnableIf<!IsRootUnDelegated<T>::True, int*>::Type = 0)
+		           typename EnableIf<!IsRootUnDelegated<T>::True, int*>::Type = nullptr)
 		{
 			what.write(name2, ioNgSerializer_, mode);
 		}
@@ -213,7 +213,7 @@ public:
 		template <typename T>
 		void overwrite(const T& what,
 		               String   name2,
-		               typename EnableIf<IsRootUnDelegated<T>::True, int*>::Type = 0)
+		               typename EnableIf<IsRootUnDelegated<T>::True, int*>::Type = nullptr)
 		{
 			ioNgSerializer_.overwrite(name2, what);
 		}
@@ -221,7 +221,7 @@ public:
 		template <typename T>
 		void overwrite(const T& what,
 		               String   name2,
-		               typename EnableIf<!IsRootUnDelegated<T>::True, int*>::Type = 0)
+		               typename EnableIf<!IsRootUnDelegated<T>::True, int*>::Type = nullptr)
 		{
 			what.overwrite(name2, ioNgSerializer_);
 		}
@@ -284,7 +284,7 @@ public:
 		template <typename T>
 		void read(T&     what,
 		          String name,
-		          typename EnableIf<IsRootUnDelegated<T>::True, int*>::Type = 0)
+		          typename EnableIf<IsRootUnDelegated<T>::True, int*>::Type = nullptr)
 		{
 			ioNgSerializer_.read(what, name);
 		}
@@ -292,7 +292,7 @@ public:
 		template <typename T>
 		void read(T&     what,
 		          String name,
-		          typename EnableIf<!IsRootUnDelegated<T>::True, int*>::Type = 0)
+		          typename EnableIf<!IsRootUnDelegated<T>::True, int*>::Type = nullptr)
 		{
 			what.read(name, ioNgSerializer_);
 		}

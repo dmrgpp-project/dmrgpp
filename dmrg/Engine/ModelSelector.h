@@ -134,7 +134,7 @@ public:
 
 	ModelSelector(const PsimagLite::String& name)
 	    : name_(name)
-	    , model_(0)
+	    , model_(nullptr)
 	{ }
 
 	~ModelSelector()

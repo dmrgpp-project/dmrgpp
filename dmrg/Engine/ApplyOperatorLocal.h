@@ -119,7 +119,7 @@ template <typename LeftRightSuperType_, typename VectorWithOffsetType_> class Ap
 			if (withLegacyBug_)
 				return;
 			delete Aptr_;
-			Aptr_ = 0;
+			Aptr_ = nullptr;
 		}
 
 		const OperatorType_& operator()() const

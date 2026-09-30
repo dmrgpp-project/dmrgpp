@@ -581,6 +581,6 @@ template <typename T1, typename T2>
 std::map<PsimagLite::String, SizeType> ModelLinks<T1, T2>::offsets_;
 
 template <typename T1, typename T2>
-const typename ModelLinks<T1, T2>::AtomKindBase* ModelLinks<T1, T2>::atomKind_ = 0;
+const typename ModelLinks<T1, T2>::AtomKindBase* ModelLinks<T1, T2>::atomKind_ = nullptr;
 }
 #endif // MODEL_LINKS_H

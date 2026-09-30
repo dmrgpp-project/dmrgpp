@@ -97,7 +97,7 @@ public:
 
 	SuperGeometry(InputType_& io)
 	    : geometry_(io)
-	    , dcaPtr_(0)
+	    , dcaPtr_(nullptr)
 	    , hollowOutRadius_(0)
 	{
 		// add super terms as needed

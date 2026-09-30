@@ -135,7 +135,7 @@ class BlockDiagWf {
 #endif
 			MatrixType* mptr = data_[ipatch];
 
-			if (mptr == 0)
+			if (mptr == nullptr)
 				return;
 
 			MatrixType& m     = *mptr;
@@ -591,7 +591,7 @@ private:
 		for (SizeType ipatch = 0; ipatch < npatches; ++ipatch) {
 			const MatrixType* mptr = data_[ipatch];
 
-			if (mptr == 0)
+			if (mptr == nullptr)
 				continue;
 
 			const MatrixType& m       = *mptr;
@@ -644,7 +644,7 @@ private:
 		for (SizeType ipatch = 0; ipatch < npatches; ++ipatch) {
 			const MatrixType* mptr = data_[ipatch];
 
-			if (mptr == 0)
+			if (mptr == nullptr)
 				continue;
 
 			const MatrixType& m       = *mptr;

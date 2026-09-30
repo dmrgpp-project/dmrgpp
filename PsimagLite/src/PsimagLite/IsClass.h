@@ -19,7 +19,7 @@ public:
 
 	enum
 	{
-		value = sizeof(IsClass<T>::template test<T>(0)) == sizeof(One)
+		value = sizeof(IsClass<T>::template test<T>(nullptr)) == sizeof(One)
 	};
 };
 

@@ -107,7 +107,7 @@ public:
 		LoadBalancerType* loadBalancer = new LoadBalancerType(pfh.tasks(), 1);
 		loopCreate(pfh, *loadBalancer);
 		delete loadBalancer;
-		loadBalancer = 0;
+		loadBalancer = nullptr;
 	}
 
 	// weights, no balancer ==> create balancer with weights ==> delegate

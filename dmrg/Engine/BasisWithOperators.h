@@ -301,7 +301,7 @@ public:
 	           SaveEnum                                       option,
 	           typename PsimagLite::EnableIf<PsimagLite::IsOutputLike<SomeOutputType>::True,
 	                                         int*>::Type
-	           = 0) const
+	           = nullptr) const
 	{
 		write(io, prefix + "/" + BasisType::name(), mode, option);
 	}
@@ -313,7 +313,7 @@ public:
 	           SaveEnum                                       option,
 	           typename PsimagLite::EnableIf<PsimagLite::IsOutputLike<SomeOutputType>::True,
 	                                         int*>::Type
-	           = 0) const
+	           = nullptr) const
 	{
 		BasisType::write(io, s, mode, false); // parent saves
 		if (option == SaveEnum::ALL && !basisTraits_.noSaveOperators)

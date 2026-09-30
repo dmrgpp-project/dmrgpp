@@ -455,10 +455,10 @@ private:
 	static void listFilesInDirectory(std::vector<PsimagLite::String>& files,
 	                                 PsimagLite::String               path)
 	{
-		DIR*    dir = 0;
-		dirent* ent = 0;
-		if ((dir = opendir(path.c_str())) != 0) {
-			while ((ent = readdir(dir)) != 0) {
+		DIR*    dir = nullptr;
+		dirent* ent = nullptr;
+		if ((dir = opendir(path.c_str())) != nullptr) {
+			while ((ent = readdir(dir)) != nullptr) {
 				files.push_back(ent->d_name);
 			}
 

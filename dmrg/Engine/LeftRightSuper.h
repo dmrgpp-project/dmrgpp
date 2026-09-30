@@ -110,9 +110,9 @@ public:
 	    const BasisTraits& basisTraits,
 	    typename PsimagLite::EnableIf<PsimagLite::IsInputLike<IoInputter>::True, int>::Type = 0)
 	    : progress_("LeftRightSuper")
-	    , left_(0)
-	    , right_(0)
-	    , super_(0)
+	    , left_(nullptr)
+	    , right_(nullptr)
+	    , super_(nullptr)
 	    , refCounter_(0)
 	{
 		prefix += "/LRS";
@@ -138,9 +138,9 @@ public:
 	               const PsimagLite::String& selabel,
 	               const BasisTraits&        basisTraits)
 	    : progress_("LeftRightSuper")
-	    , left_(0)
-	    , right_(0)
-	    , super_(0)
+	    , left_(nullptr)
+	    , right_(nullptr)
+	    , super_(nullptr)
 	    , refCounter_(0)
 	{
 		left_  = new BasisWithOperatorsType(slabel, basisTraits);
@@ -156,11 +156,11 @@ public:
 		}
 
 		delete left_;
-		left_ = 0;
+		left_ = nullptr;
 		delete right_;
-		right_ = 0;
+		right_ = nullptr;
 		delete super_;
-		super_ = 0;
+		super_ = nullptr;
 	}
 
 	LeftRightSuper(BasisWithOperatorsType& left,

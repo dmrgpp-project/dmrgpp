@@ -110,7 +110,7 @@ public:
 	time_t unixTime(bool arg = false) const
 	{
 		struct timeval tv;
-		gettimeofday(&tv, 0);
+		gettimeofday(&tv, nullptr);
 		return (arg) ? tv.tv_usec : tv.tv_sec;
 	}
 
