@@ -71,7 +71,7 @@ private:
 
 	using DevArgsView = Kokkos::View<GemmArgs*, MemorySpace>;
 
-	static const int ialign_ = 32;
+	inline static constexpr int ialign_ = 32;
 
 	// Pass 2 GEMMs have very few batches (one per patch, == npatches, which can be as low as
 	// single digits) but each has a very long contraction (k) dimension, so a single GEMM per
@@ -110,8 +110,8 @@ private:
 	// The exact values have been tuned for a Grace Hopper 200 and the 345 test case. The
 	// bench_BatchedGemm executable can be used for tuning the values for different
 	// architectures if necessary. It turned out that they were also suitable for a MI300A.
-	static const int kPass2ColChunk_ = 32;
-	static const int kPass2TileDim_  = 64;
+	inline static constexpr int kPass2ColChunk_ = 32;
+	inline static constexpr int kPass2TileDim_  = 64;
 
 	// Pass 1 batches one GEMM per non-zero (ip, jp, k) connection triple, but the number of
 	// such triples (tens to low thousands, see setup_) is often far smaller than what's needed
@@ -121,7 +121,7 @@ private:
 	// 2), we split each triple's m dimension into row-blocks of at most kPass1RowChunk_ rows
 	// and emit one GEMM per row-block, multiplying the number of pass-1 teams for large-m
 	// triples while leaving small-m triples (m <= kPass1RowChunk_) unsplit.
-	static const int kPass1RowChunk_ = 16;
+	inline static constexpr int kPass1RowChunk_ = 16;
 
 public:
 
