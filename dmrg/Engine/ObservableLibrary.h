@@ -165,7 +165,7 @@ public:
 				continue;
 			}
 
-			manyPoint(0, braket, rows, cols, manyPointAction);
+			manyPoint(nullptr, braket, rows, cols, manyPointAction);
 		}
 	}
 
@@ -180,9 +180,11 @@ public:
 		// FIXME: No support for site varying operators
 		if (label == "cc") {
 			BraketType braket(model_, "<gs|c?0;c?0'|gs>");
-			manyPoint(0, braket, rows, cols, manyPointAction); // c_{0,0} spin down
+			manyPoint(
+			    nullptr, braket, rows, cols, manyPointAction); // c_{0,0} spin down
 			BraketType braket2(model_, "<gs|c?1;c?1'|gs>");
-			manyPoint(0, braket2, rows, cols, manyPointAction); // c_{0,0} spin down
+			manyPoint(
+			    nullptr, braket2, rows, cols, manyPointAction); // c_{0,0} spin down
 		} else if (label == "nn") {
 			MatrixType out(rows, cols);
 			SizeType   site = 1;
@@ -379,7 +381,7 @@ public:
 		} else if (label == "dd") {
 
 			BraketType braket(model_, "<gs|d;d'|gs>");
-			manyPoint(0, braket, rows, cols, manyPointAction);
+			manyPoint(nullptr, braket, rows, cols, manyPointAction);
 
 		} else if (label == "pp") {
 			if (model_.params().model != "TjMultiOrb"
@@ -1433,7 +1435,7 @@ private:
 
 		if (braket.points() == 2) {
 			bool needsPrinting = false;
-			if (storage == 0) {
+			if (storage == nullptr) {
 				needsPrinting = true;
 				storage       = new MatrixType(rows, cols);
 			}
@@ -1442,7 +1444,7 @@ private:
 
 			if (needsPrinting) {
 				delete storage;
-				storage = 0;
+				storage = nullptr;
 			}
 
 			return;

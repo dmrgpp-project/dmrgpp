@@ -36,7 +36,7 @@ public:
 			delete a_[i];
 			delete b_[i];
 			delete c_[i];
-			a_[i] = b_[i] = c_[i] = 0;
+			a_[i] = b_[i] = c_[i] = nullptr;
 		}
 	}
 

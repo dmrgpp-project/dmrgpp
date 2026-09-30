@@ -155,7 +155,7 @@ public:
 	    : ModelBaseType(solverParams, geometry, io)
 	    , modelParameters_(io)
 	    , isSsh_(additional == "SSH")
-	    , atomKind_(0)
+	    , atomKind_(nullptr)
 	{
 		if (isSsh_)
 			err("SSH not supported in thin version yet!\n");

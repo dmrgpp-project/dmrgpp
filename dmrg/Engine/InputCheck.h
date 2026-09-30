@@ -94,7 +94,7 @@ class InputCheck {
 public:
 
 	InputCheck()
-	    : optsReadable_(0)
+	    : optsReadable_(nullptr)
 	{
 		allowedFileOptions_.push_back("");
 		allowedFileOptions_.push_back("DELETE");
@@ -226,7 +226,7 @@ public:
 
 	~InputCheck()
 	{
-		if (optsReadable_ != 0)
+		if (optsReadable_ != nullptr)
 			delete optsReadable_;
 	}
 

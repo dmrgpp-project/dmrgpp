@@ -20,7 +20,7 @@ public:
 	~OutputFileOrNot()
 	{
 		delete ptr_;
-		ptr_ = 0;
+		ptr_ = nullptr;
 	}
 
 	const PsimagLite::String& filename() const { return filename_; }

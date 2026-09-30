@@ -155,7 +155,7 @@ public:
 		const VectorType&         gsVector   = vectors_[0];
 		const LabeledOperatorType lOperator2 = lOperator1.transposeConjugate();
 
-		const BasisType* basisNew   = 0;
+		const BasisType* basisNew   = nullptr;
 		bool             isDiagonal = (isite == jsite && orbs.first == orbs.second);
 		PairType         oldParts   = model_.basis().parts();
 		for (SizeType type = 0; type < lOperator1.numberOfTypes(); ++type) {
@@ -275,7 +275,7 @@ public:
 	              const PairType&                                      orbs,
 	              const PairType&                                      braAndKet) const
 	{
-		const BasisType* basisNew = 0;
+		const BasisType* basisNew = nullptr;
 		PairType         oldParts = model_.basis().parts();
 
 		if (lOperator.needsNewBasis()) {
@@ -410,7 +410,7 @@ public:
 		}
 
 		if (!model_.hasNewParts(newParts, oldParts, lOperator, spin, orb))
-			return 0;
+			return nullptr;
 
 		BasisType* basisNew = model_.createBasis(newParts.first, newParts.second);
 

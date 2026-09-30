@@ -110,7 +110,7 @@ public:
 
 		Out()
 		    : rank_(0)
-		    , fout_(0)
+		    , fout_(nullptr)
 		{ }
 
 		Out(std::ostream& os)
@@ -123,7 +123,7 @@ public:
 		Out(const String& fn)
 		    : rank_(Concurrency::rank())
 		    , filename_(fn)
-		    , fout_(0)
+		    , fout_(nullptr)
 		{
 			if (rank_ != 0)
 				return;

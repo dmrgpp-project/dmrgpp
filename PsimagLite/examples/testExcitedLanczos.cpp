@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
 	PsimagLite::LanczosSolver<PsimagLite::CrsMatrix<ComplexType>> lanczosSolver(msparse,
 	                                                                            params);
 
-	PsimagLite::Random48<double> myrng(time(0));
+	PsimagLite::Random48<double> myrng(time(nullptr));
 	VectorComplexType            initialV(n, 0.0);
 	for (SizeType i = 0; i < n; ++i)
 		initialV[i] = myrng() - 0.5;

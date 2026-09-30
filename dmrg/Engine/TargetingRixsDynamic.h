@@ -290,7 +290,7 @@ public:
 		} else {
 			// just to set the stage and currenttime: CHEBY and KRYLOVTIME
 			this->common().aoeNonConst().getPhi(
-			    0, Eg, direction, site, loopNumber, *tstStruct2_);
+			    nullptr, Eg, direction, site, loopNumber, *tstStruct2_);
 		}
 
 		if (!applied_) {

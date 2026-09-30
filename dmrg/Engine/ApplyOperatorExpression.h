@@ -170,7 +170,7 @@ public:
 	~ApplyOperatorExpression()
 	{
 		delete timeVectorsBase_;
-		timeVectorsBase_ = 0;
+		timeVectorsBase_ = nullptr;
 		clearPsi();
 
 		const SizeType n = targetVectors_.size();

@@ -102,7 +102,7 @@ public:
 
 	LadderBath(SizeType linSize, InputType& io)
 	    : linSize_(linSize)
-	    , ladder_(0)
+	    , ladder_(nullptr)
 	{
 		io.readline(bathSitesPerSite_, "BathSitesPerSite=");
 		clusterSize_ = linSize_ / (1 + bathSitesPerSite_);

@@ -44,14 +44,14 @@ public:
 	MemResolv(T* ptr)
 	    : intoOffset_(0)
 	    , refTextPtr_(0)
-	    , zeroes_(0)
+	    , zeroes_(nullptr)
 	    , lenOfZeroes_(0)
 	{ }
 
 	MemResolv(String filename, String label)
 	    : intoOffset_(0)
 	    , refTextPtr_(0)
-	    , zeroes_(0)
+	    , zeroes_(nullptr)
 	    , lenOfZeroes_(0)
 	{
 		if (label.length() < LABEL_LENGTH) {
@@ -411,7 +411,7 @@ private:
 		if (lenOfZeroes_ == x)
 			return;
 
-		if (zeroes_ != 0)
+		if (zeroes_ != nullptr)
 			delete[] zeroes_;
 
 		assert(x > 0);
@@ -522,7 +522,7 @@ private:
 
 			SizeType len       = vmptr_[i].length;
 			char*    mptr      = reinterpret_cast<char*>(vmptr_[i].ptr);
-			char*    allocated = 0;
+			char*    allocated = nullptr;
 
 			if (vmptr_[i].type == MEMORY_HEAPPTR) {
 				allocated = new char[len];
@@ -533,7 +533,7 @@ private:
 				              &offsetsForHoles);
 			}
 
-			fout.write((allocated == 0) ? mptr : allocated, len);
+			fout.write((allocated == nullptr) ? mptr : allocated, len);
 			total += len;
 			if (allocated)
 				delete[] allocated;
@@ -706,7 +706,7 @@ private:
 	long int correctionForHoles(long unsigned int     value,
 	                            const VectorPairType* offsetsForHolesPtr) const
 	{
-		if (offsetsForHolesPtr == 0)
+		if (offsetsForHolesPtr == nullptr)
 			return 0;
 		const VectorPairType& offsetsForHoles = *offsetsForHolesPtr;
 		long int              c               = 0;

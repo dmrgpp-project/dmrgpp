@@ -675,7 +675,7 @@ obtain ordered
 
 		++counter_;
 		delete ds;
-		ds = 0;
+		ds = nullptr;
 	}
 
 	bool finalStep(int stepLength, int stepFinal)

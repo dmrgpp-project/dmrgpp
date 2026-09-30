@@ -136,7 +136,7 @@ public:
 	      const T&  what,
 	      WriteMode allowOverwrite = NO_OVERWRITE,
 	      typename EnableIf<Loki::TypeTraits<T>::isArith || std::is_enum<T>::value, int*>::Type
-	      = 0)
+	      = nullptr)
 	{
 		String      name = "Def/" + name2;
 		const void* ptr  = static_cast<const T*>(&what);
@@ -183,7 +183,7 @@ public:
 	           WriteMode                allowOverwrite = NO_OVERWRITE,
 	           typename EnableIf<Loki::TypeTraits<T1>::isArith && Loki::TypeTraits<T2>::isArith,
 	                             int*>::Type
-	           = 0)
+	           = nullptr)
 	{
 		if (allowOverwrite != ALLOW_OVERWRITE)
 			createGroup(name2);
@@ -198,7 +198,7 @@ public:
 	      WriteMode                allowOverwrite = NO_OVERWRITE,
 	      typename EnableIf<Loki::TypeTraits<T1>::isArith && !Loki::TypeTraits<T2>::isArith,
 	                        int*>::Type
-	      = 0)
+	      = nullptr)
 	{
 		overwriteNotSupported(allowOverwrite);
 		createGroup(name2);
@@ -212,7 +212,7 @@ public:
 	           std::stack<T>& what,
 	           WriteMode      allowOverwrite = NO_OVERWRITE,
 	           typename EnableIf<!Loki::TypeTraits<typename Real<T>::Type>::isArith, int*>::Type
-	           = 0)
+	           = nullptr)
 	{
 		overwriteNotSupported(allowOverwrite);
 		createGroup(name);
@@ -236,7 +236,7 @@ public:
 	void write(String                name2,
 	           const std::vector<T>& what,
 	           WriteMode             allowOverwrite                        = NO_OVERWRITE,
-	           typename EnableIf<Loki::TypeTraits<T>::isArith, int*>::Type = 0)
+	           typename EnableIf<Loki::TypeTraits<T>::isArith, int*>::Type = nullptr)
 	{
 		if (what.size() == 0)
 			return;
@@ -258,7 +258,7 @@ public:
 	void write(String                              name2,
 	           const std::vector<std::complex<T>>& what,
 	           WriteMode                           allowOverwrite          = NO_OVERWRITE,
-	           typename EnableIf<Loki::TypeTraits<T>::isArith, int*>::Type = 0)
+	           typename EnableIf<Loki::TypeTraits<T>::isArith, int*>::Type = nullptr)
 	{
 		if (what.size() == 0)
 			return;
@@ -281,7 +281,7 @@ public:
 	           const std::vector<std::vector<T>>& what,
 	           WriteMode                          allowOverwrite = NO_OVERWRITE,
 	           typename EnableIf<Loki::TypeTraits<typename Real<T>::Type>::isArith, int*>::Type
-	           = 0)
+	           = nullptr)
 	{
 		SizeType n = what.size();
 		if (allowOverwrite != ALLOW_OVERWRITE)
@@ -313,7 +313,7 @@ public:
 	           typename EnableIf<!Loki::TypeTraits<typename Real<T>::Type>::isArith
 	                                 && !IsPairLike<T>::True && !IsEnumClass<T>::value,
 	                             int*>::Type
-	           = 0)
+	           = nullptr)
 	{
 		SizeType n = what.size();
 		createGroup(name2);
@@ -329,7 +329,7 @@ public:
 	           typename EnableIf<!Loki::TypeTraits<typename Real<T>::Type>::isArith
 	                                 && !IsPairLike<T>::True && !IsEnumClass<T>::value,
 	                             int*>::Type
-	           = 0)
+	           = nullptr)
 	{
 		SizeType n = what.size();
 		if (allowOverwrite != ALLOW_OVERWRITE)
@@ -343,7 +343,7 @@ public:
 	void write(String                name2,
 	           const std::vector<T>& what,
 	           WriteMode             allowOverwrite                 = NO_OVERWRITE,
-	           typename EnableIf<IsEnumClass<T>::value, int*>::Type = 0)
+	           typename EnableIf<IsEnumClass<T>::value, int*>::Type = nullptr)
 	{
 		overwriteNotSupported(allowOverwrite);
 		SizeType n = what.size();
@@ -359,7 +359,7 @@ public:
 	               typename EnableIf<!Loki::TypeTraits<typename Real<T>::Type>::isArith
 	                                     && !IsPairLike<T>::True,
 	                                 int*>::Type
-	               = 0)
+	               = nullptr)
 	{
 		SizeType n    = what.size();
 		SizeType oldN = 0;
@@ -388,7 +388,7 @@ public:
 	           typename EnableIf<!Loki::TypeTraits<typename Real<T>::Type>::isArith
 	                                 && IsPairLike<T>::True,
 	                             int*>::Type
-	           = 0)
+	           = nullptr)
 	{
 		overwriteNotSupported(allowOverwrite);
 		SizeType n = what.size();
@@ -403,7 +403,7 @@ public:
 	           const std::vector<T*>& what,
 	           WriteMode              allowOverwrite = NO_OVERWRITE,
 	           typename EnableIf<!Loki::TypeTraits<typename Real<T>::Type>::isArith, int*>::Type
-	           = 0)
+	           = nullptr)
 	{
 		overwriteNotSupported(allowOverwrite);
 		SizeType n = what.size();
@@ -423,7 +423,7 @@ public:
 	    String    name,
 	    typename EnableIf<Loki::TypeTraits<SomeType>::isArith && !std::is_enum<SomeType>::value,
 	                      int*>::Type
-	    = 0)
+	    = nullptr)
 	{
 		void*       ptr     = static_cast<void*>(&value);
 		H5::DataSet dataset = hdf5file_->openDataSet("Def/" + name);
@@ -447,7 +447,7 @@ public:
 	          String             name,
 	          typename EnableIf<Loki::TypeTraits<T1>::isArith && Loki::TypeTraits<T2>::isArith,
 	                            int*>::Type
-	          = 0)
+	          = nullptr)
 	{
 		read(what.first, name + "/0");
 		read(what.second, name + "/1");
@@ -476,7 +476,7 @@ public:
 	          String    name,
 	          typename EnableIf<std::is_enum<SomeType>::value || IsEnumClass<SomeType>::value,
 	                            int*>::Type
-	          = 0)
+	          = nullptr)
 	{
 		SizeType x = 0;
 		read(x, name);
@@ -486,7 +486,7 @@ public:
 	template <typename T>
 	void read(std::vector<T>& what,
 	          String          name,
-	          typename EnableIf<Loki::TypeTraits<T>::isArith, int*>::Type = 0)
+	          typename EnableIf<Loki::TypeTraits<T>::isArith, int*>::Type = nullptr)
 	{
 		readInternal(what, name);
 	}
@@ -494,7 +494,7 @@ public:
 	template <typename T>
 	void read(std::vector<std::complex<T>>& what,
 	          String                        name,
-	          typename EnableIf<Loki::TypeTraits<T>::isArith, int*>::Type = 0)
+	          typename EnableIf<Loki::TypeTraits<T>::isArith, int*>::Type = nullptr)
 	{
 		readInternal(what, name);
 	}
@@ -519,7 +519,7 @@ public:
 	          typename EnableIf<!Loki::TypeTraits<typename Real<T>::Type>::isArith
 	                                && !IsPairLike<T>::True && !IsEnumClass<T>::value,
 	                            int*>::Type
-	          = 0)
+	          = nullptr)
 	{
 		SizeType size = 0;
 		read(size, name + "/Size");
@@ -546,7 +546,7 @@ public:
 	template <typename T>
 	void read(std::vector<T>& what,
 	          String          name,
-	          typename EnableIf<IsEnumClass<T>::value, int*>::Type = 0)
+	          typename EnableIf<IsEnumClass<T>::value, int*>::Type = nullptr)
 	{
 		SizeType size = 0;
 		read(size, name + "/Size");

@@ -26,8 +26,8 @@
 template <typename SomeLambdaType, typename LoadBalancerType = PsimagLite::LoadBalancerDefault>
 struct PthreadFunctionStruct2 {
 	PthreadFunctionStruct2()
-	    : pfh(0)
-	    , loadBalancer(0)
+	    : pfh(nullptr)
+	    , loadBalancer(nullptr)
 	    , threadNum(0)
 	    , nthreads(0)
 	    , start(0)
@@ -70,7 +70,7 @@ void* thread_function_wrapper2(void* dummyPtr)
 
 	int retval = 0;
 	pthread_exit(static_cast<void*>(&retval));
-	return 0;
+	return nullptr;
 }
 
 namespace PsimagLite {
@@ -98,7 +98,7 @@ public:
 		LoadBalancerType* loadBalancer = new LoadBalancerType(end - start, nthreads_);
 		parallelFor(start, end, lambda, *loadBalancer);
 		delete loadBalancer;
-		loadBalancer = 0;
+		loadBalancer = nullptr;
 	}
 
 	// weights, no balancer ==> create balancer with weights ==> delegate
@@ -163,12 +163,12 @@ public:
 		}
 
 		for (SizeType j = 0; j < nthreads_; ++j)
-			pthread_join(thread_id[j], 0);
+			pthread_join(thread_id[j], nullptr);
 		for (SizeType j = 0; j < nthreads_; ++j) {
 			int ret = pthread_attr_destroy(attr[j]);
 			checkForError(ret);
 			delete attr[j];
-			attr[j] = 0;
+			attr[j] = nullptr;
 		}
 
 		delete[] attr;

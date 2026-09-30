@@ -124,7 +124,7 @@ public:
 
 	static void mutexInit(MutexType* mutex)
 	{
-		if (pthread_mutex_init(mutex, 0) != 0)
+		if (pthread_mutex_init(mutex, nullptr) != 0)
 			std::cerr << "WARNING: mutexInit returned non zero\n";
 	}
 

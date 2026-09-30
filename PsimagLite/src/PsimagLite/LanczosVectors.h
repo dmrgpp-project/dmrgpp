@@ -124,8 +124,8 @@ public:
 	    , dummy_(0)
 	    , needsDelete_(false)
 	    , ysaved_(0)
-	    , data_(0)
-	    , overlap_(0)
+	    , data_(nullptr)
+	    , overlap_(nullptr)
 	{
 		if (!lotaMemory)
 			throw RuntimeError("LanczosVectors: support for lotaMemory=false has "
@@ -137,13 +137,13 @@ public:
 	~LanczosVectors()
 	{
 		delete overlap_;
-		overlap_ = 0;
+		overlap_ = nullptr;
 
 		if (!needsDelete_)
 			return;
 
 		delete data_;
-		data_ = 0;
+		data_ = nullptr;
 	}
 
 	void saveVector(const VectorType& y, SizeType j)

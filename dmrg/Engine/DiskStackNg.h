@@ -92,13 +92,13 @@ public:
 	          bool                     needsToRead,
 	          PsimagLite::String       label,
 	          const BasisTraits&       basisTraits)
-	    : ioOut_((needsToRead) ? 0 : new IoOutType(filename, PsimagLite::IoNg::ACC_RDW))
-	    , ioIn_((needsToRead) ? new IoInType(filename) : 0)
+	    : ioOut_((needsToRead) ? nullptr : new IoOutType(filename, PsimagLite::IoNg::ACC_RDW))
+	    , ioIn_((needsToRead) ? new IoInType(filename) : nullptr)
 	    , label_("DiskStack" + label)
 	    , basisTraits_(basisTraits)
 	    , total_(0)
 	    , progress_("DiskStack")
-	    , dt_(0)
+	    , dt_(nullptr)
 	{
 		if (!needsToRead) {
 			ioOut_->createGroup(label_);
@@ -116,11 +116,11 @@ public:
 	~DiskStack()
 	{
 		delete dt_;
-		dt_ = 0;
+		dt_ = nullptr;
 		delete ioIn_;
-		ioIn_ = 0;
+		ioIn_ = nullptr;
 		delete ioOut_;
-		ioOut_ = 0;
+		ioOut_ = nullptr;
 	}
 
 	void flush()
@@ -181,7 +181,7 @@ public:
 
 		assert(total_ > 0);
 		delete dt_;
-		dt_ = 0;
+		dt_ = nullptr;
 		dt_ = new DataType(*ioIn_, label_ + "/" + ttos(total_ - 1), basisTraits_);
 		return *dt_;
 	}

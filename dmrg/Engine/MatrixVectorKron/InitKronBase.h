@@ -142,7 +142,7 @@ public:
 			delete yc_[ic];
 		if (wftMode_) {
 			delete ijpatchesNew_;
-			ijpatchesNew_ = 0;
+			ijpatchesNew_ = nullptr;
 		}
 	}
 

@@ -26,8 +26,8 @@ public:
 	                  PsimagLite::String       label,
 	                  const BasisTraits&       basisTraits)
 	    : basisTraits_(basisTraits)
-	    , diskW_(0)
-	    , diskR_(0)
+	    , diskW_(nullptr)
+	    , diskR_(nullptr)
 	{
 		if (!onDisk)
 			return;
@@ -48,9 +48,9 @@ public:
 	~DiskOrMemoryStack()
 	{
 		delete diskR_;
-		diskR_ = 0;
+		diskR_ = nullptr;
 		delete diskW_;
-		diskW_ = 0;
+		diskW_ = nullptr;
 	}
 
 	void push(const BasisWithOperatorsType& b)

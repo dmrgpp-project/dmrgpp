@@ -96,7 +96,7 @@ private:
 	static bool divisibleBy(SizeType lv,
 	                        SizeType rv,
 	                        typename std::enable_if<Loki::TypeTraits<T>::isArith, int*>::type
-	                        = 0)
+	                        = nullptr)
 	{
 		return ((lv % rv) == 0);
 	}

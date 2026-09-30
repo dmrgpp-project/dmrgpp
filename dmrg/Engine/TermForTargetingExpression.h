@@ -170,7 +170,7 @@ public:
 			oneOperator(ket_dest, ket_src, *op, site);
 
 			delete op;
-			op = 0;
+			op = nullptr;
 		}
 
 		// discarded terms and inversion

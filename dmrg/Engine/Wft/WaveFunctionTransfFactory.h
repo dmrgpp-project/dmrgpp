@@ -143,7 +143,7 @@ public:
 	          params.options.isSet("wftstacksondisk"),
 	          params.filename,
 	          { params.options.isSet("observe"), params.options.isSet("noSaveOperators") })
-	    , wftImpl_(0)
+	    , wftImpl_(nullptr)
 	    , rng_(3433117)
 	    , noLoad_(false)
 	    , save_(!params.options.isSet("noSaveWft") && !params.options.isSet("minimizeDisk"))

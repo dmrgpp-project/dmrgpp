@@ -46,7 +46,7 @@ public:
 	 SuperHubbardExtended FeAsBasedSc FeAsBasedScExtended
 	*/
 	ModelSelector(InputType& io, const GeometryType& geometry)
-	    : modelPtr_(0)
+	    : modelPtr_(nullptr)
 	{
 		PsimagLite::String model("");
 		io.readline(model, "Model=");
@@ -102,7 +102,7 @@ public:
 	~ModelSelector()
 	{
 		delete modelPtr_;
-		modelPtr_ = 0;
+		modelPtr_ = nullptr;
 	}
 
 	const ModelBaseType& operator()() const { return *modelPtr_; }

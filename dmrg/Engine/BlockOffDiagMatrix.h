@@ -190,7 +190,7 @@ public:
 			SizeType inThisIpatch = 0;
 			for (SizeType jpatch = 0; jpatch < n; ++jpatch) {
 				const MatrixBlockType* mptr = data_(ipatch, jpatch);
-				if (mptr == 0)
+				if (mptr == nullptr)
 					continue;
 				++inThisIpatch;
 			}
@@ -214,7 +214,7 @@ public:
 		for (SizeType ipatch = 0; ipatch < n; ++ipatch) {
 			for (SizeType jpatch = 0; jpatch < n; ++jpatch) {
 				const MatrixBlockType* mptr = data_(ipatch, jpatch);
-				if (mptr == 0)
+				if (mptr == nullptr)
 					continue;
 				const MatrixBlockType& m = *mptr;
 				count += m.cols() * m.rows();
@@ -247,7 +247,7 @@ public:
 		for (SizeType ipatch = 0; ipatch < n; ++ipatch) {
 			for (SizeType jpatch = 0; jpatch < n; ++jpatch) {
 				const MatrixBlockType* mptr = data_(ipatch, jpatch);
-				if (mptr == 0)
+				if (mptr == nullptr)
 					continue;
 				const MatrixBlockType& m = *mptr;
 				for (SizeType r = 0; r < m.rows(); ++r) {
@@ -281,7 +281,7 @@ public:
 		for (SizeType ipatch = 0; ipatch < n; ++ipatch) {
 			for (SizeType jpatch = 0; jpatch < n; ++jpatch) {
 				MatrixBlockType* mptr = data_(ipatch, jpatch);
-				if (mptr == 0)
+				if (mptr == nullptr)
 					continue;
 				MatrixBlockType&       m      = *mptr;
 				const MatrixBlockType& mRight = f(jpatch);

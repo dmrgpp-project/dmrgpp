@@ -110,8 +110,8 @@ namespace PsimagLite {
 template <typename PthreadFunctionHolderType, typename LoadBalancerType>
 struct PthreadFunctionStruct {
 	PthreadFunctionStruct()
-	    : pfh(0)
-	    , loadBalancer(0)
+	    : pfh(nullptr)
+	    , loadBalancer(nullptr)
 	    , threadNum(0)
 	    , nthreads(0)
 	    , total(0)
@@ -153,7 +153,7 @@ void* thread_function_wrapper(void* dummyPtr)
 
 	int retval = 0;
 	pthread_exit(static_cast<void*>(&retval));
-	return 0;
+	return nullptr;
 }
 
 template <typename PthreadFunctionHolderType, typename LoadBalancerType = LoadBalancerDefault>
@@ -184,7 +184,7 @@ public:
 		LoadBalancerType* loadBalancer = new LoadBalancerType(pfh.tasks(), nthreads_);
 		loopCreate(pfh, *loadBalancer);
 		delete loadBalancer;
-		loadBalancer = 0;
+		loadBalancer = nullptr;
 	}
 
 	// weights, no balancer ==> create balancer with weights ==> delegate
@@ -193,7 +193,7 @@ public:
 		LoadBalancerType* loadBalancer = new LoadBalancerType(weights, nthreads_);
 		loopCreate(pfh, *loadBalancer);
 		delete loadBalancer;
-		loadBalancer = 0;
+		loadBalancer = nullptr;
 	}
 
 	// balancer (includes weights)
@@ -264,12 +264,12 @@ public:
 		}
 
 		for (SizeType j = 0; j < actualThreads; ++j)
-			pthread_join(thread_id[j], 0);
+			pthread_join(thread_id[j], nullptr);
 		for (SizeType j = 0; j < actualThreads; ++j) {
 			int ret = pthread_attr_destroy(attr[j]);
 			checkForError(ret);
 			delete attr[j];
-			attr[j] = 0;
+			attr[j] = nullptr;
 		}
 
 		delete[] attr;

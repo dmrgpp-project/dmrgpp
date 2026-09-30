@@ -21,14 +21,14 @@ class CincuentaInputCheck {
 public:
 
 	CincuentaInputCheck()
-	    : optsReadable_(0)
+	    : optsReadable_(nullptr)
 	{
 		// knownLabels_.push_back("TotalNumberOfSites");
 	}
 
 	~CincuentaInputCheck()
 	{
-		if (optsReadable_ != 0)
+		if (optsReadable_ != nullptr)
 			delete optsReadable_;
 	}
 
