@@ -1,4 +1,4 @@
 Checks: >
   -*,
-  modernize-use-override
+  modernize-use-override,
   modernize-use-nullptr
