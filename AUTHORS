@@ -12,6 +12,10 @@ See file LICENSE for details.
 https://g1257.github.io/
 Core, Integration.
 
+- Daniel Arndt
+https://www.ornl.gov/staff-profile/daniel-arndt
+CMake, performance-portability
+
 - Peter W. Doak
 https://www.ornl.gov/staff-profile/peter-w-doak
 cmake, repo imports
@@ -21,23 +25,19 @@ https://www.ornl.gov/staff-profile/steven-e-hahn
 DMRG++: software engineering
 
 - Jacek Herbrych
-url here
 DMRG++: Models
 
 - Nitin Kaushal
-url here
 DMRG++: Spin-orbit coupling models
 
 - Pontus Laurell
-url here
 DMRG++: Kitaev models
 
 - Damien Lebrun-Grandie
-https://www.ornl.gov/staff-profile/damien-t-lebrun-grandie
+https://dalg24.github.io/
 cmake, modernization, CI
 
 - Maksymilian Środa (Max)
-url here
 DMRG++: Tests, bug fixes
 
 
@@ -45,21 +45,17 @@ DMRG++: Tests, bug fixes
 * Past Contributors
 
 - Ed D'Azevedo
-https://www.olcf.ornl.gov/directory/staff-member/eduardo-dazevedo/
 DMRG++: Kron Engine, GPU support via DmrgppPluginSc
 PsimagLite: linear algebra
 
 -  Wael R. Elwasif
-url here
 
 - Alberto Nocera
-url here
 DMRG++: Core, Targets, Models, RIXS
 Lanczos++
 DMRG++: Performance
 
 - Nirav Patel
-url here
 DMRG++: Various
 PsimagLite: LanczosSolver
 
