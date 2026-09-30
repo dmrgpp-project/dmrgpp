@@ -583,7 +583,7 @@ private:
 	PsimagLite::String appendWithDir(const PsimagLite::String& s1,
 	                                 const PsimagLite::String& s2) const
 	{
-		size_t x = s2.find("/");
+		size_t x = s2.find('/');
 		if (x == PsimagLite::String::npos)
 			return s1 + s2;
 		PsimagLite::String suf = s2.substr(x + 1, s2.length());

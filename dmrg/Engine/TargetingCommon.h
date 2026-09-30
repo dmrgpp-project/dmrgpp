@@ -265,7 +265,7 @@ public:
 	{
 		const PsimagLite::String label
 		    = targetHelper_.model().params().checkpoint.labelForEnergy();
-		prefix += "/";
+		prefix += '/';
 		aoe_.loadEnergy(io, label);
 		aoe_.readPsi(io, prefix);
 	}

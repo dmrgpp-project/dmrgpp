@@ -293,7 +293,7 @@ public:
 			err("Operators.h: read\n");
 
 		if (prefix[last] != '/')
-			prefix += "/";
+			prefix += '/';
 
 		io.read(operators_, prefix + "Operators");
 		// io.read(superOps_, prefix + "SuperOperators");

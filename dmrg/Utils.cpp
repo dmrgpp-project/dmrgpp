@@ -89,7 +89,7 @@ PsimagLite::String pathPrepend(PsimagLite::String pre, PsimagLite::String pathna
 	if (path1 == "")
 		return pre + pathname;
 
-	size_t index = path1.find_last_of("/");
+	size_t index = path1.find_last_of('/');
 
 	index++;
 	PsimagLite::String ret = path1.substr(0, index) + pre + path1.substr(index, path1.length());

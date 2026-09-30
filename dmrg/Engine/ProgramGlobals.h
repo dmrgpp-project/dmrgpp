@@ -169,7 +169,7 @@ struct ProgramGlobals {
 	static std::string rootName(std::string filename)
 	{
 		std::string rootname = filename;
-		size_t      index    = rootname.find(".", 0);
+		size_t      index    = rootname.find('.', 0);
 		if (index != std::string::npos) {
 			rootname.erase(index, filename.length());
 		}
@@ -180,7 +180,7 @@ struct ProgramGlobals {
 	static std::string coutName(std::string filename, std::string app_name)
 	{
 		std::string rootname = PsimagLite::basename(filename);
-		size_t      index    = rootname.find(".", 0);
+		size_t      index    = rootname.find('.', 0);
 		if (index != std::string::npos) {
 			rootname.erase(index, filename.length());
 		}

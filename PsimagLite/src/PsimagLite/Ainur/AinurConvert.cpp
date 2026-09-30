@@ -60,7 +60,7 @@ storeMaybeExpression(SomeArithType& t, const std::string& str)
 {
 	using PrimitivesType = PlusMinusMultiplyDivide<SomeArithType>;
 
-	if (str.find(":") != std::string::npos) {
+	if (str.find(':') != std::string::npos) {
 		// assume it's an expression
 		std::vector<std::string> ve;
 		PsimagLite::split(ve, str, ":");

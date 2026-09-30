@@ -200,7 +200,7 @@ private:
 		for (SizeType i = 1; i < n; ++i) {
 			s += ", 0.";
 		}
-		s += "]";
+		s += ']';
 		return s;
 	}
 
@@ -212,7 +212,7 @@ private:
 		for (SizeType i = 0; i < n; ++i) {
 			buffer += ttos(v[i]);
 			if (i + 1 < n) {
-				buffer += ",";
+				buffer += ',';
 			}
 		}
 

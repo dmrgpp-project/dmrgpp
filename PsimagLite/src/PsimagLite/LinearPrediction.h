@@ -207,17 +207,17 @@ private:
 		SizeType                   p = B.size();
 		typename Vector<int>::Type ipiv(p); // use signed integers here!!
 		int                        info = 0;
-		psimag::LAPACK::GETRF(p, p, &(A(0, 0)), p, &(ipiv[0]), info);
+		psimag::LAPACK::GETRF(p, p, &(A(0, 0)), p, ipiv.data(), info);
 
 		typename Vector<FieldType>::Type work(2);
 		int                              lwork = -1; // query mode
-		psimag::LAPACK::GETRI(p, &(A(0, 0)), p, &(ipiv[0]), &(work[0]), lwork, info);
+		psimag::LAPACK::GETRI(p, &(A(0, 0)), p, ipiv.data(), &(work[0]), lwork, info);
 		lwork = static_cast<int>(work[0]);
 		if (lwork <= 0)
 			throw RuntimeError("LinearPrediction:: internal error\n");
 		work.resize(lwork);
 		// actual work:
-		psimag::LAPACK::GETRI(p, &(A(0, 0)), p, &(ipiv[0]), &(work[0]), lwork, info);
+		psimag::LAPACK::GETRI(p, &(A(0, 0)), p, ipiv.data(), &(work[0]), lwork, info);
 
 		d_.resize(p);
 		psimag::BLAS::GEMV('N', p, p, 1.0, &(A(0, 0)), p, &(B[0]), 1, 0.0, &(d_[0]), 1);
