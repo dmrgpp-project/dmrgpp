@@ -33,26 +33,27 @@ public:
 			throw RuntimeError(msg + ", not " + jobzString + "\n");
 		}
 
-		int m   = a.rows();
-		int n   = a.cols();
-		int lda = m;
-		int min = (m < n) ? m : n;
+		psimag::LAPACK::IntegerForLapackType m   = a.rows();
+		psimag::LAPACK::IntegerForLapackType n   = a.cols();
+		psimag::LAPACK::IntegerForLapackType lda = m;
+		psimag::LAPACK::IntegerForLapackType min = (m < n) ? m : n;
 
 		s.resize(min);
-		int                       ldu  = m;
-		int                       ucol = (jobz == 'A') ? m : min;
-		Matrix<ComplexOrRealType> u(ldu, ucol);
-		int                       ldvt = (jobz == 'A') ? n : min;
+		psimag::LAPACK::IntegerForLapackType ldu  = m;
+		psimag::LAPACK::IntegerForLapackType ucol = (jobz == 'A') ? m : min;
+		Matrix<ComplexOrRealType>            u(ldu, ucol);
+		psimag::LAPACK::IntegerForLapackType ldvt = (jobz == 'A') ? n : min;
 		vt.resize(ldvt, n);
-		int lrwork = 2.0 * min * std::max(5 * min + 7, 2 * std::max(m, n) + 2 * min + 1);
+		psimag::LAPACK::IntegerForLapackType lrwork
+		    = 2.0 * min * std::max(5 * min + 7, 2 * std::max(m, n) + 2 * min + 1);
 		typename Vector<typename Real<ComplexOrRealType>::Type>::Type rwork(lrwork, 0.0);
 
-		typename Vector<ComplexOrRealType>::Type work(100, 0);
-		int                                      info = 0;
-		Vector<int>::Type                        iwork(8 * min, 0);
+		typename Vector<ComplexOrRealType>::Type           work(100, 0);
+		psimag::LAPACK::IntegerForLapackType               info = 0;
+		Vector<psimag::LAPACK::IntegerForLapackType>::Type iwork(8 * min, 0);
 
 		// query optimal work
-		int lwork = -1;
+		psimag::LAPACK::IntegerForLapackType lwork = -1;
 		mycall(&jobz,
 		       &m,
 		       &n,
@@ -76,7 +77,8 @@ public:
 		}
 
 		RealType lworkReal = PsimagLite::real(work[0]);
-		lwork              = static_cast<int>(lworkReal) + (m + n) * 256;
+		lwork
+		    = static_cast<psimag::LAPACK::IntegerForLapackType>(lworkReal) + (m + n) * 256;
 		work.resize(lwork + 10);
 
 		// real work:
@@ -109,21 +111,21 @@ public:
 
 private:
 
-	void mycall(char*              jobz,
-	            int*               m,
-	            int*               n,
-	            ComplexOrRealType* a, // T*,
-	            int*               lda,
-	            RealType*          s,
-	            ComplexOrRealType* u, // T*,
-	            int*               ldu,
-	            ComplexOrRealType* vt, // T*,
-	            int*               ldvt,
-	            ComplexOrRealType* work, // T*,
-	            int*               lwork,
-	            RealType*          rwork, // nothing
-	            int*               iwork,
-	            int*               info)
+	void mycall(char*                                 jobz,
+	            psimag::LAPACK::IntegerForLapackType* m,
+	            psimag::LAPACK::IntegerForLapackType* n,
+	            ComplexOrRealType*                    a, // T*,
+	            psimag::LAPACK::IntegerForLapackType* lda,
+	            RealType*                             s,
+	            ComplexOrRealType*                    u, // T*,
+	            psimag::LAPACK::IntegerForLapackType* ldu,
+	            ComplexOrRealType*                    vt, // T*,
+	            psimag::LAPACK::IntegerForLapackType* ldvt,
+	            ComplexOrRealType*                    work, // T*,
+	            psimag::LAPACK::IntegerForLapackType* lwork,
+	            RealType*                             rwork, // nothing
+	            psimag::LAPACK::IntegerForLapackType* iwork,
+	            psimag::LAPACK::IntegerForLapackType* info)
 	{
 		if (name_ == "gesdd") {
 			psimag::LAPACK::GESDD(jobz,

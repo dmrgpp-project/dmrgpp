@@ -6,17 +6,17 @@ template <>
 void TridiagonalMatrix<double>::diag2(TridiagonalMatrix<double>::VectorRealType& eigs,
                                       SizeType                                   nn) const
 {
-	char                                  jobz = 'N';
-	int                                   n    = nn;
-	TridiagonalMatrix<double>::VectorType z(1, 0);
-	int                                   lz     = 1;
-	int                                   lwork  = 10;
-	int                                   liwork = 10;
-	int                                   info   = 0;
-	std::vector<int>                      iwork(liwork);
-	TridiagonalMatrix<double>::VectorType work(lwork);
-	TridiagonalMatrix<double>::VectorType e = b_;
-	eigs                                    = a_;
+	char                                              jobz = 'N';
+	psimag::LAPACK::IntegerForLapackType              n    = nn;
+	TridiagonalMatrix<double>::VectorType             z(1, 0);
+	psimag::LAPACK::IntegerForLapackType              lz     = 1;
+	psimag::LAPACK::IntegerForLapackType              lwork  = 10;
+	psimag::LAPACK::IntegerForLapackType              liwork = 10;
+	psimag::LAPACK::IntegerForLapackType              info   = 0;
+	std::vector<psimag::LAPACK::IntegerForLapackType> iwork(liwork);
+	TridiagonalMatrix<double>::VectorType             work(lwork);
+	TridiagonalMatrix<double>::VectorType             e = b_;
+	eigs                                                = a_;
 
 	psimag::LAPACK::dstedc_(&jobz,
 	                        &n,
@@ -40,17 +40,17 @@ template <>
 void TridiagonalMatrix<float>::diag2(TridiagonalMatrix<float>::VectorRealType& eigs,
                                      SizeType                                  nn) const
 {
-	char                                 jobz = 'N';
-	int                                  n    = nn;
-	TridiagonalMatrix<float>::VectorType z(1, 0);
-	int                                  lz     = 1;
-	int                                  lwork  = 10;
-	int                                  liwork = 10;
-	int                                  info   = 0;
-	std::vector<int>                     iwork(liwork);
-	TridiagonalMatrix<float>::VectorType work(lwork);
-	TridiagonalMatrix<float>::VectorType e = b_;
-	eigs                                   = a_;
+	char                                              jobz = 'N';
+	psimag::LAPACK::IntegerForLapackType              n    = nn;
+	TridiagonalMatrix<float>::VectorType              z(1, 0);
+	psimag::LAPACK::IntegerForLapackType              lz     = 1;
+	psimag::LAPACK::IntegerForLapackType              lwork  = 10;
+	psimag::LAPACK::IntegerForLapackType              liwork = 10;
+	psimag::LAPACK::IntegerForLapackType              info   = 0;
+	std::vector<psimag::LAPACK::IntegerForLapackType> iwork(liwork);
+	TridiagonalMatrix<float>::VectorType              work(lwork);
+	TridiagonalMatrix<float>::VectorType              e = b_;
+	eigs                                                = a_;
 
 	psimag::LAPACK::sstedc_(&jobz,
 	                        &n,

@@ -10,6 +10,33 @@
 
 #include <complex>
 
+// If MKL's own LAPACK header is available, prefer its declarations instead of
+// hand-rolling our own: MKL declares its routines with const-correct,
+// width-correct (LP64 vs ILP64) prototypes, and re-declaring the same
+// extern "C" symbols here with a different signature (e.g. non-const
+// pointers, or a mismatched integer width) is a hard compile error whenever
+// both headers end up included in the same translation unit (as happens when
+// this header is pulled in alongside Kokkos, which also includes mkl.h).
+// When MKL is not the LAPACK vendor (reference LAPACK, OpenBLAS, etc.) this
+// header simply won't be found, and we fall back to the original
+// hand-written declarations below, unchanged.
+#if defined(__has_include)
+#if __has_include(<mkl_lapack.h>)
+#define PSIMAGLITE_LAPACK_MKL 1
+// Let MKL operate directly on std::complex<float>/std::complex<double>,
+// which are binary compatible with MKL_Complex8/MKL_Complex16. This keeps
+// every call site in this project vendor-neutral: it always passes
+// std::complex<T>* just like it would for reference LAPACK/OpenBLAS.
+#ifndef MKL_Complex8
+#define MKL_Complex8 std::complex<float>
+#endif
+#ifndef MKL_Complex16
+#define MKL_Complex16 std::complex<double>
+#endif
+#include <mkl_lapack.h>
+#endif
+#endif
+
 /** \file LAPACK
  *  \author Thomas C. Schulthess,
  MSS
@@ -21,11 +48,23 @@ namespace psimag {
  */
 namespace LAPACK {
 
-#ifndef PSI_LAPACK_64
+#if defined(PSIMAGLITE_LAPACK_MKL)
+	// Matches whatever integer width MKL itself was configured with
+	// (32-bit for LP64, 64-bit for ILP64), so our inline wrappers below
+	// always agree with MKL's own prototypes.
+	using IntegerForLapackType = MKL_INT;
+	// Bring MKL's global-namespace declarations into psimag::LAPACK so that
+	// existing callers using the qualified names (e.g. psimag::LAPACK::dstedc_)
+	// keep working unchanged.
+	using ::dstedc_;
+	using ::sstedc_;
+#elif !defined(PSI_LAPACK_64)
 	using IntegerForLapackType = int;
 #else
 	using IntegerForLapackType = long int;
 #endif
+
+#ifndef PSIMAGLITE_LAPACK_MKL
 	// ============================================================================
 	extern "C" void sgesv_(IntegerForLapackType*,
 	                       IntegerForLapackType*,
@@ -324,6 +363,7 @@ namespace LAPACK {
 	                        IntegerForLapackType*,
 	                        float*,
 	                        IntegerForLapackType*);
+#endif // !PSIMAGLITE_LAPACK_MKL
 
 	// ============================================================================
 
@@ -368,7 +408,7 @@ namespace LAPACK {
 	                 IntegerForLapackType* pivot,
 	                 float*                b,
 	                 IntegerForLapackType  ldb,
-	                 int&                  info)
+	                 IntegerForLapackType& info)
 	{
 		sgesv_(&ma, &mb, a, &lda, pivot, b, &ldb, &info);
 	}
@@ -380,7 +420,7 @@ namespace LAPACK {
 	                 IntegerForLapackType* pivot,
 	                 double*               b,
 	                 IntegerForLapackType  ldb,
-	                 int&                  info)
+	                 IntegerForLapackType& info)
 	{
 		dgesv_(&ma, &mb, a, &lda, pivot, b, &ldb, &info);
 	}
@@ -392,7 +432,7 @@ namespace LAPACK {
 	                 IntegerForLapackType* pivot,
 	                 std::complex<float>*  b,
 	                 IntegerForLapackType  ldb,
-	                 int&                  info)
+	                 IntegerForLapackType& info)
 	{
 		cgesv_(&ma, &mb, a, &lda, pivot, b, &ldb, &info);
 	}
@@ -404,7 +444,7 @@ namespace LAPACK {
 	                 IntegerForLapackType* pivot,
 	                 std::complex<double>* b,
 	                 IntegerForLapackType  ldb,
-	                 int&                  info)
+	                 IntegerForLapackType& info)
 	{
 		zgesv_(&ma, &mb, a, &lda, pivot, b, &ldb, &info);
 	}
@@ -414,7 +454,7 @@ namespace LAPACK {
 	                  double*               a,
 	                  IntegerForLapackType  lda,
 	                  IntegerForLapackType* pivot,
-	                  int&                  info)
+	                  IntegerForLapackType& info)
 	{
 		dgetrf_(&ma, &na, a, &lda, pivot, &info);
 	}
@@ -424,7 +464,7 @@ namespace LAPACK {
 	                  std::complex<double>* a,
 	                  IntegerForLapackType  lda,
 	                  IntegerForLapackType* pivot,
-	                  int&                  info)
+	                  IntegerForLapackType& info)
 	{
 		zgetrf_(&ma, &na, a, &lda, pivot, &info);
 	}
@@ -434,7 +474,7 @@ namespace LAPACK {
 	                  float*                a,
 	                  IntegerForLapackType  lda,
 	                  IntegerForLapackType* pivot,
-	                  int&                  info)
+	                  IntegerForLapackType& info)
 	{
 		sgetrf_(&ma, &na, a, &lda, pivot, &info);
 	}
@@ -444,7 +484,7 @@ namespace LAPACK {
 	                  std::complex<float>*  a,
 	                  IntegerForLapackType  lda,
 	                  IntegerForLapackType* pivot,
-	                  int&                  info)
+	                  IntegerForLapackType& info)
 	{
 		cgetrf_(&ma, &na, a, &lda, pivot, &info);
 	}
@@ -455,7 +495,7 @@ namespace LAPACK {
 	                  IntegerForLapackType* pivot,
 	                  double*               work,
 	                  IntegerForLapackType  lwork,
-	                  int&                  info)
+	                  IntegerForLapackType& info)
 	{
 		dgetri_(&na, a, &lda, pivot, work, &lwork, &info);
 	}
@@ -466,7 +506,7 @@ namespace LAPACK {
 	                  IntegerForLapackType* pivot,
 	                  std::complex<double>* work,
 	                  IntegerForLapackType  lwork,
-	                  int&                  info)
+	                  IntegerForLapackType& info)
 	{
 		zgetri_(&na, a, &lda, pivot, work, &lwork, &info);
 	}
@@ -477,7 +517,7 @@ namespace LAPACK {
 	                  IntegerForLapackType* pivot,
 	                  float*                work,
 	                  IntegerForLapackType  lwork,
-	                  int&                  info)
+	                  IntegerForLapackType& info)
 	{
 		sgetri_(&na, a, &lda, pivot, work, &lwork, &info);
 	}
@@ -488,7 +528,7 @@ namespace LAPACK {
 	                  IntegerForLapackType* pivot,
 	                  std::complex<float>*  work,
 	                  IntegerForLapackType  lwork,
-	                  int&                  info)
+	                  IntegerForLapackType& info)
 	{
 		cgetri_(&na, a, &lda, pivot, work, &lwork, &info);
 	}
