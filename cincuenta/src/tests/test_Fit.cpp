@@ -97,3 +97,138 @@ TEST_CASE("centered PH fit produces a finite noncollapsed bath", "[Fit][particle
 		maxHybridization = std::max(maxHybridization, std::abs(hopping(i)));
 	CHECK(maxHybridization > 1e-6);
 }
+
+TEST_CASE("fits warm start unless InitBathReset is set", "[Fit][warm-start]")
+{
+	using ComplexType             = std::complex<double>;
+	using FunctionOfFrequencyType = Dmft::FunctionOfFrequency<ComplexType>;
+	using FitType                 = Dmft::Fit<ComplexType>;
+
+	FunctionOfFrequencyType      sigma(/*fictitiousBeta=*/50.0, /*nMatsubara=*/64);
+	Dmft::LatticeGf<ComplexType> latticeGf(sigma, /*mu=*/0.0, "energy,semicircular,4");
+	latticeGf.update();
+
+	SECTION("unconstrained fits reuse the preceding optimized bath")
+	{
+		constexpr SizeType     nBath = 2;
+		FitConfig              config;
+		FitType::MinParamsType minParams(config);
+		minParams.method  = FitType::MinParamsType::Method::SIMPLEX;
+		minParams.maxIter = 1;
+		minParams.delta   = 0.1;
+		const FitType::VectorRealType initialBath { 0.2, 0.7, -1.3, 0.9 };
+		const FitType::InitResults    init(/*ra=*/0.0,
+                                                /*rb=*/0.0,
+                                                initialBath,
+                                                /*reset=*/false);
+		FitType                       fit(nBath, minParams, init);
+
+		fit.fit(latticeGf.g0(), /*mu=*/0.0, FitType::Options::NONE);
+		const auto firstResult = fit.result();
+		REQUIRE(firstResult != initialBath);
+
+		minParams.maxIter = 0;
+		fit.fit(latticeGf.g0(), /*mu=*/0.0, FitType::Options::NONE);
+		CHECK(fit.result() == firstResult);
+	}
+
+	SECTION("InitBathReset restarts unconstrained fits from InitResults")
+	{
+		constexpr SizeType     nBath = 2;
+		FitConfig              config;
+		FitType::MinParamsType minParams(config);
+		minParams.method  = FitType::MinParamsType::Method::SIMPLEX;
+		minParams.maxIter = 1;
+		minParams.delta   = 0.1;
+		const FitType::VectorRealType initialBath { 0.2, 0.7, -1.3, 0.9 };
+		const FitType::InitResults    init(/*ra=*/0.0,
+                                                /*rb=*/0.0,
+                                                initialBath,
+                                                /*reset=*/true);
+		FitType                       fit(nBath, minParams, init);
+
+		fit.fit(latticeGf.g0(), /*mu=*/0.0, FitType::Options::NONE);
+		const auto firstResult = fit.result();
+		REQUIRE(firstResult != initialBath);
+
+		minParams.maxIter = 0;
+		fit.fit(latticeGf.g0(), /*mu=*/0.0, FitType::Options::NONE);
+		CHECK(fit.result() == initialBath);
+	}
+
+	SECTION("particle-hole constrained fits compress the preceding expanded bath")
+	{
+		constexpr SizeType     nBath = 3;
+		FitConfig              config;
+		FitType::MinParamsType minParams(config);
+		minParams.method  = FitType::MinParamsType::Method::SIMPLEX;
+		minParams.maxIter = 1;
+		minParams.delta   = 0.1;
+		const FitType::VectorRealType initialBath { 0.2, 0.7, 1.3 };
+		const FitType::VectorRealType expandedInitialBath { 0.2, 0.7, 0.2, 1.3, 0.0, -1.3 };
+		const FitType::InitResults    init(/*ra=*/0.0,
+                                                /*rb=*/0.0,
+                                                initialBath,
+                                                /*reset=*/false);
+		FitType                       fit(nBath, minParams, init);
+
+		fit.fit(latticeGf.g0(), /*mu=*/0.0, FitType::Options::PARTICLE_HOLE_SYMM);
+		const auto firstResult = fit.result();
+		REQUIRE(firstResult != expandedInitialBath);
+
+		minParams.maxIter = 0;
+		fit.fit(latticeGf.g0(), /*mu=*/0.0, FitType::Options::PARTICLE_HOLE_SYMM);
+		CHECK(fit.result() == firstResult);
+	}
+
+	SECTION("even particle-hole fits compress the preceding expanded bath")
+	{
+		constexpr SizeType     nBath = 4;
+		FitConfig              config;
+		FitType::MinParamsType minParams(config);
+		minParams.method  = FitType::MinParamsType::Method::SIMPLEX;
+		minParams.maxIter = 1;
+		minParams.delta   = 0.1;
+		const FitType::VectorRealType initialBath { 0.2, 0.7, 0.4, 1.3 };
+		const FitType::VectorRealType expandedInitialBath { 0.2, 0.7, 0.2,  0.7,
+			                                            0.4, 1.3, -0.4, -1.3 };
+		const FitType::InitResults    init(/*ra=*/0.0,
+                                                /*rb=*/0.0,
+                                                initialBath,
+                                                /*reset=*/false);
+		FitType                       fit(nBath, minParams, init);
+
+		fit.fit(latticeGf.g0(), /*mu=*/0.0, FitType::Options::PARTICLE_HOLE_SYMM);
+		const auto firstResult = fit.result();
+		REQUIRE(firstResult != expandedInitialBath);
+
+		minParams.maxIter = 0;
+		fit.fit(latticeGf.g0(), /*mu=*/0.0, FitType::Options::PARTICLE_HOLE_SYMM);
+		CHECK(fit.result() == firstResult);
+	}
+
+	SECTION("InitBathReset restarts particle-hole constrained fits from InitResults")
+	{
+		constexpr SizeType     nBath = 3;
+		FitConfig              config;
+		FitType::MinParamsType minParams(config);
+		minParams.method  = FitType::MinParamsType::Method::SIMPLEX;
+		minParams.maxIter = 1;
+		minParams.delta   = 0.1;
+		const FitType::VectorRealType initialBath { 0.2, 0.7, 1.3 };
+		const FitType::VectorRealType expandedInitialBath { 0.2, 0.7, 0.2, 1.3, 0.0, -1.3 };
+		const FitType::InitResults    init(/*ra=*/0.0,
+                                                /*rb=*/0.0,
+                                                initialBath,
+                                                /*reset=*/true);
+		FitType                       fit(nBath, minParams, init);
+
+		fit.fit(latticeGf.g0(), /*mu=*/0.0, FitType::Options::PARTICLE_HOLE_SYMM);
+		const auto firstResult = fit.result();
+		REQUIRE(firstResult != expandedInitialBath);
+
+		minParams.maxIter = 0;
+		fit.fit(latticeGf.g0(), /*mu=*/0.0, FitType::Options::PARTICLE_HOLE_SYMM);
+		CHECK(fit.result() == expandedInitialBath);
+	}
+}

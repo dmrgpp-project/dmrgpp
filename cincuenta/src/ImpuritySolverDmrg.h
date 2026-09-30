@@ -15,6 +15,7 @@
 #include <PsimagLite/PsiBase64.h>
 #include <PsimagLite/PsimagLite.h>
 #include <PsimagLite/Vector.h>
+#include <chrono>
 
 namespace Dmft {
 
@@ -61,6 +62,7 @@ public:
 		ModelParamsType model_params(bathParams, io_);
 		SizeType        mpiRank = PsimagLite::MPI::commRank(PsimagLite::MPI::COMM_WORLD);
 
+		double groundStateSeconds = 0.0;
 		if (mpiRank == 0) {
 			PsimagLite::String data2 = BaseType::createGsInput(model_params, io_);
 			// PsimagLite::String insitu = "<gs|nup|gs>";
@@ -71,6 +73,7 @@ public:
 
 			DmrgRunnerType runner(app_, data2, cmdline_options);
 			runner.doOneRun();
+			groundStateSeconds = runner.timing().totalSeconds;
 		}
 
 		PsimagLite::MPI::barrier(PsimagLite::MPI::COMM_WORLD);
@@ -79,9 +82,19 @@ public:
 
 		SizeType impurity_site = model_params.impuritySite();
 
-		doType(DmrgType::TYPE_0, data3, impurity_site, freq_enum);
+		double procOmegasSeconds = 0.0;
+		const OmegaTiming type0Timing
+		    = doType(DmrgType::TYPE_0, data3, impurity_site, freq_enum, procOmegasSeconds);
+		const OmegaTiming type1Timing
+		    = doType(DmrgType::TYPE_1, data3, impurity_site, freq_enum, procOmegasSeconds);
 
-		doType(DmrgType::TYPE_1, data3, impurity_site, freq_enum);
+		if (mpiRank == 0)
+			emitTiming(freq_enum,
+			           iter,
+			           groundStateSeconds,
+			           type0Timing,
+			           type1Timing,
+			           procOmegasSeconds);
 
 		freq_enum_ = freq_enum;
 
@@ -93,6 +106,39 @@ public:
 	PsimagLite::FreqEnum freqEnum() const override { return freq_enum_; }
 
 private:
+
+	struct OmegaTiming {
+		double   secondsMax = 0.0;
+		double   secondsSum = 0.0;
+		SizeType calls      = 0;
+	};
+
+	static const char* timingAxis(PsimagLite::FreqEnum freq_enum)
+	{
+		return (freq_enum == PsimagLite::FreqEnum::MATSUBARA) ? "matsubara" : "real";
+	}
+
+	static void emitTiming(PsimagLite::FreqEnum freq_enum,
+	                       SizeType              iter,
+	                       double                groundStateSeconds,
+	                       const OmegaTiming&    type0Timing,
+	                       const OmegaTiming&    type1Timing,
+	                       double                procOmegasSeconds)
+	{
+		const char* axis = timingAxis(freq_enum);
+		std::cerr << "DMFT_TIMING axis=" << axis << " iter=" << iter
+		          << " ground_state_seconds=" << groundStateSeconds << "\n";
+		std::cerr << "DMFT_TIMING axis=" << axis << " iter=" << iter
+		          << " omega_type=0 seconds_max=" << type0Timing.secondsMax
+		          << " seconds_sum=" << type0Timing.secondsSum
+		          << " calls=" << type0Timing.calls << "\n";
+		std::cerr << "DMFT_TIMING axis=" << axis << " iter=" << iter
+		          << " omega_type=1 seconds_max=" << type1Timing.secondsMax
+		          << " seconds_sum=" << type1Timing.secondsSum
+		          << " calls=" << type1Timing.calls << "\n";
+		std::cerr << "DMFT_TIMING axis=" << axis << " iter=" << iter
+		          << " proc_omegas_seconds=" << procOmegasSeconds << "\n";
+	}
 
 	std::string createOmegaInput(const ModelParamsType& model_params,
 	                             PsimagLite::FreqEnum   freq_enum) const
@@ -150,9 +196,11 @@ private:
 
 		std::string data = BaseType::addBathParams(s, model_params);
 
-		std::ofstream tout("testout.ain");
-		tout << data;
-		tout.close();
+		if (PsimagLite::MPI::commRank(PsimagLite::MPI::COMM_WORLD) == 0) {
+			std::ofstream tout("testout.ain");
+			tout << data;
+		}
+
 		return data;
 	}
 
@@ -205,25 +253,35 @@ private:
 		return str;
 	}
 
-	void doType(DmrgType             t,
-	            PsimagLite::String   data,
-	            SizeType             impurity_site,
-	            PsimagLite::FreqEnum freq_enum)
+	OmegaTiming doType(DmrgType             t,
+	                   PsimagLite::String   data,
+	                   SizeType             impurity_site,
+	                   PsimagLite::FreqEnum freq_enum,
+	                   double&               procOmegasSeconds)
 	{
 		std::string obs   = (t == DmrgType::TYPE_0) ? "c" : "c'";
 		std::string data2 = addTypeAndObs(t, impurity_site, data);
 
-		runOmegas(data2, obs, freq_enum);
+		const OmegaTiming omegaTiming = runOmegas(data2, obs, freq_enum);
 
-		procOmegas(data2, t, freq_enum);
+		// InterNode::parallelFor does not synchronize ranks.  ProcOmegas must not
+		// read a frequency file while another rank is still writing it (or starts
+		// the next particle/hole run and overwrites the same logfile).
+		PsimagLite::MPI::barrier(PsimagLite::MPI::COMM_WORLD);
+
+		procOmegasSeconds += procOmegas(data2, t, freq_enum);
+		broadcastGimp(freq_enum);
+		return omegaTiming;
 	}
 
-	void procOmegas(const std::string& data2, DmrgType t, PsimagLite::FreqEnum freq_enum)
+	double procOmegas(const std::string& data2, DmrgType t, PsimagLite::FreqEnum freq_enum)
 	{
 		SizeType mpiRank = PsimagLite::MPI::commRank(PsimagLite::MPI::COMM_WORLD);
 
 		if (mpiRank != 0)
-			return;
+			return 0.0;
+
+		const auto start = std::chrono::steady_clock::now();
 
 		const std::string rootIname   = "input";
 		const std::string rootOname   = "OUTPUT";
@@ -258,11 +316,27 @@ private:
 		}
 
 		readGimp(rootOname, total, t);
+		return std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
 	}
 
-	void runOmegas(const std::string&   data2,
-	               const std::string&   obs,
-	               PsimagLite::FreqEnum freq_enum) const
+	void broadcastGimp(PsimagLite::FreqEnum freq_enum)
+	{
+		if (PsimagLite::MPI::commSize(PsimagLite::MPI::COMM_WORLD) == 1)
+			return;
+
+		const SizeType total = (freq_enum == PsimagLite::FreqEnum::MATSUBARA)
+		    ? this->matsubaras().total()
+		    : this->realFreqRange().total();
+
+		if (PsimagLite::MPI::commRank(PsimagLite::MPI::COMM_WORLD) != 0)
+			gimp_.resize(total);
+
+		PsimagLite::MPI::bcast(gimp_, 0, PsimagLite::MPI::COMM_WORLD);
+	}
+
+	OmegaTiming runOmegas(const std::string&   data2,
+	                      const std::string&   obs,
+	                      PsimagLite::FreqEnum freq_enum) const
 	{
 		const bool               dryrun   = false;
 		const PsimagLite::String rootname = "dmftDynamics";
@@ -272,12 +346,14 @@ private:
 		if (freq_enum == PsimagLite::FreqEnum::MATSUBARA) {
 			Dmrg::ManyOmegas<RealType, MatsubarasType> manyOmegas(
 			    data2, this->matsubaras(), app_);
-			manyOmegas.run(dryrun, rootname, cmdline_options);
-		} else {
-			Dmrg::ManyOmegas<RealType, RealFrequencyRangeType> manyOmegas(
-			    data2, this->realFreqRange(), app_);
-			manyOmegas.run(dryrun, rootname, cmdline_options);
+			const auto timing = manyOmegas.run(dryrun, rootname, cmdline_options);
+			return { timing.secondsMax, timing.secondsSum, timing.calls };
 		}
+
+		Dmrg::ManyOmegas<RealType, RealFrequencyRangeType> manyOmegas(
+		    data2, this->realFreqRange(), app_);
+		const auto timing = manyOmegas.run(dryrun, rootname, cmdline_options);
+		return { timing.secondsMax, timing.secondsSum, timing.calls };
 	}
 
 	void readGimp(PsimagLite::String filename, SizeType total, DmrgType t)

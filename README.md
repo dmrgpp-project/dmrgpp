@@ -114,7 +114,7 @@ Example: `-DBoost_ROOT=/path/to/boost`
   `Kokkos` (default) using the KokkosKernels library, `Plugin` using the MAGMA library, and the legacy `CPU` code
   calling BLAS.
 
-  To enable accelerator support, we recommend setting either `-DKokkos_ENABLE_CUDA=ON` and `-DKokkosKernels_ENABLE_TPL_ CUBLAS=ON`(NVIDIA), or
+  To enable accelerator support, we recommend setting either `-DKokkos_ENABLE_CUDA=ON` and `-DKokkosKernels_ENABLE_TPL_CUBLAS=ON`(NVIDIA), or
   `-DKokkos_ENABLE_HIP=ON` and `-DKokkosKernels_ENABLE_TPL_ROCBLAS=ON`(AMD). If `Kokkos` and `KokkosKernels` are externally provided, those options have to be used when configuring the respective project.
 
   The `Plugin` option has a dependent option `-DDMRG_BUILD_BATCHED_MAGMA=ON` to search for MAGMA. Build and

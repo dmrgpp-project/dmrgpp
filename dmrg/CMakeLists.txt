@@ -90,7 +90,6 @@ if(DMRGPP_USE_MPI)
   endfunction()
 
   add_mpi_test(omegas_mpi_dry_run 2 $<TARGET_FILE:omegas> -d -f ${PATH_TO_INPUTS}/inputManyOmegasDryRun.ain)
-  set_tests_properties(omegas_mpi_dry_run PROPERTIES PASS_REGULAR_EXPRESSION "MPI rank=1")
 
   file(MAKE_DIRECTORY ${_omegas_mpi_tiny_workdir})
 
@@ -112,7 +111,7 @@ if(DMRGPP_USE_MPI)
     -O
     tinyOmega)
   set_tests_properties(omegas_mpi_tiny_real PROPERTIES WORKING_DIRECTORY ${_omegas_mpi_tiny_workdir} DEPENDS
-                                                       omegas_mpi_tiny_gs_output PASS_REGULAR_EXPRESSION "MPI rank=1")
+                                                       omegas_mpi_tiny_gs_output)
 
   add_mpi_hdf5_check(omegas_mpi_tiny_omega0_output tinyOmega0.hd5 omegas_mpi_tiny_real)
   add_mpi_hdf5_check(omegas_mpi_tiny_omega1_output tinyOmega1.hd5 omegas_mpi_tiny_real)
@@ -127,7 +126,14 @@ add_test(NAME introspect0_0 COMMAND diff -q ${PATH_TO_INPUTS}/introspect_ref0.tx
 
 # For dmrg main executable
 
-add_test(NAME dmrg_version_output COMMAND ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg> -DEXPECTED_VERSION=7.1
+set(_dmrg_version_test_args -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg> -DEXPECTED_VERSION=7.1)
+if(DMRGPP_USE_MPI)
+  list(APPEND _dmrg_version_test_args -DMPIEXEC_EXECUTABLE=${MPIEXEC_EXECUTABLE}
+                                      -DMPIEXEC_NUMPROC_FLAG=${MPIEXEC_NUMPROC_FLAG}
+                                      "-DMPIEXEC_PREFLAGS=${MPIEXEC_PREFLAGS}"
+                                      "-DMPIEXEC_POSTFLAGS=${MPIEXEC_POSTFLAGS}")
+endif()
+add_test(NAME dmrg_version_output COMMAND ${CMAKE_COMMAND} ${_dmrg_version_test_args}
                                           -P ${CMAKE_SOURCE_DIR}/TestSuite/checkVersionOutput.cmake)
 
 function(add_lowest_eigenvalue_check_test name dependent_name expected output_file)

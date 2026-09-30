@@ -32,8 +32,6 @@ public:
 	using OmegasFourierType = OmegasFourier<ComplexOrRealType, InputNgType::Readable>;
 	using VectorComplexType = typename OmegasFourierType::VectorComplexType;
 
-	static const SizeType MAX_LINE_SIZE = 409600;
-
 	class Qdata {
 
 	public:
@@ -99,7 +97,6 @@ public:
 	{
 		VectorRealType values1(numberOfSites_);
 		VectorRealType values2(numberOfSites_);
-		VectorBoolType defined(numberOfSites_);
 
 		std::ofstream* fout = nullptr;
 
@@ -113,7 +110,7 @@ public:
 		for (SizeType i = omegaParams_.offset(); i < omegaParams_.total(); ++i) {
 			const RealType omega = omegaParams_.omega(i);
 
-			procCommon(i, omega, values1, values2, defined, fout);
+			procCommon(i, omega, values1, values2, fout);
 			qData_.set(i - omegaParams_.offset(), omegasFourier_.data());
 		}
 
@@ -156,13 +153,12 @@ private:
 	                RealType        omega,
 	                VectorRealType& values1,
 	                VectorRealType& values2,
-	                VectorBoolType& defined,
 	                std::ofstream*  fout)
 	{
 		PsimagLite::String inFile("runFor");
 		inFile += rootIname_ + ttos(ind) + ".cout";
 
-		correctionVectorRead(values1, values2, defined, inFile);
+		correctionVectorRead(values1, values2, inFile);
 
 		// print STDERR "$0: omega=$omega maxSite=$maxSite\n"; <== LOGFILEOUT
 
@@ -191,42 +187,39 @@ private:
 
 	static void printToSpaceOut(std::ofstream& fout, PsimagLite::String str) { fout << str; }
 
-	void correctionVectorRead(VectorRealType&    v1,
-	                          VectorRealType&    v2,
-	                          VectorBoolType&    defined,
-	                          PsimagLite::String inFile)
-	{
-		PsimagLite::String status("clear");
-		std::ifstream      fin(inFile);
+public:
 
+	static void
+	correctionVectorRead(VectorRealType& v1, VectorRealType& v2, PsimagLite::String inFile)
+	{
+		if (v1.size() != v2.size())
+			err("correctionVectorRead: v1.size != v2.size\n");
+
+		std::ifstream fin(inFile);
 		if (!fin || !fin.good() || fin.bad())
 			err("correctionVectorRead: Cannot read " + inFile + "\n");
 
 		VectorStringType labels { "P2", "P3" }; // ORDER IMPORTANT HERE!
+		VectorBoolType   p2Defined(v1.size());
+		VectorBoolType   p3Defined(v1.size());
+		std::fill(v1.begin(), v1.end(), RealType(0));
+		std::fill(v2.begin(), v2.end(), RealType(0));
 
-		const SizeType ns = MAX_LINE_SIZE;
-		char*          ss = new char[ns];
-		std::fill(defined.begin(), defined.end(), false);
-		while (fin.getline(ss, ns)) {
-
-			PsimagLite::String s(ss);
-
+		PsimagLite::String s;
+		while (std::getline(fin, s)) {
 			if (s.find("PsiApp: CmdLine") != PsimagLite::String::npos)
 				continue;
 
-			bool skip = true;
+			const bool isGs = (s.find("gs") != PsimagLite::String::npos
+			                   || s.find("X0") != PsimagLite::String::npos);
+			SizeType   observable
+			    = labels.size(); // Sentinel: no requested observable matched.
 			for (SizeType i = 0; i < labels.size(); ++i) {
-				bool isGs = (s.find("gs") != PsimagLite::String::npos
-				             || s.find("X0") != PsimagLite::String::npos);
-
-				if (s.find(labels[i]) == PsimagLite::String::npos || !isGs)
-					continue;
-
-				status = labels[i];
-				skip   = false;
+				if (isGs && s.find(labels[i]) != PsimagLite::String::npos)
+					observable = i;
 			}
 
-			if (skip)
+			if (observable == labels.size())
 				continue;
 
 			VectorStringType tokens;
@@ -235,45 +228,36 @@ private:
 				err("correctionVectorRead: Not 5 tokens in line " + s
 				    + "\nFile= " + inFile + "\n");
 
-			SizeType site = PsimagLite::atoi(tokens[0]);
-			SizeType c    = 0;
-			for (SizeType i = 0; i < labels.size(); ++i) {
-				++c;
-				if (status != labels[i])
-					continue;
+			const SizeType site = PsimagLite::atoi(tokens[0]);
+			if (site >= v1.size())
+				err("correctionVectorRead: Site " + ttos(site) + " is too big\n");
 
-				if (site >= numberOfSites_)
-					err("correctionVectorRead: Site " + ttos(site)
-					    + " is too big\n");
-
-				if (c == 1)
-					v1[site] = PsimagLite::atof(tokens[1]);
-				else if (c == 2)
-					v2[site] = PsimagLite::atof(tokens[1]);
-				else
-					err("correctionVectorRead: counter c wrong in " + inFile
-					    + "\n");
-
-				defined[site] = true;
+			if (observable == 0) {
+				v1[site]        = PsimagLite::atof(tokens[1]);
+				p2Defined[site] = true;
+			} else {
+				v2[site]        = PsimagLite::atof(tokens[1]);
+				p3Defined[site] = true;
 			}
-
-			status = "clear";
 		}
 
-		delete[] ss;
-		ss = 0;
-		checkSites(defined, inFile);
+		checkSites(p2Defined, labels[0], inFile);
+		checkSites(p3Defined, labels[1], inFile);
 		// print LOGFILEOUT "$0: correctionVectorRead maxsite= $maxSite\n";
 	}
 
-	void checkSites(const VectorBoolType& defined, PsimagLite::String inFile)
+	static void checkSites(const VectorBoolType&     defined,
+	                       const PsimagLite::String& observable,
+	                       const PsimagLite::String& inFile)
 	{
 		const SizeType n = defined.size();
 		for (SizeType i = 0; i < n; ++i)
 			if (!defined[i])
-				err("Undefined value for site= " + ttos(i) + " file= " + inFile
-				    + "\n");
+				err("Undefined " + observable + " value for site= " + ttos(i)
+				    + " file= " + inFile + "\n");
 	}
+
+private:
 
 	PsimagLite::String     inputfile_;
 	PsimagLite::String     rootIname_;

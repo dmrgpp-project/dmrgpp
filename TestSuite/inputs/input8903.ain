@@ -119,4 +119,3 @@ vector BathF=[\f_bath, \ancilla_f, 0, 0, 0, 0, 0, 0, 0, 0, \f_bath, \ancilla_f];
 
 # Maximum dense inversion we allow
 integer MaxMatrixRankStored=10240;
-

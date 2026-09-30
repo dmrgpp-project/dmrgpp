@@ -6,8 +6,16 @@ if(NOT DEFINED EXPECTED_VERSION)
   message(FATAL_ERROR "EXPECTED_VERSION is required")
 endif()
 
+set(command "${DMRG_EXECUTABLE}" -V)
+if(DEFINED MPIEXEC_EXECUTABLE)
+  set(command "${MPIEXEC_EXECUTABLE}" "${MPIEXEC_NUMPROC_FLAG}" "1")
+  list(APPEND command ${MPIEXEC_PREFLAGS})
+  list(APPEND command "${DMRG_EXECUTABLE}")
+  list(APPEND command ${MPIEXEC_POSTFLAGS} -V)
+endif()
+
 execute_process(
-  COMMAND "${DMRG_EXECUTABLE}" -V
+  COMMAND ${command}
   RESULT_VARIABLE result
   OUTPUT_VARIABLE stdout
   ERROR_VARIABLE stderr)

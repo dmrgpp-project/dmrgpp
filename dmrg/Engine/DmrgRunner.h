@@ -38,6 +38,12 @@ public:
 
 	void doOneRun() const;
 
+	struct Timing {
+		double totalSeconds = 0.0;
+	};
+
+	const Timing& timing() const { return timing_; }
+
 	const ApplicationType& application() const { return application_; }
 
 private:
@@ -66,6 +72,7 @@ private:
 	InputNgType::Readable*     io_;
 	ParametersDmrgSolverType*  dmrg_solver_params_;
 	PsimagLite::RedirectOutput redirect_output_;
+	mutable Timing               timing_;
 };
 }
 #endif // DMRGRUNNER_H

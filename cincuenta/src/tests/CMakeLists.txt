@@ -42,7 +42,16 @@ target_include_directories(
                                                 ${CMAKE_SOURCE_DIR}/LanczosPlusPlus/src/Engine ${CMAKE_SOURCE_DIR})
 set(DMFT_EQUILIBRIUM_INITIAL_DATA_DIR ${CMAKE_CURRENT_BINARY_DIR}/equilibriumInitialData)
 file(MAKE_DIRECTORY ${DMFT_EQUILIBRIUM_INITIAL_DATA_DIR})
-add_test(
-  NAME test_DmftSolverEquilibriumInitialData
-  COMMAND test_DmftSolverEquilibriumInitialData
-  WORKING_DIRECTORY ${DMFT_EQUILIBRIUM_INITIAL_DATA_DIR})
+# Launch this MPI-linked test through mpiexec even at one rank.  Running it
+# as an Open MPI singleton can abort during teardown in Kokkos-enabled builds.
+if(DMRGPP_USE_MPI)
+  set(_equilibrium_initial_data_cmd "${MPIEXEC_EXECUTABLE}" "${MPIEXEC_NUMPROC_FLAG}" "1")
+  list(APPEND _equilibrium_initial_data_cmd ${MPIEXEC_PREFLAGS})
+  list(APPEND _equilibrium_initial_data_cmd $<TARGET_FILE:test_DmftSolverEquilibriumInitialData>)
+  list(APPEND _equilibrium_initial_data_cmd ${MPIEXEC_POSTFLAGS})
+  add_test(NAME test_DmftSolverEquilibriumInitialData COMMAND ${_equilibrium_initial_data_cmd})
+  set_tests_properties(test_DmftSolverEquilibriumInitialData PROPERTIES PROCESSORS 1)
+else()
+  add_test(NAME test_DmftSolverEquilibriumInitialData COMMAND test_DmftSolverEquilibriumInitialData)
+endif()
+set_tests_properties(test_DmftSolverEquilibriumInitialData PROPERTIES WORKING_DIRECTORY ${DMFT_EQUILIBRIUM_INITIAL_DATA_DIR})

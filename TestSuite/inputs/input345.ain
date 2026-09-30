@@ -56,4 +56,3 @@ FiniteLoops=[
 	[@auto, 1000, 0]];
 TargetElectronsUp=15;
 TargetElectronsDown=15;
-

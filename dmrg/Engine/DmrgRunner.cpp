@@ -2,6 +2,7 @@
 #include "MatrixVectorTypes.hpp"
 #include "Provenance.h"
 #include <PsimagLite/Concurrency.h>
+#include <chrono>
 #include <type_traits>
 
 namespace Dmrg {
@@ -75,6 +76,8 @@ template <typename RealType> void DmrgRunner<RealType>::doOneRun() const
 template <typename RealType>
 void DmrgRunner<RealType>::doOneRun(OptionsForIntrospect& op_options) const
 {
+	const auto start = std::chrono::steady_clock::now();
+
 	assert(dmrg_solver_params_);
 	bool isComplex = (dmrg_solver_params_->options.isSet("useComplex")
 	                  || dmrg_solver_params_->options.isSet("TimeStepTargeting"));
@@ -83,6 +86,8 @@ void DmrgRunner<RealType>::doOneRun(OptionsForIntrospect& op_options) const
 		doOneRun2<std::complex<RealType>>(op_options);
 	else
 		doOneRun2<RealType>(op_options);
+
+	timing_.totalSeconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
 }
 
 template <typename RealType>

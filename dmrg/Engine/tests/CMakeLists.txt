@@ -3,6 +3,11 @@ target_link_libraries(test_LastKrylovSlots PRIVATE Catch2::Catch2WithMain psimag
 target_include_directories(test_LastKrylovSlots PRIVATE ${CMAKE_SOURCE_DIR}/dmrg/Engine)
 catch_discover_tests(test_LastKrylovSlots)
 
+add_executable(test_ProcOmegas test_ProcOmegas.cpp)
+target_link_libraries(test_ProcOmegas PRIVATE Catch2::Catch2WithMain psimaglite)
+target_include_directories(test_ProcOmegas PRIVATE ${CMAKE_BINARY_DIR}/dmrg ${CMAKE_SOURCE_DIR}/dmrg/Engine)
+catch_discover_tests(test_ProcOmegas)
+
 add_executable(test_Pvector test_Pvector.cpp)
 target_link_libraries(test_Pvector PRIVATE Catch2::Catch2WithMain psimaglite)
 target_include_directories(test_Pvector PRIVATE ${CMAKE_SOURCE_DIR}/dmrg/Engine)

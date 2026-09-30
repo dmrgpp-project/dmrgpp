@@ -116,6 +116,7 @@ public:
 
 		for (; iter < params_.dmftIter; ++iter) {
 
+			progress("scf_iteration_start iter=" + ttos(iter));
 			std::cout << "SelfConsistLoop iter= " << iter << "\n";
 
 			latticeG_.update();
@@ -136,6 +137,7 @@ public:
 
 			error = computeNewSelfEnergy(fit_.result());
 
+			progress("scf_error iter=" + ttos(iter) + " error=" + ttos(error));
 			std::cout << "SelfConsistLoop error=" << error << "\n";
 
 			if (error < params_.dmftError)
@@ -144,7 +146,9 @@ public:
 
 		snapshotEquilibriumInitialData();
 
+		progress("real_axis_solve_start");
 		impuritySolver_->solve(fit_.result(), PsimagLite::FreqEnum::REAL, 0);
+		progress("real_axis_solve_complete");
 		this->logDebug();
 
 		if (error < params_.dmftError) {
@@ -193,6 +197,12 @@ public:
 	}
 
 private:
+
+	void progress(const std::string& message) const
+	{
+		if (PsimagLite::MPI::commRank(PsimagLite::MPI::COMM_WORLD) == 0)
+			std::cerr << "DMFT_PROGRESS " << message << "\n";
+	}
 
 	void snapshotEquilibriumInitialData()
 	{

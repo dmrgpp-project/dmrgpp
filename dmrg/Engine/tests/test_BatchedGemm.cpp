@@ -7,6 +7,7 @@
 #include <Kokkos_Core.hpp>
 #include <PsimagLite/CrsMatrix.h>
 #include <PsimagLite/Matrix.h>
+#include <PsimagLite/PsimagLite.h>
 #include <PsimagLite/Vector.h>
 #include <catch2/catch_approx.hpp>
 #include <catch2/catch_test_macros.hpp>
@@ -169,7 +170,13 @@ struct FakeInitKron {
 
 TEST_CASE("BatchedGemm matrixVector", "[BatchedGemm]")
 {
-	Kokkos::ScopeGuard scope_guard;
+	// Match the normal DMRG++ application lifecycle: MPI must be initialized
+	// before Kokkos touches the MPI-aware profiling/runtime facilities.
+	int   argc = 1;
+	char  appName[] = "test_BatchedGemm";
+	char* argvValues[] = { appName, nullptr };
+	char** argv = argvValues;
+	PsimagLite::PsiApp app("test_BatchedGemm", &argc, &argv, 1);
 
 	// Build fake initKron for 1 patch, 1 operator
 	FakeInitKron fk(1, 1);
