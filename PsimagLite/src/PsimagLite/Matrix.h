@@ -593,14 +593,14 @@ void diag(Matrix<std::complex<float>>& m, Vector<float>::Type& eigs, char option
 template <typename T>
 typename std::enable_if<IsComplexNumber<T>::True, void>::type inverse(Matrix<T>& m)
 {
-	int               n    = m.rows();
-	int               info = 0;
-	Vector<int>::Type ipiv(n, 0);
-	psimag::LAPACK::GETRF(n, n, &(m(0, 0)), n, ipiv.data(), info);
-	int                      lwork = -1;
-	typename Vector<T>::Type work(2);
-	psimag::LAPACK::GETRI(n, &(m(0, 0)), n, ipiv.data(), &(work[0]), lwork, info);
-	lwork = static_cast<int>(PsimagLite::real(work[0]));
+	psimag::LAPACK::IntegerForLapackType               n    = m.rows();
+	psimag::LAPACK::IntegerForLapackType               info = 0;
+	Vector<psimag::LAPACK::IntegerForLapackType>::Type ipiv(n, 0);
+	psimag::LAPACK::GETRF(n, n, &(m(0, 0)), n, &(ipiv[0]), info);
+	psimag::LAPACK::IntegerForLapackType lwork = -1;
+	typename Vector<T>::Type             work(2);
+	psimag::LAPACK::GETRI(n, &(m(0, 0)), n, &(ipiv[0]), &(work[0]), lwork, info);
+	lwork = static_cast<psimag::LAPACK::IntegerForLapackType>(PsimagLite::real(work[0]));
 	work.resize(lwork + 2);
 	psimag::LAPACK::GETRI(n, &(m(0, 0)), n, ipiv.data(), &(work[0]), lwork, info);
 	String s = "[cz]getri_ failed\n";
@@ -611,14 +611,14 @@ typename std::enable_if<IsComplexNumber<T>::True, void>::type inverse(Matrix<T>&
 template <typename T>
 typename std::enable_if<Loki::TypeTraits<T>::isArith, void>::type inverse(Matrix<T>& m)
 {
-	int               n    = m.rows();
-	int               info = 0;
-	Vector<int>::Type ipiv(n, 0);
-	psimag::LAPACK::GETRF(n, n, &(m(0, 0)), n, ipiv.data(), info);
-	int                      lwork = -1;
-	typename Vector<T>::Type work(2);
-	psimag::LAPACK::GETRI(n, &(m(0, 0)), n, ipiv.data(), &(work[0]), lwork, info);
-	lwork = static_cast<int>(work[0]);
+	psimag::LAPACK::IntegerForLapackType               n    = m.rows();
+	psimag::LAPACK::IntegerForLapackType               info = 0;
+	Vector<psimag::LAPACK::IntegerForLapackType>::Type ipiv(n, 0);
+	psimag::LAPACK::GETRF(n, n, &(m(0, 0)), n, &(ipiv[0]), info);
+	psimag::LAPACK::IntegerForLapackType lwork = -1;
+	typename Vector<T>::Type             work(2);
+	psimag::LAPACK::GETRI(n, &(m(0, 0)), n, &(ipiv[0]), &(work[0]), lwork, info);
+	lwork = static_cast<psimag::LAPACK::IntegerForLapackType>(work[0]);
 	work.resize(lwork + 2);
 	psimag::LAPACK::GETRI(n, &(m(0, 0)), n, ipiv.data(), &(work[0]), lwork, info);
 	String s = "[sd]getri_ failed\n";
