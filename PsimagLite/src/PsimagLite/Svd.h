@@ -66,7 +66,7 @@ public:
 		       &(work[0]),
 		       &lwork,
 		       &(rwork[0]),
-		       &(iwork[0]),
+		       iwork.data(),
 		       &info);
 		if (info != 0) {
 			String str(__FILE__);
@@ -93,7 +93,7 @@ public:
 		       &(work[0]),
 		       &lwork,
 		       &(rwork[0]),
-		       &(iwork[0]),
+		       iwork.data(),
 		       &info);
 		if (info != 0) {
 			if (info < 0)

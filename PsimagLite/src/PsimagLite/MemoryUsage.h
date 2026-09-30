@@ -167,7 +167,7 @@ public:
 			return "NOT_FOUND";
 
 		x += label.length();
-		long unsigned int y   = data_.find("\n", x);
+		long unsigned int y   = data_.find('\n', x);
 		SizeType          len = y - x;
 		if (y == String::npos)
 			len = data_.length() - x;

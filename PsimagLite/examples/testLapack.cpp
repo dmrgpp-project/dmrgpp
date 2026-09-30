@@ -26,7 +26,7 @@ int main()
 	int                              lwork = -1;
 
 	// query:
-	dsyev_(&jobz, &uplo, &n, &(m[0]), &lda, &(eigs[0]), &(work[0]), &lwork, &info);
+	dsyev_(&jobz, &uplo, &n, m.data(), &lda, eigs.data(), work.data(), &lwork, &info);
 	if (info != 0) {
 		std::cerr << "diag: dsyev_: failed with info=" << info << "\n";
 		return 1;
@@ -35,7 +35,7 @@ int main()
 	work.resize(lwork + 1);
 
 	// real work:
-	dsyev_(&jobz, &uplo, &n, &(m[0]), &lda, &(eigs[0]), &(work[0]), &lwork, &info);
+	dsyev_(&jobz, &uplo, &n, m.data(), &lda, eigs.data(), work.data(), &lwork, &info);
 	if (info != 0) {
 		std::cerr << "diag: dsyev_: failed with info=" << info << "\n";
 		return 1;

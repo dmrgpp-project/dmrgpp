@@ -83,7 +83,7 @@ bool observeOneFullSweep(IoInputType&              io,
 	for (SizeType i = 0; i < vecOptions.size(); ++i) {
 		PsimagLite::String item = vecOptions[i];
 
-		if (item.find("%") == 0)
+		if (item.find('%') == 0)
 			continue;
 
 		SiteSplitType braceContent

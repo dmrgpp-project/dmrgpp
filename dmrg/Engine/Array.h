@@ -96,7 +96,7 @@ public:
 		if (size_ == 0)
 			return;
 		v.resize(size_);
-		memcpy(&(v[0]), data_, sizeof(SizeType) * size_);
+		memcpy(v.data(), data_, sizeof(SizeType) * size_);
 	}
 
 	void fromStdVector(const std::vector<T>& v)
@@ -108,7 +108,7 @@ public:
 		}
 
 		allocate(v.size());
-		memcpy(data_, &(v[0]), size_ * sizeof(T));
+		memcpy(data_, v.data(), size_ * sizeof(T));
 	}
 
 private:

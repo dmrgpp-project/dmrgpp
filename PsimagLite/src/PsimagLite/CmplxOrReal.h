@@ -51,7 +51,7 @@ public:
 	CpmlxOrReal(String t)
 	    : value_(0)
 	{
-		bool isComplex = (t.find("i") != String::npos);
+		bool isComplex = (t.find('i') != String::npos);
 		if (isComplex)
 			throw RuntimeError("i \\equiv sqrt(-1) found but code path is real\n");
 		value_ = PsimagLite::atof(t);

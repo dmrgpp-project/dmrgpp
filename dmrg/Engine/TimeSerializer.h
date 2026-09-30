@@ -170,7 +170,7 @@ public:
 	{
 		prefix += "/TimeSerializer";
 		io.createGroup(prefix);
-		prefix += "/";
+		prefix += '/';
 
 		io.write(currentTime_, prefix + "Time");
 		io.write(currentTimeStep_, prefix + "CurrentTimeStep");

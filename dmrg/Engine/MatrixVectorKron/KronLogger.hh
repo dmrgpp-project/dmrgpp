@@ -204,7 +204,7 @@ private:
 	{
 		std::string tmp;
 		for (SizeType i = 0; i < n; ++i) {
-			tmp += " ";
+			tmp += ' ';
 		}
 
 		return tmp;
@@ -228,7 +228,7 @@ private:
 
 	static std::string buildFilename(const std::string& filename, SizeType n)
 	{
-		size_t dot_index = filename.find_last_of(".");
+		size_t dot_index = filename.find_last_of('.');
 
 		std::string root = filename.substr(0, dot_index);
 		return "kron_" + root + "_" + ttos(n) + ".txt";

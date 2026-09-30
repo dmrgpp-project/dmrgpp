@@ -32,7 +32,7 @@ public:
 		if (!onDisk)
 			return;
 
-		size_t             lastindex = filename.find_last_of(".");
+		size_t             lastindex = filename.find_last_of('.');
 		PsimagLite::String file      = filename.substr(0, lastindex) + post + ".hd5";
 
 		if (createFile_) {

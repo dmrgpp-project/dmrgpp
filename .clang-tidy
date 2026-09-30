@@ -1,4 +1,6 @@
 Checks: >
   -*,
   modernize-use-override,
-  modernize-use-nullptr
+  modernize-use-nullptr,
+  performance-prefer-single-char-overloads,
+  readability-container-data-pointer
