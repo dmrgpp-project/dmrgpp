@@ -596,10 +596,10 @@ typename std::enable_if<IsComplexNumber<T>::True, void>::type inverse(Matrix<T>&
 	psimag::LAPACK::IntegerForLapackType               n    = m.rows();
 	psimag::LAPACK::IntegerForLapackType               info = 0;
 	Vector<psimag::LAPACK::IntegerForLapackType>::Type ipiv(n, 0);
-	psimag::LAPACK::GETRF(n, n, &(m(0, 0)), n, &(ipiv[0]), info);
+	psimag::LAPACK::GETRF(n, n, &(m(0, 0)), n, ipiv.data(), info);
 	psimag::LAPACK::IntegerForLapackType lwork = -1;
 	typename Vector<T>::Type             work(2);
-	psimag::LAPACK::GETRI(n, &(m(0, 0)), n, &(ipiv[0]), &(work[0]), lwork, info);
+	psimag::LAPACK::GETRI(n, &(m(0, 0)), n, ipiv.data(), &(work[0]), lwork, info);
 	lwork = static_cast<psimag::LAPACK::IntegerForLapackType>(PsimagLite::real(work[0]));
 	work.resize(lwork + 2);
 	psimag::LAPACK::GETRI(n, &(m(0, 0)), n, ipiv.data(), &(work[0]), lwork, info);
@@ -614,10 +614,10 @@ typename std::enable_if<Loki::TypeTraits<T>::isArith, void>::type inverse(Matrix
 	psimag::LAPACK::IntegerForLapackType               n    = m.rows();
 	psimag::LAPACK::IntegerForLapackType               info = 0;
 	Vector<psimag::LAPACK::IntegerForLapackType>::Type ipiv(n, 0);
-	psimag::LAPACK::GETRF(n, n, &(m(0, 0)), n, &(ipiv[0]), info);
+	psimag::LAPACK::GETRF(n, n, &(m(0, 0)), n, ipiv.data(), info);
 	psimag::LAPACK::IntegerForLapackType lwork = -1;
 	typename Vector<T>::Type             work(2);
-	psimag::LAPACK::GETRI(n, &(m(0, 0)), n, &(ipiv[0]), &(work[0]), lwork, info);
+	psimag::LAPACK::GETRI(n, &(m(0, 0)), n, ipiv.data(), &(work[0]), lwork, info);
 	lwork = static_cast<psimag::LAPACK::IntegerForLapackType>(work[0]);
 	work.resize(lwork + 2);
 	psimag::LAPACK::GETRI(n, &(m(0, 0)), n, ipiv.data(), &(work[0]), lwork, info);

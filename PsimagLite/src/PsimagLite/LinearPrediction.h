@@ -208,11 +208,11 @@ private:
 		typename Vector<psimag::LAPACK::IntegerForLapackType>::Type ipiv(
 		    p); // use signed integers here!!
 		psimag::LAPACK::IntegerForLapackType info = 0;
-		psimag::LAPACK::GETRF(p, p, &(A(0, 0)), p, &(ipiv[0]), info);
+		psimag::LAPACK::GETRF(p, p, &(A(0, 0)), p, ipiv.data(), info);
 
 		typename Vector<FieldType>::Type     work(2);
 		psimag::LAPACK::IntegerForLapackType lwork = -1; // query mode
-		psimag::LAPACK::GETRI(p, &(A(0, 0)), p, &(ipiv[0]), &(work[0]), lwork, info);
+		psimag::LAPACK::GETRI(p, &(A(0, 0)), p, ipiv.data(), &(work[0]), lwork, info);
 		lwork = static_cast<psimag::LAPACK::IntegerForLapackType>(work[0]);
 		if (lwork <= 0)
 			throw RuntimeError("LinearPrediction:: internal error\n");
