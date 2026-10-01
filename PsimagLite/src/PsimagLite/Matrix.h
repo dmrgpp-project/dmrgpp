@@ -593,9 +593,6 @@ void diag(Matrix<std::complex<float>>& m, Vector<float>::Type& eigs, char option
 template <typename T>
 typename std::enable_if<IsComplexNumber<T>::True, void>::type inverse(Matrix<T>& m)
 {
-#ifdef NO_LAPACK
-	throw RuntimeError("inverse: NO LAPACK!\n");
-#else
 	int               n    = m.rows();
 	int               info = 0;
 	Vector<int>::Type ipiv(n, 0);
@@ -609,15 +606,11 @@ typename std::enable_if<IsComplexNumber<T>::True, void>::type inverse(Matrix<T>&
 	String s = "[cz]getri_ failed\n";
 	if (info != 0)
 		throw RuntimeError(s.c_str());
-#endif
 }
 
 template <typename T>
 typename std::enable_if<Loki::TypeTraits<T>::isArith, void>::type inverse(Matrix<T>& m)
 {
-#ifdef NO_LAPACK
-	throw RuntimeError("inverse: NO LAPACK!\n");
-#else
 	int               n    = m.rows();
 	int               info = 0;
 	Vector<int>::Type ipiv(n, 0);
@@ -631,7 +624,6 @@ typename std::enable_if<Loki::TypeTraits<T>::isArith, void>::type inverse(Matrix
 	String s = "[sd]getri_ failed\n";
 	if (info != 0)
 		throw RuntimeError(s.c_str());
-#endif
 }
 
 // end in Matrix.cpp

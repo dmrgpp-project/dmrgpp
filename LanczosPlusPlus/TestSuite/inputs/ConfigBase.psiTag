@@ -76,7 +76,7 @@ compilerCPPOptions Symbols3 = (
 CPPFLAGS +=   -g3
 )
 
-# Here add your lapack and blas libraries or say NO_LAPACK
+# Here add your lapack and blas libraries
 dependency LAPACK = (
 # If on MacOs please say LDFLAGS += -framework Accelerate
 LDFLAGS += -llapack
