@@ -92,6 +92,7 @@ public:
 
 	using VectorElementType   = typename VectorType::value_type;
 	using RealType            = typename PsimagLite::Real<VectorElementType>::Type;
+	using VectorRealType      = typename PsimagLite::Vector<RealType>::Type;
 	using VectorStageEnumType = typename PsimagLite::Vector<StageEnum>::Type;
 	using VectorVectorType    = typename PsimagLite::Vector<VectorType*>::Type;
 
@@ -107,6 +108,7 @@ public:
 	    , targetVectors_(aoe.tvs())
 	    , stages_(aoe.stages())
 	    , name_(name)
+	    , hasPvectorTimes_(false)
 	    , owner_(false)
 	{
 		const SizeType n = targetVectors_.size();
@@ -114,8 +116,25 @@ public:
 			targetVectors_[i] = const_cast<VectorType*>(&aoe.targetVectors(i));
 	}
 
+	template <typename SomeAoeType>
+	TimeSerializer(SizeType              currentTimeStep,
+	               RealType              currentTime,
+	               SizeType              site,
+	               const SomeAoeType&    aoe,
+	               PsimagLite::String    name,
+	               const VectorRealType& pvectorTimes)
+	    : TimeSerializer(currentTimeStep, currentTime, site, aoe, name)
+	{
+		if (pvectorTimes.size() != targetVectors_.size())
+			err("TimeSerializer: P-vector time count differs from target-vector count\n");
+
+		pvectorTimes_    = pvectorTimes;
+		hasPvectorTimes_ = true;
+	}
+
 	TimeSerializer(typename PsimagLite::IoSelector::In& io, PsimagLite::String prefix)
-	    : owner_(true)
+	    : hasPvectorTimes_(false)
+	    , owner_(true)
 	{
 		prefix += "/TimeSerializer/";
 
@@ -136,6 +155,21 @@ public:
 		io.read(xi, s);
 		if (xi <= 0)
 			err("TimeSerializer:: n. of vectors must be positive\n");
+
+		const PsimagLite::String pvectorTimesPrefix = prefix + "PvectorTimes/";
+		if (io.serializer().doesGroupExist(pvectorTimesPrefix)) {
+			int version = 0;
+			io.read(version, pvectorTimesPrefix + "Version");
+			if (version != 1)
+				err("TimeSerializer: unsupported P-vector times version\n");
+
+			io.read(pvectorTimes_, pvectorTimesPrefix + "Values");
+			if (pvectorTimes_.size() != static_cast<SizeType>(xi))
+				err("TimeSerializer: P-vector time count differs from target-vector count\n");
+
+			hasPvectorTimes_ = true;
+		}
+
 		targetVectors_.clear();
 		for (int i = 0; i < xi; ++i) {
 			VectorType* v = new VectorType();
@@ -184,6 +218,13 @@ public:
 
 		io.write(stages_, prefix + "Stages");
 		io.write(name_, prefix + "Name");
+
+		if (hasPvectorTimes_) {
+			const PsimagLite::String pvectorTimesPrefix = prefix + "PvectorTimes";
+			io.createGroup(pvectorTimesPrefix);
+			io.write(1, pvectorTimesPrefix + "/Version");
+			io.write(pvectorTimes_, pvectorTimesPrefix + "/Values");
+		}
 	}
 
 	SizeType numberOfVectors() const { return targetVectors_.size(); }
@@ -195,6 +236,18 @@ public:
 	SizeType site() const { return site_; }
 
 	PsimagLite::String name() const { return name_; }
+
+	bool hasPvectorTimes() const { return hasPvectorTimes_; }
+
+	const VectorRealType& pvectorTimes() const { return pvectorTimes_; }
+
+	RealType pvectorTime(SizeType i) const
+	{
+		if (i >= pvectorTimes_.size())
+			err("TimeSerializer: P-vector time index out of range\n");
+
+		return pvectorTimes_[i];
+	}
 
 	const VectorType& vector(SizeType i) const
 	{
@@ -217,6 +270,8 @@ private:
 	VectorVectorType    targetVectors_;
 	VectorStageEnumType stages_;
 	PsimagLite::String  name_;
+	VectorRealType      pvectorTimes_;
+	bool                hasPvectorTimes_;
 	bool                owner_;
 }; // class TimeSerializer
 } // namespace Dmrg

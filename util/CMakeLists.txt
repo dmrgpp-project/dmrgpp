@@ -1,1 +1,4 @@
 add_executable(check_value check_value.cpp)
+
+add_executable(check_hdf5_vector check_hdf5_vector.cpp)
+target_link_libraries(check_hdf5_vector PRIVATE psimaglite)
