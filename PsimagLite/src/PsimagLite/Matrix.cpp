@@ -14,9 +14,6 @@ void checkBlasStatus(int info, PsimagLite::String msg)
 
 void diag(Matrix<double>& m, Vector<double>::Type& eigs, char option)
 {
-#ifdef NO_LAPACK
-	throw RuntimeError("diag: dsyev_: NO LAPACK!\n");
-#else
 	char                 jobz = option;
 	char                 uplo = 'U';
 	int                  n    = m.rows();
@@ -46,14 +43,10 @@ void diag(Matrix<double>& m, Vector<double>::Type& eigs, char option)
 		std::cerr << "info=" << info << "\n";
 		throw RuntimeError("diag: dsyev_: failed with info!=0.\n");
 	}
-#endif
 }
 
 void diag(Matrix<std::complex<double>>& m, Vector<double>::Type& eigs, char option)
 {
-#ifdef NO_LAPACK
-	throw RuntimeError("diag: zheev: NO LAPACK!\n");
-#else
 	char                               jobz = option;
 	char                               uplo = 'U';
 	int                                n    = m.rows();
@@ -99,14 +92,10 @@ void diag(Matrix<std::complex<double>>& m, Vector<double>::Type& eigs, char opti
 		std::cerr << "info=" << info << "\n";
 		throw RuntimeError("diag: zheev: failed with info!=0.\n");
 	}
-#endif
 }
 
 void diag(Matrix<float>& m, Vector<float>::Type& eigs, char option)
 {
-#ifdef NO_LAPACK
-	throw RuntimeError("diag: dsyev_: NO LAPACK!\n");
-#else
 	char                jobz = option;
 	char                uplo = 'U';
 	int                 n    = m.rows();
@@ -137,14 +126,10 @@ void diag(Matrix<float>& m, Vector<float>::Type& eigs, char option)
 		std::cerr << "info=" << info << "\n";
 		throw RuntimeError("diag: dsyev_: failed with info!=0.\n");
 	}
-#endif
 }
 
 void diag(Matrix<std::complex<float>>& m, Vector<float>::Type& eigs, char option)
 {
-#ifdef NO_LAPACK
-	throw RuntimeError("diag: cheev: NO LAPACK!\n");
-#else
 	char                              jobz = option;
 	char                              uplo = 'U';
 	int                               n    = m.rows();
@@ -190,7 +175,6 @@ void diag(Matrix<std::complex<float>>& m, Vector<float>::Type& eigs, char option
 		std::cerr << "info=" << info << "\n";
 		throw RuntimeError("diag: cheev: failed with info!=0.\n");
 	}
-#endif
 }
 
 // complex zgeev version
