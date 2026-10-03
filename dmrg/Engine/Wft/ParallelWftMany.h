@@ -67,7 +67,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 
 *********************************************************
 
-*/
+ */
 /** \ingroup DMRG */
 /*@{*/
 /** \file ParallelWftMany.h
@@ -76,59 +76,71 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #ifndef DMRG_PARALLEL_WFT_MANY_H
 #define DMRG_PARALLEL_WFT_MANY_H
 
+#include <OneSiteSpaces.hh>
 #include <PsimagLite/Concurrency.h>
-#include <PsimagLite/Vector.h>
+#include <vector>
 
 namespace Dmrg {
 
-template <typename VectorWithOffsetType,
-          typename WaveFunctionTransfType,
-          typename LeftRightSuperType>
-class ParallelWftMany {
+template <typename ModelType, typename WaveFunctionTransfType> class ParallelWftMany {
 
+	using ComplexOrRealType          = typename ModelType::ComplexOrRealType;
 	using ConcurrencyType            = PsimagLite::Concurrency;
-	using VectorVectorWithOffsetType = typename PsimagLite::Vector<VectorWithOffsetType>::Type;
+	using VectorWithOffsetType       = VectorWithOffsets<ComplexOrRealType>;
+	using VectorVectorWithOffsetType = std::vector<VectorWithOffsetType*>;
+	using OneSiteSpacesType          = OneSiteSpaces<ModelType>;
+	using ModelHelperType            = typename ModelType::ModelHelperType;
+	using LeftRightSuperType         = typename ModelHelperType::LeftRightSuperType;
 
 public:
 
-	using VectorElementType = typename VectorWithOffsetType::value_type;
-	using RealType          = typename PsimagLite::Real<VectorElementType>::Type;
-
 	ParallelWftMany(VectorVectorWithOffsetType&   targetVectors,
-	                SizeType                      nk,
+	                const OneSiteSpacesType&      one_site_spaces,
+	                const std::vector<SizeType>&  index_map,
 	                const WaveFunctionTransfType& wft,
 	                const LeftRightSuperType&     lrs)
 	    : targetVectors_(targetVectors)
-	    , nk_(nk)
+	    , one_site_spaces_(one_site_spaces)
+	    , index_map_(index_map)
 	    , wft_(wft)
 	    , lrs_(lrs)
 	{ }
 
-	void thread_function_(SizeType threadNum,
-	                      SizeType blockSize,
-	                      SizeType total,
-	                      ConcurrencyType::MutexType*)
+	void doTask(SizeType ix, SizeType /* threadNum */)
+
 	{
-		SizeType nk        = nk_;
-		SizeType mpiRank   = PsimagLite::MPI::commRank(PsimagLite::MPI::COMM_WORLD);
-		SizeType npthreads = PsimagLite::Concurrency::npthreads;
+		assert(ix < index_map_.size());
+		SizeType index = index_map_[ix];
 
-		ConcurrencyType::mpiDisableIfNeeded(mpiRank, blockSize, "ParallelWftMany", total);
+		assert(index < targetVectors_.size());
+		const VectorWithOffsetType& src = *targetVectors_[index];
+		if (src.size() == 0)
+			return; // <-- EARLY EXIT HERE
 
-		for (SizeType p = 0; p < blockSize; p++) {
-			SizeType ix = (threadNum + npthreads * mpiRank) * blockSize + p + 1;
-			if (ix >= targetVectors_.size())
-				break;
-			VectorWithOffsetType phiNew = targetVectors_[0];
-			wft_.setInitialVector(phiNew, targetVectors_[ix], lrs_, nk);
-			targetVectors_[ix] = phiNew;
-		}
+		VectorWithOffsetType phiNew;
+		wftOneVector(phiNew, src, one_site_spaces_, wft_, lrs_);
+		*targetVectors_[index] = phiNew;
+	}
+
+	SizeType tasks() const { return index_map_.size(); }
+
+	static void wftOneVector(VectorWithOffsetType&         phiNew,
+	                         const VectorWithOffsetType&   src,
+	                         const OneSiteSpacesType&      one_site_spaces,
+	                         const WaveFunctionTransfType& wft,
+	                         const LeftRightSuperType&     lrs)
+	{
+		phiNew.populateFromQns(src, lrs.super());
+
+		// OK, now that we got the partition number right, let's wft:
+		wft.setInitialVector(phiNew, src, lrs, one_site_spaces);
 	}
 
 private:
 
 	VectorVectorWithOffsetType&   targetVectors_;
-	SizeType                      nk_;
+	const OneSiteSpacesType&      one_site_spaces_;
+	std::vector<SizeType>         index_map_;
 	const WaveFunctionTransfType& wft_;
 	const LeftRightSuperType&     lrs_;
 }; // class ParallelWftMany
