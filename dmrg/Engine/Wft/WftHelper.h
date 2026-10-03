@@ -1,6 +1,9 @@
 #ifndef WFTHELPER_H
 #define WFTHELPER_H
 #include "OneSiteSpaces.hh"
+#include "ParallelWftMany.h"
+#include <OneSiteSpaces.hh>
+#include <ParametersDmrgSolver.h>
 #include <PsimagLite/Vector.h>
 
 namespace Dmrg {
@@ -15,6 +18,7 @@ public:
 	using LeftRightSuperType         = typename ModelHelperType::LeftRightSuperType;
 	using VectorSizeType             = PsimagLite::Vector<SizeType>::Type;
 	using OneSiteSpacesType          = OneSiteSpaces<ModelType>;
+	using ParallelWftManyType        = ParallelWftMany<ModelType, WaveFunctionTransfType>;
 
 	WftHelper(const ModelType&              model,
 	          const LeftRightSuperType&     lrs,
@@ -27,31 +31,57 @@ public:
 	void
 	wftSome(VectorVectorWithOffsetType& tvs, SizeType site, SizeType begin, SizeType end) const
 	{
-		for (SizeType index = begin; index < end; ++index) {
-			assert(index < tvs.size());
-			const VectorWithOffsetType& src = *tvs[index];
-			if (src.size() == 0)
-				continue;
-			VectorWithOffsetType phiNew;
-			wftOneVector(phiNew, src, site);
-			*tvs[index] = phiNew;
+		using ParallelizerType = PsimagLite::Parallelizer<ParallelWftManyType>;
+
+		bool wants_parallel = wantsParallel();
+		assert(end >= begin);
+		SizeType total = end - begin;
+
+		if (total == 0)
+			return; // <-- EARLY EXIT HERE
+
+		SizeType threads = (wants_parallel)
+		    ? std::min(total, PsimagLite::Concurrency::codeSectionParams.npthreads)
+		    : 1;
+
+		PsimagLite::CodeSectionParams codeSectionParams(threads);
+		ParallelizerType              threadedCtor(codeSectionParams);
+
+		std::vector<SizeType> index_map(total);
+		for (SizeType i = 0; i < total; ++i) {
+			index_map[i] = i + begin;
 		}
+
+		ProgramGlobals::DirectionEnum dir
+		    = ProgramGlobals::DirectionEnum::EXPAND_SYSTEM; // FIXME!
+		OneSiteSpacesType   oneSiteSpaces(site, dir, model_);
+		ParallelWftManyType helper(tvs, oneSiteSpaces, index_map, wft_, lrs_);
+
+		threadedCtor.loopCreate(helper);
 	}
 
 	void wftOneVector(VectorWithOffsetType&       phiNew,
 	                  const VectorWithOffsetType& src,
 	                  SizeType                    site) const
 	{
-		phiNew.populateFromQns(src, lrs_.super());
-
-		// OK, now that we got the partition number right, let's wft:
 		ProgramGlobals::DirectionEnum dir
 		    = ProgramGlobals::DirectionEnum::EXPAND_SYSTEM; // FIXME!
-		OneSiteSpacesType oneSiteSpaces(site, dir, model_);
-		wft_.setInitialVector(phiNew, src, lrs_, oneSiteSpaces);
+		OneSiteSpacesType one_site_space(site, dir, model_);
+		ParallelWftManyType::wftOneVector(phiNew, src, one_site_space, wft_, lrs_);
 	}
 
 private:
+
+	bool wantsParallel() const
+	{
+		const auto& opts = model_.params().options;
+		if (opts.isSet("parallelwftmany")) {
+			assert(opts.isSet("nowft") || opts.isSet("wftNoAccel"));
+			return true;
+		}
+
+		return false;
+	}
 
 	const ModelType&              model_;
 	const LeftRightSuperType&     lrs_;
