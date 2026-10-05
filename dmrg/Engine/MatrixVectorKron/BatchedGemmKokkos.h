@@ -123,6 +123,12 @@ private:
 	// triples while leaving small-m triples (m <= kPass1RowChunk_) unsplit.
 	inline static constexpr int kPass1RowChunk_ = 16;
 
+	// By default (and when using Kokkos::AUTO), Kokkos uses 1 as vector_length which means that
+	// all the GEMMs would be executed by only one hardware thread. Just as for the other
+	// parameters above, it turned out that we get get better performance by letting multiple
+	// hardware threads collaborate on a GEMM.
+	inline static constexpr int kVectorLength_ = 8;
+
 public:
 
 	BatchedGemmKokkos(const InitKronType& initKron)
@@ -176,7 +182,7 @@ public:
 			Kokkos::parallel_for(
 			    "BatchedGemmKokkos_Pass1",
 			    Kokkos::TeamPolicy<ExecutionSpace>(
-			        exec, static_cast<int>(nbatch1_), Kokkos::AUTO, 8),
+			        exec, static_cast<int>(nbatch1_), Kokkos::AUTO, kVectorLength_),
 			    KOKKOS_LAMBDA(const MemberType& member) {
 				    const int       i  = member.league_rank();
 				    const GemmArgs& ag = args(i);
@@ -244,7 +250,7 @@ public:
 			Kokkos::parallel_for(
 			    "BatchedGemmKokkos_Pass2",
 			    Kokkos::TeamPolicy<ExecutionSpace>(
-			        exec, static_cast<int>(nbatch2_), Kokkos::AUTO, 8)
+			        exec, static_cast<int>(nbatch2_), Kokkos::AUTO, kVectorLength_)
 			        .set_scratch_size(
 			            1, Kokkos::PerTeam(static_cast<int>(scratchBytesPerTeam))),
 			    KOKKOS_LAMBDA(const MemberType& member) {
