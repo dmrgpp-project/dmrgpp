@@ -1,10 +1,13 @@
 # Source frontier_load_modules_darshan.sh first, then run this from the source tree.
 # The separate Spack environment supplies HDF5 and Boost only. Deactivate it
 # before running this script so CMake sees the loaded Cray wrappers unchanged.
+# CCE 21.0.0 HIP crashes while emitting DWARF for KokkosKernels ETI sources;
+# this experiment therefore defaults to Release, not RelWithDebInfo.
 
 spack_env=${FRONTIER_DARSHAN_SPACK_ENV:-/ccs/home/pdoak/spack_env/dmrgpp-cce2100-darshan}
 repo="$(git rev-parse --show-toplevel)"
 build=${FRONTIER_DARSHAN_BUILD_DIR:-"$repo/build_cce2100_mpich910_hip_darshan"}
+build_type=${FRONTIER_DARSHAN_BUILD_TYPE:-Release}
 
 export HDF5_ROOT="$(spack -e "$spack_env" location -i hdf5)"
 export Boost_ROOT="$(spack -e "$spack_env" location -i boost)"
@@ -39,7 +42,7 @@ print -r -- "Boost: $Boost_ROOT"
 module -t list 2> "$repo/frontier-cce2100-darshan.modules"
 
 cmake -S "$repo" -B "$build" \
-  -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+  -DCMAKE_BUILD_TYPE="$build_type" \
   -DCMAKE_C_COMPILER="$(command -v cc)" \
   -DCMAKE_CXX_COMPILER="$(command -v CC)" \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
