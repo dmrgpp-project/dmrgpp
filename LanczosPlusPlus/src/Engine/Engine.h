@@ -440,12 +440,12 @@ public:
 			if (temp >= 0 && SizeType(temp) >= z.size()) {
 				PsimagLite::String s = "old basis=" + ttos(srcBasis.size());
 				s += " newbasis=" + ttos(newBasis.size());
-				s += "\n";
+				s += '\n';
 				s += "operatorLabel= " + lOperator.toString()
 				    + " spin=" + ttos(spin);
 				s += " site=" + ttos(site);
 				s += "ket1=" + ttos(ket1) + " and ket2=" + ttos(ket2);
-				s += "\n";
+				s += '\n';
 				s += "accModifiedState_: z.size=" + ttos(z.size());
 				s += " but temp=" + ttos(temp) + "\n";
 				throw std::runtime_error(s.c_str());

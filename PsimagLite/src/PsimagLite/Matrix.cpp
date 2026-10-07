@@ -14,9 +14,6 @@ void checkBlasStatus(int info, PsimagLite::String msg)
 
 void diag(Matrix<double>& m, Vector<double>::Type& eigs, char option)
 {
-#ifdef NO_LAPACK
-	throw RuntimeError("diag: dsyev_: NO LAPACK!\n");
-#else
 	char                 jobz = option;
 	char                 uplo = 'U';
 	int                  n    = m.rows();
@@ -31,7 +28,7 @@ void diag(Matrix<double>& m, Vector<double>::Type& eigs, char option)
 	eigs.resize(n);
 
 	// query:
-	dsyev_(&jobz, &uplo, &n, &(m(0, 0)), &lda, &(eigs[0]), &(work[0]), &lwork, &info);
+	dsyev_(&jobz, &uplo, &n, &(m(0, 0)), &lda, eigs.data(), work.data(), &lwork, &info);
 	if (info != 0) {
 		std::cerr << "info=" << info << "\n";
 		throw RuntimeError("diag: dsyev_: failed with info!=0.\n");
@@ -41,19 +38,15 @@ void diag(Matrix<double>& m, Vector<double>::Type& eigs, char option)
 	lwork        = std::max(1 + static_cast<int>(work[0]), (NB + 2) * n);
 	work.resize(lwork);
 	// real work:
-	dsyev_(&jobz, &uplo, &n, &(m(0, 0)), &lda, &(eigs[0]), &(work[0]), &lwork, &info);
+	dsyev_(&jobz, &uplo, &n, &(m(0, 0)), &lda, eigs.data(), work.data(), &lwork, &info);
 	if (info != 0) {
 		std::cerr << "info=" << info << "\n";
 		throw RuntimeError("diag: dsyev_: failed with info!=0.\n");
 	}
-#endif
 }
 
 void diag(Matrix<std::complex<double>>& m, Vector<double>::Type& eigs, char option)
 {
-#ifdef NO_LAPACK
-	throw RuntimeError("diag: zheev: NO LAPACK!\n");
-#else
 	char                               jobz = option;
 	char                               uplo = 'U';
 	int                                n    = m.rows();
@@ -66,8 +59,16 @@ void diag(Matrix<std::complex<double>>& m, Vector<double>::Type& eigs, char opti
 	eigs.resize(n);
 
 	// query:
-	zheev_(
-	    &jobz, &uplo, &n, &(m(0, 0)), &lda, &(eigs[0]), &(work[0]), &lwork, &(rwork[0]), &info);
+	zheev_(&jobz,
+	       &uplo,
+	       &n,
+	       &(m(0, 0)),
+	       &lda,
+	       eigs.data(),
+	       work.data(),
+	       &lwork,
+	       rwork.data(),
+	       &info);
 	if (info != 0) {
 		std::cerr << "info=" << info << "\n";
 		throw RuntimeError("diag: zheev_: failed with info!=0.\n");
@@ -77,20 +78,24 @@ void diag(Matrix<std::complex<double>>& m, Vector<double>::Type& eigs, char opti
 	lwork        = std::max(1 + static_cast<int>(std::real(work[0])), (NB + 2) * n);
 	work.resize(lwork);
 	// real work:
-	zheev_(
-	    &jobz, &uplo, &n, &(m(0, 0)), &lda, &(eigs[0]), &(work[0]), &lwork, &(rwork[0]), &info);
+	zheev_(&jobz,
+	       &uplo,
+	       &n,
+	       &(m(0, 0)),
+	       &lda,
+	       eigs.data(),
+	       work.data(),
+	       &lwork,
+	       rwork.data(),
+	       &info);
 	if (info != 0) {
 		std::cerr << "info=" << info << "\n";
 		throw RuntimeError("diag: zheev: failed with info!=0.\n");
 	}
-#endif
 }
 
 void diag(Matrix<float>& m, Vector<float>::Type& eigs, char option)
 {
-#ifdef NO_LAPACK
-	throw RuntimeError("diag: dsyev_: NO LAPACK!\n");
-#else
 	char                jobz = option;
 	char                uplo = 'U';
 	int                 n    = m.rows();
@@ -105,7 +110,7 @@ void diag(Matrix<float>& m, Vector<float>::Type& eigs, char option)
 	eigs.resize(n);
 
 	// query:
-	ssyev_(&jobz, &uplo, &n, &(m(0, 0)), &lda, &(eigs[0]), &(work[0]), &lwork, &info);
+	ssyev_(&jobz, &uplo, &n, &(m(0, 0)), &lda, eigs.data(), work.data(), &lwork, &info);
 	if (info != 0) {
 		std::cerr << "info=" << info << "\n";
 		throw RuntimeError("diag: dsyev_: failed with info!=0.\n");
@@ -116,19 +121,15 @@ void diag(Matrix<float>& m, Vector<float>::Type& eigs, char option)
 	work.resize(lwork);
 
 	// real work:
-	ssyev_(&jobz, &uplo, &n, &(m(0, 0)), &lda, &(eigs[0]), &(work[0]), &lwork, &info);
+	ssyev_(&jobz, &uplo, &n, &(m(0, 0)), &lda, eigs.data(), work.data(), &lwork, &info);
 	if (info != 0) {
 		std::cerr << "info=" << info << "\n";
 		throw RuntimeError("diag: dsyev_: failed with info!=0.\n");
 	}
-#endif
 }
 
 void diag(Matrix<std::complex<float>>& m, Vector<float>::Type& eigs, char option)
 {
-#ifdef NO_LAPACK
-	throw RuntimeError("diag: cheev: NO LAPACK!\n");
-#else
 	char                              jobz = option;
 	char                              uplo = 'U';
 	int                               n    = m.rows();
@@ -140,8 +141,16 @@ void diag(Matrix<std::complex<float>>& m, Vector<float>::Type& eigs, char option
 	eigs.resize(n);
 
 	// query:
-	cheev_(
-	    &jobz, &uplo, &n, &(m(0, 0)), &lda, &(eigs[0]), &(work[0]), &lwork, &(rwork[0]), &info);
+	cheev_(&jobz,
+	       &uplo,
+	       &n,
+	       &(m(0, 0)),
+	       &lda,
+	       eigs.data(),
+	       work.data(),
+	       &lwork,
+	       rwork.data(),
+	       &info);
 	if (info != 0) {
 		std::cerr << "info=" << info << "\n";
 		throw RuntimeError("diag: cheev_: failed with info!=0.\n");
@@ -152,13 +161,20 @@ void diag(Matrix<std::complex<float>>& m, Vector<float>::Type& eigs, char option
 	work.resize(lwork);
 
 	// real work:
-	cheev_(
-	    &jobz, &uplo, &n, &(m(0, 0)), &lda, &(eigs[0]), &(work[0]), &lwork, &(rwork[0]), &info);
+	cheev_(&jobz,
+	       &uplo,
+	       &n,
+	       &(m(0, 0)),
+	       &lda,
+	       eigs.data(),
+	       work.data(),
+	       &lwork,
+	       rwork.data(),
+	       &info);
 	if (info != 0) {
 		std::cerr << "info=" << info << "\n";
 		throw RuntimeError("diag: cheev: failed with info!=0.\n");
 	}
-#endif
 }
 
 // complex zgeev version
@@ -182,14 +198,14 @@ void geev(char                               jobvl,
 	       &n,
 	       &(a(0, 0)),
 	       &lda,
-	       &(w[0]),
+	       w.data(),
 	       &(vl(0, 0)),
 	       &ldvl,
 	       &(vr(0, 0)),
 	       &ldvr,
-	       &(work[0]),
+	       work.data(),
 	       &lwork,
-	       &(rwork[0]),
+	       rwork.data(),
 	       &info);
 
 	const int NB = 256;
@@ -201,14 +217,14 @@ void geev(char                               jobvl,
 	       &n,
 	       &(a(0, 0)),
 	       &lda,
-	       &(w[0]),
+	       w.data(),
 	       &(vl(0, 0)),
 	       &ldvl,
 	       &(vr(0, 0)),
 	       &ldvr,
-	       &(work[0]),
+	       work.data(),
 	       &lwork,
-	       &(rwork[0]),
+	       rwork.data(),
 	       &info);
 
 	checkBlasStatus(info, "zgeev_");
@@ -240,15 +256,15 @@ void geev(char                               jobvl,
 	       &n,
 	       &(a(0, 0)),
 	       &lda,
-	       &(wr[0]),
-	       &(wi[0]),
+	       wr.data(),
+	       wi.data(),
 	       &(vl(0, 0)),
 	       &ldvl,
 	       &(vr(0, 0)),
 	       &ldvr,
-	       &(work[0]),
+	       work.data(),
 	       &lwork,
-	       &(rwork[0]),
+	       rwork.data(),
 	       &info);
 
 	const int NB = 256;
@@ -260,15 +276,15 @@ void geev(char                               jobvl,
 	       &n,
 	       &(a(0, 0)),
 	       &lda,
-	       &(wr[0]),
-	       &(wi[0]),
+	       wr.data(),
+	       wi.data(),
 	       &(vl(0, 0)),
 	       &ldvl,
 	       &(vr(0, 0)),
 	       &ldvr,
-	       &(work[0]),
+	       work.data(),
 	       &lwork,
-	       &(rwork[0]),
+	       rwork.data(),
 	       &info);
 
 	checkBlasStatus(info, "dgeev_");

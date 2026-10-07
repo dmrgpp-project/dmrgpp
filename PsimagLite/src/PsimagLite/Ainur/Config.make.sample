@@ -12,8 +12,7 @@ CXX += -pedantic -std=c++11
 # compiler wrapper under CXX above)
 # CPPFLAGS += -DUSE_MPI
 
-# Here add your lapack and blas libraries or say NO_LAPACK
-# CPPFLAGS += -DNO_LAPACK
+# Here add your lapack and blas libraries
 # If on MacOs please say LDFLAGS += -framework Accelerate
 LDFLAGS += -llapack -lblas
 

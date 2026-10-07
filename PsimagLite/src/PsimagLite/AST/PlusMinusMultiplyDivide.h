@@ -122,7 +122,7 @@ private:
 	static void
 	setInputRealOrComplex(NodeType* input, const String& code, const double& /* dummy */)
 	{
-		if (code.find("i") != std::string::npos) {
+		if (code.find('i') != std::string::npos) {
 			err("Not compiled for complex in code " + code + "\n");
 		}
 

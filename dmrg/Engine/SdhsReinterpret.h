@@ -28,7 +28,7 @@ public:
 
 		PsimagLite::String str("<");
 		str += braket.bra().toString();
-		str += "|";
+		str += '|';
 		for (SizeType i = 0; i < n; ++i) {
 			PsimagLite::String opName = braket.opName(i);
 			str += opName;
@@ -36,7 +36,7 @@ public:
 			if (!siteSplit.hasSiteString)
 				str += "[" + ttos(sites[i]) + "]";
 			if (i < n - 1)
-				str += ";";
+				str += ';';
 		}
 
 		str += "|" + braket.ket().toString() + ">";

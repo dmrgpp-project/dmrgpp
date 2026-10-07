@@ -156,7 +156,7 @@ public:
 		String  name = "Def/" + name2;
 		hsize_t dims[1];
 		dims[0]   = what.length();
-		void* ptr = static_cast<void*>(&what[0]);
+		void* ptr = static_cast<void*>(what.data());
 		internalWrite<char>(name, ptr, dims, 1);
 	}
 
@@ -244,7 +244,7 @@ public:
 		hsize_t dims[1];
 		dims[0] = what.size();
 		assert(0 < what.size());
-		const void* ptr = static_cast<const void*>(&what[0]);
+		const void* ptr = static_cast<const void*>(what.data());
 
 		if (Loki::TypeTraits<T>::isFloat)
 			writeComplexOrReal(name2, 'R');
@@ -264,7 +264,7 @@ public:
 			return;
 
 		assert(0 < what.size());
-		const void* ptr  = static_cast<const void*>(&what[0]);
+		const void* ptr  = static_cast<const void*>(what.data());
 		String      name = "Def/" + name2;
 		hsize_t     dims[1];
 		dims[0] = 2 * what.size();

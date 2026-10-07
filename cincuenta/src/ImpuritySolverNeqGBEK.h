@@ -1365,29 +1365,29 @@ private:
 		std::string uStr = "[" + ttos(U);
 		for (SizeType i = 1; i < nsites; ++i)
 			uStr += ", 0.";
-		uStr += "]";
+		uStr += ']';
 
 		std::string connStr = "[";
 		for (SizeType i = 0; i < hoppings.size(); ++i) {
 			if (i > 0)
-				connStr += ",";
+				connStr += ',';
 			connStr += ttos(hoppings[i]);
 		}
-		connStr += "]";
+		connStr += ']';
 
 		std::string potStr = "[";
 		for (SizeType i = 0; i < nsites; ++i) {
 			if (i > 0)
-				potStr += ",";
+				potStr += ',';
 			potStr += ttos(potV[i]);
 		}
-		potStr += ",";
+		potStr += ',';
 		for (SizeType i = 0; i < nsites; ++i) {
 			if (i > 0)
-				potStr += ",";
+				potStr += ',';
 			potStr += ttos(potV[i]);
 		}
-		potStr += "]";
+		potStr += ']';
 
 		std::string s = "##Ainur1.0\n\n";
 		s += "TotalNumberOfSites=" + ttos(nsites) + ";\n";

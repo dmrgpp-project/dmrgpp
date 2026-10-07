@@ -358,8 +358,8 @@ public:
 			for (SizeType i = 0; i < m; ++i) {
 				newline += a + ttos(i) + b + "=" + tokens[i];
 				if (ainurMode_)
-					newline += ";";
-				newline += "\n";
+					newline += ';';
+				newline += '\n';
 			}
 
 			return newline;

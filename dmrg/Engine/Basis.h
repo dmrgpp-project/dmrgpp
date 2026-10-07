@@ -706,7 +706,7 @@ private:
 	    typename PsimagLite::EnableIf<PsimagLite::IsInputLike<IoInputter>::True, int>::Type = 0)
 	{
 		useSu2Symmetry_ = false;
-		prefix += "/";
+		prefix += '/';
 		io.read(useSu2Symmetry_, prefix + "useSu2Symmetry");
 		io.read(block_, prefix + "BLOCK");
 
@@ -827,7 +827,7 @@ private:
 
 	void correctNameIfNeeded()
 	{
-		if (name_.find("/") == PsimagLite::String::npos)
+		if (name_.find('/') == PsimagLite::String::npos)
 			return;
 
 		if (name_.find("system") != PsimagLite::String::npos)

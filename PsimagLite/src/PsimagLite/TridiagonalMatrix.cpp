@@ -20,13 +20,13 @@ void TridiagonalMatrix<double>::diag2(TridiagonalMatrix<double>::VectorRealType&
 
 	psimag::LAPACK::dstedc_(&jobz,
 	                        &n,
-	                        &(eigs[0]),
+	                        eigs.data(),
 	                        &(e[1]),
-	                        &(z[0]),
+	                        z.data(),
 	                        &lz,
-	                        &(work[0]),
+	                        work.data(),
 	                        &lwork,
-	                        &(iwork[0]),
+	                        iwork.data(),
 	                        &liwork,
 	                        &info);
 
@@ -54,13 +54,13 @@ void TridiagonalMatrix<float>::diag2(TridiagonalMatrix<float>::VectorRealType& e
 
 	psimag::LAPACK::sstedc_(&jobz,
 	                        &n,
-	                        &(eigs[0]),
+	                        eigs.data(),
 	                        &(e[1]),
-	                        &(z[0]),
+	                        z.data(),
 	                        &lz,
-	                        &(work[0]),
+	                        work.data(),
 	                        &lwork,
-	                        &(iwork[0]),
+	                        iwork.data(),
 	                        &liwork,
 	                        &info);
 
