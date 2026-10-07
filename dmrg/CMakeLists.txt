@@ -249,6 +249,7 @@ add_test(NAME input121 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input121.ain -p 12 "<
 add_test(NAME input122 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input122.ain -p 12 "<gs|P0>,<gs|P1>,<P0|P1>") # none
 add_test(NAME input123 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input123.ain -p 12
                                "<gs|P0>,<P0|P1>,<gs|c'|P2>,<gs|c'|P3>,<P2|P3>") # none
+set_tests_properties(input123 PROPERTIES DEPENDS input120)
 add_test(NAME input124 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input124.ain -p 12 "<P1|nup|P1>") # none
 set_tests_properties(input124 PROPERTIES DEPENDS input123)
 add_insitu_gold_check_test(
