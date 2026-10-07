@@ -46,7 +46,7 @@ public:
 
 		PsimagLite::CodeSectionParams codeSectionParams(threads);
 		ParallelizerType              threadedCtor(codeSectionParams);
-		std::cout<<"HERE "<<threads<<" threads\n";
+		std::cout << "HERE " << threads << " threads\n";
 		std::vector<SizeType> index_map(total);
 		for (SizeType i = 0; i < total; ++i) {
 			index_map[i] = i + begin;

@@ -120,7 +120,7 @@ public:
 		VectorWithOffsetType phiNew;
 		wftOneVector(phiNew, src, one_site_spaces_, wft_, lrs_);
 		*targetVectors_[index] = phiNew;
-		std::cout<<"HERE: task "<<ix<<" out of "<<tasks()<<"\n"; 
+		std::cout << "HERE: task " << ix << " out of " << tasks() << "\n";
 	}
 
 	SizeType tasks() const { return index_map_.size(); }
