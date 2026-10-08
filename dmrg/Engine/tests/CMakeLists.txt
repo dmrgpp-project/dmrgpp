@@ -33,6 +33,11 @@ target_link_libraries(test_MatrixVectorStored PRIVATE Catch2::Catch2WithMain dmr
 target_include_directories(test_MatrixVectorStored PRIVATE ${CMAKE_SOURCE_DIR}/dmrg/Engine)
 catch_discover_tests(test_MatrixVectorStored)
 
+add_executable(test_GeometryFactor test_GeometryFactor.cpp)
+target_link_libraries(test_GeometryFactor PRIVATE Catch2::Catch2WithMain dmrgpp_utils psimaglite)
+target_include_directories(test_GeometryFactor PRIVATE ${CMAKE_SOURCE_DIR}/dmrg ${CMAKE_SOURCE_DIR}/dmrg/Engine)
+catch_discover_tests(test_GeometryFactor)
+
 add_executable(bench_BatchedGemm bench_BatchedGemm.cpp)
 target_link_libraries(bench_BatchedGemm PRIVATE dmrgpp_utils psimaglite)
 target_include_directories(bench_BatchedGemm PRIVATE ${CMAKE_SOURCE_DIR}/dmrg/Engine

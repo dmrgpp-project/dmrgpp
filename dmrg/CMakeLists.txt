@@ -365,6 +365,7 @@ endforeach()
 add_test(NAME input9000 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input9000.ain) # energy -0.472136
 add_test(NAME input9001 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input9001.ain "<P0|n|P0>"
 )# in-situ 1 (1.010966,0.000000) 0.500000 <P0|n|P0> (1.000000,0.000000)
+set_tests_properties(input9001 PROPERTIES DEPENDS input9000)
 
 # U=0->U=2 quench unit tests using TargetingExpression + TimeEvolve P.last syntax
 # input9100: GS of H_i (U=0); energy = -sqrt(5) for uniform hopping 0.5
