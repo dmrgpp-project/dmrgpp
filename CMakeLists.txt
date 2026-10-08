@@ -58,6 +58,8 @@ else()
 endif()
 
 include(GNUInstallDirs)
+install(FILES LICENSE NOTICE THIRD_PARTY_NOTICES DESTINATION ${CMAKE_INSTALL_DATADIR}/licenses/dmrgpp)
+
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 if(APPLE)
   set(CMAKE_INSTALL_RPATH "@loader_path/../${CMAKE_INSTALL_LIBDIR}")
@@ -95,7 +97,7 @@ add_subdirectory(dmrg)
 add_subdirectory(cincuenta/src)
 add_subdirectory(LanczosPlusPlus/src)
 
-option(BUILD_DOC "Build PDF manual (requires pdflatex, bibtex, and perl)" OFF)
+option(BUILD_DOC "Build PDF manual (requires pdflatex and perl; bibtex when doc/thesis.bib exists)" OFF)
 if(BUILD_DOC)
   add_subdirectory(doc)
 endif()
