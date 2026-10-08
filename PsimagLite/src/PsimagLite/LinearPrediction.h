@@ -204,15 +204,16 @@ private:
 	//! call to BLAS::GEMV
 	void computeD(MatrixType& A, typename Vector<FieldType>::Type& B)
 	{
-		SizeType                   p = B.size();
-		typename Vector<int>::Type ipiv(p); // use signed integers here!!
-		int                        info = 0;
+		SizeType                                                    p = B.size();
+		typename Vector<psimag::LAPACK::IntegerForLapackType>::Type ipiv(
+		    p); // use signed integers here!!
+		psimag::LAPACK::IntegerForLapackType info = 0;
 		psimag::LAPACK::GETRF(p, p, &(A(0, 0)), p, ipiv.data(), info);
 
-		typename Vector<FieldType>::Type work(2);
-		int                              lwork = -1; // query mode
+		typename Vector<FieldType>::Type     work(2);
+		psimag::LAPACK::IntegerForLapackType lwork = -1; // query mode
 		psimag::LAPACK::GETRI(p, &(A(0, 0)), p, ipiv.data(), &(work[0]), lwork, info);
-		lwork = static_cast<int>(work[0]);
+		lwork = static_cast<psimag::LAPACK::IntegerForLapackType>(work[0]);
 		if (lwork <= 0)
 			throw RuntimeError("LinearPrediction:: internal error\n");
 		work.resize(lwork);
