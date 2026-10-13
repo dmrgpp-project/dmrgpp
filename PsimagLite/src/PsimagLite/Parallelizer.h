@@ -78,9 +78,6 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #define PARALLELIZER_H
 #include "CodeSectionParams.h"
 #include "Concurrency.h"
-#include "Map.h"
-#include "Vector.h"
-#include <stdexcept>
 
 #define ActualPthreadsName PthreadsNg
 #define ActualPthreadsN() "PthreadsNg.h"
@@ -116,26 +113,6 @@ public:
 	Parallelizer(const CodeSectionParams& cs)
 	    : BaseType(cs)
 	{ }
-
-	Parallelizer(String codeSectionParams)
-	    : BaseType(codeSectionParamss_[codeSectionParams])
-	{ }
-
-	static bool exists(String name)
-	{
-		return (codeSectionParamss_.find(name) != codeSectionParamss_.end());
-	}
-
-	static void push(String name, const CodeSectionParams& cs)
-	{
-		codeSectionParamss_[name] = cs;
-	}
-
-	static void clear() { codeSectionParamss_.clear(); }
-
-private:
-
-	static Map<String, CodeSectionParams>::Type codeSectionParamss_;
 };
 } // namespace PsimagLite
 
