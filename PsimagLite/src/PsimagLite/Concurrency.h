@@ -80,6 +80,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include "FloatingPoint.h"
 #include "LAPACK.h"
 #include "LabelDisabled.h"
+#include "Map.h"
 #include "NotMpi.h"
 #include "Vector.h"
 #include <cassert>
@@ -101,6 +102,11 @@ public:
 
 	static SizeType          mode;
 	static CodeSectionParams codeSectionParams;
+	static CodeSectionParams codeSectionParamsFor(const String& name);
+	static void              setCodeSectionParamsOverride(const String& name, SizeType threads);
+	static void              clearCodeSectionParamsOverrides();
+	static bool              isCodeSectionName(const String& name);
+	static const Vector<String>::Type& codeSectionNames();
 
 #ifndef USE_PTHREADS
 
@@ -262,7 +268,28 @@ public:
 	static void setOptions(const CodeSectionParams& cs)
 	{
 		codeSectionParams = cs;
+		checkThreadCount(codeSectionParams.npthreads, codeSectionParams.npthreadsLevelTwo);
 		if (codeSectionParams.npthreads == 1 && codeSectionParams.npthreadsLevelTwo == 1)
+			return;
+
+#ifdef USE_PTHREADS
+		std::cout << "Concurrency::npthreads=" << codeSectionParams.npthreads << "\n";
+		std::cout << "Concurrency::npthreads2=" << codeSectionParams.npthreadsLevelTwo
+		          << "\n";
+		std::cout << "Concurrency::setAffinitiesDefault=" << codeSectionParams.setAffinities
+		          << "\n";
+#endif
+	}
+
+private:
+
+	static void checkThreadCount(SizeType npthreads, SizeType npthreadsLevelTwo)
+	{
+		if (npthreads == 0 || npthreadsLevelTwo == 0)
+			throw PsimagLite::RuntimeError(
+			    "Concurrency: thread count cannot be zero\n");
+
+		if (npthreads == 1 && npthreadsLevelTwo == 1)
 			return;
 
 #ifndef USE_PTHREADS
@@ -274,18 +301,11 @@ public:
 		message1 += " add -DUSE_PTHREADS to the CPP_FLAGS in your Makefile ";
 		message1 += "and recompile\n";
 		throw PsimagLite::RuntimeError(message1.c_str());
-#else
-		std::cout << "Concurrency::npthreads=" << codeSectionParams.npthreads << "\n";
-		std::cout << "Concurrency::npthreads2=" << codeSectionParams.npthreadsLevelTwo
-		          << "\n";
-		std::cout << "Concurrency::setAffinitiesDefault=" << codeSectionParams.setAffinities
-		          << "\n";
 #endif
 	}
 
-private:
-
-	static MpiDisabledType mpiDisabled_;
+	static Map<String, SizeType>::Type codeSectionParamsOverrides_;
+	static MpiDisabledType             mpiDisabled_;
 };
 
 } // namespace PsimagLite
