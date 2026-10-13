@@ -1,6 +1,7 @@
 #include "MatrixMatrix.hpp"
 #include <Kokkos_Core.hpp>
 #include <PsimagLite/CodeSectionParams.h>
+#include <PsimagLite/Concurrency.h>
 #include <PsimagLite/Parallelizer.h>
 #include <catch2/catch_session.hpp>
 #include <catch2/catch_test_macros.hpp>
@@ -37,6 +38,36 @@ void checkOutputs(const MatrixMatrix& work)
 }
 
 } // namespace
+
+TEST_CASE("Concurrency resolves named code section parameters", "[Parallelizer][CodeSectionParams]")
+{
+	using ConcurrencyType = PsimagLite::Concurrency;
+
+	ConcurrencyType::clearCodeSectionParamsOverrides();
+	ConcurrencyType::setOptions(PsimagLite::CodeSectionParams(1));
+
+	const auto kronDefault      = ConcurrencyType::codeSectionParamsFor("KronMatrix");
+	const auto operatorsDefault = ConcurrencyType::codeSectionParamsFor("Operators");
+	REQUIRE(kronDefault.name == "KronMatrix");
+	REQUIRE(kronDefault.npthreads == 1);
+	REQUIRE(operatorsDefault.name == "Operators");
+	REQUIRE(operatorsDefault.npthreads == 1);
+
+	REQUIRE_THROWS_AS(ConcurrencyType::setCodeSectionParamsOverride("NotASection", 1),
+	                  PsimagLite::RuntimeError);
+	REQUIRE_THROWS_AS(ConcurrencyType::setCodeSectionParamsOverride("KronMatrix", 0),
+	                  PsimagLite::RuntimeError);
+
+#ifdef USE_PTHREADS
+	ConcurrencyType::setOptions(PsimagLite::CodeSectionParams(4));
+	ConcurrencyType::setCodeSectionParamsOverride("KronMatrix", 2);
+	REQUIRE(ConcurrencyType::codeSectionParamsFor("KronMatrix").npthreads == 2);
+	REQUIRE(ConcurrencyType::codeSectionParamsFor("Operators").npthreads == 4);
+#endif
+
+	ConcurrencyType::clearCodeSectionParamsOverrides();
+	ConcurrencyType::setOptions(PsimagLite::CodeSectionParams(1));
+}
 
 TEST_CASE("Parallelizer completes independent GEMM tasks", "[Parallelizer]")
 {
