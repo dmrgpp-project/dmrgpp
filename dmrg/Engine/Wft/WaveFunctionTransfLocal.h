@@ -216,7 +216,8 @@ private:
 		SizeType i0            = psiDest.sector(iNew);
 		using ParallelizerType = PsimagLite::Parallelizer<ParallelWftType>;
 
-		ParallelizerType threadedWft(PsimagLite::Concurrency::codeSectionParams);
+		ParallelizerType threadedWft(
+		    PsimagLite::Concurrency::codeSectionParamsFor("WaveFunctionTransfLocal"));
 		ParallelWftType helperWft(psiDest, psiSrc, lrs, i0, oneSiteSpaces, dmrgWaveStruct_);
 
 		threadedWft.loopCreate(helperWft);
@@ -256,7 +257,8 @@ private:
 		SparseMatrixType weT;
 		transposeConjugate(weT, we);
 
-		ParallelizerType threadedWft(PsimagLite::Concurrency::codeSectionParams);
+		ParallelizerType threadedWft(
+		    PsimagLite::Concurrency::codeSectionParamsFor("WaveFunctionTransfLocal"));
 
 		WftSparseTwoSiteType helperWft(psiDest,
 		                               i0,
@@ -326,7 +328,8 @@ private:
 					continue;
 				} else {
 					ParallelizerType threadedWft(
-					    PsimagLite::Concurrency::codeSectionParams);
+					    PsimagLite::Concurrency::codeSectionParamsFor(
+					        "WaveFunctionTransfLocal"));
 
 					WftSparseTwoSiteType helperWft(
 					    psiDest,

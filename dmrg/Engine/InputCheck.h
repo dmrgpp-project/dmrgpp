@@ -258,6 +258,9 @@ public:
 		str += "string TSPOperator;\n";
 		str += "string OperatorExpression;\n";
 		str += "integer Threads = 1;\n";
+		const auto& codeSectionNames = PsimagLite::Concurrency::codeSectionNames();
+		for (SizeType i = 0; i < codeSectionNames.size(); ++i)
+			str += "integer Threads:" + codeSectionNames[i] + ";\n";
 		str += "integer Orbitals = 1;\n";
 		str += "string FeAsMode;\n";
 		str += "integer TargetSpinTimesTwo;\n";
@@ -332,6 +335,11 @@ public:
 
 	bool checkSimpleLabel(const PsimagLite::String& label, SizeType line) const
 	{
+		const PsimagLite::String prefix = "Threads:";
+		if (label.compare(0, prefix.length(), prefix) == 0
+		    && PsimagLite::Concurrency::isCodeSectionName(label.substr(prefix.length())))
+			return true;
+
 		for (SizeType i = 0; i < knownLabels_.size(); ++i)
 			if (knownLabels_[i] == label)
 				return true;

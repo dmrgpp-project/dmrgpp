@@ -500,11 +500,12 @@ public:
 		data_.resize(npatches, 0);
 		patches_.resize(npatches);
 
-		SizeType threads
-		    = std::min(npatches, PsimagLite::Concurrency::codeSectionParams.npthreads);
-		using ParallelizerType = PsimagLite::Parallelizer<ParallelBlockCtor>;
-		PsimagLite::CodeSectionParams codeSectionParams(threads);
-		ParallelizerType              threadedCtor(codeSectionParams);
+		PsimagLite::CodeSectionParams codeSectionParams
+		    = PsimagLite::Concurrency::codeSectionParamsFor("BlockDiagWfCtor");
+		SizeType threads            = std::min(npatches, codeSectionParams.npthreads);
+		using ParallelizerType      = PsimagLite::Parallelizer<ParallelBlockCtor>;
+		codeSectionParams.npthreads = threads;
+		ParallelizerType threadedCtor(codeSectionParams);
 
 		ParallelBlockCtor helper(
 		    patchesLeft, patchesRight, lrs, src, iSrc, patches_, data_);
@@ -528,12 +529,13 @@ public:
 	               SizeType                       gemmRnb,
 	               SizeType                       threadsForGemmR)
 	{
-		SizeType npatches = data_.size();
-		SizeType threads
-		    = std::min(npatches, PsimagLite::Concurrency::codeSectionParams.npthreads);
-		using ParallelizerType = PsimagLite::Parallelizer<ParallelBlockTransform>;
-		PsimagLite::CodeSectionParams codeSectionParams(threads);
-		ParallelizerType              threadedTransform(codeSectionParams);
+		SizeType                      npatches = data_.size();
+		PsimagLite::CodeSectionParams codeSectionParams
+		    = PsimagLite::Concurrency::codeSectionParamsFor("BlockDiagWfTransform");
+		SizeType threads            = std::min(npatches, codeSectionParams.npthreads);
+		using ParallelizerType      = PsimagLite::Parallelizer<ParallelBlockTransform>;
+		codeSectionParams.npthreads = threads;
+		ParallelizerType threadedTransform(codeSectionParams);
 
 		ParallelBlockTransform helper(tLeft,
 		                              tRight,
