@@ -177,6 +177,7 @@ struct ParametersDmrgSolver {
 	PsimagLite::String            model;
 	PsimagLite::String            insitu;
 	PsimagLite::String            recoverySave;
+	PsimagLite::String            dumperOperator;
 	PsimagLite::String            printHamiltonianAverage;
 	PsimagLite::String            saveDensityMatrixEigenvalues;
 	PsimagLite::String            findSymmetrySector;
@@ -210,6 +211,7 @@ struct ParametersDmrgSolver {
 		ioSerializer.write(root + "/model", model);
 		ioSerializer.write(root + "/insitu", insitu);
 		ioSerializer.write(root + "/recoverySave", recoverySave);
+		ioSerializer.write(root + "/dumperOperator", dumperOperator);
 		ioSerializer.write(root + "/printHamiltonianAverage", printHamiltonianAverage);
 		ioSerializer.write(root + "/saveDensityMatrixEigenvalues",
 		                   saveDensityMatrixEigenvalues);
@@ -241,6 +243,7 @@ struct ParametersDmrgSolver {
 	    , autoRestart(false)
 	    , options("SolverOptions=", io)
 	    , recoverySave("")
+	    , dumperOperator("")
 	    , adjustQuantumNumbers(0, QnType(false, VectorSizeType(), PairSizeType(0, 0), 0))
 	    , degeneracyMax(1e-12)
 	    , denseSparseThreshold(0.2)
@@ -346,6 +349,16 @@ struct ParametersDmrgSolver {
 			io.readline(dumperEnd, "KroneckerDumperEnd=");
 		} catch (std::exception&) { }
 
+		bool hasDumperOperator = false;
+		try {
+			io.readline(dumperOperator, "KroneckerDumperOperator=");
+			hasDumperOperator = true;
+		} catch (std::exception&) { }
+
+		if (hasDumperOperator && dumperOperator.empty())
+			throw PsimagLite::RuntimeError(
+			    "FATAL: KroneckerDumperOperator cannot be empty\n");
+
 		if (options.isSet("KroneckerDumper")) {
 			if (options.isSet("MatrixVectorStored")) {
 				PsimagLite::String msg("FATAL: KroneckerDumper cannot run with ");
@@ -358,6 +371,11 @@ struct ParametersDmrgSolver {
 				}
 			}
 		} else {
+			if (hasDumperOperator)
+				throw PsimagLite::RuntimeError(
+				    "FATAL: KroneckerDumperOperator needs KroneckerDumper in "
+				    "SolverOptions\n");
+
 			if (dumperBegin > 0 || dumperEnd > 0) {
 				PsimagLite::String msg("FATAL: KroneckerDumperBegin|End needs ");
 				throw PsimagLite::RuntimeError(
