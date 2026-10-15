@@ -101,7 +101,6 @@ if(TARGET kokkoskernels)
 endif()
 
 target_link_libraries(psimaglite PUBLIC Kokkos::kokkoskernels)
-target_sources(psimaglite PRIVATE PsimagLite/KokkosGemm.cpp)
 
 target_include_directories(psimaglite PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/Io
                                              ${CMAKE_CURRENT_SOURCE_DIR}/Ainur)
