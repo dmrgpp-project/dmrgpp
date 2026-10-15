@@ -43,6 +43,16 @@ jobs:
       run: |
         spack -e ${{github.workspace}}/source install
 
+    - name: Update Spack build cache
+      if: ${{ !cancelled() && github.event_name == 'push' && github.ref == 'refs/heads/master' && matrix.name == 'Release (static)' }}
+      env:
+        GITHUB_USER: ${{ github.actor }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        spack -e ${{github.workspace}}/source buildcache push \
+          --base-image ubuntu:24.04 \
+          --update-index local-buildcache
+
     - name: Configure
       shell: spack-bash {0}
       run: |
