@@ -59,9 +59,10 @@ HeisenbergTwiceS=1;
 # The options needed are as follows:
 # twositedmrg : strongly suggested
 # usecomplex : needed because of the sqrt(-1) == i factors
-# matrixvectorstored: needed because this algo. needs squaring
+# matrixvectorkron: applies the factorized Kron operator; it is optional because
+#                   Kron is selected by default without a stored or on-the-fly backend
 # LdaggerL: apply L^dagger L
-SolverOptions="twositedmrg,usecomplex,matrixvectorstored,LdaggerL";
+SolverOptions="twositedmrg,usecomplex,matrixvectorkron,LdaggerL";
 Version="247b335fe1542909b90be8647456bfd8fd56191c";
 OutputFile="data8902";
 
