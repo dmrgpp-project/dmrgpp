@@ -8,7 +8,7 @@
 #include "KokkosGemm.h"
 #include "KokkosType.h"
 
-template <typename Scalar, typename IntegerForBlasType>
+template <typename Scalar, typename KokkosScalar, typename IntegerForBlasType>
 inline void PsimagLite::kokkos_gemm(const Kokkos::DefaultExecutionSpace& exec,
                                     char                                 transa,
                                     char                                 transb,
@@ -16,12 +16,12 @@ inline void PsimagLite::kokkos_gemm(const Kokkos::DefaultExecutionSpace& exec,
                                     IntegerForBlasType                   n,
                                     IntegerForBlasType                   k,
                                     const Scalar&                        alpha,
-                                    const Scalar*                        A,
+                                    Kokkos::View<const KokkosScalar*, Kokkos::DefaultExecutionSpace> A,
                                     IntegerForBlasType                   lda,
-                                    const Scalar*                        B,
+                                    Kokkos::View<const KokkosScalar*, Kokkos::DefaultExecutionSpace> B,
                                     IntegerForBlasType                   ldb,
                                     const Scalar&                        beta,
-                                    Scalar*                              C,
+                                    Kokkos::View<KokkosScalar*, Kokkos::DefaultExecutionSpace> C,
                                     IntegerForBlasType                   ldc)
 {
 	Kokkos::Profiling::ScopedRegion scoped_region("PsimagLite::kokkos_gemm");
@@ -48,9 +48,8 @@ inline void PsimagLite::kokkos_gemm(const Kokkos::DefaultExecutionSpace& exec,
 	}
 
 	// Determine Kokkos scalar type
-	using KokkosScalar = KokkosType<Scalar>::type;
-
-	std::remove_cvref_t<decltype(exec)>::memory_space mem;
+	static_assert(std::is_same_v<KokkosScalar, typename KokkosType<Scalar>::type>);
+  using ViewType = Kokkos::View<const KokkosScalar**, Kokkos::DefaultExecutionSpace>;
 
 	// allow padded leading dimensions (ldaVal/ldbVal/ldcVal >= required)
 	if (ldaVal < req_lda || ldbVal < req_ldb || ldcVal < req_ldc) {
@@ -61,38 +60,69 @@ inline void PsimagLite::kokkos_gemm(const Kokkos::DefaultExecutionSpace& exec,
 
 	// Create host unmanaged views that reflect the actual storage (use lda/ldb as the first
 	// extent) and create subviews representing the logical matrix sizes.
-	Kokkos::View<const KokkosScalar**,
-	             Kokkos::LayoutLeft,
-	             Kokkos::HostSpace,
-	             Kokkos::MemoryUnmanaged>
-	     Aview_op(reinterpret_cast<const KokkosScalar*>(A), ldaVal, (ta == 'N' ? K : M));
-	auto Aop_device
-	    = Kokkos::create_mirror_view_and_copy(Kokkos::view_alloc(exec, mem), Aview_op);
-	auto Aop_logical = (ta == 'N') ? Kokkos::subview(Aop_device, Pair(0, M), Pair(0, K))
-	                               : Kokkos::subview(Aop_device, Pair(0, K), Pair(0, M));
+	ViewType
+	     Aview_op(A.data(), ldaVal, (ta == 'N' ? K : M));
+	auto Aop_logical = (ta == 'N') ? Kokkos::subview(Aview_op, Pair(0, M), Pair(0, K))
+	                               : Kokkos::subview(Aview_op, Pair(0, K), Pair(0, M));
 
-	Kokkos::View<const KokkosScalar**,
-	             Kokkos::LayoutLeft,
-	             Kokkos::HostSpace,
-	             Kokkos::MemoryUnmanaged>
-	     Bview_op(reinterpret_cast<const KokkosScalar*>(B), ldbVal, (tb == 'N' ? N : K));
-	auto Bop_device
-	    = Kokkos::create_mirror_view_and_copy(Kokkos::view_alloc(exec, mem), Bview_op);
-	auto Bop_logical = (tb == 'N') ? Kokkos::subview(Bop_device, Pair(0, K), Pair(0, N))
-	                               : Kokkos::subview(Bop_device, Pair(0, N), Pair(0, K));
+  ViewType
+	     Bview_op(B.data(), ldbVal, (tb == 'N' ? N : K));
+	auto Bop_logical = (tb == 'N') ? Kokkos::subview(Bview_op, Pair(0, K), Pair(0, N))
+	                               : Kokkos::subview(Bview_op, Pair(0, N), Pair(0, K));
 
 	// Create C view that reflects storage with possible padding (ldcVal >= M)
-	Kokkos::View<KokkosScalar**, Kokkos::LayoutLeft, Kokkos::HostSpace, Kokkos::MemoryUnmanaged>
-	     Cview(reinterpret_cast<KokkosScalar*>(C), ldcVal, N);
-	auto Cop_device = Kokkos::create_mirror_view_and_copy(Kokkos::view_alloc(exec, mem), Cview);
-	auto Cop_logical = Kokkos::subview(Cop_device, Pair(0, M), Pair(0, N));
+Kokkos::View<KokkosScalar**, Kokkos::DefaultExecutionSpace>
+	     Cview(C.data(), ldcVal, N);
+	auto Cop_logical = Kokkos::subview(Cview, Pair(0, M), Pair(0, N));
 
 	const char transA2[2] = { ta, '\0' };
 	const char transB2[2] = { tb, '\0' };
 	KokkosBlas::gemm(
 	    exec, transA2, transB2, alpha, Aop_logical, Bop_logical, beta, Cop_logical);
-	Kokkos::deep_copy(exec, Cview, Cop_device);
 	exec.fence();
+}
+
+template <typename Scalar, typename IntegerForBlasType>
+inline void PsimagLite::kokkos_gemm(const Kokkos::DefaultExecutionSpace& exec,
+                                    char                                 transa,
+                                    char                                 transb,
+                                    IntegerForBlasType                   m,
+                                    IntegerForBlasType                   n,
+                                    IntegerForBlasType                   k,
+                                    const Scalar&                        alpha,
+                                    const Scalar*                        A,
+                                    IntegerForBlasType                   lda,
+                                    const Scalar*                        B,
+                                    IntegerForBlasType                   ldb,
+                                    const Scalar&                        beta,
+                                    Scalar*                              C,
+                                    IntegerForBlasType                   ldc) {
+
+  using KokkosScalar = KokkosType<Scalar>::type;
+  std::remove_cvref_t<decltype(exec)>::memory_space mem;
+
+// Create host unmanaged views that reflect the actual storage (use lda/ldb as the first
+  // extent) and create subviews representing the logical matrix sizes.
+  Kokkos::View<const KokkosScalar*,
+               Kokkos::HostSpace,
+               Kokkos::MemoryUnmanaged>
+       Aview_op(reinterpret_cast<const KokkosScalar*>(A), m*k);
+  auto Aop_device
+      = Kokkos::create_mirror_view_and_copy(Kokkos::view_alloc(exec, mem), Aview_op);
+  Kokkos::View<const KokkosScalar*,
+               Kokkos::HostSpace,
+               Kokkos::MemoryUnmanaged>
+       Bview_op(reinterpret_cast<const KokkosScalar*>(B), k*n);
+  auto Bop_device
+      = Kokkos::create_mirror_view_and_copy(Kokkos::view_alloc(exec, mem), Bview_op);
+
+  Kokkos::View<KokkosScalar*, Kokkos::LayoutLeft, Kokkos::HostSpace, Kokkos::MemoryUnmanaged>
+       Cview(reinterpret_cast<KokkosScalar*>(C), m*n);
+  auto Cop_device = Kokkos::create_mirror_view_and_copy(Kokkos::view_alloc(exec, mem), Cview);
+
+kokkos_gemm<Scalar, KokkosScalar, IntegerForBlasType>(exec, transa, transb, m, n, k, alpha, Aop_device, lda, Bop_device, ldb, beta, Cop_device, ldc);
+
+  Kokkos::deep_copy(exec, Cview, Cop_device);
 }
 
 #define PSIMAGLITE_INSTANTIATE_KOKKOS_GEMM(SCALAR, INTEGER)                                        \
