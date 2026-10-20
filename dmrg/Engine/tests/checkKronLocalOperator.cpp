@@ -108,10 +108,37 @@ void requireClose(const ComplexType& actual,
 void verify(const std::string& filename)
 {
 	const std::vector<std::string> lines = readLines(filename);
-	if (std::count(lines.begin(), lines.end(), "LocalOperator") != 1)
-		throw std::runtime_error("Expected exactly one LocalOperator section");
+	if (std::count(lines.begin(), lines.end(), "LocalOperator") != 2)
+		throw std::runtime_error("Expected exactly two LocalOperator sections");
 
-	auto line = std::find(lines.begin(), lines.end(), "LocalOperator");
+	auto line           = std::find(lines.begin(), lines.end(), "LocalOperator");
+	auto secondOperator = std::find(std::next(line), lines.end(), "LocalOperator");
+	if (secondOperator == lines.end())
+		throw std::runtime_error("Second LocalOperator section is missing");
+	++secondOperator;
+	if (std::distance(secondOperator, lines.end()) < 10)
+		throw std::runtime_error("Second LocalOperator section is truncated");
+	if (valueAfter(*secondOperator++, "OperatorName=") != "sminus")
+		throw std::runtime_error("Expected the sminus operator");
+	if (valueAfter(*secondOperator++, "OperatorSite=") != "5")
+		throw std::runtime_error("Expected second operator site 5");
+	if (valueAfter(*secondOperator++, "Rows=") != "70 Cols=70")
+		throw std::runtime_error("Expected a second 70 x 70 operator");
+	if (valueAfter(*secondOperator++, "BasisOrder=") != "KronPatchPacked")
+		throw std::runtime_error("Unexpected second operator basis order");
+	if (valueAfter(*secondOperator++, "Direction=") != "EXPAND_ENVIRON")
+		throw std::runtime_error("Unexpected second sweep direction");
+	if (valueAfter(*secondOperator++, "Border=") != "0")
+		throw std::runtime_error("Unexpected second border mode");
+	if (valueAfter(*secondOperator++, "MatrixAction=") != "dest=O*src")
+		throw std::runtime_error("Unexpected second matrix action");
+	if (valueAfter(*secondOperator++, "MatrixFormat=") != "matrix-market-coordinate")
+		throw std::runtime_error("Unexpected second matrix format");
+	if (*secondOperator++ != "%%MatrixMarket matrix coordinate real general")
+		throw std::runtime_error("Expected a second real Matrix Market payload");
+	if (*secondOperator++ != "70 70 0")
+		throw std::runtime_error("Expected an empty same-sector sminus matrix");
+
 	++line;
 	if (std::distance(line, lines.end()) < 10)
 		throw std::runtime_error("LocalOperator section is truncated");
@@ -227,10 +254,12 @@ void verify(const std::string& filename)
 	if (line == lines.end())
 		throw std::runtime_error("OperatorExpectation is missing");
 	std::istringstream expectation(valueAfter(*line, "OperatorExpectation="));
+	std::string        expectationName;
 	double             realPart = 0;
 	double             imagPart = 0;
-	expectation >> realPart >> imagPart;
-	if (!expectation || !std::isfinite(realPart) || !std::isfinite(imagPart))
+	expectation >> expectationName >> realPart >> imagPart;
+	if (!expectation || expectationName != "sz" || !std::isfinite(realPart)
+	    || !std::isfinite(imagPart))
 		throw std::runtime_error("Invalid OperatorExpectation");
 	expectation >> std::ws;
 	if (expectation.peek() != std::char_traits<char>::eof())
@@ -239,6 +268,42 @@ void verify(const std::string& filename)
 	             ComplexType(realPart, imagPart),
 	             tolerance,
 	             "Serialized and direct-apply expectations differ");
+
+	++line;
+	for (const std::size_t column : sampleColumns) {
+		if (line == lines.end()
+		    || valueAfter(*line++, "OperatorDirectColumn=") != std::to_string(column))
+			throw std::runtime_error("Expected zero direct operator column "
+			                         + std::to_string(column));
+		if (line == lines.end()
+		    || parseSize(*line++, "zero direct operator column size") != rows)
+			throw std::runtime_error("Zero direct operator column has an invalid size");
+		for (std::size_t row = 0; row < rows; ++row) {
+			if (line == lines.end())
+				throw std::runtime_error(
+				    "Zero direct operator column is truncated");
+			requireClose(parseComplex(*line++),
+			             ComplexType(0, 0),
+			             tolerance,
+			             "Expected a zero direct operator column");
+		}
+	}
+
+	line = std::find_if(line,
+	                    lines.end(),
+	                    [](const std::string& text)
+	                    { return text.compare(0, 20, "OperatorExpectation=") == 0; });
+	if (line == lines.end())
+		throw std::runtime_error("Second OperatorExpectation is missing");
+	std::istringstream secondExpectation(valueAfter(*line, "OperatorExpectation="));
+	secondExpectation >> expectationName >> realPart >> imagPart;
+	if (!secondExpectation || expectationName != "sminus" || !std::isfinite(realPart)
+	    || !std::isfinite(imagPart))
+		throw std::runtime_error("Invalid second OperatorExpectation");
+	requireClose(ComplexType(realPart, imagPart),
+	             ComplexType(0, 0),
+	             tolerance,
+	             "Expected zero same-sector sminus expectation");
 }
 
 } // namespace

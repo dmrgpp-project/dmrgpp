@@ -102,7 +102,7 @@ public:
 		}
 
 		printMetadata(message);
-		buildLocalOperator();
+		buildLocalOperators();
 	}
 
 	/*!
@@ -128,12 +128,13 @@ public:
 
 		*fout_ << "Vector\n";
 		const std::streamsize oldPrecision = fout_->precision();
-		if (!init_kron_.params().dumperOperator.empty())
+		if (!localOperators_.empty())
 			fout_->precision(std::numeric_limits<RealType>::max_digits10);
 		*fout_ << v;
-		if (!init_kron_.params().dumperOperator.empty()) {
-			const ComplexOrRealType expectation = verifyLocalOperator(v);
-			*fout_ << "OperatorExpectation= " << PsimagLite::real(expectation) << " "
+		for (const LocalOperatorData& localOperator : localOperators_) {
+			const ComplexOrRealType expectation = verifyLocalOperator(v, localOperator);
+			*fout_ << "OperatorExpectation=" << localOperator.name << " "
+			       << PsimagLite::real(expectation) << " "
 			       << PsimagLite::imag(expectation) << "\n";
 		}
 		fout_->precision(oldPrecision);
@@ -219,9 +220,15 @@ private:
 		ComplexOrRealType value;
 	};
 
-	void buildLocalOperator()
+	struct LocalOperatorData {
+
+		PsimagLite::String name;
+		SparseMatrixType   matrix;
+	};
+
+	void buildLocalOperators()
 	{
-		if (!fout_.has_value() || init_kron_.params().dumperOperator.empty())
+		if (!fout_.has_value() || init_kron_.params().dumperOperators.empty())
 			return;
 
 		const LeftRightSuperType& lrs       = init_kron_.lrs(InitKronType::NEW);
@@ -235,8 +242,18 @@ private:
 		const SizeType   numberOfSites = model.superGeometry().numberOfSites();
 		if (localOperatorSite_ >= numberOfSites)
 			err("KronLogger: inferred local-operator site is outside the geometry\n");
-		const auto& localOperator = model.naturalOperator(
-		    init_kron_.params().dumperOperator, localOperatorSite_, 0);
+
+		for (const PsimagLite::String& name : init_kron_.params().dumperOperators)
+			buildLocalOperator(name);
+	}
+
+	void buildLocalOperator(const PsimagLite::String& name)
+	{
+		const LeftRightSuperType& lrs           = init_kron_.lrs(InitKronType::NEW);
+		const auto                direction     = init_kron_.direction();
+		const ModelType&          model         = init_kron_.model();
+		const SizeType            numberOfSites = model.superGeometry().numberOfSites();
+		const auto& localOperator = model.naturalOperator(name, localOperatorSite_, 0);
 		typename PsimagLite::Vector<bool>::Type oddElectrons;
 		model.findOddElectronsOfOneSite(oddElectrons, localOperatorSite_);
 		FermionSign       fermionSign(lrs.left(), oddElectrons);
@@ -294,39 +311,43 @@ private:
 		          entries.end(),
 		          [](const MatrixEntry& a, const MatrixEntry& b)
 		          { return (a.row < b.row || (a.row == b.row && a.col < b.col)); });
-		localOperator_.resize(sectorSize, sectorSize);
+		LocalOperatorData localOperatorData { name, SparseMatrixType() };
+		localOperatorData.matrix.resize(sectorSize, sectorSize);
 		SizeType entry = 0;
 		for (SizeType row = 0; row < sectorSize; ++row) {
-			localOperator_.setRow(row, entry);
+			localOperatorData.matrix.setRow(row, entry);
 			while (entry < entries.size() && entries[entry].row == row) {
-				localOperator_.pushCol(entries[entry].col);
-				localOperator_.pushValue(entries[entry].value);
+				localOperatorData.matrix.pushCol(entries[entry].col);
+				localOperatorData.matrix.pushValue(entries[entry].value);
 				++entry;
 			}
 		}
 
-		localOperator_.setRow(sectorSize, entry);
-		localOperator_.checkValidity();
-		printLocalOperator(direction, border);
-		progress_.printline("KronLogger: built " + init_kron_.params().dumperOperator
-		                        + " at site " + ttos(localOperatorSite_) + " as "
-		                        + ttos(sectorSize) + "x" + ttos(sectorSize) + " with "
-		                        + ttos(localOperator_.nonZeros()) + " nonzeros",
+		localOperatorData.matrix.setRow(sectorSize, entry);
+		localOperatorData.matrix.checkValidity();
+		printLocalOperator(localOperatorData, direction, border);
+		progress_.printline("KronLogger: built " + name + " at site "
+		                        + ttos(localOperatorSite_) + " as " + ttos(sectorSize) + "x"
+		                        + ttos(sectorSize) + " with "
+		                        + ttos(localOperatorData.matrix.nonZeros()) + " nonzeros",
 		                    std::cout);
+		localOperators_.push_back(std::move(localOperatorData));
 	}
 
-	ComplexOrRealType verifyLocalOperator(const VectorType& kronVector)
+	ComplexOrRealType verifyLocalOperator(const VectorType&        kronVector,
+	                                      const LocalOperatorData& localOperatorData)
 	{
 		const SizeType sectorSize = init_kron_.size(InitKronType::NEW);
 		if (sectorSize == 0 || kronVector.size() != sectorSize
-		    || localOperator_.rows() != sectorSize || localOperator_.cols() != sectorSize)
+		    || localOperatorData.matrix.rows() != sectorSize
+		    || localOperatorData.matrix.cols() != sectorSize)
 			err("KronLogger: local-operator verification dimension mismatch\n");
 
-		const LeftRightSuperType& lrs           = init_kron_.lrs(InitKronType::NEW);
-		const auto                direction     = init_kron_.direction();
-		const ModelType&          model         = init_kron_.model();
-		const auto&               localOperator = model.naturalOperator(
-                    init_kron_.params().dumperOperator, localOperatorSite_, 0);
+		const LeftRightSuperType& lrs       = init_kron_.lrs(InitKronType::NEW);
+		const auto                direction = init_kron_.direction();
+		const ModelType&          model     = init_kron_.model();
+		const auto&               localOperator
+		    = model.naturalOperator(localOperatorData.name, localOperatorSite_, 0);
 		typename PsimagLite::Vector<bool>::Type oddElectrons;
 		model.findOddElectronsOfOneSite(oddElectrons, localOperatorSite_);
 		FermionSign       fermionSign(lrs.left(), oddElectrons);
@@ -380,15 +401,16 @@ private:
 		return scalarProduct(kronVector, directKronResult);
 	}
 
-	void printLocalOperator(ProgramGlobals::DirectionEnum          direction,
+	void printLocalOperator(const LocalOperatorData&               localOperatorData,
+	                        ProgramGlobals::DirectionEnum          direction,
 	                        typename ApplyOperatorType::BorderEnum border)
 	{
 		assert(fout_.has_value());
 		*fout_ << "LocalOperator\n";
-		*fout_ << "OperatorName=" << init_kron_.params().dumperOperator << "\n";
+		*fout_ << "OperatorName=" << localOperatorData.name << "\n";
 		*fout_ << "OperatorSite=" << localOperatorSite_ << "\n";
-		*fout_ << "Rows=" << localOperator_.rows() << " Cols=" << localOperator_.cols()
-		       << "\n";
+		*fout_ << "Rows=" << localOperatorData.matrix.rows()
+		       << " Cols=" << localOperatorData.matrix.cols() << "\n";
 		*fout_ << "BasisOrder=KronPatchPacked\n";
 		*fout_ << "Direction=" << ProgramGlobals::toString(direction) << "\n";
 		*fout_ << "Border=" << (border == ApplyOperatorType::BORDER_YES) << "\n";
@@ -396,7 +418,7 @@ private:
 		*fout_ << "MatrixFormat=matrix-market-coordinate\n";
 		const std::streamsize oldPrecision = fout_->precision();
 		fout_->precision(std::numeric_limits<RealType>::max_digits10);
-		MatrixMarketType(localOperator_).print(*fout_);
+		MatrixMarketType(localOperatorData.matrix).print(*fout_);
 		fout_->precision(oldPrecision);
 	}
 
@@ -443,13 +465,13 @@ private:
 		return "kron_" + root + "_" + ttos(n) + ".txt";
 	}
 
-	static SizeType               counter_;
-	PsimagLite::ProgressIndicator progress_;
-	std::optional<std::ofstream>  fout_;
-	const InitKronType&           init_kron_;
-	bool                          active_;
-	SparseMatrixType              localOperator_;
-	SizeType                      localOperatorSite_ = 0;
+	static SizeType                counter_;
+	PsimagLite::ProgressIndicator  progress_;
+	std::optional<std::ofstream>   fout_;
+	const InitKronType&            init_kron_;
+	bool                           active_;
+	std::vector<LocalOperatorData> localOperators_;
+	SizeType                       localOperatorSite_ = 0;
 };
 
 template <typename ModelType> SizeType KronLogger<ModelType>::counter_ = 0;
