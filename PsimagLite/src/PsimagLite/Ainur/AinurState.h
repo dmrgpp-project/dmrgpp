@@ -237,8 +237,6 @@ private:
 		const SizeType n                       = ainurVariables_.size();
 		bool           atLeastOneValueHasMacro = false;
 		for (SizeType i = 0; i < n; ++i) {
-			if (!used_[i])
-				continue;
 			std::pair<bool, PsimagLite::String> macro
 			    = expandOneValue(ainurVariables_[i].value);
 
