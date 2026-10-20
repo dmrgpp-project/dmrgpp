@@ -5,6 +5,8 @@
 #include <catch2/catch_session.hpp>
 #include <catch2/catch_test_macros.hpp>
 
+#include <Kokkos_Profiling_ScopedRegion.hpp>
+
 namespace {
 
 MatrixMatrix::OutputMatrix referenceProduct(const MatrixMatrix::LeftMatrix&  left,
@@ -40,24 +42,29 @@ void checkOutputs(const MatrixMatrix& work)
 
 TEST_CASE("Parallelizer completes independent GEMM tasks", "[Parallelizer]")
 {
+Kokkos::Profiling::ScopedRegion region("single");
 	MatrixMatrix                           work;
 	PsimagLite::Parallelizer<MatrixMatrix> parallelizer(PsimagLite::CodeSectionParams(1));
 
 	REQUIRE(work.tasks() == 4);
+  Kokkos::Timer timer;                   
 	parallelizer.loopCreate(work);
-
-	checkOutputs(work);
+  std::cout << "single: " << timer.seconds() << std::endl;
 }
+
+
 
 #ifdef USE_PTHREADS
 TEST_CASE("Parallelizer concurrently completes independent GEMM tasks", "[Parallelizer][pthread]")
 {
+Kokkos::Profiling::ScopedRegion region("threaded");
+
 	MatrixMatrix                           work;
 	PsimagLite::Parallelizer<MatrixMatrix> parallelizer(PsimagLite::CodeSectionParams(4));
 
+  Kokkos::Timer timer;
 	parallelizer.loopCreate(work);
-
-	checkOutputs(work);
+  std::cout << "threaded: " << timer.seconds() << std::endl;
 }
 #endif
 

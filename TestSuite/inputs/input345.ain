@@ -52,7 +52,7 @@ Version=61289987cdd32b8485213ac0415baf4e9cd16432;
 OutputFile=data345;
 InfiniteLoopKeptStates=20;
 FiniteLoops=[
-	[@auto, 1000, 0],
+  [@auto, 1000, 0],
 	[@auto, 1000, 0]];
 TargetElectronsUp=15;
 TargetElectronsDown=15;
