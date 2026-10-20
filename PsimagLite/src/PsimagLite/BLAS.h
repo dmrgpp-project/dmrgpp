@@ -1266,7 +1266,20 @@ namespace BLAS {
 	                 float*             z,
 	                 IntegerForBlasType sz)
 	{
-		PsimagLite::kokkos_gemm(c1, c2, sX, sY, sZ, a, x, sx, y, sy, b, z, sz);
+		PsimagLite::kokkos_gemm(Kokkos::DefaultExecutionSpace {},
+		                        c1,
+		                        c2,
+		                        sX,
+		                        sY,
+		                        sZ,
+		                        a,
+		                        x,
+		                        sx,
+		                        y,
+		                        sy,
+		                        b,
+		                        z,
+		                        sz);
 	}
 
 	inline void GEMM(char               c1,
@@ -1283,7 +1296,20 @@ namespace BLAS {
 	                 double*            z,
 	                 IntegerForBlasType sz)
 	{
-		PsimagLite::kokkos_gemm(c1, c2, sX, sY, sZ, a, x, sx, y, sy, b, z, sz);
+		PsimagLite::kokkos_gemm(Kokkos::DefaultExecutionSpace {},
+		                        c1,
+		                        c2,
+		                        sX,
+		                        sY,
+		                        sZ,
+		                        a,
+		                        x,
+		                        sx,
+		                        y,
+		                        sy,
+		                        b,
+		                        z,
+		                        sz);
 	}
 
 	inline void GEMM(char                       c1,
@@ -1300,7 +1326,20 @@ namespace BLAS {
 	                 std::complex<float>*       z,
 	                 IntegerForBlasType         sz)
 	{
-		PsimagLite::kokkos_gemm(c1, c2, sX, sY, sZ, a, x, sx, y, sy, b, z, sz);
+		PsimagLite::kokkos_gemm(Kokkos::DefaultExecutionSpace {},
+		                        c1,
+		                        c2,
+		                        sX,
+		                        sY,
+		                        sZ,
+		                        a,
+		                        x,
+		                        sx,
+		                        y,
+		                        sy,
+		                        b,
+		                        z,
+		                        sz);
 	}
 
 	inline void GEMM(char                        c1,
@@ -1330,7 +1369,20 @@ namespace BLAS {
 				throw PsimagLite::RuntimeError("GEMM lda < max(1, k)\n");
 			}
 		}
-		PsimagLite::kokkos_gemm(c1, c2, sX, sY, sZ, a, x, sx, y, sy, b, z, sz);
+		PsimagLite::kokkos_gemm(Kokkos::DefaultExecutionSpace {},
+		                        c1,
+		                        c2,
+		                        sX,
+		                        sY,
+		                        sZ,
+		                        a,
+		                        x,
+		                        sx,
+		                        y,
+		                        sy,
+		                        b,
+		                        z,
+		                        sz);
 	}
 
 	// ***************************************************************************
