@@ -11,6 +11,8 @@ jobs:
   build:
     name: ${{ matrix.name }}
     runs-on: ubuntu-24.04
+    permissions:
+      packages: write
     strategy:
       fail-fast: false
       matrix:
@@ -34,14 +36,24 @@ jobs:
     - name: Set up Spack
       uses: spack/setup-spack@16b756799ede8b28951287f89bcd3fdb32ec1ca3 # v3.0.0
       with:
-        ref: develop      # Spack version (examples: develop, releases/v0.23)
-        buildcache: true  # Configure oci://ghcr.io/spack/github-actions-buildcache
-        color: true       # Force color output (SPACK_COLOR=always)
-        path: spack       # Where to clone Spack
+        spack_ref: develop # Spack version (examples: develop, releases/v0.23)
+        buildcache: true   # Configure oci://ghcr.io/spack/github-actions-buildcache
+        color: true        # Force color output (SPACK_COLOR=always)
+        spack_path: spack  # Where to clone Spack
 
     - name: Install Dependencies
       run: |
         spack -e ${{github.workspace}}/source install
+
+    - name: Update Spack build cache
+      if: ${{ !cancelled() && github.event_name == 'push' && github.ref == 'refs/heads/master' && matrix.name == 'Release (static)' }}
+      env:
+        GITHUB_USER: ${{ github.actor }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        spack -e ${{github.workspace}}/source buildcache push \
+          --base-image ubuntu:24.04 \
+          --update-index local-buildcache
 
     - name: Configure
       shell: spack-bash {0}
