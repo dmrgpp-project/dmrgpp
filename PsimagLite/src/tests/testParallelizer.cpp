@@ -46,9 +46,12 @@ Kokkos::Profiling::ScopedRegion region("single");
 	MatrixMatrix                           work;
 	PsimagLite::Parallelizer<MatrixMatrix> parallelizer(PsimagLite::CodeSectionParams(1));
 
-	REQUIRE(work.tasks() == 4);
-  Kokkos::Timer timer;                   
-	parallelizer.loopCreate(work);
+	REQUIRE(work.tasks() == 10);
+  for (int i=0; i<1000; ++i)
+    parallelizer.loopCreate(work);
+  Kokkos::Timer timer;  
+  for (int i=0; i<1000; ++i)                
+	  parallelizer.loopCreate(work);
   std::cout << "single: " << timer.seconds() << std::endl;
 }
 
@@ -62,8 +65,12 @@ Kokkos::Profiling::ScopedRegion region("threaded");
 	MatrixMatrix                           work;
 	PsimagLite::Parallelizer<MatrixMatrix> parallelizer(PsimagLite::CodeSectionParams(4));
 
+  REQUIRE(work.tasks() == 10);
+  for (int i=0; i<1000; ++i)
+    parallelizer.loopCreate(work);
   Kokkos::Timer timer;
-	parallelizer.loopCreate(work);
+  for (int i=0; i<1000; ++i)
+	  parallelizer.loopCreate(work);
   std::cout << "threaded: " << timer.seconds() << std::endl;
 }
 #endif
