@@ -66,7 +66,7 @@ template <typename VectorValueType> class Plus : public Node<VectorValueType> {
 
 public:
 
-	Plus* clone() const override { return new Plus(*this); }
+	Plus* clone() const override { return new PsimagLite::Plus(*this); }
 
 	PsimagLite::String code() const override { return "+"; }
 
@@ -86,7 +86,7 @@ template <typename VectorValueType> class Minus : public Node<VectorValueType> {
 
 public:
 
-	Minus* clone() const override { return new Minus(*this); }
+	Minus* clone() const override { return new PsimagLite::Minus(*this); }
 
 	PsimagLite::String code() const override { return "-"; }
 
@@ -106,7 +106,7 @@ template <typename VectorValueType> class Times : public Node<VectorValueType> {
 
 public:
 
-	Times* clone() const override { return new Times(*this); }
+	Times* clone() const override { return new PsimagLite::Times(*this); }
 
 	PsimagLite::String code() const override { return "*"; }
 
@@ -140,7 +140,7 @@ public:
 	    : kind_(kind)
 	{ }
 
-	DividedBy* clone() const override { return new DividedBy(*this); }
+	DividedBy* clone() const override { return new PsimagLite::DividedBy(*this); }
 
 	PsimagLite::String code() const override
 	{
@@ -182,7 +182,7 @@ template <typename VectorValueType> class IfGtZero : public Node<VectorValueType
 
 public:
 
-	IfGtZero* clone() const { return new IfGtZero(*this); }
+	IfGtZero* clone() const { return new PsimagLite::IfGtZero(*this); }
 
 	virtual char code() const { return 'g'; }
 
@@ -203,7 +203,7 @@ template <typename VectorValueType> class Int : public Node<VectorValueType> {
 
 public:
 
-	Int* clone() const { return new Int(*this); }
+	Int* clone() const { return new PsimagLite::Int(*this); }
 
 	virtual char code() const { return 'i'; }
 
@@ -232,7 +232,7 @@ public:
 		strOneChar_[0] = char_;
 	}
 
-	Input* clone() const override { return new Input(*this); }
+	Input* clone() const override { return new PsimagLite::Input(*this); }
 
 	PsimagLite::String code() const override { return strOneChar_; }
 

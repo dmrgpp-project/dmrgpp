@@ -105,7 +105,7 @@ auto exec = execs[task];
         ActiveGuard guard(active, max_active);
 
         PsimagLite::kokkos_gemm<double, double, int>(
-            execs[taskNumber],
+            execs[0],
             'N', 'N',
             M, N, K,
             1.0,
@@ -113,12 +113,13 @@ auto exec = execs[task];
             right_views_[taskNumber], K,
             0.0,
             output_views_[taskNumber], M);
-/*
+
+
  Kokkos::View<double*, Kokkos::LayoutLeft, Kokkos::HostSpace, Kokkos::MemoryUnmanaged>
        Cview(output_[taskNumber].data(), M*N);
-        Kokkos::deep_copy(execs[taskNumber], Cview, output_views_[taskNumber]);
-*/
-        execs[taskNumber].fence();
+        Kokkos::deep_copy(execs[0], Cview, output_views_[taskNumber]);
+
+        execs[0].fence();
         //std::cout << "End task " << taskNumber << std::endl;
     }
 
