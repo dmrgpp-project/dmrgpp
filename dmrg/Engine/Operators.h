@@ -337,7 +337,8 @@ public:
 	                 SizeType                       opOnSiteThreshold)
 	{
 		using ParallelizerType = PsimagLite::Parallelizer<MyLoop>;
-		ParallelizerType threadObject(PsimagLite::Concurrency::codeSectionParams);
+		ParallelizerType threadObject(
+		    PsimagLite::Concurrency::codeSectionParamsFor("Operators"));
 
 		MyLoop helper(operators_,
 		              superOps_,

@@ -137,7 +137,8 @@ public:
 		}
 
 		using ParallelizerType = PsimagLite::Parallelizer<Parallel2PointCorrelationsType>;
-		ParallelizerType threaded2Points(PsimagLite::Concurrency::codeSectionParams);
+		ParallelizerType threaded2Points(
+		    PsimagLite::Concurrency::codeSectionParamsFor("TwoPointCorrelations"));
 
 		Parallel2PointCorrelationsType helper2Points(
 		    w, *this, pairs, braket, fermionicSign, bra, ket);
