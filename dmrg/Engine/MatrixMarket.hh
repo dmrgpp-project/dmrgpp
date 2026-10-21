@@ -45,7 +45,13 @@ public:
 				SizeType                 col   = sparse_.getCol(k);
 				const ComplexOrRealType& value = sparse_.getValue(k);
 				// one-based output required by MM Format
-				os << (i + 1) << " " << (col + 1) << " " << value << "\n";
+				os << (i + 1) << " " << (col + 1) << " ";
+				if constexpr (PsimagLite::IsComplexNumber<ComplexOrRealType>::True)
+					os << PsimagLite::real(value) << " "
+					   << PsimagLite::imag(value);
+				else
+					os << value;
+				os << "\n";
 			}
 		}
 	}
@@ -89,7 +95,9 @@ private:
 
 	static std::string buildMMFormatHeader()
 	{
-		return std::string("%%MatrixMarket matrix coordinate real general");
+		const std::string field
+		    = PsimagLite::IsComplexNumber<ComplexOrRealType>::True ? "complex" : "real";
+		return "%%MatrixMarket matrix coordinate " + field + " general";
 	}
 
 	const SparseMatrixType& sparse_;
