@@ -13,6 +13,10 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       packages: write
+    env:
+      GITHUB_USER: ${{ github.actor }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     strategy:
       fail-fast: false
       matrix:
@@ -47,9 +51,6 @@ jobs:
 
     - name: Update Spack build cache
       if: ${{ !cancelled() && github.event_name == 'push' && github.ref == 'refs/heads/master' && matrix.name == 'Release (static)' }}
-      env:
-        GITHUB_USER: ${{ github.actor }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         spack -e ${{github.workspace}}/source buildcache push \
           --base-image ubuntu:24.04 \
