@@ -54,7 +54,9 @@ jobs:
       run: |
         spack -e ${{github.workspace}}/source buildcache push \
           --base-image ubuntu:24.04 \
-          --update-index local-buildcache
+          --allow-missing \
+          --update-index \
+          local-buildcache
 
     - name: Configure
       shell: spack-bash {0}
