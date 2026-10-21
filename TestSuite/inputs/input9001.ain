@@ -24,7 +24,7 @@ matrix AversusTime=[
 [0.7, 0.35]
 ];
 
-GeometryFactor=exp:*:1.0i:!readTable(AversusTime,%t);
+gt0:dir0:GeometryFactor=exp:*:1.0i:!readTable(AversusTime,%t);
 
 # END time dependence block
 
