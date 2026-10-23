@@ -88,12 +88,15 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include "Recovery.h"
 #include "RestartStruct.h"
 #include "TruncationControl.h"
+#include "GsExpression.hpp"
+
 #include <PsimagLite/Io/IoSelector.h>
 #include <PsimagLite/Io/IoSerializerStub.h>
 #include <PsimagLite/ProgressIndicator.h>
 #include <PsimagLite/PsimagLite.h>
 #include <PsimagLite/TypeToString.h>
 #include <PsimagLite/Vector.h>
+
 #include <sstream>
 #include <sys/types.h>
 #include <unistd.h>
@@ -186,6 +189,7 @@ struct ParametersDmrgSolver {
 	FieldType                     degeneracyMax;
 	FieldType                     denseSparseThreshold;
 	MatrixSolverEnum              matrix_solver_enum = MatrixSolverEnum::LANCZOS;
+	std::vector<SizeType> pure_indices;
 
 	void write(PsimagLite::String label, PsimagLite::IoSerializer& ioSerializer) const
 	{
@@ -421,6 +425,12 @@ struct ParametersDmrgSolver {
 
 		if (tmpString != "")
 			findSymmetrySector = tmpString;
+
+		std::string gs_expression;
+		try {
+			io.readline(gs_expression, "|gs>=");
+		} catch (std::exception&) { }
+		GsExpression::setPureState(pure_indices, gs_expression);
 
 		if (options.isSet("restart")) {
 			if (!infLoopsIsAnInt and hasRestartFrom) {
