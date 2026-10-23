@@ -743,7 +743,7 @@ private:
 	{
 		if (model == "HubbardAncilla")
 			return 3;
-		if (model == "FeAsBasedSc" || model == "HolsteinThin" || model == "HubbardOneBand")
+		if (model == "FeAsBasedSc" || model == "HolsteinThin")
 			return 1;
 		err("Not supported modeFromModel for model= " + model + "\n");
 		return 0;
