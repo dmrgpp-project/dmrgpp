@@ -737,7 +737,8 @@ obtain ordered
 	std::vector<Qn> pureStateQns() const
 	{
 		std::vector<Qn> qn_empty;
-		if (parameters_.pure_indices.size() == 0) return qn_empty;
+		if (parameters_.pure_indices.size() == 0)
+			return qn_empty;
 
 		return (parameters_.options.isSet("geometryAllInSystem"))
 		    ? pureStateQnsAllInSystem()
@@ -746,7 +747,27 @@ obtain ordered
 
 	std::vector<Qn> pureStateQnsSymmetric() const
 	{
-		throw std::runtime_error("pureStateQnsSymmetric: unimplemented (sorry)\n");
+		const std::vector<SizeType>& indices = parameters_.pure_indices;
+		SizeType                     total   = indices.size();
+		assert(total > 3); // at least 4 sites
+
+		std::vector<Qn> adjust_qns(total - 2, Qn::zero());
+		std::vector<Qn> qns = model_.qns();
+
+		// first growth stage: 0, 1, total - 2, total - 1
+		Qn qsys(qns[indices[0]], qns[indices[1]]);
+		Qn qenv(qns[indices[total - 1]], qns[indices[total - 2]]);
+		adjust_qns[0] = Qn(qsys, qenv);
+
+		assert(total % 2 == 0);
+		SizeType totalOver2 = total / 2;
+		for (SizeType site = 2; site < totalOver2; ++site) {
+			assert(indices[site] < qns.size());
+			Qn qadded(qns[indices[site]], qns[indices[total - site - 1]]);
+			adjust_qns[site - 1] = Qn(adjust_qns[site - 2], qadded);
+		}
+
+		return adjust_qns;
 	}
 
 	std::vector<Qn> pureStateQnsAllInSystem() const
