@@ -83,6 +83,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include "ParametersDmrgSolver.h"
 #include "ProgramGlobals.h"
 #include "VectorWithOffsets.h" // includes the PsimagLite::norm functions
+#include "PureState.hpp"
 #include <PsimagLite/ArnoldiSaI.hh>
 #include <PsimagLite/Concurrency.h>
 #include <PsimagLite/LanczosSolver.h>
@@ -143,10 +144,11 @@ public:
 	    , model_(model)
 	    , verbose_(verbose)
 	    , io_(io)
-	    , progress_("Diag.")
 	    , quantumSector_(quantumSector)
 	    , wft_(waveFunctionTransformation)
 	    , oldEnergy_(oldEnergy)
+	    , progress_("Diag.")
+	    , pure_state_(wft_, model_.hilbertSize(0)) // site = 0; needs FIXME for SDHS
 	{ }
 
 	//! PTEX_LABEL{Diagonalization}
@@ -221,8 +223,8 @@ private:
 		return sum;
 	}
 
-	void internalMain_(TargetingType&                target,
-	                   VectorVectorRealType&         energies,
+	void internalMain_(TargetingType&                target, // dest
+	                   VectorVectorRealType&         energies, // dest
 	                   ProgramGlobals::DirectionEnum direction,
 	                   SizeType                      loopIndex,
 	                   const VectorSizeType&         block)
@@ -345,7 +347,12 @@ private:
 					    << energySaved[j][excitedIndex];
 					progress_.printline(msgg, std::cout);
 				}
+			} else if (expression_for_gs) {
+				// hook up the pure thing here
+				//vecSAved[42][0] = pure_state_.getFullVector();
+				//energies[0] = 0;
 			} else {
+				// diagonalization happens
 				if (!isVwoS) {
 					target.initialGuess(*initialBySector,
 					                    oneSiteSpaces,
@@ -830,11 +837,12 @@ private:
 	const ModelType&              model_;
 	const bool&                   verbose_;
 	InputValidatorType&           io_;
-	PsimagLite::ProgressIndicator progress_;
 	// quantumSector_ needs to be a reference since DmrgSolver will change it
 	const typename QnType::VectorQnType& quantumSector_;
 	WaveFunctionTransfType&              wft_;
 	VectorVectorRealType                 oldEnergy_;
+	PsimagLite::ProgressIndicator progress_;
+	PureState<ComplexOrRealType> pure_state_;
 }; // class Diagonalization
 } // namespace Dmrg
 
