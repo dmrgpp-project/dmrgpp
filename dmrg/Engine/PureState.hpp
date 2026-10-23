@@ -79,7 +79,7 @@ public:
 		}
 	}
 
-	// direction here is INFINITE
+	       // direction here is INFINITE
 	void getNewPures(VectorType& dest, SizeType i0, SizeType site0, SizeType site1, const LrsType& lrs)
 	{
 		assert(site0 < pure_indices_.size());
@@ -94,7 +94,7 @@ public:
 		msg << " and for site=" << site1 << " is " << beta_fixed;
 		progress_.printline(msgg, std::cerr);
 
-		// Pure for System
+		       // Pure for System
 		{
 			const BlockDiagMatrixType& transform_sys = getTransform(ProgramGlobals::SysOrEnvEnum::SYSTEM);
 			VectorType new_vec1(transform_sys.rows()); // <--- FIXME: avoid allocation?
@@ -102,14 +102,16 @@ public:
 			getNewPure(new_vec1,
 			           pure_vectors_.first,
 			           ProgramGlobals::SysOrEnvEnum::SYSTEM,
-			           hilbert_,
+			           alpha_fixed,
 			           lrs.left(),
 			           transform_sys,
 			           site0);
+
+			assert(PsimagLite::norm(new_vec1) > 1e-3);
 			pure_vectors_.first = std::move(new_vec1);
 		}
 
-		// Pure for Environ
+		       // Pure for Environ
 		{
 			const BlockDiagMatrixType& transform_env = getTransform(ProgramGlobals::SysOrEnvEnum::ENVIRON);
 			VectorType new_vec2(transform_env.rows()); // <--- FIXME: avoid allocation?
@@ -117,17 +119,19 @@ public:
 			getNewPure(new_vec2,
 			           pure_vectors_.second,
 			           ProgramGlobals::SysOrEnvEnum::ENVIRON,
-			           hilbert_,
+			           beta_fixed,
 			           lrs.right(),
 			           transform_env,
 			           site1);
+
+			assert(PsimagLite::norm(new_vec2) > 1e-3);
 			pure_vectors_.second = std::move(new_vec2);
 		}
 
-		// Pure for Superblock = Environ x System
+		       // Pure for Superblock = Environ x System
 		getFullVector(dest, i0, lrs);
 
-		// Prepare for next step
+		       // Prepare for next step
 		sys_previous_.fixed               = alpha_fixed;
 		sys_previous_.perm_inverse  = lrs.left().permutationInverse();
 		env_previous_.fixed              = beta_fixed;
@@ -165,6 +169,8 @@ private:
 			pack.unpack(alpha, beta, lrs.super().permutation(i + offset));
 			v[i] = pure_vectors_.first[alpha] * pure_vectors_.second[beta];
 		}
+
+		assert(PsimagLite::norm(v)>1e-3);
 	}
 
 	void getNewPure(VectorType&                  newVector,
@@ -190,18 +196,33 @@ private:
 		}
 
 		SizeType       ns = tmpVector.size();
-		SizeType newSize
-		    = (transform.cols() == 0) ? (ns * ns) : transform.cols() * hilbert_;
+		bool all_in_system = (basis.permutationInverse().size() == hilbert_);
 
-		newVector.resize(newSize); // <--- note that new vector alway allocated here
-		std::fill(newVector.begin(), newVector.end(), 0);
+		SizeType newSize = 0;
 
-		for (SizeType alpha = 0; alpha < ns; ++alpha) {
-			SizeType gamma   = (direction == ProgramGlobals::SysOrEnvEnum::SYSTEM)
-			? basis.permutationInverse(alpha + alphaFixed * ns)
-			: basis.permutationInverse(alphaFixed + alpha * hilbert_);
-			newVector[gamma] = tmpVector[alpha];
+		if (all_in_system) {
+			newSize = ns;
+			newVector.resize(newSize);
+			std::fill(newVector.begin(), newVector.end(), 0);
+			for (SizeType alpha = 0; alpha < ns; ++alpha) {
+				SizeType gamma = basis.permutationInverse(alpha);
+				newVector[gamma] = tmpVector[alpha];
+			}
+		} else {
+			newSize
+			    = (transform.cols() == 0) ? (ns * ns) : transform.cols() * hilbert_;
+
+			newVector.resize(newSize); // <--- note that new vector alway allocated here
+			std::fill(newVector.begin(), newVector.end(), 0);
+
+			for (SizeType alpha = 0; alpha < ns; ++alpha) {
+				SizeType gamma   = (direction == ProgramGlobals::SysOrEnvEnum::SYSTEM)
+				? basis.permutationInverse(alpha + alphaFixed * ns)
+				: basis.permutationInverse(alphaFixed + alpha * hilbert_);
+				newVector[gamma] = tmpVector[alpha];
+			}
 		}
+
 
 		PsimagLite::OstringStream                     msgg2(std::cout.precision());
 		PsimagLite::OstringStream::OstringStreamType& msg2 = msgg2();
@@ -232,7 +253,7 @@ private:
 		assert(newVector.size() == 0);
 		newVector.resize(transform.cols());
 
-		// newVector = oldVector * transform;
+		       // newVector = oldVector * transform;
 		for (SizeType gamma = 0; gamma < newVector.size(); ++gamma) {
 			newVector[gamma] = 0;
 			for (SizeType alpha = 0; alpha < nsPrev; ++alpha) {
@@ -252,7 +273,9 @@ private:
 
 	void setInitialPure(VectorType& oldVector, SizeType site)
 	{
-//		site = (site == 1) ? 0 : site + 1; // <--- FIXME???
+		if (site == 1) {
+			site = 0;
+		}
 
 		assert(site < pure_indices_.size());
 		SizeType alphaFixed = pure_indices_[site];

@@ -426,12 +426,22 @@ struct ParametersDmrgSolver {
 		if (tmpString != "")
 			findSymmetrySector = tmpString;
 
+		SizeType numberOfSites = 0;
+		io.readline(numberOfSites, "TotalNumberOfSites=");
+
+		// Pure indices if set
 		std::string gs_expression;
 		try {
 			io.readline(gs_expression, "|gs>=");
 		} catch (std::exception&) { }
+
 		GsExpression::setPureState(pure_indices, gs_expression);
 
+		if (pure_indices.size() > 0 && pure_indices.size() != numberOfSites) {
+			err("|gs>=PureState[...]: needs exactly " + ttos(numberOfSites) + " indices\n");
+		}
+
+		// restart
 		if (options.isSet("restart")) {
 			if (!infLoopsIsAnInt and hasRestartFrom) {
 				PsimagLite::String tmp = "FATAL: RestartFilename found in input ";
@@ -723,7 +733,7 @@ private:
 	{
 		if (model == "HubbardAncilla")
 			return 3;
-		if (model == "FeAsBasedSc" || model == "HolsteinThin")
+		if (model == "FeAsBasedSc" || model == "HolsteinThin" || model == "HubbardOneBand")
 			return 1;
 		err("Not supported modeFromModel for model= " + model + "\n");
 		return 0;

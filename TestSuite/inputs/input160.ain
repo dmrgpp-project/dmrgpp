@@ -10,20 +10,21 @@ dir0:Connectors=[0.0];
 
 #Model params
 hubbardU=[8.0, ...];
-potentialV=[0.0,7.0, -7.0, 7.0, -7.0, 0.0];
+potentialV=[0.0,7.0, -7.0, 7.0, -7.0, 0.0,
+0.0,7.0, -7.0, 7.0, -7.0, 0.0];
 Model="HubbardOneBand";
-SolverOptions="twositedmrg,geometryallinsystem,expressionforgs";
+SolverOptions="twositedmrg,geometryallinsystem";
 Version="53725d9b8f22615ccccc782082f4cd6f51a4e374";
 OutputFile="data160";
 
-InfiniteLoopKeptStates=100;
-FiniteLoops=[[@auto, 100, 2],
-[@auto, 100, 2]];
+InfiniteLoopKeptStates=1000;
+FiniteLoops=[[@auto, 1000, 2],
+[@auto, 1000, 2]];
 
 TargetElectronsUp=1;
-TargetElectronsDown=1;
+TargetElectronsDown=0;
 
-|gs>=PureState[1,2,0,0,0,0];
+|gs>=PureState[2,0,0,0,0,0];
 
 # May be needed
-# AdjustQuantumNumbers=
+#vector AdjustQuantumNumbers=[2,1, 1,1, 2,1];
