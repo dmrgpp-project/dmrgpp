@@ -148,7 +148,7 @@ public:
 	    , wft_(waveFunctionTransformation)
 	    , oldEnergy_(oldEnergy)
 	    , progress_("Diag.")
-	    , pure_state_(wft_, model_.hilbertSize(0)) // site = 0; needs FIXME for SDHS
+	    , pure_state_(wft_, parameters_.pure_indices, model_.hilbertSize(0)) // site = 0; needs FIXME for SDHS
 	{ }
 
 	//! PTEX_LABEL{Diagonalization}
@@ -161,7 +161,7 @@ public:
 		PsimagLite::Profiling profiling("Diagonalization", std::cout);
 		assert(direction == ProgramGlobals::DirectionEnum::INFINITE);
 		SizeType loopIndex = 0;
-		internalMain_(target, energies, direction, loopIndex, blockLeft);
+		internalMain_(target, energies, direction, loopIndex, blockLeft, blockRight);
 		//  targeting:
 		target.evolve(energies[0], direction, blockLeft, blockRight, loopIndex);
 		wft_.triggerOff(target.lrs());
@@ -176,7 +176,7 @@ public:
 		PsimagLite::Profiling profiling("Diagonalization", std::cout);
 		assert(direction != ProgramGlobals::DirectionEnum::INFINITE);
 
-		internalMain_(target, energies, direction, loopIndex, block);
+		internalMain_(target, energies, direction, loopIndex, block, block);
 		//  targeting:
 		target.evolve(energies[0], direction, block, block, loopIndex);
 		wft_.triggerOff(target.lrs());
@@ -227,7 +227,8 @@ private:
 	                   VectorVectorRealType&         energies, // dest
 	                   ProgramGlobals::DirectionEnum direction,
 	                   SizeType                      loopIndex,
-	                   const VectorSizeType&         block)
+	                   const VectorSizeType&         block,
+	                   const VectorSizeType& block_right)
 
 	{
 		assert(block.size() == 1);
@@ -348,9 +349,14 @@ private:
 					progress_.printline(msgg, std::cout);
 				}
 			} else if (parameters_.options.isSet("expressionforgs")) {
-				// hook up the pure thing here
-				//vecSAved[42][0] = pure_state_.getFullVector();
-				//energies[0] = 0;
+				assert(vecSaved.size() > j);
+				assert(vecSaved[j].size() > 0);
+				assert(0 < block.size());
+				assert(0 < block_right.size());
+				pure_state_.getNewPures(vecSaved[j][0], i, block[0], block_right[0], lrs);
+				assert(0 < energySaved.size());
+				assert(0 < energySaved[0].size());
+				energySaved[0][0] = 0; // FIXME
 			} else {
 				// diagonalization happens
 				if (!isVwoS) {
