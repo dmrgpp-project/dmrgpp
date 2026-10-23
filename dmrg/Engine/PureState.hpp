@@ -276,6 +276,8 @@ private:
 	{
 		if (site == 1) {
 			site = 0;
+		} else if (site + 2 == pure_indices_.size()) {
+			++site;
 		}
 
 		assert(site < pure_indices_.size());
