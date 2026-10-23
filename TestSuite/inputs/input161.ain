@@ -1,0 +1,28 @@
+##Ainur1.0
+
+TotalNumberOfSites=6;
+NumberOfTerms=1;
+GeometryKind="chain";
+GeometryOptions="ConstantValues";
+dir0:Connectors=[1.0];
+
+hubbardU=[8,...];
+potentialV=[0.0,7.0, -7.0, 7.0, -7.0, 0.0];
+
+Model="HubbardOneBand";
+SolverOptions="TimeStepTargeting,twositedmrg,geometryallinsystem,restart";
+Version="v7.1";
+OutputFile="data161";
+RestartFilename="data160";
+InfiniteLoopKeptStates=100;
+FiniteLoops=[[@auto, 200, 2], [@auto, 200, 2]];
+
+RepeatFiniteLoopsTimes=4;
+
+TargetElectronsUp=1;
+TargetElectronsDown=1;
+GsWeight=0.1;
+TSPTau=0.1;
+TSPTimeSteps=4;
+TSPAdvanceEach=8;
+TSPAlgorithm="Krylov";
