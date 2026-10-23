@@ -240,6 +240,7 @@ private:
 		SizeType numberOfExcited = parameters_.numberOfExcited;
 		bool     onlyWft         = false;
 		bool     noguess         = false;
+		bool has_gs_expression = false;
 
 		if (direction != ProgramGlobals::DirectionEnum::INFINITE) {
 			assert(loopIndex < parameters_.finiteLoop.size());
@@ -247,6 +248,8 @@ private:
 
 			onlyWft = finiteLoop.wants("onlyfastwft");
 			noguess = finiteLoop.wants("randomguess");
+		} else {
+			has_gs_expression = (parameters_.pure_indices.size() > 0);
 		}
 
 		if (parameters_.options.isSet("MettsTargeting"))
@@ -348,7 +351,7 @@ private:
 					    << energySaved[j][excitedIndex];
 					progress_.printline(msgg, std::cout);
 				}
-			} else if (parameters_.options.isSet("expressionforgs")) {
+			} else if (has_gs_expression) {
 				assert(vecSaved.size() > j);
 				assert(vecSaved[j].size() > 0);
 				assert(0 < block.size());
