@@ -20,8 +20,8 @@ FiniteLoops=[[@auto, 200, 2], [@auto, 200, 2]];
 
 RepeatFiniteLoopsTimes=4;
 
-TargetElectronsUp=1;
-TargetElectronsDown=1;
+TargetElectronsUp=2;
+TargetElectronsDown=2;
 GsWeight=0.1;
 TSPTau=0.1;
 TSPTimeSteps=4;
