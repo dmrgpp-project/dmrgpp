@@ -323,7 +323,7 @@ obtain ordered
 
 		Qn::VectorQnType adjust_qns = pureStateQns();
 		if (adjust_qns.size() == 0) {
-			adjust_qns = 	parameters_.adjustQuantumNumbers;
+			adjust_qns = parameters_.adjustQuantumNumbers;
 		} else {
 			assert(parameters_.adjustQuantumNumbers.size() == 0);
 		}
@@ -736,7 +736,9 @@ obtain ordered
 
 	std::vector<Qn> pureStateQns() const
 	{
-		return (parameters_.options.isSet("geometryAllInSystem")) ? pureStateQnsAllInSystem() : pureStateQnsSymmetric();
+		return (parameters_.options.isSet("geometryAllInSystem"))
+		    ? pureStateQnsAllInSystem()
+		    : pureStateQnsSymmetric();
 	}
 
 	std::vector<Qn> pureStateQnsSymmetric() const
@@ -747,7 +749,7 @@ obtain ordered
 	std::vector<Qn> pureStateQnsAllInSystem() const
 	{
 		const std::vector<SizeType>& indices = parameters_.pure_indices;
-		SizeType total = indices.size();
+		SizeType                     total   = indices.size();
 		assert(total > 2); // at least 3 sites
 
 		std::vector<Qn> adjust_qns(total - 2, Qn::zero());

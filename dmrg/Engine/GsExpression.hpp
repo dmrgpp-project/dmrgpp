@@ -2,8 +2,8 @@
 #define GSEXPRESSION_HPP
 #include <PsimagLite/PsimagLite.h>
 
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace Dmrg {
 
@@ -24,15 +24,17 @@ public:
 		}
 
 		PsimagLite::Vector<PsimagLite::String>::Type tokens;
-		PsimagLite::split(tokens,
-		                   expression.substr(prefix.length(), expression.length() - prefix.length() - 1),
-		                   ",");
+		PsimagLite::split(
+		    tokens,
+		    expression.substr(prefix.length(), expression.length() - prefix.length() - 1),
+		    ",");
 
 		std::vector<SizeType> pureIndices;
 		pureIndices.reserve(tokens.size());
 		for (const auto& token : tokens) {
 			if (!PsimagLite::isAnInteger(token))
-				throw PsimagLite::RuntimeError("PureState indices must be non-negative integers\n");
+				throw PsimagLite::RuntimeError(
+				    "PureState indices must be non-negative integers\n");
 			pureIndices.push_back(PsimagLite::atoi(token));
 		}
 
