@@ -47,14 +47,14 @@ public:
 	using ProgramGlobalsType = ProgramGlobals;
 	using SuperGeometryType = SuperGeometry<ComplexOrRealType, InputType, ProgramGlobalsType>;
 	using ModelType = ModelBase<ModelHelperType,
-	                                                ParametersDmrgType,
-	                                                InputType,
-	                                                SuperGeometryType>;
+	                                               ParametersDmrgType,
+	                                               InputType,
+	                                               SuperGeometryType>;
 	using OneSiteSpacesType = OneSiteSpaces<ModelType>;
-		using WaveFunctionTransfType  = WaveFunctionTransfFactory<LrsType,
-	                                                                VectorWithOffsetsType,
-	                                                                OptionsType,
-	                                                                OneSiteSpacesType>;
+	using WaveFunctionTransfType  = WaveFunctionTransfFactory<LrsType,
+	                                                               VectorWithOffsetsType,
+	                                                               OptionsType,
+	                                                               OneSiteSpacesType>;
 	PureState(const WaveFunctionTransfType& wft,
 	          SizeType hilbert)
 	    : wft_(wft)
@@ -69,6 +69,95 @@ public:
 			delete garbage_[i];
 			garbage_[i] = nullptr;
 		}
+	}
+
+	// direction here is INFINITE
+	void getNewPures(VectorWithOffsetsType& dest, SizeType site0, SizeType site1, const LrsType& lrs)
+	{
+		SizeType alpha_fixed = 0; // FIXME
+		SizeType beta_fixed = 0; // FIXME
+
+		PsimagLite::OstringStream                     msgg(std::cout.precision());
+		PsimagLite::OstringStream::OstringStreamType& msg = msgg();
+		msg << "New pures for site=" << site0 << " is " << alpha_fixed;
+		msg << " and for site=" << site1 << " is " << beta_fixed;
+		progress_.printline(msgg, std::cerr);
+
+		       // Pure for system
+		{
+			const BlockDiagMatrixType& transform_sys = getTransform(ProgramGlobals::SysOrEnvEnum::SYSTEM);
+			VectorType new_vec1(transform_sys.rows());
+
+			getNewPure(new_vec1,
+			           pure_vectors_.first,
+			           ProgramGlobals::SysOrEnvEnum::SYSTEM,
+			           hilbert_,
+			           lrs.left(),
+			           transform_sys,
+			           site0);
+			pure_vectors_.first = std::move(new_vec1);
+		}
+
+		{
+			const BlockDiagMatrixType& transform_env = getTransform(ProgramGlobals::SysOrEnvEnum::ENVIRON);
+			VectorType new_vec2(transform_env.rows());
+
+			getNewPure(new_vec2,
+			           pure_vectors_.second,
+			           ProgramGlobals::SysOrEnvEnum::ENVIRON,
+			           hilbert_,
+			           lrs.right(),
+			           transform_env,
+			           site1);
+			pure_vectors_.second = std::move(new_vec2);
+		}
+
+		setFromInfinite(dest, lrs);
+		assert(norm(dest) > 1e-6);
+
+		// systemPrev_.fixed               = alphaFixedVolume;
+		// systemPrev_.permutationInverse  = lrs_.left().permutationInverse();
+		// environPrev_.fixed              = betaFixedVolume;
+		// environPrev_.permutationInverse = lrs_.right().permutationInverse();
+	}
+
+private:
+
+	const BlockDiagMatrixType& getTransform(ProgramGlobals::SysOrEnvEnum sysOrEnv)
+	{
+		const SizeType stackSize = wft_.size(sysOrEnv);
+
+		if (stackSize > 0)
+			return wft_.getTransform(sysOrEnv);
+
+		BlockDiagMatrixType* m = new BlockDiagMatrixType;
+		garbage_.push_back(m);
+
+		return *m;
+	}
+
+	// The pure_vectors.{first,second} are regular std::vector;
+	// they need to be converted into vector with offsets;
+	// this function does it.
+	void setFromInfinite(VectorWithOffsetsType& phi, const LrsType& lrs) const
+	{
+		phi.populateSectors(lrs.super());
+		for (SizeType ii = 0; ii < phi.sectors(); ii++) {
+			SizeType         i0 = phi.sector(ii);
+			VectorType v;
+			getFullVector(v, i0, lrs);
+			RealType tmpNorm = PsimagLite::norm(v);
+			if (std::fabs(tmpNorm - 1.0) < 1e-6) {
+				const Qn& j = lrs.super().qnEx(i0);
+				std::cerr << "setFromInfinite: qns= ";
+				std::cerr << j << "\n";
+			}
+
+			phi.setDataInSector(v, i0);
+		}
+
+		phi.collapseSectors();
+		assert(norm(phi) > 1e-6);
 	}
 
 	void getFullVector(VectorType& v, SizeType m, const LrsType& lrs) const
@@ -87,68 +176,6 @@ public:
 		}
 	}
 
-private:
-
-	//        // direction here is INFINITE
-	// void getNewPures(SizeType site0, SizeType site1)
-	// {
-	// 	SizeType alpha_fixed = 0; // FIXME
-	// 	SizeType beta_fixed = 0; // FIXME
-
-	// 	PsimagLite::OstringStream                     msgg(std::cout.precision());
-	// 	PsimagLite::OstringStream::OstringStreamType& msg = msgg();
-	// 	msg << "New pures for site=" << site0 << " is " << alpha_fixed;
-	// 	msg << " and for site=" << site1 << " is " << beta_fixed;
-	// 	progress_.printline(msgg, std::cerr);
-
-	// 	// Pure for system
-	// 	const BlockDiagonalMatrixType& transform_sys = getTransform(ProgramGlobals::SysOrEnvEnum::SYSTEM);
-
-	// 	{
-	// 		VectorType new_vec1(transform_sys.rows());
-
-	// 		getNewPure(new_vec1,
-	// 		           pure_vectors_.first,
-	// 		           ProgramGlobals::SysOrEnvEnum::SYSTEM,
-	// 		           hilbert_,
-	// 		           lrs_.left(),
-	// 		           transform_sys,
-	// 		           site0);
-	// 		pure_vectors_.first = std::move(new_vec1);
-	// 	}
-
-	// 	const BlockDiagonalMatrixType& transform_env = getTransform(ProgramGlobals::SysOrEnvEnum::ENVIRON);
-	// 	VectorType new_vec2(transform_env.rows());
-
-	// 	getNewPure(new_vec2,
-	// 	           pure_vectors_.second,
-	// 	           ProgramGlobals::SysOrEnvEnum::ENVIRON,
-	// 	           hilbert_,
-	// 	           lrs_.right(),
-	// 	           transform_env,
-	// 	           site1);
-	// 	pure_vectors_.second = new_vec2;
-	// 	setFromInfinite(this->tvNonConst(0), lrs_); // FIXME
-	// 	assert(norm(this->tv(0)) > 1e-6);// FIXME
-
-	// 	systemPrev_.fixed               = alphaFixedVolume;
-	// 	systemPrev_.permutationInverse  = lrs_.left().permutationInverse();
-	// 	environPrev_.fixed              = betaFixedVolume;
-	// 	environPrev_.permutationInverse = lrs_.right().permutationInverse();
-	// }
-
-	// const BlockDiagonalMatrixType& getTransform(ProgramGlobals::SysOrEnvEnum sysOrEnv)
-	// {
-	// 	const SizeType stackSize = wft_.size(sysOrEnv);
-
-	// 	if (stackSize > 0)
-	// 		return wft_.getTransform(sysOrEnv);
-
-	// 	BlockDiagonalMatrixType* m = new BlockDiagonalMatrixType;
-	// 	garbage_.push_back(m);
-
-	// 	return *m;
-	// }
 
 	const WaveFunctionTransfType& wft_;
 	SizeType hilbert_;

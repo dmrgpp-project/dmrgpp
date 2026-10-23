@@ -347,7 +347,7 @@ private:
 					    << energySaved[j][excitedIndex];
 					progress_.printline(msgg, std::cout);
 				}
-			} else if (expression_for_gs) {
+			} else if (parameters_.options.isSet("expressionforgs")) {
 				// hook up the pure thing here
 				//vecSAved[42][0] = pure_state_.getFullVector();
 				//energies[0] = 0;
