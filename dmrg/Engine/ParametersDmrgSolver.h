@@ -84,11 +84,11 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include "AlgebraicStringToNumber.h"
 #include "DmrgOptions.h"
 #include "FiniteLoop.h"
+#include "GsExpression.hpp"
 #include "Provenance.h"
 #include "Recovery.h"
 #include "RestartStruct.h"
 #include "TruncationControl.h"
-#include "GsExpression.hpp"
 
 #include <PsimagLite/Io/IoSelector.h>
 #include <PsimagLite/Io/IoSerializerStub.h>
@@ -189,7 +189,7 @@ struct ParametersDmrgSolver {
 	FieldType                     degeneracyMax;
 	FieldType                     denseSparseThreshold;
 	MatrixSolverEnum              matrix_solver_enum = MatrixSolverEnum::LANCZOS;
-	std::vector<SizeType> pure_indices;
+	std::vector<SizeType>         pure_indices;
 
 	void write(PsimagLite::String label, PsimagLite::IoSerializer& ioSerializer) const
 	{
@@ -299,7 +299,7 @@ struct ParametersDmrgSolver {
 
 		if (tmpVector.size() > 0) {
 			QnType::adjustQns(adjustQuantumNumbers, tmpVector, modeFromModel(model));
-			std::cout<<"AdjustQns="<<adjustQuantumNumbers<<"\n";
+			std::cout << "AdjustQns=" << adjustQuantumNumbers << "\n";
 		}
 
 		try {
@@ -442,7 +442,8 @@ struct ParametersDmrgSolver {
 
 		if (pure_indices.size() > 0) {
 			if (pure_indices.size() != numberOfSites) {
-				err("|gs>=PureState[...]: needs exactly " + ttos(numberOfSites) + " indices\n");
+				err("|gs>=PureState[...]: needs exactly " + ttos(numberOfSites)
+				    + " indices\n");
 			}
 
 			if (adjustQuantumNumbers.size() > 0) {

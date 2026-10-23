@@ -82,8 +82,8 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include "OneSiteSpaces.hh"
 #include "ParametersDmrgSolver.h"
 #include "ProgramGlobals.h"
-#include "VectorWithOffsets.h" // includes the PsimagLite::norm functions
 #include "PureState.hpp"
+#include "VectorWithOffsets.h" // includes the PsimagLite::norm functions
 #include <PsimagLite/ArnoldiSaI.hh>
 #include <PsimagLite/Concurrency.h>
 #include <PsimagLite/LanczosSolver.h>
@@ -148,7 +148,9 @@ public:
 	    , wft_(waveFunctionTransformation)
 	    , oldEnergy_(oldEnergy)
 	    , progress_("Diag.")
-	    , pure_state_(wft_, parameters_.pure_indices, model_.hilbertSize(0)) // site = 0; needs FIXME for SDHS
+	    , pure_state_(wft_,
+	                  parameters_.pure_indices,
+	                  model_.hilbertSize(0)) // site = 0; needs FIXME for SDHS
 	{ }
 
 	//! PTEX_LABEL{Diagonalization}
@@ -199,9 +201,9 @@ private:
 
 				const QnType& qn = lrs.super().pseudoQn(i);
 
-				const bool    b1 = (qn != quantumSector_[j]
-                                                 || std::find(mVector.begin(), mVector.end(), i)
-                                                     != mVector.end());
+				const bool b1 = (qn != quantumSector_[j]
+				                 || std::find(mVector.begin(), mVector.end(), i)
+				                     != mVector.end());
 
 				const SizeType bs
 				    = lrs.super().partition(i + 1) - lrs.super().partition(i);
@@ -229,7 +231,7 @@ private:
 	                   ProgramGlobals::DirectionEnum direction,
 	                   SizeType                      loopIndex,
 	                   const VectorSizeType&         block,
-	                   const VectorSizeType& block_right)
+	                   const VectorSizeType&         block_right)
 
 	{
 		assert(block.size() == 1);
@@ -238,10 +240,10 @@ private:
 		const LeftRightSuperType& lrs = target.lrs();
 		wft_.triggerOn();
 
-		SizeType numberOfExcited = parameters_.numberOfExcited;
-		bool     onlyWft         = false;
-		bool     noguess         = false;
-		bool has_gs_expression = false;
+		SizeType numberOfExcited   = parameters_.numberOfExcited;
+		bool     onlyWft           = false;
+		bool     noguess           = false;
+		bool     has_gs_expression = false;
 
 		if (direction != ProgramGlobals::DirectionEnum::INFINITE) {
 			assert(loopIndex < parameters_.finiteLoop.size());
@@ -357,7 +359,8 @@ private:
 				assert(vecSaved[j].size() > 0);
 				assert(0 < block.size());
 				assert(0 < block_right.size());
-				pure_state_.getNewPures(vecSaved[j][0], i, block[0], block_right[0], lrs);
+				pure_state_.getNewPures(
+				    vecSaved[j][0], i, block[0], block_right[0], lrs);
 				assert(0 < energySaved.size());
 				assert(0 < energySaved[0].size());
 				energySaved[0][0] = 0; // FIXME
@@ -843,16 +846,16 @@ private:
 		return pAwesome.isTrue("n", superSizeReal, "m", matrixSizeReal, "e", oddElectrons);
 	}
 
-	const ParametersType&         parameters_;
-	const ModelType&              model_;
-	const bool&                   verbose_;
-	InputValidatorType&           io_;
+	const ParametersType& parameters_;
+	const ModelType&      model_;
+	const bool&           verbose_;
+	InputValidatorType&   io_;
 	// quantumSector_ needs to be a reference since DmrgSolver will change it
 	const typename QnType::VectorQnType& quantumSector_;
 	WaveFunctionTransfType&              wft_;
 	VectorVectorRealType                 oldEnergy_;
-	PsimagLite::ProgressIndicator progress_;
-	PureState<ComplexOrRealType> pure_state_;
+	PsimagLite::ProgressIndicator        progress_;
+	PureState<ComplexOrRealType>         pure_state_;
 }; // class Diagonalization
 } // namespace Dmrg
 
