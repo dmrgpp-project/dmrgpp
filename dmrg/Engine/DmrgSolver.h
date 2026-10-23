@@ -736,6 +736,9 @@ obtain ordered
 
 	std::vector<Qn> pureStateQns() const
 	{
+		std::vector<Qn> qn_empty;
+		if (parameters_.pure_indices.size() == 0) return qn_empty;
+
 		return (parameters_.options.isSet("geometryAllInSystem"))
 		    ? pureStateQnsAllInSystem()
 		    : pureStateQnsSymmetric();
