@@ -84,16 +84,19 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include "AlgebraicStringToNumber.h"
 #include "DmrgOptions.h"
 #include "FiniteLoop.h"
+#include "GsExpression.hpp"
 #include "Provenance.h"
 #include "Recovery.h"
 #include "RestartStruct.h"
 #include "TruncationControl.h"
+
 #include <PsimagLite/Io/IoSelector.h>
 #include <PsimagLite/Io/IoSerializerStub.h>
 #include <PsimagLite/ProgressIndicator.h>
 #include <PsimagLite/PsimagLite.h>
 #include <PsimagLite/TypeToString.h>
 #include <PsimagLite/Vector.h>
+
 #include <sstream>
 #include <sys/types.h>
 #include <unistd.h>
@@ -186,6 +189,7 @@ struct ParametersDmrgSolver {
 	FieldType                     degeneracyMax;
 	FieldType                     denseSparseThreshold;
 	MatrixSolverEnum              matrix_solver_enum = MatrixSolverEnum::LANCZOS;
+	std::vector<SizeType>         pure_indices;
 
 	void write(PsimagLite::String label, PsimagLite::IoSerializer& ioSerializer) const
 	{
@@ -293,8 +297,11 @@ struct ParametersDmrgSolver {
 			io.read(tmpVector, "AdjustQuantumNumbers");
 		} catch (std::exception&) { }
 
-		if (tmpVector.size() > 0)
+		if (tmpVector.size() > 0) {
 			QnType::adjustQns(adjustQuantumNumbers, tmpVector, modeFromModel(model));
+			std::cout << "AdjustQns=" << adjustQuantumNumbers << "\n";
+		}
+
 		try {
 			io.readline(nthreads, "Threads=");
 		} catch (std::exception&) { }
@@ -422,6 +429,29 @@ struct ParametersDmrgSolver {
 		if (tmpString != "")
 			findSymmetrySector = tmpString;
 
+		SizeType numberOfSites = 0;
+		io.readline(numberOfSites, "TotalNumberOfSites=");
+
+		// Pure indices if set
+		std::string gs_expression;
+		try {
+			io.readline(gs_expression, "|gs>=");
+		} catch (std::exception&) { }
+
+		GsExpression::setPureState(pure_indices, gs_expression);
+
+		if (pure_indices.size() > 0) {
+			if (pure_indices.size() != numberOfSites) {
+				err("|gs>=PureState[...]: needs exactly " + ttos(numberOfSites)
+				    + " indices\n");
+			}
+
+			if (adjustQuantumNumbers.size() > 0) {
+				err("AdjustQuantumNumbers not allowed when using pure indices\n");
+			}
+		}
+
+		// restart
 		if (options.isSet("restart")) {
 			if (!infLoopsIsAnInt and hasRestartFrom) {
 				PsimagLite::String tmp = "FATAL: RestartFilename found in input ";
