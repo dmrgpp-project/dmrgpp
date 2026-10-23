@@ -21,10 +21,8 @@ InfiniteLoopKeptStates=1000;
 FiniteLoops=[[@auto, 1000, 2],
 [@auto, 1000, 2]];
 
-TargetElectronsUp=1;
-TargetElectronsDown=0;
+TargetElectronsUp=2;
+TargetElectronsDown=2;
 
-|gs>=PureState[2,0,0,0,0,0];
+|gs>=PureState[3,2,0,0,0,1];
 
-# May be needed
-#vector AdjustQuantumNumbers=[2,1, 1,1, 2,1];

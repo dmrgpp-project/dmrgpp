@@ -297,8 +297,11 @@ struct ParametersDmrgSolver {
 			io.read(tmpVector, "AdjustQuantumNumbers");
 		} catch (std::exception&) { }
 
-		if (tmpVector.size() > 0)
+		if (tmpVector.size() > 0) {
 			QnType::adjustQns(adjustQuantumNumbers, tmpVector, modeFromModel(model));
+			std::cout<<"AdjustQns="<<adjustQuantumNumbers<<"\n";
+		}
+
 		try {
 			io.readline(nthreads, "Threads=");
 		} catch (std::exception&) { }
@@ -437,8 +440,14 @@ struct ParametersDmrgSolver {
 
 		GsExpression::setPureState(pure_indices, gs_expression);
 
-		if (pure_indices.size() > 0 && pure_indices.size() != numberOfSites) {
-			err("|gs>=PureState[...]: needs exactly " + ttos(numberOfSites) + " indices\n");
+		if (pure_indices.size() > 0) {
+			if (pure_indices.size() != numberOfSites) {
+				err("|gs>=PureState[...]: needs exactly " + ttos(numberOfSites) + " indices\n");
+			}
+
+			if (adjustQuantumNumbers.size() > 0) {
+				err("AdjustQuantumNumbers not allowed when using pure indices\n");
+			}
 		}
 
 		// restart

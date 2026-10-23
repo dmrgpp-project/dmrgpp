@@ -223,7 +223,6 @@ private:
 			}
 		}
 
-
 		PsimagLite::OstringStream                     msgg2(std::cout.precision());
 		PsimagLite::OstringStream::OstringStreamType& msg2 = msgg2();
 		msg2 << "Old size of pure is " << ns << " norm=" << PsimagLite::norm(tmpVector);

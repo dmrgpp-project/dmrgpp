@@ -321,6 +321,13 @@ obtain ordered
 		bool                extendedPrint = parameters_.options.isSet("extendedPrint");
 		PrinterInDetailType printerInDetail(lrs_, extendedPrint);
 
+		Qn::VectorQnType adjust_qns = pureStateQns();
+		if (adjust_qns.size() == 0) {
+			adjust_qns = 	parameters_.adjustQuantumNumbers;
+		} else {
+			assert(parameters_.adjustQuantumNumbers.size() == 0);
+		}
+
 		lrs_.left(pS);
 		lrs_.right(pE);
 		checkpoint_.push(pS, pE);
@@ -354,7 +361,7 @@ obtain ordered
 			    lrs_.sites(),
 			    ProgramGlobals::DirectionEnum::INFINITE,
 			    step,
-			    parameters_.adjustQuantumNumbers);
+			    adjust_qns);
 
 			assert(0 < quantumSector_.size()); // used only for SU(2)
 			lrs_.setToProduct(initialSizeOfHashTable);
@@ -725,6 +732,38 @@ obtain ordered
 		}
 
 		os << "FiniteLoops printing ends\n";
+	}
+
+	std::vector<Qn> pureStateQns() const
+	{
+		return (parameters_.options.isSet("geometryAllInSystem")) ? pureStateQnsAllInSystem() : pureStateQnsSymmetric();
+	}
+
+	std::vector<Qn> pureStateQnsSymmetric() const
+	{
+		throw std::runtime_error("pureStateQnsSymmetric: unimplemented (sorry)\n");
+	}
+
+	std::vector<Qn> pureStateQnsAllInSystem() const
+	{
+		const std::vector<SizeType>& indices = parameters_.pure_indices;
+		SizeType total = indices.size();
+		assert(total > 2); // at least 3 sites
+
+		std::vector<Qn> adjust_qns(total - 2, Qn::zero());
+		std::vector<Qn> qns = model_.qns();
+		// first growth stage: 0, 1, and total - 1
+
+		Qn qtmp(qns[indices[0]], qns[indices[1]]); // site = 0 and site = 1
+		Qn qfirst(qtmp, qns[indices[total - 1]]); // site = total - 1
+		adjust_qns[0] = qfirst; // first stage
+
+		for (SizeType site = 2; site < total - 2; ++site) {
+			assert(indices[site] < qns.size());
+			adjust_qns[site - 1] = Qn(adjust_qns[site - 2], qns[indices[site]]);
+		}
+
+		return adjust_qns;
 	}
 
 	const ModelType&              model_;
