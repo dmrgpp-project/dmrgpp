@@ -148,7 +148,7 @@ private:
 	{
 		const VectorStringType str
 		    = { "save",        "onlyfastwft",   "onlyslowwft",
-			"randomguess", "multisitepush", "onesitetruncation" };
+			"randomguess", "multisitepush", "onesitetruncation", "expression_for_gs" };
 
 		SizeType bit = 1;
 		for (SizeType i = 0; i < str.size(); ++i) {
