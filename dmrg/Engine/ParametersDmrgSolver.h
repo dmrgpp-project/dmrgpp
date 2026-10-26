@@ -435,14 +435,14 @@ struct ParametersDmrgSolver {
 		// Pure indices if set
 		std::string gs_expression;
 		try {
-			io.readline(gs_expression, "|gs>=");
+			io.readline(gs_expression, "gs=");
 		} catch (std::exception&) { }
 
 		GsExpression::setPureState(pure_indices, gs_expression);
 
 		if (pure_indices.size() > 0) {
 			if (pure_indices.size() != numberOfSites) {
-				err("|gs>=PureState[...]: needs exactly " + ttos(numberOfSites)
+				err("gs=PureState[...]: needs exactly " + ttos(numberOfSites)
 				    + " indices\n");
 			}
 

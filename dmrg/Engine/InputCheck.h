@@ -297,7 +297,7 @@ public:
 		str += "string Ancillas;\n";
 		str += "integer RestartMapStages;\n";
 		str += "vectorIntegers RestartMappingTvs;\n";
-		str += "string |gs>;\n";
+		str += "string gs;\n";
 
 		return str;
 	}
