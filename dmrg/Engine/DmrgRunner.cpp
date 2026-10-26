@@ -215,7 +215,7 @@ template <typename RealType> void DmrgRunner<RealType>::setCorrectThreading() co
 	for (SizeType i = 0; i < codeSectionNames.size(); ++i) {
 		SizeType threads = 0;
 		try {
-			io_->readlineLast(threads, "Threads:" + codeSectionNames[i] + "=");
+			io_->readline(threads, "Threads:" + codeSectionNames[i] + "=");
 		} catch (std::exception&) {
 			continue;
 		}

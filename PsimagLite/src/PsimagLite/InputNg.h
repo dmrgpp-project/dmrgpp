@@ -729,27 +729,6 @@ public:
 			cleanLabelsIfNeeded(label2, mapStrStr_, it);
 		}
 
-		void readlineLast(SizeType& val, const String& label)
-		{
-			if (ainur_) {
-				readline(val, label);
-				return;
-			}
-
-			const String label2 = label2label(label);
-			bool         found  = false;
-			for (MapStringIteratorType it = mapStrStr_.begin(); it != mapStrStr_.end();
-			     ++it) {
-				if (findRootLabel(it->first) != label2)
-					continue;
-				val   = atoi(it->second.c_str());
-				found = true;
-			}
-
-			if (!found)
-				throwWithMessage(label, label2);
-		}
-
 		void readline(int& val, const String& label)
 		{
 			if (ainur_) {

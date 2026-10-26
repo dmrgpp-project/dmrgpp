@@ -296,7 +296,7 @@ struct ParametersDmrgSolver {
 		if (tmpVector.size() > 0)
 			QnType::adjustQns(adjustQuantumNumbers, tmpVector, modeFromModel(model));
 		try {
-			io.readlineLast(nthreads, "Threads=");
+			io.readline(nthreads, "Threads=");
 		} catch (std::exception&) { }
 
 		try {
