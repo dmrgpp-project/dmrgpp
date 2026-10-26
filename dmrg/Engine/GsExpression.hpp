@@ -20,7 +20,7 @@ public:
 		if (expression.length() <= prefix.length()
 		    || expression.substr(0, prefix.length()) != prefix
 		    || expression[expression.length() - 1] != ']') {
-			throw PsimagLite::RuntimeError("Expected PureState[...] for |gs>\n");
+			throw PsimagLite::RuntimeError("Expected PureState[...] for gs\n");
 		}
 
 		PsimagLite::Vector<PsimagLite::String>::Type tokens;
