@@ -200,9 +200,9 @@ private:
 					std::cerr << lrs.super().qnEx(i);
 
 				const QnType& qn = lrs.super().pseudoQn(i);
-				const bool b1 = (qn != quantumSector_[j]
-				                 || std::find(mVector.begin(), mVector.end(), i)
-				                     != mVector.end());
+				const bool    b1 = (qn != quantumSector_[j]
+                                                 || std::find(mVector.begin(), mVector.end(), i)
+                                                     != mVector.end());
 
 				const SizeType bs
 				    = lrs.super().partition(i + 1) - lrs.super().partition(i);
