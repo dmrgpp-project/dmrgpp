@@ -130,7 +130,7 @@ VectorType multiplyTranspose(const ComplexType (&matrix)[2][2], const VectorType
 } // namespace
 
 TEST_CASE("KronConnections applies a complex non-Hermitian factor and its adjoint",
-          "[MatrixVectorKron]")
+          "[KronConnections]")
 {
 	FakeInitKron initKron;
 	setBlock(initKron, 0, 0, ComplexType(1.0, 1.0), ComplexType(2.0, -1.0));
