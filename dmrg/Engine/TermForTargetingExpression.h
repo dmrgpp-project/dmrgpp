@@ -114,11 +114,9 @@ public:
 		VectorSizeType discardedTerms;
 
 		VectorStringType newVstr;
-		std::string      reading_buffer;
 		for (SizeType ii = 0; ii < n; ++ii) {
 			const SizeType     i   = n - ii - 1; // read vector backwards
 			PsimagLite::String tmp = ops_[i];
-			reading_buffer += ops_[i] + "*";
 
 			// it's a matrix
 			if (ii != 0) {
