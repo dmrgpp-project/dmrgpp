@@ -153,6 +153,9 @@ Page* where more or less this feature is used: 2230
 #120 to 149 reserved for TargetingExpresion and related
 #150 to 199 reserved for testing the input system
 150) Replacement
+160) Pure state "gs"
+161) Restart with time evolution
+#162 to 169 reserved for pure states
 170) FermionSpinless
 172) FermionSpinless with Delta
 #170-189 reserved for FermionSpinless
