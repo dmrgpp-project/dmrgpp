@@ -2,6 +2,9 @@
 #define PSIMAGLITE_TEST_MATRIX_MATRIX_HPP
 
 #include <PsimagLite/BLAS.h>
+
+#include <Kokkos_Core.hpp>
+
 #include <array>
 #include <cassert>
 
@@ -30,6 +33,11 @@ public:
 
 			output_[task].fill(-999.0);
 		}
+
+		std::vector<int> weights(Tasks);
+		std::fill(weights.begin(), weights.end(), 1);
+		execs_ = Kokkos::Experimental::partition_space(Kokkos::DefaultExecutionSpace {},
+		                                               weights);
 	}
 
 	SizeType tasks() const { return Tasks; }
@@ -37,19 +45,20 @@ public:
 	void doTask(SizeType taskNumber, SizeType)
 	{
 		assert(taskNumber < Tasks);
-		psimag::BLAS::GEMM('N',
-		                   'N',
-		                   3,
-		                   3,
-		                   8,
-		                   1.0,
-		                   left_[taskNumber].data(),
-		                   3,
-		                   right_[taskNumber].data(),
-		                   8,
-		                   0.0,
-		                   output_[taskNumber].data(),
-		                   3);
+		PsimagLite::kokkos_gemm(execs_[taskNumber],
+		                        'N',
+		                        'N',
+		                        3,
+		                        3,
+		                        8,
+		                        1.0,
+		                        left_[taskNumber].data(),
+		                        3,
+		                        right_[taskNumber].data(),
+		                        8,
+		                        0.0,
+		                        output_[taskNumber].data(),
+		                        3);
 	}
 
 	const LeftMatrix& left(SizeType taskNumber) const
@@ -72,9 +81,10 @@ public:
 
 private:
 
-	std::array<LeftMatrix, Tasks>   left_;
-	std::array<RightMatrix, Tasks>  right_;
-	std::array<OutputMatrix, Tasks> output_;
+	std::array<LeftMatrix, Tasks>              left_;
+	std::array<RightMatrix, Tasks>             right_;
+	std::array<OutputMatrix, Tasks>            output_;
+	std::vector<Kokkos::DefaultExecutionSpace> execs_;
 };
 
 #endif // PSIMAGLITE_TEST_MATRIX_MATRIX_HPP
