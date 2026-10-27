@@ -200,7 +200,6 @@ private:
 					std::cerr << lrs.super().qnEx(i);
 
 				const QnType& qn = lrs.super().pseudoQn(i);
-
 				const bool b1 = (qn != quantumSector_[j]
 				                 || std::find(mVector.begin(), mVector.end(), i)
 				                     != mVector.end());
@@ -226,8 +225,8 @@ private:
 		return sum;
 	}
 
-	void internalMain_(TargetingType&                target, // dest
-	                   VectorVectorRealType&         energies, // dest
+	void internalMain_(TargetingType&                target,
+	                   VectorVectorRealType&         energies,
 	                   ProgramGlobals::DirectionEnum direction,
 	                   SizeType                      loopIndex,
 	                   const VectorSizeType&         block,
