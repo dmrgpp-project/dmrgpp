@@ -210,6 +210,18 @@ template <typename RealType> void DmrgRunner<RealType>::setCorrectThreading() co
 	                                          setAffinities,
 	                                          threadsStackSize);
 	ConcurrencyType::setOptions(codeSection);
+	ConcurrencyType::clearCodeSectionParamsOverrides();
+	const auto& codeSectionNames = ConcurrencyType::codeSectionNames();
+	for (SizeType i = 0; i < codeSectionNames.size(); ++i) {
+		SizeType threads = 0;
+		try {
+			io_->readline(threads, "Threads:" + codeSectionNames[i] + "=");
+		} catch (PsimagLite::RuntimeError&) {
+			continue;
+		}
+
+		ConcurrencyType::setCodeSectionParamsOverride(codeSectionNames[i], threads);
+	}
 }
 
 template <typename RealType>

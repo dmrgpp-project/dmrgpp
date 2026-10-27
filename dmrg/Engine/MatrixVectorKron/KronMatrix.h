@@ -137,9 +137,9 @@ public:
 			return;
 		}
 
-		KronConnectionsType kc(initKron_, kron_logger_);
-		SizeType            threads = PsimagLite::Concurrency::codeSectionParams.npthreads;
-		PsimagLite::CodeSectionParams codeSectionParams(threads);
+		KronConnectionsType           kc(initKron_, kron_logger_);
+		PsimagLite::CodeSectionParams codeSectionParams
+		    = PsimagLite::Concurrency::codeSectionParamsFor("KronMatrix");
 
 		if (initKron_.loadBalance()) {
 			PsimagLite::Parallelizer<KronConnectionsType,
