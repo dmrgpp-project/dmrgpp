@@ -48,11 +48,11 @@ target_link_libraries(test_MatrixVectorStored PRIVATE Catch2::Catch2WithMain dmr
 target_include_directories(test_MatrixVectorStored PRIVATE ${CMAKE_SOURCE_DIR}/dmrg/Engine)
 catch_discover_tests(test_MatrixVectorStored)
 
-add_executable(test_MatrixVectorKron test_MatrixVectorKron.cpp)
-target_link_libraries(test_MatrixVectorKron PRIVATE Catch2::Catch2WithMain dmrgpp_utils kronutil psimaglite)
-target_include_directories(test_MatrixVectorKron PRIVATE ${CMAKE_SOURCE_DIR}/dmrg/Engine
-                                                         ${CMAKE_SOURCE_DIR}/dmrg/Engine/MatrixVectorKron)
-catch_discover_tests(test_MatrixVectorKron)
+add_executable(test_KronConnections test_KronConnections.cpp)
+target_link_libraries(test_KronConnections PRIVATE Catch2::Catch2WithMain dmrgpp_utils kronutil psimaglite)
+target_include_directories(test_KronConnections PRIVATE ${CMAKE_SOURCE_DIR}/dmrg/Engine
+                                                        ${CMAKE_SOURCE_DIR}/dmrg/Engine/MatrixVectorKron)
+catch_discover_tests(test_KronConnections)
 
 add_executable(bench_BatchedGemm bench_BatchedGemm.cpp)
 target_link_libraries(bench_BatchedGemm PRIVATE dmrgpp_utils psimaglite)
