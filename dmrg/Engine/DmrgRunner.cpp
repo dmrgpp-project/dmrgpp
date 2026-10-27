@@ -216,7 +216,7 @@ template <typename RealType> void DmrgRunner<RealType>::setCorrectThreading() co
 		SizeType threads = 0;
 		try {
 			io_->readline(threads, "Threads:" + codeSectionNames[i] + "=");
-		} catch (std::exception&) {
+		} catch (PsimagLite::RuntimeError&) {
 			continue;
 		}
 
