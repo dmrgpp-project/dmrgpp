@@ -130,7 +130,10 @@ public:
 			SiteSplitType siteSplit = OneOperatorSpecType::extractSiteIfAny(tmp);
 			if (isGlobalOperator(tmp)) {
 				nonLocal_.timeEvolve(
-				    tmp, siteSplit, ket_.name(), aux_.currentCoO());
+				    std::string(tmp.begin(), tmp.end()),
+				    siteSplit,
+				    std::string(ket_.name().begin(), ket_.name().end()),
+				    aux_.currentCoO());
 				newVstr.push_back(tmp);
 				continue;
 			}
