@@ -36,8 +36,8 @@ public:
 
 		std::vector<int> weights(Tasks);
 		std::fill(weights.begin(), weights.end(), 1);
-		execs = Kokkos::Experimental::partition_space(Kokkos::DefaultExecutionSpace {},
-		                                              weights);
+		execs_ = Kokkos::Experimental::partition_space(Kokkos::DefaultExecutionSpace {},
+		                                               weights);
 	}
 
 	SizeType tasks() const { return Tasks; }
@@ -45,7 +45,7 @@ public:
 	void doTask(SizeType taskNumber, SizeType)
 	{
 		assert(taskNumber < Tasks);
-		PsimagLite::kokkos_gemm(execs[taskNumber],
+		PsimagLite::kokkos_gemm(execs_[taskNumber],
 		                        'N',
 		                        'N',
 		                        3,
@@ -84,7 +84,7 @@ private:
 	std::array<LeftMatrix, Tasks>              left_;
 	std::array<RightMatrix, Tasks>             right_;
 	std::array<OutputMatrix, Tasks>            output_;
-	std::vector<Kokkos::DefaultExecutionSpace> execs;
+	std::vector<Kokkos::DefaultExecutionSpace> execs_;
 };
 
 #endif // PSIMAGLITE_TEST_MATRIX_MATRIX_HPP
