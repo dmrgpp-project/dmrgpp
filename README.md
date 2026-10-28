@@ -87,28 +87,21 @@ To control where the project should find external dependencies installed on
 your system, you may pass `-D<PackageName>_ROOT=/path/to/package/install` to
 find a specific `<PackageName>` installed at `/path/to/package/install`.
 
-External dependencies are: `BLAS`, `Boost`, `GSL`, `HDF5`, `Kokkos`, `KokkosKernels`, `LAPACK` and `MPI`.
+External dependencies are: `Boost`, `MPI`, `HDF5`, `GSL`, `BLAS`, and `LAPACK`.
 
 Example: `-DBoost_ROOT=/path/to/boost`
 
-> **Note on Catch2 and Kokkos:**
-> We use the Catch2 library as our unit test framework and Kokkos as required dependency.
-> By default, our CMake is set up to use `FetchContent` to download these libraries if they aren't found on
+> **Note on Catch2:**
+> We use the Catch2 library as our unit test framework. By default, our CMake
+> is setup to use `FetchContent` to download the library if it is not found on
 > your system.
 >
-> To force the use of a locally installed library and disable the automatic
-> download fallback, use the following options (where Catch2 serves as an example):
+> To force the use of a locally installed Catch2 and disable the automatic
+> download fallback, use the following options:
 >
 > ```bash
 > -DCMAKE_REQUIRE_FIND_PACKAGE_Catch2=ON -DCatch2_ROOT=/path/to/catch2
 > ```
->
-> By default, `CMake` tries to check externally dependencies that have been installed via FetchContent for updates.
-> This can be avoided by configuring with
-> ```bash
-> -DFETCHCONTENT_UPDATES_DISCONNECTED=ON
-> ```
-> which might be especially useful when there is limited access to the internet.
 
 * `-DDMRG_BATCHED_GEMM_TYPE=<type>`: Specifies which library to use for batched matrix products. Available options
   `Kokkos` (default) using the KokkosKernels library, `Plugin` using the MAGMA library, and the legacy `CPU` code
