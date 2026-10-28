@@ -242,6 +242,7 @@ add_test(NAME input75 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input75.ain) # energy 
 add_lowest_eigenvalue_check_test(output75 input75 -2.80627 runForinput75.cout)
 add_test(NAME input76 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input76.ain) # energy -0.707712
 # input76 is a restart check only; no g.s. computation
+set_tests_properties(input76 PROPERTIES FAIL_REGULAR_EXPRESSION "FiniteLoopLengths=")
 add_test(NAME input77 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input77.ain) # energy -2.80627
 add_lowest_eigenvalue_check_test(output77 input77 -2.80627 runForinput77.cout)
 add_test(NAME input78 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input78.ain) # energy -0.707712
