@@ -250,6 +250,19 @@ add_test(NAME input80 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input80.ain) # energy 
 add_lowest_eigenvalue_check_test(output80 input80 -7.37027 runForinput80.cout)
 add_test(NAME input120 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input120.ain) # energy -9.51754
 add_lowest_eigenvalue_check_test(output120 input120 -9.51754 runForinput120.cout)
+add_test(
+  NAME time_expression_unsynchronized
+  COMMAND
+    ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg> -DINPUT_FILE=${PATH_TO_INPUTS}/input9120.inp
+    "-DEXPECTED_DIAGNOSTIC=BraTime= 0.1 but ketTime= 0" "-DBRAKET=<P1|c|P2>" -P
+    ${CMAKE_SOURCE_DIR}/TestSuite/expectFailure.cmake)
+set_tests_properties(time_expression_unsynchronized PROPERTIES DEPENDS input120)
+
+add_test(NAME input9121 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input9121.inp -p 12 "<P1|c|P2>")
+set_tests_properties(input9121 PROPERTIES DEPENDS input120)
+add_test(NAME output9121_P1cP2 COMMAND sh -c "grep -q '<P1|c|P2>' ${CMAKE_CURRENT_BINARY_DIR}/runForinput9121.cout")
+set_tests_properties(output9121_P1cP2 PROPERTIES DEPENDS input9121)
+
 add_test(NAME input121 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input121.ain -p 12 "<gs|P0>") # none
 add_test(NAME input122 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input122.ain -p 12 "<gs|P0>,<gs|P1>,<P0|P1>") # none
 add_test(NAME input123 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input123.ain -p 12
