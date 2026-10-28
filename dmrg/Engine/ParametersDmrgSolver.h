@@ -572,7 +572,9 @@ struct ParametersDmrgSolver {
 		using AlgebraicStringToNumberType = AlgebraicStringToNumber<FieldType>;
 		AlgebraicStringToNumberType algebraicStringToNumber("FiniteLoops", numberOfSites);
 
-		std::cout << "FiniteLoopLengths=[";
+		const bool printFiniteLoopLengths = (lastSite >= 0);
+		if (printFiniteLoopLengths)
+			std::cout << "FiniteLoopLengths=[";
 
 		// For restarts, lastSite == 1 indicated by the previous run is really the
 		// leftmost border site 0.
@@ -593,13 +595,16 @@ struct ParametersDmrgSolver {
 				lastSite += length;
 			}
 
-			std::cout << length;
-			if (i + 1 < tmpMat.rows()) {
-				std::cout << ", ";
+			if (printFiniteLoopLengths) {
+				std::cout << length;
+				if (i + 1 < tmpMat.rows()) {
+					std::cout << ", ";
+				}
 			}
 		}
 
-		std::cout << "];\n";
+		if (printFiniteLoopLengths)
+			std::cout << "];\n";
 
 		readFiniteLoopsRepeat(io, vfl);
 	}
