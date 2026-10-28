@@ -339,16 +339,40 @@ set_tests_properties(input8901 PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRENT_BINA
 set(_ldaggerl_input_text)
 file(READ ${PATH_TO_INPUTS}/input8902.ain _ldaggerl_input_text)
 
-string(REPLACE "matrixvectorstored," "" _ldaggerl_kron_input "${_ldaggerl_input_text}")
-set(_ldaggerl_kron_input_file ${CMAKE_CURRENT_BINARY_DIR}/input8902_ldaggerl_kron.ain)
-file(WRITE ${_ldaggerl_kron_input_file} "${_ldaggerl_kron_input}")
+string(REPLACE "matrixvectorkron," "" _ldaggerl_default_input "${_ldaggerl_input_text}")
+if(_ldaggerl_default_input STREQUAL _ldaggerl_input_text)
+  message(FATAL_ERROR "input8902.ain must select matrixvectorkron")
+endif()
+string(REPLACE "OutputFile=\"data8902\";" "OutputFile=\"data8902_ldaggerl_default\";" _ldaggerl_default_input
+               "${_ldaggerl_default_input}")
+set(_ldaggerl_default_input_file ${CMAKE_CURRENT_BINARY_DIR}/input8902_ldaggerl_default.ain)
+file(WRITE ${_ldaggerl_default_input_file} "${_ldaggerl_default_input}")
 
-string(REPLACE "matrixvectorstored," "MatrixVectorOnTheFly," _ldaggerl_onthefly_input "${_ldaggerl_input_text}")
+string(REPLACE "matrixvectorkron," "matrixvectorstored," _ldaggerl_stored_input "${_ldaggerl_input_text}")
+if(_ldaggerl_stored_input STREQUAL _ldaggerl_input_text)
+  message(FATAL_ERROR "input8902.ain must select matrixvectorkron")
+endif()
+string(REPLACE "OutputFile=\"data8902\";" "OutputFile=\"data8902_ldaggerl_stored\";" _ldaggerl_stored_input
+               "${_ldaggerl_stored_input}")
+set(_ldaggerl_stored_input_file ${CMAKE_CURRENT_BINARY_DIR}/input8902_ldaggerl_stored.ain)
+file(WRITE ${_ldaggerl_stored_input_file} "${_ldaggerl_stored_input}")
+
+string(REPLACE "matrixvectorkron," "MatrixVectorOnTheFly," _ldaggerl_onthefly_input "${_ldaggerl_input_text}")
 set(_ldaggerl_onthefly_input_file ${CMAKE_CURRENT_BINARY_DIR}/input8902_ldaggerl_onthefly.ain)
 file(WRITE ${_ldaggerl_onthefly_input_file} "${_ldaggerl_onthefly_input}")
 
 add_test(NAME input8902 COMMAND $<TARGET_FILE:dmrg> -f ${PATH_TO_INPUTS}/input8902.ain)
 add_test(NAME input8903 COMMAND $<TARGET_FILE:dmrg> -f ${PATH_TO_INPUTS}/input8903.ain)
+add_test(NAME ldaggerl_default COMMAND $<TARGET_FILE:dmrg> -f ${_ldaggerl_default_input_file})
+add_test(NAME ldaggerl_stored COMMAND $<TARGET_FILE:dmrg> -f ${_ldaggerl_stored_input_file})
+add_test(
+  NAME ldaggerl_kron_vs_stored
+  COMMAND
+    ${CMAKE_COMMAND} -DCHECK_VALUE_EXECUTABLE=$<TARGET_FILE:check_value>
+    -DKRON_OUTPUT_FILE=${CMAKE_CURRENT_BINARY_DIR}/ldaggerl_default/runForinput8902_ldaggerl_default.cout
+    -DSTORED_OUTPUT_FILE=${CMAKE_CURRENT_BINARY_DIR}/ldaggerl_stored/runForinput8902_ldaggerl_stored.cout
+    -DTOLERANCE=2e-5 -P ${CMAKE_SOURCE_DIR}/TestSuite/checkLdaggerLEquivalence.cmake)
+set_tests_properties(ldaggerl_kron_vs_stored PROPERTIES DEPENDS "ldaggerl_default;ldaggerl_stored")
 
 add_test(
   NAME ldaggerl_hermitian_rejected
@@ -358,21 +382,21 @@ add_test(
     ${CMAKE_SOURCE_DIR}/TestSuite/expectFailure.cmake)
 
 add_test(
-  NAME ldaggerl_kron_rejected
-  COMMAND
-    ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg> -DINPUT_FILE=${_ldaggerl_kron_input_file}
-    "-DEXPECTED_DIAGNOSTIC=LdaggerL is not implemented for MatrixVectorKron" -P
-    ${CMAKE_SOURCE_DIR}/TestSuite/expectFailure.cmake)
-
-add_test(
   NAME ldaggerl_onthefly_rejected
   COMMAND
     ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg> -DINPUT_FILE=${_ldaggerl_onthefly_input_file}
     "-DEXPECTED_DIAGNOSTIC=LdaggerL is not implemented for MatrixVectorOnTheFly" -P
     ${CMAKE_SOURCE_DIR}/TestSuite/expectFailure.cmake)
 
-set(_isolated_dmrg_test_names input8901 input8902 input8903 ldaggerl_hermitian_rejected ldaggerl_kron_rejected
-                              ldaggerl_onthefly_rejected)
+set(_isolated_dmrg_test_names
+    input8901
+    input8902
+    input8903
+    ldaggerl_default
+    ldaggerl_stored
+    ldaggerl_kron_vs_stored
+    ldaggerl_hermitian_rejected
+    ldaggerl_onthefly_rejected)
 foreach(test_name IN LISTS _isolated_dmrg_test_names)
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${test_name})
   set_tests_properties(${test_name} PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${test_name})
