@@ -14,6 +14,9 @@ set(command "${DMRG_EXECUTABLE}" -f "${INPUT_FILE}")
 if(DEFINED EXTRA_OPTION)
   list(APPEND command -o "${EXTRA_OPTION}")
 endif()
+if(DEFINED BRAKET)
+  list(APPEND command -p 12 "${BRAKET}")
+endif()
 
 execute_process(
   COMMAND ${command}

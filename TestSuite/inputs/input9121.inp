@@ -1,0 +1,29 @@
+##Ainur1.0
+
+# P0 is the explicit shared start barrier for both time evolutions.  Although
+# P2 cannot be formed until the local P0 operator is reached, neither clock
+# begins until P0 is done, so the selected braket is equal-time.
+TotalNumberOfSites=8;
+NumberOfTerms=1;
+DegreesOfFreedom=1;
+GeometryKind="chain";
+GeometryOptions="ConstantValues";
+dir0:Connectors=[1.0];
+hubbardU=[0.0, ...];
+potentialV=[0.0, ...];
+Model="HubbardOneBand";
+SolverOptions="restart,twositedmrg,TargetingExpression,useComplex";
+RestartFilename="data120";
+Version="time-consistency-synchronized";
+InfiniteLoopKeptStates=50;
+FiniteLoops=[
+    [@auto, 150, 2],
+    [@auto, 150, 2]];
+TargetElectronsUp=4;
+TargetElectronsDown=4;
+string P0="c[3]'*|gs>";
+string P1="TimeEvolve{tau=0.1,steps=5,advanceEach=6,depends=P0}*|gs>";
+string P2="TimeEvolve{tau=0.1,steps=5,advanceEach=6,depends=P0}*|P0>";
+GsWeight=0.2;
+OutputFile="data9121";
+#ci dmrg arguments= -p 12 "<P1|c|P2>"

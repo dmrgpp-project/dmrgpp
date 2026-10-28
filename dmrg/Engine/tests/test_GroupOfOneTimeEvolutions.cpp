@@ -37,9 +37,10 @@ TEST_CASE("Time evolution inherits its nonzero initial time", "[GroupOfOneTimeEv
 	using GroupType     = Dmrg::GroupOfOneTimeEvolutions<FakePvectors>;
 	using EvolutionType = typename GroupType::OneTimeEvolutionType;
 
-	FakePvectors                        pvectors;
-	FakePvectors::VectorWithOffsetType  source = { 1.0 };
-	EvolutionType                       evolution(4, source, "|P0>", 0, 5, 0.5, pvectors);
+	FakePvectors                       pvectors;
+	FakePvectors::VectorWithOffsetType source = { 1.0 };
+	EvolutionType                      evolution("|P0>", "TimeEvolve{steps=5}", 8, 0.0, 0.5);
+	evolution.initialize(4, source, pvectors);
 	const std::vector<SizeType>         expectedIndices        = { 4, 10, 11, 12, 13 };
 	const std::pair<SizeType, SizeType> expectedLastKrylovSlot = { 4, 13 };
 
