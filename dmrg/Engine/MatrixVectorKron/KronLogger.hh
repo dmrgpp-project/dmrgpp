@@ -9,6 +9,7 @@
 #include <PsimagLite/PsimagLite.h>
 #include <cstddef>
 #include <fstream>
+#include <iomanip>
 #include <optional>
 
 namespace Dmrg {
@@ -108,45 +109,18 @@ public:
 	 *
 	 * \param[in] v The vector
 	 */
-	void vector(const std::vector<ComplexOrRealType>& v)
+	void logVector(const std::vector<ComplexOrRealType>& v)
 	{
 		if (!fout_.has_value() || !active_)
 			return;
+
+		std::ios_base::fmtflags flags(fout_->flags());
+		*fout_ << std::fixed << std::setprecision(precision<ComplexOrRealType>());
 
 		*fout_ << "Vector\n";
 		*fout_ << v;
-	}
 
-	/*!
-	 * \brief Logs the outer loop of the KronDiag algorithm
-	 *
-	 * \param[in] outPatch The outer patch index
-	 */
-	void one(SizeType outPatch)
-	{
-		if (!fout_.has_value() || !active_)
-			return;
-
-		SizeType nC      = init_kron_.connections();
-		SizeType total   = init_kron_.numberOfPatches(InitKronType::OLD);
-		SizeType offsetX = init_kron_.offsetForPatches(InitKronType::NEW, outPatch);
-		*fout_ << "outPatch=" << outPatch << "\n";
-		*fout_ << "nC=" << nC << " total=" << total << " offsetX=" << offsetX << "\n";
-	}
-
-	/*!
-	 * \brief Logs the middle loop of the KronDiag algorithm
-	 *
-	 * \param[in] inPatch The inner patch index
-	 */
-	void two(SizeType inPatch)
-	{
-		if (!fout_.has_value() || !active_)
-			return;
-
-		SizeType offsetY = init_kron_.offsetForPatches(InitKronType::OLD, inPatch);
-		*fout_ << separationLevel(1) << "inPatch=" << inPatch << "\n";
-		*fout_ << separationLevel(1) << "offsetY=" << offsetY << "\n";
+		fout_->flags(flags);
 	}
 
 	/*!
@@ -156,10 +130,13 @@ public:
 	 * \param[in] inPatch The inner patch index
 	 * \param[in] ic The connection index
 	 */
-	void three(SizeType outPatch, SizeType inPatch, SizeType ic, bool applyAdjoint)
+	void logHamiltonian(SizeType outPatch, SizeType inPatch, SizeType ic, bool applyAdjoint)
 	{
 		if (!fout_.has_value() || !active_)
 			return;
+
+		std::ios_base::fmtflags flags(fout_->flags());
+		*fout_ << std::fixed << std::setprecision(precision<ComplexOrRealType>());
 
 		const ArrayOfMatStructType& xiStruct = init_kron_.xc(ic);
 		const ArrayOfMatStructType& yiStruct = init_kron_.yc(ic);
@@ -177,19 +154,23 @@ public:
 		    ? yiStruct(inPatch, outPatch)
 		    : yiStruct(sourceOutPatch, sourceInPatch);
 
-		*fout_ << separationLevel(2) << "ic=" << ic << "\n";
-		*fout_ << separationLevel(2) << "applyAdjoint=" << applyAdjoint << "\n";
-		*fout_ << separationLevel(2) << "performTranspose=" << performTranspose << "\n";
+		*fout_
+		    << "\n# nc, total, outPatch, inPatch, ic, applyAdjoint, performTranspose, offsetX, offsetY\n";
+		*fout_ << init_kron_.connections() << ' '
+		       << init_kron_.numberOfPatches(InitKronType::OLD) << ' ' << outPatch << ' '
+		       << inPatch << ' ' << ic << ' ' << applyAdjoint << ' ' << performTranspose
+		       << ' ' << init_kron_.offsetForPatches(InitKronType::NEW, outPatch) << ' '
+		       << init_kron_.offsetForPatches(InitKronType::OLD, inPatch) << "\n";
 
 		assert(Amat);
-		*fout_ << separationLevel(2)
-		       << "Matrix A follows in format: " + matrixFormat(Amat->isDense()) + "\n";
+		*fout_ << "## A: " + matrixFormat(Amat->isDense()) + "\n";
 		printMatrixDenseOrSparse(*Amat);
 
 		assert(Bmat);
-		*fout_ << separationLevel(2)
-		       << "Matrix B follows in format: " + matrixFormat(Bmat->isDense()) + "\n";
+		*fout_ << "## B: " + matrixFormat(Bmat->isDense()) + "\n";
 		printMatrixDenseOrSparse(*Bmat);
+
+		fout_->flags(flags);
 	}
 
 	void sync() { active_ = false; }
@@ -213,6 +194,17 @@ private:
 		}
 
 		return tmp;
+	}
+
+	template <typename T, std::enable_if_t<std::is_floating_point<T>::value, int> = 0>
+	int precision() const
+	{
+		return std::numeric_limits<T>::max_digits10;
+	}
+	template <typename T, std::enable_if_t<!std::is_floating_point<T>::value, int> = 0>
+	int precision() const
+	{
+		return std::numeric_limits<typename T::value_type>::max_digits10;
 	}
 
 	static std::string matrixFormat(bool b) { return (b) ? "dense" : "sparse"; }

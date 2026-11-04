@@ -116,7 +116,7 @@ public:
 	    , y_(initKron.yin())
 	    , applyAdjoint_(applyAdjoint)
 	{
-		kron_logger_.vector(y_);
+		kron_logger_.logVector(y_);
 	}
 
 	SizeType tasks() const { return initKron_.numberOfPatches(InitKronType::NEW); }
@@ -133,11 +133,9 @@ public:
 		SizeType total   = initKron_.numberOfPatches(InitKronType::OLD);
 		SizeType offsetX = initKron_.offsetForPatches(InitKronType::NEW, outPatch);
 		assert(offsetX < x_.size());
-		kron_logger_.one(outPatch);
 		for (SizeType inPatch = 0; inPatch < total; ++inPatch) {
 			SizeType offsetY = initKron_.offsetForPatches(InitKronType::OLD, inPatch);
 			assert(offsetY < y_.size());
-			kron_logger_.two(inPatch);
 			for (SizeType ic = 0; ic < nC; ++ic) {
 				const ArrayOfMatStructType& xiStruct = initKron_.xc(ic);
 				const ArrayOfMatStructType& yiStruct = initKron_.yc(ic);
@@ -167,7 +165,7 @@ public:
 				const char opt = (applyAdjoint_ || performTranspose)
 				    ? (isComplex ? 'c' : 't')
 				    : 'n';
-				kron_logger_.three(outPatch, inPatch, ic, applyAdjoint_);
+				kron_logger_.logHamiltonian(outPatch, inPatch, ic, applyAdjoint_);
 				kronMult(x_,
 				         offsetX,
 				         y_,
