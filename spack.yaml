@@ -9,7 +9,7 @@ spack:
   - hdf5 +cxx +fortran +hl +mpi ^openmpi
   - kokkos-kernels +blas +lapack
   concretizer:
-    unify: false
+    unify: true
   config:
     install_tree:
       root: /opt/spack
