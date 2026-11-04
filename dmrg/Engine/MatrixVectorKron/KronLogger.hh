@@ -127,12 +127,6 @@ public:
 	{
 		if (!fout_.has_value() || !active_)
 			return;
-
-		SizeType nC      = init_kron_.connections();
-		SizeType total   = init_kron_.numberOfPatches(InitKronType::OLD);
-		SizeType offsetX = init_kron_.offsetForPatches(InitKronType::NEW, outPatch);
-		*fout_ << "outPatch=" << outPatch << "\n";
-		*fout_ << "nC=" << nC << " total=" << total << " offsetX=" << offsetX << "\n";
 	}
 
 	/*!
@@ -144,10 +138,6 @@ public:
 	{
 		if (!fout_.has_value() || !active_)
 			return;
-
-		SizeType offsetY = init_kron_.offsetForPatches(InitKronType::OLD, inPatch);
-		*fout_ << separationLevel(1) << "inPatch=" << inPatch << "\n";
-		*fout_ << separationLevel(1) << "offsetY=" << offsetY << "\n";
 	}
 
 	/*!
@@ -173,17 +163,20 @@ public:
 		const MatrixDenseOrSparseType* Bmat
 		    = performTranspose ? yiStruct(inPatch, outPatch) : yiStruct(outPatch, inPatch);
 
-		*fout_ << separationLevel(2) << "ic=" << ic << "\n";
-		*fout_ << separationLevel(2) << "performTranspose=" << performTranspose << "\n";
+		*fout_
+		    << "\n# nc, total, outPatch, inPatch, ic, performTranspose, offsetX, offsetY\n";
+		*fout_ << init_kron_.connections() << ' '
+		       << init_kron_.numberOfPatches(InitKronType::OLD) << ' ' << outPatch << ' '
+		       << inPatch << ' ' << ic << ' ' << performTranspose << ' '
+		       << init_kron_.offsetForPatches(InitKronType::NEW, outPatch) << ' '
+		       << init_kron_.offsetForPatches(InitKronType::OLD, inPatch) << "\n";
 
 		assert(Amat);
-		*fout_ << separationLevel(2)
-		       << "Matrix A follows in format: " + matrixFormat(Amat->isDense()) + "\n";
+		*fout_ << "## A: " + matrixFormat(Amat->isDense()) + "\n";
 		printMatrixDenseOrSparse(*Amat);
 
 		assert(Bmat);
-		*fout_ << separationLevel(2)
-		       << "Matrix B follows in format: " + matrixFormat(Bmat->isDense()) + "\n";
+		*fout_ << "## B: " + matrixFormat(Bmat->isDense()) + "\n";
 		printMatrixDenseOrSparse(*Bmat);
 	}
 

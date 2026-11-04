@@ -29,6 +29,7 @@ Please see full open source license included in file LICENSE.
 #include "AllocatorCpu.h"
 #include "Complex.h"
 #include "loki/TypeTraits.h"
+#include <iomanip>
 #include <iostream>
 #include <stdexcept>
 #include <vector>
@@ -431,9 +432,12 @@ template <typename T, typename A> T scalarProduct(const vector<T, A>& v1, const 
 #ifndef USE_XACC
 template <class X, typename A> ostream& operator<<(ostream& s, const vector<X, A>& v)
 {
+	std::ios_base::fmtflags flags(s.flags());
+	s << std::fixed << std::setprecision(std::numeric_limits<X>::max_digits10);
 	s << v.size() << "\n";
 	for (SizeType i = 0; i < v.size(); i++)
 		s << v[i] << "\n";
+	s.flags(flags);
 	return s;
 }
 

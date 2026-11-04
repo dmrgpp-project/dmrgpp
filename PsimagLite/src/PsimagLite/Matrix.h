@@ -28,6 +28,7 @@ Please see full open source license included in file LICENSE.
 #include "Vector.h"
 #include <cassert>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <stdexcept>
 #include <unistd.h>
@@ -650,11 +651,18 @@ template <typename T> std::ostream& operator<<(std::ostream& os, Matrix<T> const
 {
 	SizeType i, j;
 	os << A.rows() << " " << A.cols() << "\n";
+
+	std::ios_base::fmtflags flags(os.flags());
+	os << std::fixed << std::setprecision(std::numeric_limits<T>::max_digits10);
+
 	for (i = 0; i < A.rows(); i++) {
 		for (j = 0; j < A.cols(); j++)
-			os << A(i, j) << " ";
+			os << " " << A(i, j);
 		os << "\n";
 	}
+
+	os.flags(flags);
+
 	return os;
 }
 
