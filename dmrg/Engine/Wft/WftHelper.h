@@ -2,6 +2,7 @@
 #define WFTHELPER_H
 #include "OneSiteSpaces.hh"
 #include "ParallelWftMany.h"
+#include "WftParallelismPolicy.h"
 #include <OneSiteSpaces.hh>
 #include <ParametersDmrgSolver.h>
 #include <PsimagLite/Vector.h>
@@ -19,6 +20,7 @@ public:
 	using VectorSizeType             = PsimagLite::Vector<SizeType>::Type;
 	using OneSiteSpacesType          = OneSiteSpaces<ModelType>;
 	using ParallelWftManyType        = ParallelWftMany<ModelType, WaveFunctionTransfType>;
+	using WftOptionsType             = typename WaveFunctionTransfType::WftOptionsType;
 
 	WftHelper(const ModelType&              model,
 	          const LeftRightSuperType&     lrs,
@@ -42,6 +44,16 @@ public:
 		auto codeSectionParams
 		    = PsimagLite::Concurrency::codeSectionParamsFor("ParallelWftMany");
 		const auto& opts = model_.params().options;
+		if (!opts.isSet("nowft")) {
+			const auto& wftOptions = wft_.options();
+			WftParallelismPolicy::check<WftOptionsType>(
+			    wftOptions.accel,
+			    codeSectionParams,
+			    PsimagLite::Concurrency::codeSectionParamsFor("WftAccelBlocks"),
+			    PsimagLite::Concurrency::codeSectionParamsFor("BlockDiagWfCtor"),
+			    PsimagLite::Concurrency::codeSectionParamsFor("BlockDiagWfTransform"));
+		}
+
 		if (!opts.isSet("nowft") && !opts.isSet("wftNoAccel"))
 			codeSectionParams.npthreads = 1;
 

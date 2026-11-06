@@ -96,3 +96,37 @@ inner sections remain independently parallel.  Conversely, a no-acceleration
 run can enable both the outer `ParallelWftMany` and the inner
 `WaveFunctionTransfLocal` sections.  The code does not coordinate those two
 counts, so setting both above one can oversubscribe the available cores.
+
+## Rejected accelerated configurations
+
+DMRG++ rejects a `wftSome` call when its resolved
+`Threads:ParallelWftMany` count is greater than one and the selected
+accelerated implementation also has an inner count greater than one.  This
+uses resolved named-section values, so a global `Threads=N;` request counts
+unless a relevant section has its own override.
+
+The conflicting inner sections are:
+
+| WFT mode | Rejected when this section exceeds one |
+| --- | --- |
+| blocks | `WftAccelBlocks` |
+| patches | `BlockDiagWfCtor` or `BlockDiagWfTransform` |
+
+Set the outer section to one when using accelerated inner parallelism:
+
+```text
+Threads:ParallelWftMany=1;
+Threads:WftAccelBlocks=4;
+```
+
+Or keep every applicable accelerated inner section serial when requesting
+outer target-vector parallelism:
+
+```text
+Threads:ParallelWftMany=4;
+Threads:BlockDiagWfCtor=1;
+Threads:BlockDiagWfTransform=1;
+```
+
+This rejection does not apply to `wftNoAccel`; it does not alter the existing
+outer-loop serial fallback for otherwise valid accelerated configurations.
