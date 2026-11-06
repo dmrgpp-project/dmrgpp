@@ -33,6 +33,11 @@ target_link_libraries(test_PermutationParity PRIVATE Catch2::Catch2WithMain psim
 target_include_directories(test_PermutationParity PRIVATE ${CMAKE_SOURCE_DIR}/dmrg/Engine)
 catch_discover_tests(test_PermutationParity)
 
+add_executable(test_WftParallelismPolicy test_WftParallelismPolicy.cpp)
+target_link_libraries(test_WftParallelismPolicy PRIVATE Catch2::Catch2WithMain psimaglite)
+target_include_directories(test_WftParallelismPolicy PRIVATE ${CMAKE_SOURCE_DIR}/dmrg/Engine)
+catch_discover_tests(test_WftParallelismPolicy)
+
 # BatchedGemm test
 add_executable(test_BatchedGemm test_BatchedGemm.cpp)
 target_link_libraries(test_BatchedGemm PRIVATE Catch2::Catch2WithMain dmrgpp_utils psimaglite)
