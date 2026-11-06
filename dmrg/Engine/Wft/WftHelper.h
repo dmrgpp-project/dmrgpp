@@ -33,20 +33,19 @@ public:
 	{
 		using ParallelizerType = PsimagLite::Parallelizer<ParallelWftManyType>;
 
-		bool wants_parallel = wantsParallel();
 		assert(end >= begin);
 		SizeType total = end - begin;
 
 		if (total == 0)
 			return; // <-- EARLY EXIT HERE
 
-		SizeType threads = (wants_parallel)
-		    ? std::min(total, PsimagLite::Concurrency::codeSectionParams.npthreads)
-		    : 1;
+		auto codeSectionParams
+		    = PsimagLite::Concurrency::codeSectionParamsFor("ParallelWftMany");
+		const auto& opts = model_.params().options;
+		if (!opts.isSet("nowft") && !opts.isSet("wftNoAccel"))
+			codeSectionParams.npthreads = 1;
 
-		PsimagLite::CodeSectionParams codeSectionParams(threads);
-		ParallelizerType              threadedCtor(codeSectionParams);
-		std::cout << "HERE " << threads << " threads\n";
+		ParallelizerType      threadedCtor(codeSectionParams);
 		std::vector<SizeType> index_map(total);
 		for (SizeType i = 0; i < total; ++i) {
 			index_map[i] = i + begin;
@@ -71,17 +70,6 @@ public:
 	}
 
 private:
-
-	bool wantsParallel() const
-	{
-		const auto& opts = model_.params().options;
-		if (opts.isSet("parallelwftmany")) {
-			assert(opts.isSet("nowft") || opts.isSet("wftNoAccel"));
-			return true;
-		}
-
-		return false;
-	}
 
 	const ModelType&              model_;
 	const LeftRightSuperType&     lrs_;

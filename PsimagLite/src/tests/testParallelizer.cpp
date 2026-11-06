@@ -48,10 +48,16 @@ TEST_CASE("Concurrency resolves named code section parameters", "[Parallelizer][
 
 	const auto kronDefault      = ConcurrencyType::codeSectionParamsFor("KronMatrix");
 	const auto operatorsDefault = ConcurrencyType::codeSectionParamsFor("Operators");
+	const auto wftManyDefault   = ConcurrencyType::codeSectionParamsFor("ParallelWftMany");
 	REQUIRE(kronDefault.name == "KronMatrix");
 	REQUIRE(kronDefault.npthreads == 1);
 	REQUIRE(operatorsDefault.name == "Operators");
 	REQUIRE(operatorsDefault.npthreads == 1);
+	REQUIRE(wftManyDefault.name == "ParallelWftMany");
+	REQUIRE(wftManyDefault.npthreads == 1);
+
+	ConcurrencyType::setCodeSectionParamsOverride("ParallelWftMany", 1);
+	REQUIRE(ConcurrencyType::codeSectionParamsFor("ParallelWftMany").npthreads == 1);
 
 	REQUIRE_THROWS_AS(ConcurrencyType::setCodeSectionParamsOverride("NotASection", 1),
 	                  PsimagLite::RuntimeError);
@@ -59,10 +65,14 @@ TEST_CASE("Concurrency resolves named code section parameters", "[Parallelizer][
 	                  PsimagLite::RuntimeError);
 
 #ifdef USE_PTHREADS
+	ConcurrencyType::clearCodeSectionParamsOverrides();
 	ConcurrencyType::setOptions(PsimagLite::CodeSectionParams(4));
 	ConcurrencyType::setCodeSectionParamsOverride("KronMatrix", 2);
+	REQUIRE(ConcurrencyType::codeSectionParamsFor("ParallelWftMany").npthreads == 4);
+	ConcurrencyType::setCodeSectionParamsOverride("ParallelWftMany", 3);
 	REQUIRE(ConcurrencyType::codeSectionParamsFor("KronMatrix").npthreads == 2);
 	REQUIRE(ConcurrencyType::codeSectionParamsFor("Operators").npthreads == 4);
+	REQUIRE(ConcurrencyType::codeSectionParamsFor("ParallelWftMany").npthreads == 3);
 #endif
 
 	ConcurrencyType::clearCodeSectionParamsOverrides();
