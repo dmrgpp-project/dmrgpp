@@ -177,6 +177,8 @@ struct ParametersDmrgSolver {
 	PsimagLite::String            model;
 	PsimagLite::String            insitu;
 	PsimagLite::String            recoverySave;
+	PsimagLite::String            dumperOperatorsString;
+	VectorStringType              dumperOperators;
 	PsimagLite::String            printHamiltonianAverage;
 	PsimagLite::String            saveDensityMatrixEigenvalues;
 	PsimagLite::String            findSymmetrySector;
@@ -210,6 +212,7 @@ struct ParametersDmrgSolver {
 		ioSerializer.write(root + "/model", model);
 		ioSerializer.write(root + "/insitu", insitu);
 		ioSerializer.write(root + "/recoverySave", recoverySave);
+		ioSerializer.write(root + "/dumperOperators", dumperOperatorsString);
 		ioSerializer.write(root + "/printHamiltonianAverage", printHamiltonianAverage);
 		ioSerializer.write(root + "/saveDensityMatrixEigenvalues",
 		                   saveDensityMatrixEigenvalues);
@@ -241,6 +244,8 @@ struct ParametersDmrgSolver {
 	    , autoRestart(false)
 	    , options("SolverOptions=", io)
 	    , recoverySave("")
+	    , dumperOperatorsString("")
+	    , dumperOperators()
 	    , adjustQuantumNumbers(0, QnType(false, VectorSizeType(), PairSizeType(0, 0), 0))
 	    , degeneracyMax(1e-12)
 	    , denseSparseThreshold(0.2)
@@ -346,6 +351,29 @@ struct ParametersDmrgSolver {
 			io.readline(dumperEnd, "KroneckerDumperEnd=");
 		} catch (std::exception&) { }
 
+		bool hasDumperOperators = false;
+		try {
+			io.readline(dumperOperatorsString, "KroneckerDumperOperators=");
+			hasDumperOperators = true;
+		} catch (std::exception&) { }
+
+		if (hasDumperOperators) {
+			if (dumperOperatorsString.empty() || dumperOperatorsString.front() == ','
+			    || dumperOperatorsString.back() == ','
+			    || dumperOperatorsString.find(",,") != PsimagLite::String::npos)
+				throw PsimagLite::RuntimeError(
+				    "FATAL: KroneckerDumperOperators cannot contain an empty operator\n");
+			PsimagLite::split(dumperOperators, dumperOperatorsString, ",");
+			if (dumperOperators.empty())
+				throw PsimagLite::RuntimeError(
+				    "FATAL: KroneckerDumperOperators cannot be empty\n");
+			for (const PsimagLite::String& dumperOperator : dumperOperators) {
+				if (dumperOperator.empty())
+					throw PsimagLite::RuntimeError(
+					    "FATAL: KroneckerDumperOperators cannot contain an empty operator\n");
+			}
+		}
+
 		if (options.isSet("KroneckerDumper")) {
 			if (options.isSet("MatrixVectorStored")) {
 				PsimagLite::String msg("FATAL: KroneckerDumper cannot run with ");
@@ -358,6 +386,11 @@ struct ParametersDmrgSolver {
 				}
 			}
 		} else {
+			if (hasDumperOperators)
+				throw PsimagLite::RuntimeError(
+				    "FATAL: KroneckerDumperOperators need KroneckerDumper in "
+				    "SolverOptions\n");
+
 			if (dumperBegin > 0 || dumperEnd > 0) {
 				PsimagLite::String msg("FATAL: KroneckerDumperBegin|End needs ");
 				throw PsimagLite::RuntimeError(
