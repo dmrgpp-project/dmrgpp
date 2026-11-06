@@ -205,7 +205,9 @@ private:
 		RealType sum = 0;
 		for (SizeType i = 0; i < p.size(); i++)
 			sum += p[i];
-		assert(fabs(sum - 1.0) < 1e-6);
+		if (!(fabs(sum - 1.0) < 1e-6))
+			throw PsimagLite::RuntimeError(
+			    "MettsCollapse: probabilities don't sum to one\n");
 
 		SizeType volumeOfIndexFixed = mettsStochastics_.chooseRandomState(p);
 
