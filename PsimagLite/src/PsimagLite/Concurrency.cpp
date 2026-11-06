@@ -22,7 +22,8 @@ const Vector<String>::Type& Concurrency::codeSectionNames()
 		                                    "BlockDiagWfTransform",
 		                                    "WaveFunctionTransfLocal",
 		                                    "WftAccelSvdOne",
-		                                    "WftAccelSvdTwo" };
+		                                    "WftAccelSvdTwo",
+		                                    "ParallelWftMany" };
 
 	return names;
 }
