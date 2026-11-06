@@ -389,6 +389,20 @@ add_test(
     "-DEXPECTED_DIAGNOSTIC=LdaggerL is not implemented for MatrixVectorOnTheFly" -P
     ${CMAKE_SOURCE_DIR}/TestSuite/expectFailure.cmake)
 
+function(add_wft_parallelism_failure_test name mode)
+  add_test(
+    NAME ${name}
+    COMMAND
+      ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg> -DINPUT_GS=${PATH_TO_INPUTS}/input9100.inp
+      -DINPUT_WFT=${PATH_TO_INPUTS}/input9102.inp -DMODE=${mode} -DWORK_DIR=${CMAKE_CURRENT_BINARY_DIR}/${name} -P
+      ${CMAKE_SOURCE_DIR}/TestSuite/expectWftParallelismFailure.cmake)
+endfunction()
+
+add_wft_parallelism_failure_test(wft_blocks_parallel_rejected blocks)
+add_wft_parallelism_failure_test(wft_patches_ctor_parallel_rejected patches-ctor)
+add_wft_parallelism_failure_test(wft_patches_transform_parallel_rejected patches-transform)
+add_wft_parallelism_failure_test(wft_noaccel_parallel_allowed noaccel)
+
 set(_isolated_dmrg_test_names
     input8901
     input8902
@@ -398,6 +412,7 @@ set(_isolated_dmrg_test_names
     ldaggerl_kron_vs_stored
     ldaggerl_hermitian_rejected
     ldaggerl_onthefly_rejected)
+
 foreach(test_name IN LISTS _isolated_dmrg_test_names)
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${test_name})
   set_tests_properties(${test_name} PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${test_name})
