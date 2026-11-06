@@ -101,17 +101,20 @@ template <typename InitKronType> class KronConnections {
 
 public:
 
-	using KronLoggerType   = KronLogger<typename InitKronType::ModelType>;
+	using KronLoggerType   = KronLogger<InitKronType>;
 	using MatrixType       = PsimagLite::Matrix<ComplexOrRealType>;
 	using VectorType       = typename MatrixDenseOrSparseType::VectorType;
 	using VectorVectorType = typename PsimagLite::Vector<VectorType>::Type;
 	using RealType         = typename InitKronType::RealType;
 
-	KronConnections(InitKronType& initKron, KronLoggerType& kron_logger)
+	KronConnections(InitKronType&   initKron,
+	                KronLoggerType& kron_logger,
+	                bool            applyAdjoint = false)
 	    : initKron_(initKron)
 	    , kron_logger_(kron_logger)
 	    , x_(initKron.xout())
 	    , y_(initKron.yin())
+	    , applyAdjoint_(applyAdjoint)
 	{
 		kron_logger_.vector(y_);
 	}
@@ -140,24 +143,31 @@ public:
 				const ArrayOfMatStructType& yiStruct = initKron_.yc(ic);
 
 				const bool performTranspose
-				    = (initKron_.useLowerPart() && (outPatch < inPatch));
+				    = (!applyAdjoint_ && initKron_.useLowerPart()
+				       && (outPatch < inPatch));
 
-				const MatrixDenseOrSparseType* Amat = performTranspose
-				    ? xiStruct(inPatch, outPatch)
-				    : xiStruct(outPatch, inPatch);
-
-				const MatrixDenseOrSparseType* Bmat = performTranspose
-				    ? yiStruct(inPatch, outPatch)
-				    : yiStruct(outPatch, inPatch);
+				const MatrixDenseOrSparseType* Amat = nullptr;
+				const MatrixDenseOrSparseType* Bmat = nullptr;
+				if (applyAdjoint_) {
+					Amat = xiStruct(inPatch, outPatch);
+					Bmat = yiStruct(inPatch, outPatch);
+				} else {
+					Amat = performTranspose ? xiStruct(inPatch, outPatch)
+					                        : xiStruct(outPatch, inPatch);
+					Bmat = performTranspose ? yiStruct(inPatch, outPatch)
+					                        : yiStruct(outPatch, inPatch);
+				}
 
 				if (!Amat || !Bmat)
 					continue;
 
-				if (!performTranspose)
+				if (!applyAdjoint_ && !performTranspose)
 					initKron_.checks(*Amat, *Bmat, outPatch, inPatch);
 
-				const char opt = performTranspose ? (isComplex ? 'c' : 't') : 'n';
-				kron_logger_.three(outPatch, inPatch, ic);
+				const char opt = (applyAdjoint_ || performTranspose)
+				    ? (isComplex ? 'c' : 't')
+				    : 'n';
+				kron_logger_.three(outPatch, inPatch, ic, applyAdjoint_);
 				kronMult(x_,
 				         offsetX,
 				         y_,
@@ -186,6 +196,7 @@ private:
 	KronLoggerType&     kron_logger_;
 	VectorType&         x_;
 	const VectorType&   y_;
+	const bool          applyAdjoint_;
 }; // class KronConnections
 
 } // namespace PsimagLite
