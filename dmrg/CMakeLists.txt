@@ -403,8 +403,15 @@ add_wft_parallelism_failure_test(wft_patches_ctor_parallel_rejected patches-ctor
 add_wft_parallelism_failure_test(wft_patches_transform_parallel_rejected patches-transform)
 add_wft_parallelism_failure_test(wft_noaccel_parallel_allowed noaccel)
 
-set(_isolated_dmrg_test_names input8901 input8902 input8903 ldaggerl_hermitian_rejected ldaggerl_kron_rejected
-                              ldaggerl_onthefly_rejected)
+set(_isolated_dmrg_test_names
+    input8901
+    input8902
+    input8903
+    ldaggerl_default
+    ldaggerl_stored
+    ldaggerl_kron_vs_stored
+    ldaggerl_hermitian_rejected
+    ldaggerl_onthefly_rejected)
 
 foreach(test_name IN LISTS _isolated_dmrg_test_names)
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${test_name})
