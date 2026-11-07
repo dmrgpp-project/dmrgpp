@@ -24,9 +24,10 @@ options separated by `:`.  For example, `@save` is equivalent to `1`, and
 | `@multisitepush` | 4 | 16 | Send the finite-sweep serializer to the active targeting strategy's `multiSitePush` operation. |
 | `@onesitetruncation` | 5 | 32 | Enable the model's one-site-truncation update during this finite loop. |
 
-Named options are lowercase.  A third entry may use named options, a numeric
-bit field, and per-loop truncation settings, but it may not combine a numeric
-bit field with named options.
+Named options are lowercase. A third entry may use distinct named options and
+per-loop truncation settings, or a numeric bit field and per-loop truncation
+settings, but it may not combine a numeric bit field with named options.
+Repeating a named option is an error.
 
 ## Constraints
 
