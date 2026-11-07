@@ -339,7 +339,7 @@ protected:
 	*/
 	void fillModelLinks() override
 	{
-		ModelTermType& hop = ModelBaseType::createTerm("hopping"); //(A)
+		ModelTermType& hop = ModelBaseType::createTerm("hopping", true); //(A)
 
 		auto su2_up = typename ModelTermType::Su2Properties(1, 1, 0);
 		auto su2_do = typename ModelTermType::Su2Properties(1, -1, 1);
@@ -354,7 +354,7 @@ protected:
 
 		assert(extension_ == "RashbaSOC");
 
-		ModelTermType& rashbaSOC = ModelBaseType::createTerm("RashbaSOC");
+		ModelTermType& rashbaSOC = ModelBaseType::createTerm("RashbaSOC", true);
 
 		// up-down
 		rashbaSOC.push(cup, 'N', cdown, 'C');

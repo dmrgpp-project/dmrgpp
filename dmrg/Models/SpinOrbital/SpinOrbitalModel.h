@@ -565,8 +565,8 @@ protected:
 
 		// this creates connections a and b
 		for (SizeType orbital = 0; orbital < 2; ++orbital) {
-			PsimagLite::String sOrL  = (orbital == 0) ? "s" : "l";
-			ModelTermType&     sdotS = ModelBaseType::createTerm(sOrL + "Dot" + sOrL);
+			PsimagLite::String sOrL = (orbital == 0) ? "s" : "l";
+			ModelTermType& sdotS = ModelBaseType::createTerm(sOrL + "Dot" + sOrL, true);
 
 			OpForLinkType splus(sOrL + "plus");
 
@@ -604,7 +604,7 @@ protected:
 		ldotLSquared.push(lzSquared, 'N', lzSquared, 'N');
 
 		// this creates connections in d listed above
-		ModelTermType& ldotLsDotS = ModelBaseType::createTerm("ldotLsDotS");
+		ModelTermType& ldotLsDotS = ModelBaseType::createTerm("ldotLsDotS", true);
 
 		OpForLinkType spluslplus("spluslplus");
 		ldotLsDotS.push(spluslplus, 'N', spluslplus, 'C', valueModiferTerm1);
@@ -628,8 +628,9 @@ protected:
 
 		auto valueModiferTerm2 = [](ComplexOrRealType& value) { value *= 0.125; };
 
-		ModelTermType& sdotSlDotLSquared = ModelBaseType::createTerm("sdotSlDotLSquared");
-		OpForLinkType  d0("d0");
+		ModelTermType& sdotSlDotLSquared
+		    = ModelBaseType::createTerm("sdotSlDotLSquared", true);
+		OpForLinkType d0("d0");
 		sdotSlDotLSquared.push(d0, 'N', d0, 'C', valueModiferTerm2);
 
 		OpForLinkType d1("d1");

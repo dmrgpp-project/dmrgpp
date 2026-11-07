@@ -479,7 +479,7 @@ public:
 	void fillModelLinks() override
 	{
 		const SizeType orbitals = modelParameters_.orbitals;
-		ModelTermType& hop      = ModelBaseType::createTerm("hopping"); //(A)
+		ModelTermType& hop      = ModelBaseType::createTerm("hopping", true); //(A)
 		for (SizeType spin = 0; spin < 2; ++spin) {
 			for (SizeType orb1 = 0; orb1 < orbitals; ++orb1) {
 				SizeType      dof1 = orb1 + spin * orbitals;
@@ -503,7 +503,7 @@ public:
 		if (!spinDependentHopping_)
 			return; // <--- EARLY EXIT HERE
 
-		ModelTermType& ninj = ModelBaseType::createTerm("ninj");
+		ModelTermType& ninj = ModelBaseType::createTerm("ninj", true);
 		OpForLinkType  n_operator("n");
 		ninj.push(n_operator, 'N', n_operator, 'N');
 	}

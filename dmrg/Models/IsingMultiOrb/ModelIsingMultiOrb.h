@@ -432,7 +432,7 @@ private:
 	void connectionSzSz()
 	{
 		const SizeType orbitals = modelParameters_.orbitals;
-		ModelTermType& szsz     = ModelBaseType::createTerm("szsz");
+		ModelTermType& szsz     = ModelBaseType::createTerm("szsz", true);
 
 		auto mylambda
 		    = [this](ComplexOrRealType& coupling, RealType time, std::vector<SizeType>)
