@@ -124,6 +124,7 @@ public:
 	using TargetHelperType        = TargetHelper<ModelType, WaveFunctionTransfType>;
 	using TargetingCommonType
 	    = TargetingCommon<TargetHelperType, VectorWithOffsetType, LanczosSolverType>;
+	using IoInputType = typename TargetingCommonType::IoInputType;
 	typedef
 	    typename TargetingCommonType::ApplyOperatorExpressionType ApplyOperatorExpressionType;
 	using VectorOperatorType     = typename PsimagLite::Vector<OperatorType>::Type;
@@ -174,6 +175,8 @@ public:
 
 	virtual RealType weight(SizeType i) const = 0;
 
+	virtual PsimagLite::String targetingId() const = 0;
+
 	virtual void evolve(const VectorRealType&         energies,
 	                    ProgramGlobals::DirectionEnum direction,
 	                    const BlockType&              block1,
@@ -186,6 +189,25 @@ public:
 	virtual void
 	write(const VectorSizeType&, PsimagLite::IoSelector::Out&, PsimagLite::String) const
 	    = 0;
+
+	static void validateRestart(IoInputType&              io,
+	                            PsimagLite::String        prefix,
+	                            const PsimagLite::String& destinationId)
+	{
+		const PsimagLite::String provenance = prefix + "/Provenance";
+		const PsimagLite::String label      = provenance + "/TargetingId";
+		if (!io.serializer().doesGroupExist(provenance))
+			err("Restart file is missing mandatory targeting provenance at "
+			    + provenance + "\n");
+
+		PsimagLite::String sourceId;
+		io.read(sourceId, label);
+		if (restartIsCompatible(sourceId, destinationId))
+			return;
+
+		err("Incompatible targeting restart: source " + sourceId + ", destination "
+		    + destinationId + "\n");
+	}
 
 	// virtuals with default implementation
 
@@ -330,6 +352,21 @@ public:
 	}
 
 	const LeftRightSuperType& lrs() const { return lrs_; }
+
+	static bool restartIsCompatible(const PsimagLite::String& sourceId,
+	                                const PsimagLite::String& destinationId)
+	{
+		if (sourceId == destinationId)
+			return true;
+
+		if (sourceId == "GroundState")
+			return true;
+
+		if (sourceId == "CorrectionVector" && destinationId == "RixsStatic")
+			return true;
+
+		return (sourceId == "RixsStatic" && destinationId == "RixsDynamic");
+	}
 
 	static PsimagLite::String buildPrefix(PsimagLite::IoSelector::Out& io, SizeType counter)
 	{

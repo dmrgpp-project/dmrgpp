@@ -411,9 +411,41 @@ add_test(NAME input9001 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input9001.ain "<P0|n
 # input9100: GS of H_i (U=0); energy = -sqrt(5) for uniform hopping 0.5
 add_test(NAME input9100 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input9100.inp) # energy -2.23607
 add_lowest_eigenvalue_check_test(output9100 input9100 -2.23607 runForinput9100.cout)
+add_test(NAME input9100_targeting_id COMMAND ${H5DUMP_EXECUTABLE} -r -d /Def/FinalPsi/Provenance/TargetingId
+                                             ${CMAKE_CURRENT_BINARY_DIR}/data9100.hd5)
+set_tests_properties(input9100_targeting_id PROPERTIES DEPENDS input9100 PASS_REGULAR_EXPRESSION "GroundState")
 # input9102: TargetingExpression restart from 9100, computes P0 = c'[0]*|GS_i>
 add_test(NAME input9102 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input9102.inp)
-set_tests_properties(input9102 PROPERTIES DEPENDS input9100)
+set_tests_properties(input9102 PROPERTIES DEPENDS input9100 FAIL_REGULAR_EXPRESSION
+                                          "Group Def/FinalPsi/TimeSerializer/ was not found")
+
+file(READ ${PATH_TO_INPUTS}/input9103.inp _incompatible_targeting_restart_input)
+set_property(
+  DIRECTORY
+  APPEND
+  PROPERTY CMAKE_CONFIGURE_DEPENDS ${PATH_TO_INPUTS}/input9103.inp)
+set(_incompatible_targeting_restart_input_original "${_incompatible_targeting_restart_input}")
+string(REPLACE "SolverOptions=twositedmrg,geometryallinsystem,TargetingExpression,restart,usecomplex;"
+               "SolverOptions=twositedmrg,geometryallinsystem,GroundStateTargeting,restart,usecomplex;"
+               _incompatible_targeting_restart_input "${_incompatible_targeting_restart_input}")
+if(_incompatible_targeting_restart_input STREQUAL _incompatible_targeting_restart_input_original)
+  message(FATAL_ERROR "input9103.inp must select TargetingExpression")
+endif()
+set(_incompatible_targeting_restart_input_original "${_incompatible_targeting_restart_input}")
+string(REPLACE "OutputFile=data9103;" "OutputFile=data9103_incompatible;" _incompatible_targeting_restart_input
+               "${_incompatible_targeting_restart_input}")
+if(_incompatible_targeting_restart_input STREQUAL _incompatible_targeting_restart_input_original)
+  message(FATAL_ERROR "input9103.inp must write data9103")
+endif()
+set(_incompatible_targeting_restart_input_file ${CMAKE_CURRENT_BINARY_DIR}/input9103_incompatible_targeting_restart.inp)
+file(WRITE ${_incompatible_targeting_restart_input_file} "${_incompatible_targeting_restart_input}")
+add_test(
+  NAME incompatible_targeting_restart
+  COMMAND
+    ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg> -DINPUT_FILE=${_incompatible_targeting_restart_input_file}
+    "-DEXPECTED_DIAGNOSTIC=Incompatible targeting restart: source Expression, destination GroundState" -P
+    ${CMAKE_SOURCE_DIR}/TestSuite/expectFailure.cmake)
+set_tests_properties(incompatible_targeting_restart PROPERTIES DEPENDS input9102)
 # input9103: tDMRG under H_f, measures <P2|c|P1> and consecutive overlap <P2.last|P2>
 add_test(NAME input9103 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input9103.inp "<P2|c|P1>,<P2.last|P2>")
 set_tests_properties(input9103 PROPERTIES DEPENDS input9102)
