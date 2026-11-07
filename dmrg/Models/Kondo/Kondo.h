@@ -203,10 +203,10 @@ protected:
 	void fillModelLinks() override
 	{
 		const bool     isSu2 = BasisType::useSu2Symmetry();
-		ModelTermType& hop   = ModelBaseType::createTerm("hopping");
-		ModelTermType& spsm  = ModelBaseType::createTerm("SplusSminus");
-		ModelTermType& szsz  = ModelBaseType::createTerm("SzSz");
-		ModelTermType& ninj  = ModelBaseType::createTerm("ninj");
+		ModelTermType& hop   = ModelBaseType::createTerm("hopping", true);
+		ModelTermType& spsm  = ModelBaseType::createTerm("SplusSminus", true);
+		ModelTermType& szsz  = ModelBaseType::createTerm("SzSz", true);
+		ModelTermType& ninj  = ModelBaseType::createTerm("ninj", true);
 
 		for (SizeType spin = 0; spin < 2; ++spin) {
 			OpForLinkType                         c("c", spin);
@@ -236,16 +236,16 @@ protected:
 		OpForLinkType cup("c", 0);
 		OpForLinkType cdown("c", 1);
 
-		ModelTermType& pud = ModelBaseType::createTerm("pairingud");
+		ModelTermType& pud = ModelBaseType::createTerm("pairingud", true);
 		pud.push(cup, 'C', cdown, 'C');
 
-		ModelTermType& pdu = ModelBaseType::createTerm("pairingdu");
+		ModelTermType& pdu = ModelBaseType::createTerm("pairingdu", true);
 		pdu.push(cdown, 'C', cup, 'C');
 
-		ModelTermType& puu = ModelBaseType::createTerm("pairinguu");
+		ModelTermType& puu = ModelBaseType::createTerm("pairinguu", true);
 		puu.push(cup, 'C', cup, 'C');
 
-		ModelTermType& pdd = ModelBaseType::createTerm("pairingdd");
+		ModelTermType& pdd = ModelBaseType::createTerm("pairingdd", true);
 		pdd.push(cdown, 'C', cdown, 'C');
 	}
 

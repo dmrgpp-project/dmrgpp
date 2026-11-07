@@ -222,7 +222,7 @@ protected:
 			err("SU(2): no longer supported\n");
 
 		// auto lambda = []
-		ModelTermType& plaquetteX = ModelBaseType::createTerm("PlaquetteX");
+		ModelTermType& plaquetteX = ModelBaseType::createTerm("PlaquetteX", true);
 
 		OpForLinkType sx("sx");
 
