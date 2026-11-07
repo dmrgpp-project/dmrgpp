@@ -359,8 +359,7 @@ public:
 		if (sourceId == destinationId)
 			return true;
 
-		if (sourceId == "GroundState"
-		    && (destinationId == "CorrectionVector" || destinationId == "Expression"))
+		if (sourceId == "GroundState")
 			return true;
 
 		if (sourceId == "CorrectionVector" && destinationId == "RixsStatic")
