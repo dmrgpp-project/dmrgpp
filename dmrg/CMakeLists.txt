@@ -389,6 +389,73 @@ add_test(
     "-DEXPECTED_DIAGNOSTIC=LdaggerL is not implemented for MatrixVectorOnTheFly" -P
     ${CMAKE_SOURCE_DIR}/TestSuite/expectFailure.cmake)
 
+add_test(NAME finite_loop_third_entry_valid COMMAND $<TARGET_FILE:dmrg> -f
+                                                    ${PATH_TO_INPUTS}/inputFiniteLoopThirdEntryValid.ain)
+add_test(NAME finite_loop_third_entry_numeric COMMAND $<TARGET_FILE:dmrg> -f
+                                                      ${PATH_TO_INPUTS}/inputFiniteLoopThirdEntryNumeric.ain)
+
+add_test(
+  NAME finite_loop_third_entry_mixed_rejected
+  COMMAND
+    ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg>
+    -DINPUT_FILE=${PATH_TO_INPUTS}/inputFiniteLoopThirdEntryMixed.ain
+    "-DEXPECTED_DIAGNOSTIC=Bit field already set for this finite loop" -P
+    ${CMAKE_SOURCE_DIR}/TestSuite/expectFailure.cmake)
+
+add_test(
+  NAME finite_loop_third_entry_numeric_duplicate_rejected
+  COMMAND
+    ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg>
+    -DINPUT_FILE=${PATH_TO_INPUTS}/inputFiniteLoopThirdEntryNumericDuplicate.ain
+    "-DEXPECTED_DIAGNOSTIC=Bit field already set for this finite loop" -P
+    ${CMAKE_SOURCE_DIR}/TestSuite/expectFailure.cmake)
+
+add_test(
+  NAME finite_loop_third_entry_label_numeric_rejected
+  COMMAND
+    ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg>
+    -DINPUT_FILE=${PATH_TO_INPUTS}/inputFiniteLoopThirdEntryLabelNumeric.ain
+    "-DEXPECTED_DIAGNOSTIC=Bit field already set for this finite loop" -P
+    ${CMAKE_SOURCE_DIR}/TestSuite/expectFailure.cmake)
+
+add_test(
+  NAME finite_loop_third_entry_unknown_rejected
+  COMMAND
+    ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg>
+    -DINPUT_FILE=${PATH_TO_INPUTS}/inputFiniteLoopThirdEntryUnknown.ain
+    "-DEXPECTED_DIAGNOSTIC=Unknown finite-loop option" -P ${CMAKE_SOURCE_DIR}/TestSuite/expectFailure.cmake)
+
+add_test(
+  NAME finite_loop_third_entry_duplicate_rejected
+  COMMAND
+    ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg>
+    -DINPUT_FILE=${PATH_TO_INPUTS}/inputFiniteLoopThirdEntryDuplicate.ain
+    "-DEXPECTED_DIAGNOSTIC=Finite-loop option @save already set" -P ${CMAKE_SOURCE_DIR}/TestSuite/expectFailure.cmake)
+
+add_test(
+  NAME finite_loop_third_entry_fast_slow_rejected
+  COMMAND
+    ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg>
+    -DINPUT_FILE=${PATH_TO_INPUTS}/inputFiniteLoopThirdEntryFastSlow.ain
+    "-DEXPECTED_DIAGNOSTIC=Only one bit of bit 1, bit 2, and bit 3 may be set" -P
+    ${CMAKE_SOURCE_DIR}/TestSuite/expectFailure.cmake)
+
+add_test(
+  NAME finite_loop_third_entry_fast_random_rejected
+  COMMAND
+    ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg>
+    -DINPUT_FILE=${PATH_TO_INPUTS}/inputFiniteLoopThirdEntryFastRandom.ain
+    "-DEXPECTED_DIAGNOSTIC=Only one bit of bit 1, bit 2, and bit 3 may be set" -P
+    ${CMAKE_SOURCE_DIR}/TestSuite/expectFailure.cmake)
+
+add_test(
+  NAME finite_loop_third_entry_onesite_rejected
+  COMMAND
+    ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg>
+    -DINPUT_FILE=${PATH_TO_INPUTS}/inputFiniteLoopThirdEntryOneSite.ain
+    "-DEXPECTED_DIAGNOSTIC=A finite loop that wants one site truncation must also want" -P
+    ${CMAKE_SOURCE_DIR}/TestSuite/expectFailure.cmake)
+
 set(_isolated_dmrg_test_names
     input8901
     input8902
@@ -397,7 +464,17 @@ set(_isolated_dmrg_test_names
     ldaggerl_stored
     ldaggerl_kron_vs_stored
     ldaggerl_hermitian_rejected
-    ldaggerl_onthefly_rejected)
+    ldaggerl_onthefly_rejected
+    finite_loop_third_entry_valid
+    finite_loop_third_entry_numeric
+    finite_loop_third_entry_mixed_rejected
+    finite_loop_third_entry_numeric_duplicate_rejected
+    finite_loop_third_entry_label_numeric_rejected
+    finite_loop_third_entry_unknown_rejected
+    finite_loop_third_entry_duplicate_rejected
+    finite_loop_third_entry_fast_slow_rejected
+    finite_loop_third_entry_fast_random_rejected
+    finite_loop_third_entry_onesite_rejected)
 foreach(test_name IN LISTS _isolated_dmrg_test_names)
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${test_name})
   set_tests_properties(${test_name} PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${test_name})
