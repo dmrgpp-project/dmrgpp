@@ -319,13 +319,13 @@ protected:
 		OpForLinkType ly("ly");
 		OpForLinkType lz("lz");
 
-		ModelBaseType::createTerm("sxsx").push(sx, 'N', sx, 'N');
-		ModelBaseType::createTerm("sysy").push(sy, 'N', sy, 'N');
-		ModelBaseType::createTerm("szsz").push(sz, 'N', sz, 'N');
+		ModelBaseType::createTerm("sxsx", true).push(sx, 'N', sx, 'N');
+		ModelBaseType::createTerm("sysy", true).push(sy, 'N', sy, 'N');
+		ModelBaseType::createTerm("szsz", true).push(sz, 'N', sz, 'N');
 
-		ModelBaseType::createTerm("lxlx").push(lx, 'N', lx, 'N');
-		ModelBaseType::createTerm("lyly").push(ly, 'N', ly, 'N');
-		ModelBaseType::createTerm("lzlz").push(lz, 'N', lz, 'N');
+		ModelBaseType::createTerm("lxlx", true).push(lx, 'N', lx, 'N');
+		ModelBaseType::createTerm("lyly", true).push(ly, 'N', ly, 'N');
+		ModelBaseType::createTerm("lzlz", true).push(lz, 'N', lz, 'N');
 	}
 
 private:

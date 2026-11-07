@@ -278,8 +278,8 @@ protected:
 
 	void fillModelLinks() override
 	{
-		ModelTermType& hop  = ModelBaseType::createTerm("hopping");
-		ModelTermType& ninj = ModelBaseType::createTerm("ninj");
+		ModelTermType& hop  = ModelBaseType::createTerm("hopping", true);
+		ModelTermType& ninj = ModelBaseType::createTerm("ninj", true);
 
 		OpForLinkType cup("c");
 		hop.push(cup, 'N', cup, 'C', typename ModelTermType::Su2Properties(1, 1, 0));
@@ -288,7 +288,7 @@ protected:
 		ninj.push(n, 'N', n, 'N');
 
 		if (hasDelta_) {
-			ModelTermType& cicj = ModelBaseType::createTerm("delta");
+			ModelTermType& cicj = ModelBaseType::createTerm("delta", true);
 			cicj.push(cup, 'N', cup, 'N');
 		}
 	}

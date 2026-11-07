@@ -359,7 +359,7 @@ protected:
 		OpForLinkType  sx("sx");
 		OpForLinkType  sy("sy");
 		OpForLinkType  sz("sz");
-		ModelTermType& hop = ModelBaseType::createTerm("hopping");
+		ModelTermType& hop = ModelBaseType::createTerm("hopping", true);
 
 		for (SizeType spin = 0; spin < 2; ++spin) {
 			OpForLinkType c1("c", spin, 0);
@@ -372,9 +372,9 @@ protected:
 			    typename ModelTermType::Su2Properties(1, (spin == 1) ? -1 : 1, spin));
 		}
 
-		ModelBaseType::createTerm("sxsx").push(sx, 'N', sx, 'N');
-		ModelBaseType::createTerm("sysy").push(sy, 'N', sy, 'N');
-		ModelBaseType::createTerm("szsz").push(sz, 'N', sz, 'N');
+		ModelBaseType::createTerm("sxsx", true).push(sx, 'N', sx, 'N');
+		ModelBaseType::createTerm("sysy", true).push(sy, 'N', sy, 'N');
+		ModelBaseType::createTerm("szsz", true).push(sz, 'N', sz, 'N');
 	}
 
 private:
