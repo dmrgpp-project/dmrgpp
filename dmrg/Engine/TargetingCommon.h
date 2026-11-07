@@ -294,9 +294,11 @@ public:
 		read(io, prefix);
 
 		if (auto& s = io.serializer(); !s.doesGroupExist(prefix + "/TimeSerializer/")) {
-			std::cerr << "WARNING: Group Def/" << prefix
-			          << "/TimeSerializer/ was not found in file " << s.filename()
-			          << ".\n Data was not read.\n";
+			PsimagLite::String sourceId;
+			io.read(sourceId, prefix + "/Provenance/TargetingId");
+			if (sourceId != "GroundState")
+				err("Restart file is missing TimeSerializer for source targeting "
+				    + sourceId + "\n");
 			return;
 		}
 

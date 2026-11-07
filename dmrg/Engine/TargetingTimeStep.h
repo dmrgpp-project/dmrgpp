@@ -230,6 +230,8 @@ public:
 		        && this->common().aoe().timeVectors().time() >= tstStruct_.maxTime());
 	}
 
+	PsimagLite::String targetingId() const override { return "TimeStep"; }
+
 	void read(typename TargetingCommonType::IoInputType& io, PsimagLite::String prefix) override
 	{
 		this->common().readGSandNGSTs(io, prefix, "TimeStep");

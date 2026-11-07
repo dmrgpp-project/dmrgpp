@@ -226,6 +226,8 @@ public:
 		this->common().writeNGSTs(io, prefix, block, "Dynamic", cf);
 	}
 
+	PsimagLite::String targetingId() const override { return "Dynamic"; }
+
 	void read(typename TargetingCommonType::IoInputType& io, PsimagLite::String prefix) override
 	{
 		this->common().readGSandNGSTs(io, prefix, "Dynamic");

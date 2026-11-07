@@ -209,6 +209,8 @@ public:
 		this->common().writeNGSTs(io, prefix, block, "RixsStatic");
 	}
 
+	PsimagLite::String targetingId() const override { return "RixsStatic"; }
+
 	void read(typename TargetingCommonType::IoInputType& io, PsimagLite::String prefix) override
 	{
 		this->common().read(io, prefix);
