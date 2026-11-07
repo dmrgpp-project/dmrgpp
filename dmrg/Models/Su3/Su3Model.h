@@ -298,7 +298,7 @@ protected:
 
 	void fillModelLinksComplex()
 	{
-		ModelTermType& jOne = ModelBaseType::createTerm("jOne");
+		ModelTermType& jOne = ModelBaseType::createTerm("jOne", true);
 		for (SizeType a = 0; a < 8; ++a) {
 
 			OpForLinkType aOpForLink("T" + ttos(a + 1));
@@ -306,7 +306,7 @@ protected:
 			jOne.push(aOpForLink, 'N', aOpForLink, 'C');
 		}
 
-		ModelTermType& jTwo = ModelBaseType::createTerm("jTwo");
+		ModelTermType& jTwo = ModelBaseType::createTerm("jTwo", true);
 		for (SizeType a = 0; a < 8; ++a) {
 
 			OpForLinkType aOpForLink("T" + ttos(a + 1));
@@ -317,7 +317,7 @@ protected:
 
 	void fillModelLinksReal()
 	{
-		ModelTermType& jOnepm        = ModelBaseType::createTerm("jOne_pm");
+		ModelTermType& jOnepm        = ModelBaseType::createTerm("jOne_pm", true);
 		auto multiplyByZeroPointFive = [](ComplexOrRealType& value) { value *= 0.5; };
 
 		for (SizeType a = 0; a < 3; ++a) {
@@ -325,11 +325,11 @@ protected:
 			jOnepm.push(aOpForLink, 'N', aOpForLink, 'C', multiplyByZeroPointFive);
 		}
 
-		ModelTermType& jOne33 = ModelBaseType::createTerm("jOne_33");
+		ModelTermType& jOne33 = ModelBaseType::createTerm("jOne_33", true);
 		OpForLinkType  aOpForLink3("T3");
 		jOne33.push(aOpForLink3, 'N', aOpForLink3, 'C');
 
-		ModelTermType& jOne88 = ModelBaseType::createTerm("jOne_88");
+		ModelTermType& jOne88 = ModelBaseType::createTerm("jOne_88", true);
 		OpForLinkType  aOpForLink8("T8");
 		jOne88.push(aOpForLink8, 'N', aOpForLink8, 'C');
 	}

@@ -304,7 +304,7 @@ protected:
 		//! and similarly for spin down.
 
 		const SizeType orbitals = modelParameters_.orbitals;
-		ModelTermType& hop      = ModelBaseType::createTerm("hopping");
+		ModelTermType& hop      = ModelBaseType::createTerm("hopping", true);
 		for (SizeType spin = 0; spin < 2; ++spin) {
 			typename ModelTermType::Su2Properties su2properties(
 			    1, (spin == 1) ? -1 : 1, spin);

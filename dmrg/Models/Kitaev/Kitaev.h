@@ -372,7 +372,7 @@ protected:
 	{
 
 		if (withCharge_) {
-			ModelTermType& hop = ModelBaseType::createTerm("hopping"); //(A)
+			ModelTermType& hop = ModelBaseType::createTerm("hopping", true); //(A)
 
 			OpForLinkType cup("c", 0); // (B)
 			hop.push(cup,

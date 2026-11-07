@@ -242,8 +242,8 @@ protected:
 
 	void fillModelLinks() override
 	{
-		ModelTermType& hop = ModelBaseType::createTerm("hopping");
-		ModelTermType& ll  = ModelBaseType::createTerm("LambdaLambda");
+		ModelTermType& hop = ModelBaseType::createTerm("hopping", true);
+		ModelTermType& ll  = ModelBaseType::createTerm("LambdaLambda", true);
 
 		const SizeType orbitals = (helperHubbardAncilla_.isHot()) ? 2 : 1;
 
