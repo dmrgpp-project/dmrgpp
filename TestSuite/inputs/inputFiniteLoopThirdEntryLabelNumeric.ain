@@ -1,0 +1,21 @@
+##Ainur1.0
+
+TotalNumberOfSites = 5;
+NumberOfTerms      = 1;
+DegreesOfFreedom   = 1;
+GeometryKind       = "chain";
+GeometryOptions    = "ConstantValues";
+dir0:Connectors    = [-1];
+hubbardU           = [7.3, ...];
+potentialV         = [0.0, ...];
+Model              = "HubbardOneBand";
+
+TargetElectronsUp   = 2;
+TargetElectronsDown = 2;
+
+InfiniteLoopKeptStates = 128;
+FiniteLoops = [[@auto, 128, @save:1]];
+
+SolverOptions = "twositedmrg,usecomplex,geometryallinsystem";
+Version = "FiniteLoopThirdEntryLabelNumeric";
+OutputFile = "dataFiniteLoopThirdEntryLabelNumeric";
