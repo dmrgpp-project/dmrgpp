@@ -155,6 +155,8 @@ public:
 		return gsWeight;
 	}
 
+	PsimagLite::String targetingId() const override { return "Correction"; }
+
 	void evolve(const VectorRealType&,
 	            ProgramGlobals::DirectionEnum direction,
 	            const BlockType&              block1,

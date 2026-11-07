@@ -233,6 +233,11 @@ public:
 
 		TargetSelector<TargetingType> targetSelector(
 		    lrs_, checkpoint_, wft_, quantumSector_, ioIn_);
+		if (checkpoint_.isRestart()) {
+			PsimagLite::IoSelector::In io(parameters_.checkpoint.filename());
+			TargetingType::validateRestart(
+			    io, "FinalPsi", targetSelector.targetingId());
+		}
 		TargetingType& psi = targetSelector();
 
 		ioIn_.printUnused(std::cerr);
@@ -474,6 +479,8 @@ obtain ordered
 		checkpoint_.write(pS, pE, ioOut_.handle());
 
 		ioOut_.createGroup("FinalPsi");
+		ioOut_.createGroup("FinalPsi/Provenance");
+		ioOut_.write(psi.targetingId(), "FinalPsi/Provenance/TargetingId");
 		psi.write(sitesIndices_[stepCurrent_], ioOut_.handle(), "FinalPsi");
 		ioOut_.write(lastSign, "LastLoopSign");
 	}
