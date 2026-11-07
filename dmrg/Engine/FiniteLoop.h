@@ -42,26 +42,9 @@ Remember that the finite loops start at the middle of the lattice, where the
 infinite loop left off.
 \todo{ADD FIGURE SHOWING WHAT THIS DOES.}
 
-\subsection{The third number in the triplet}\label{sec:thirdnumber}
-The third number in the triplet is a bitwise option where the
-first bit means save or don't save, the second bit
-compute the g.s. or WFT it without eigenvalue or eigenvector updates,
-and the third bit compute the g.s. of WFT it updating eigenvalue and eigenvector.
-It is a fatal error to have both bits 1 and 2 set.
-If bit 5 is set then so must bit 3.
-\begin{table}
-\begin{tabular}{ll}\toprule
-Bit & What Happens if Set\\
-0       & Saves state for the observe code\\
-1       & WFTs the ground state in a fast way instead of computing it\\
-2       & WFTs the ground state slowly  instead of computing it\\
-3       & Forces random guess for ground state\\
-4       & MultiSitePush (whatever that means)\\
-5       & OneSiteTruncation\\
-\end{tabular}
-\caption{Meaning of each bit of the third number in the
-finite loop triplet. It is a fatal error to have both bits 1 and 2 set.}
-\end{table}
+\subsection{The third entry in the triplet}
+See \texttt{doc/FiniteLoopThirdEntry.md} for the current syntax, options,
+constraints, and examples.
 \subsection{Caveats and Troubleshooting}
 
 If `nofiniteloops` is an option in the options line of the input file then
