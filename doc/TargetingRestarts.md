@@ -58,19 +58,19 @@ is enforced before this reader executes.
 
 ## Compatibility relation
 
-`TargetingBase::restartIsCompatible` (`TargetingBase.h:353-369`) accepts only:
+`TargetingBase::restartIsCompatible` (`TargetingBase.h:356-369`) accepts:
 
 1. a self-restart with the same canonical ID;
-2. `GroundState -> CorrectionVector`;
-3. `GroundState -> Expression`;
-4. `CorrectionVector -> RixsStatic`; and
-5. `RixsStatic -> RixsDynamic`.
+2. `GroundState -> <any destination>`;
+3. `CorrectionVector -> RixsStatic`; and
+4. `RixsStatic -> RixsDynamic`.
 
 All other source/destination pairs fail with both canonical IDs in the error
-message.  In particular, accepting a common `PSI` representation is not a
-reason to permit an arbitrary transition.  This remains separate from checks
-for the WFT, operators, model, and targeting-specific input required by an
-approved destination.
+message.  A ground-state restart contains the common `PSI` state but no
+targeting-specific serialized state, so it is admissible input for every
+destination.  This compatibility decision remains separate from checks for
+the WFT, operators, model, and targeting-specific input required by that
+destination.
 
 The RIXS adapters justify the two specialised edges: static RIXS requires four
 serialized target vectors and restores vectors 1--3, while dynamic RIXS
@@ -97,7 +97,7 @@ therefore no longer reset global time solely because of the previous
 
 ## Regression coverage
 
-The `input9100 -> input9102` producer/consumer chain exercises the permitted
+The `input9100 -> input9102` producer/consumer chain exercises one permitted
 `GroundState -> Expression` transition.  `input9100_targeting_id` inspects the
 written HDF5 field and requires `GroundState`.  A build-tree input derived from
 `input9103.inp` attempts `Expression -> GroundState`; the
