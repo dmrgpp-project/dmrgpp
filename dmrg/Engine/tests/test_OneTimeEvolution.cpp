@@ -59,6 +59,22 @@ TEST_CASE("OneTimeEvolution parses and owns its creation parameters", "[OneTimeE
 	CHECK(evolution.sourceToDestroy() == 0);
 }
 
+TEST_CASE("OneTimeEvolution accepts an empty TimeEvolve configuration", "[OneTimeEvolution]")
+{
+	using EvolutionType = Dmrg::OneTimeEvolution<FakePvectors>;
+
+	EvolutionType evolution("|P0>", "TimeEvolve{}", 8, 1.5, 0.5);
+
+	CHECK(evolution.timeSteps() == 3);
+	CHECK(evolution.tau() == 0.1);
+	CHECK(evolution.advanceEach() == 6);
+	CHECK(evolution.algorithm() == "Krylov");
+	CHECK(evolution.chebyTransform().empty());
+	CHECK(evolution.disposition() == 0);
+	CHECK(evolution.depends().empty());
+	CHECK(evolution.energyForExp() == 1.5);
+}
+
 TEST_CASE("OneTimeEvolution does not destroy a non-P source", "[OneTimeEvolution]")
 {
 	using EvolutionType = Dmrg::OneTimeEvolution<FakePvectors>;

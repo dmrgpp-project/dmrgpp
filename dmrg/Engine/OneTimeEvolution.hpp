@@ -128,6 +128,9 @@ private:
 			buffer += c;
 		}
 
+		if (buffer.empty())
+			return timeParams;
+
 		for (const std::string& token : split(buffer, ',')) {
 			const auto equals = token.find('=');
 			if (equals == std::string::npos
