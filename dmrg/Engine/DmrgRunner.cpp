@@ -14,6 +14,7 @@ DmrgRunner<RealType>::DmrgRunner(const ApplicationType&    app,
     : application_(app)
     , io_(nullptr)
     , dmrg_solver_params_(nullptr)
+    , skipRun_(false)
 {
 	// io_ doesn't need ioWritable past its construction, else
 	// we would have to store it as member data
@@ -35,6 +36,11 @@ DmrgRunner<RealType>::DmrgRunner(const ApplicationType&    app,
 	}
 
 	adjustDmrgSolverParams(insitu, cmd_line.precision, nthreads);
+	if (dmrg_solver_params_->autoRestartCompleted) {
+		std::cout << "RecoverySave: checkpoint already completed; exiting.\n";
+		skipRun_ = true;
+		return;
+	}
 
 	if (!introspect_only) {
 		if (endDueToClobber(dmrg_solver_params_->options.isSet("noClobber"),
@@ -76,6 +82,9 @@ template <typename RealType> void DmrgRunner<RealType>::doOneRun() const
 template <typename RealType>
 void DmrgRunner<RealType>::doOneRun(OptionsForIntrospect& op_options) const
 {
+	if (skipRun_)
+		return;
+
 	const auto start = std::chrono::steady_clock::now();
 
 	assert(dmrg_solver_params_);
