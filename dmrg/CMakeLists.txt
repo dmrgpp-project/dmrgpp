@@ -419,6 +419,22 @@ foreach(test_name IN LISTS _isolated_dmrg_test_names)
   set_tests_properties(${test_name} PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${test_name})
 endforeach()
 
+set(_recovery_save_tests_dir ${CMAKE_CURRENT_BINARY_DIR}/recovery_save_tests)
+
+function(add_recovery_save_test name script)
+  add_test(
+    NAME ${name}
+    COMMAND
+      ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg> -DINPUT_FILE=${PATH_TO_INPUTS}/input210.ain
+      -DWORK_ROOT=${_recovery_save_tests_dir}/${name} -DCHECK_VALUE_EXECUTABLE=$<TARGET_FILE:check_value> -P
+      ${CMAKE_SOURCE_DIR}/TestSuite/${script})
+  set_tests_properties(${name} PROPERTIES LABELS RecoverySave RUN_SERIAL TRUE)
+endfunction()
+
+add_recovery_save_test(recovery_auto_resume checkRecoveryAutoResume.cmake)
+add_recovery_save_test(recovery_terminal_rerun checkRecoveryTerminalRerun.cmake)
+add_recovery_save_test(recovery_ring_wrap checkRecoveryRingWrap.cmake)
+
 add_test(NAME input9000 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input9000.ain) # energy -0.472136
 add_test(NAME input9001 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input9001.ain "<P0|n|P0>"
 )# in-situ 1 (1.010966,0.000000) 0.500000 <P0|n|P0> (1.000000,0.000000)

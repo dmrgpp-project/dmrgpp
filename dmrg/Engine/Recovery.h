@@ -89,6 +89,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include <PsimagLite/Vector.h>
 #include <dirent.h>
 #include <fstream>
+#include <sys/stat.h>
 #include <sys/types.h>
 
 namespace Dmrg {
@@ -184,6 +185,7 @@ public:
 	    , pS_(pS)
 	    , pE_(pE)
 	    , counter_(0)
+	    , generation_(0)
 	{
 		procOptions();
 
@@ -200,6 +202,8 @@ public:
 		                                   checkpoint_.parameters().checkpoint.filename());
 		if (parts.size() == 3)
 			counter_ = 1 + atoi(parts[1].c_str());
+		if (counter_ >= optionSpec_.maxFiles)
+			counter_ = 0;
 	}
 
 	~Recovery()
@@ -269,6 +273,12 @@ public:
 		// checkpoint stacks
 		checkpoint_.checkpointStacks(savedName);
 
+		typename IoType::Out ioOutComplete(savedName, IoType::ACC_RDW);
+		ioOutComplete.write(SizeType(1), "Recovery/complete");
+		ioOutComplete.close();
+
+		++generation_;
+
 		if (counter_ >= optionSpec_.maxFiles)
 			counter_ = 0;
 	}
@@ -320,6 +330,7 @@ private:
 
 		ioOut.write(loopIndex, "Recovery/loopIndex");
 		ioOut.write(stepCurrent, "Recovery/stepCurrent");
+		ioOut.write(generation_, "Recovery/generation");
 	}
 
 	void readRecovery()
@@ -328,6 +339,12 @@ private:
 
 		ioIn2.read(opaqueRestart_.loopIndex, "Recovery/loopIndex");
 		ioIn2.read(opaqueRestart_.stepCurrent, "Recovery/stepCurrent");
+		try {
+			ioIn2.read(generation_, "Recovery/generation");
+			++generation_;
+		} catch (...) {
+			generation_ = 0;
+		}
 		ioIn2.close();
 	}
 
@@ -384,6 +401,7 @@ private:
 	const BasisWithOperatorsType&              pS_;
 	const BasisWithOperatorsType&              pE_;
 	mutable SizeType                           counter_;
+	mutable SizeType                           generation_;
 }; // class Recovery
 
 template <typename ParametersType> class Recovery<ParametersType, int> {
@@ -409,18 +427,22 @@ public:
 	{
 		if (!params.options.isSet("recoveryEnableRead"))
 			return;
+		if (params.options.isSet("restart"))
+			return;
 
 		// params.filename must have been corrected already if necessary
-		PsimagLite::String recoveryFile = getRecoveryFile(params.filename);
-		if (recoveryFile == "")
+		RecoveryCandidate recovery = getRecoveryFile(params.filename);
+		if (recovery.filename == "")
 			return;
 
 		// *  add the line RestartFilename= pointing to the data file of the
 		// run to be restarted.
-		params.checkpoint.setFilename(recoveryFile);
-		// params.checkRestart(params.filename, recoveryFile, params.options, "INTERNAL=");
+		params.checkpoint.setFilename(recovery.filename);
+		// params.checkRestart(params.filename, recovery.filename, params.options,
+		// "INTERNAL=");
 
-		params.autoRestart = true;
+		params.autoRestart          = true;
+		params.autoRestartCompleted = (recovery.loopIndex >= params.finiteLoop.size());
 	}
 
 	static void makeThreeParts(std::vector<PsimagLite::String>& parts,
@@ -434,8 +456,10 @@ public:
 
 		PsimagLite::String buffer("");
 		for (SizeType i = len; i < filename.length(); ++i) {
-			if (isAdigit(filename[i]))
+			if (isAdigit(filename[i])) {
 				buffer += filename[i];
+				continue;
+			}
 			break;
 		}
 
@@ -449,6 +473,22 @@ public:
 	}
 
 private:
+
+	struct RecoveryCandidate {
+
+		RecoveryCandidate()
+		    : generation(0)
+		    , loopIndex(0)
+		    , generated(false)
+		    , mtime(0)
+		{ }
+
+		PsimagLite::String filename;
+		SizeType           generation;
+		SizeType           loopIndex;
+		bool               generated;
+		time_t             mtime;
+	};
 
 	static bool isAdigit(char c) { return (c > 47 && c < 58); }
 
@@ -470,38 +510,82 @@ private:
 		perror("");
 	}
 
-	static PsimagLite::String getRecoveryFile(PsimagLite::String filename)
+	static RecoveryCandidate getRecoveryFile(PsimagLite::String filename)
 	{
 		const PsimagLite::String        prefix = recoveryFilePrefix();
 		std::vector<PsimagLite::String> files;
 		listFilesInDirectory(files, ".");
 
-		if (files.size() == 0)
-			return "";
-
-		PsimagLite::String saved("");
-		SizeType           max = 0;
+		RecoveryCandidate generated;
+		RecoveryCandidate legacy;
 
 		for (SizeType i = 0; i < files.size(); ++i) {
 			std::vector<PsimagLite::String> parts;
 			makeThreeParts(parts, files[i]);
 			if (parts.size() != 3 || parts[0] != prefix || parts[2] != filename)
 				continue;
-			SizeType counter = atoi(parts[1].c_str());
-			if (counter >= max && isValidFile(files[i])) {
-				max   = counter;
-				saved = files[i];
+
+			RecoveryCandidate candidate;
+			if (!probeRecoveryFile(candidate, files[i]))
+				continue;
+
+			if (candidate.generated) {
+				if (generated.filename == ""
+				    || candidate.generation > generated.generation
+				    || (candidate.generation == generated.generation
+				        && candidate.filename > generated.filename)) {
+					generated = candidate;
+				}
+				continue;
+			}
+
+			if (legacy.filename == "" || candidate.mtime > legacy.mtime
+			    || (candidate.mtime == legacy.mtime
+			        && candidate.filename > legacy.filename)) {
+				legacy = candidate;
 			}
 		}
 
-		return saved;
+		return (generated.filename == "") ? legacy : generated;
 	}
 
-	static bool isValidFile(PsimagLite::String file)
+	static bool probeRecoveryFile(RecoveryCandidate& candidate, PsimagLite::String file)
 	{
 		try {
 			PsimagLite::IoNg::In ioIn(file);
+			SizeType             stepCurrent = 0;
+			ioIn.read(candidate.loopIndex, "Recovery/loopIndex");
+			ioIn.read(stepCurrent, "Recovery/stepCurrent");
+
+			try {
+				ioIn.read(candidate.generation, "Recovery/generation");
+			} catch (...) {
+				struct stat fileStat;
+				if (stat(file.c_str(), &fileStat) != 0) {
+					ioIn.close();
+					return false;
+				}
+				candidate.mtime = fileStat.st_mtime;
+				ioIn.close();
+				candidate.filename = file;
+				return true;
+			}
+
+			SizeType complete = 0;
+			try {
+				ioIn.read(complete, "Recovery/complete");
+			} catch (...) {
+				ioIn.close();
+				return false;
+			}
+			if (!complete) {
+				ioIn.close();
+				return false;
+			}
+			candidate.generated = true;
+
 			ioIn.close();
+			candidate.filename = file;
 			return true;
 		} catch (...) { }
 

@@ -158,6 +158,8 @@ Page* where more or less this feature is used: 2230
 #170-189 reserved for FermionSpinless
 200) Time Evolution preparation ground state
 201) Time Evolution proper
+210) RecoverySave interruption and automatic restart test
+#211 to 249 reserved for RecoverySave
 250) MultiTargeting
 320) Fe-based Superconductors model on a chain
 340) A test of the Fe-based Superconductors extended model
