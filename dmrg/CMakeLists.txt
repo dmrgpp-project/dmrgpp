@@ -67,7 +67,10 @@ install(TARGETS dmrg observe toolboxdmrg omegas introspect RUNTIME DESTINATION $
 # Tests below for all executables
 
 set(PATH_TO_INPUTS ${CMAKE_CURRENT_SOURCE_DIR}/../TestSuite/inputs)
-find_program(H5DUMP_EXECUTABLE NAMES h5dump REQUIRED)
+find_program(
+  H5DUMP_EXECUTABLE
+  NAMES h5dump REQUIRED
+  HINTS ${HDF5_DIR}/../../../bin)
 
 if(DMRGPP_USE_MPI)
   function(add_mpi_test name nprocs executable)
