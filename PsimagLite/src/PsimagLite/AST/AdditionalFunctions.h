@@ -27,7 +27,7 @@ template <typename VectorValueType> class Modulus : public Node<VectorValueType>
 
 public:
 
-	Modulus* clone() const override { return new Modulus(*this); }
+	Modulus* clone() const override { return new PsimagLite::Modulus(*this); }
 
 	PsimagLite::String code() const override { return "%"; }
 
@@ -57,7 +57,7 @@ template <typename VectorValueType> class Cosine : public Node<VectorValueType> 
 
 public:
 
-	Cosine* clone() const override { return new Cosine(*this); }
+	Cosine* clone() const override { return new PsimagLite::Cosine(*this); }
 
 	PsimagLite::String code() const override { return "cos"; }
 
@@ -76,7 +76,7 @@ template <typename VectorValueType> class Sine : public Node<VectorValueType> {
 
 public:
 
-	Sine* clone() const override { return new Sine(*this); }
+	Sine* clone() const override { return new PsimagLite::Sine(*this); }
 
 	PsimagLite::String code() const override { return "sin"; }
 
@@ -95,7 +95,7 @@ template <typename VectorValueType> class Exp : public Node<VectorValueType> {
 
 public:
 
-	Exp* clone() const override { return new Exp(*this); }
+	Exp* clone() const override { return new PsimagLite::Exp(*this); }
 
 	PsimagLite::String code() const override { return "exp"; }
 
@@ -114,7 +114,7 @@ template <typename VectorValueType> class TernaryOp : public Node<VectorValueTyp
 
 public:
 
-	TernaryOp* clone() const override { return new TernaryOp(*this); }
+	TernaryOp* clone() const override { return new PsimagLite::TernaryOp(*this); }
 
 	PsimagLite::String code() const override { return "?"; }
 
@@ -134,7 +134,7 @@ template <typename VectorValueType> class Log : public Node<VectorValueType> {
 
 public:
 
-	Log* clone() const override { return new Log(*this); }
+	Log* clone() const override { return new PsimagLite::Log(*this); }
 
 	PsimagLite::String code() const override { return "log"; }
 
