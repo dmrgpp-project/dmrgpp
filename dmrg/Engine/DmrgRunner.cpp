@@ -55,6 +55,10 @@ DmrgRunner<RealType>::DmrgRunner(const ApplicationType&    app,
 			std::cout << provenance;
 		}
 
+		if (dmrg_solver_params_->autoRestart)
+			std::cout << "RecoverySave: recovering from "
+			          << dmrg_solver_params_->checkpoint.filename() << "\n";
+
 		constexpr bool PRINT_HEADER = true;
 		application_.base64encode(std::cout, data, PRINT_HEADER);
 
