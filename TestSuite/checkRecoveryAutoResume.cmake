@@ -89,6 +89,11 @@ if(NOT explicit_output MATCHES "Finite loop number 24 with l=6")
   message(FATAL_ERROR "Explicit restart did not use RestartFilename=Recovery23data210")
 endif()
 
+file(READ "${resume_log}" resume_log_output)
+if(NOT resume_log_output MATCHES "RecoverySave: recovering from Recovery23data210.hd5")
+  message(FATAL_ERROR "Automatic RecoverySave resume did not report its recovery file in ${resume_log}")
+endif()
+
 file(READ "${clean_log}" clean_output)
 string(REGEX MATCHALL "Found lowest eigenvalue= *[-+0-9.eE]+" clean_matches "${clean_output}")
 if(NOT clean_matches)
