@@ -56,6 +56,8 @@ Current-format recovery files contain the following metadata under
 - `stepCurrent`
 - `generation`
 - `complete`
+- `originOutput`
+- `originRestart`
 
 `generation` orders checkpoint writes independently of the ring-slot number.
 DMRG++ selects the complete candidate with the greatest generation, so a
@@ -67,7 +69,8 @@ interruption occurs during a write.
 For compatibility, if no current-format recovery file is available, DMRG++
 can select a legacy recovery file with readable loop and step metadata by its
 modification time.  It never ranks legacy and current-format checkpoints in
-the same ordering.
+the same ordering.  A legacy file cannot override an explicit restart because
+it has no lineage metadata.
 
 Automatic recovery uses restart semantics while resolving Ainur `@auto`
 finite-loop lengths.  Consequently, unchanged inputs that use both
@@ -89,13 +92,24 @@ a completed calculation idempotent.
 `@keep` preserves files for inspection or explicit use; it does not cause an
 unchanged automatic invocation to rerun a completed calculation.
 
-## Explicit restart is separate
+## Explicit restart and RecoverySave continuation
 
 `SolverOptions=restart` with `RestartFilename=` is an explicit restart
-request.  It takes precedence over automatic recovery-file discovery, even if
-matching `Recovery<N>` files are present in the directory.  Automatic
-terminal-checkpoint no-op behavior applies only to `recoveryenableread`'s
-automatic path.
+request.  If no matching RecoverySave file exists, it bootstraps the new
+calculation from `RestartFilename`.
+
+If that calculation is interrupted after writing a complete
+`Recovery<N><output-file>` checkpoint, an unchanged invocation with both
+`restart` and `recoveryenableread` resumes that RecoverySave checkpoint rather
+than restarting the bootstrap calculation.  This requires its `originOutput`
+and `originRestart` metadata to match the current output and normalized
+`RestartFilename`; a stale checkpoint from another restart request is ignored.
+Automatic terminal-checkpoint no-op behavior also applies to this continuation
+path.
+
+To deliberately discard an interrupted branch and bootstrap again, remove or
+isolate its matching recovery files, or omit `recoveryenableread` for that
+invocation.
 
 ## Operational guidance
 

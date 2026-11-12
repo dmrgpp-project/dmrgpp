@@ -186,6 +186,10 @@ public:
 	    , pE_(pE)
 	    , counter_(0)
 	    , generation_(0)
+	    , originOutput_(checkpoint.parameters().filename)
+	    , originRestart_(checkpoint.parameters().options.isSet("restart")
+	                         ? checkpoint.parameters().checkpoint.filename()
+	                         : "")
 	{
 		procOptions();
 
@@ -331,6 +335,8 @@ private:
 		ioOut.write(loopIndex, "Recovery/loopIndex");
 		ioOut.write(stepCurrent, "Recovery/stepCurrent");
 		ioOut.write(generation_, "Recovery/generation");
+		ioOut.write(originOutput_, "Recovery/originOutput");
+		ioOut.write(originRestart_, "Recovery/originRestart");
 	}
 
 	void readRecovery()
@@ -344,6 +350,14 @@ private:
 			++generation_;
 		} catch (...) {
 			generation_ = 0;
+		}
+
+		try {
+			ioIn2.read(originOutput_, "Recovery/originOutput");
+			ioIn2.read(originRestart_, "Recovery/originRestart");
+		} catch (...) {
+			originOutput_  = checkpoint_.parameters().filename;
+			originRestart_ = "";
 		}
 		ioIn2.close();
 	}
@@ -402,6 +416,8 @@ private:
 	const BasisWithOperatorsType&              pE_;
 	mutable SizeType                           counter_;
 	mutable SizeType                           generation_;
+	mutable PsimagLite::String                 originOutput_;
+	mutable PsimagLite::String                 originRestart_;
 }; // class Recovery
 
 template <typename ParametersType> class Recovery<ParametersType, int> {
@@ -427,11 +443,12 @@ public:
 	{
 		if (!params.options.isSet("recoveryEnableRead"))
 			return;
-		if (params.options.isSet("restart"))
-			return;
-
 		// params.filename must have been corrected already if necessary
-		RecoveryCandidate recovery = getRecoveryFile(params.filename);
+		const bool               hasExplicitRestart = params.options.isSet("restart");
+		const PsimagLite::String originRestart
+		    = (hasExplicitRestart) ? params.checkpoint.filename() : "";
+		RecoveryCandidate recovery
+		    = getRecoveryFile(params.filename, hasExplicitRestart, originRestart);
 		if (recovery.filename == "")
 			return;
 
@@ -480,6 +497,7 @@ private:
 		    : generation(0)
 		    , loopIndex(0)
 		    , generated(false)
+		    , hasOrigin(false)
 		    , mtime(0)
 		{ }
 
@@ -487,6 +505,9 @@ private:
 		SizeType           generation;
 		SizeType           loopIndex;
 		bool               generated;
+		bool               hasOrigin;
+		PsimagLite::String originOutput;
+		PsimagLite::String originRestart;
 		time_t             mtime;
 	};
 
@@ -510,7 +531,9 @@ private:
 		perror("");
 	}
 
-	static RecoveryCandidate getRecoveryFile(PsimagLite::String filename)
+	static RecoveryCandidate getRecoveryFile(PsimagLite::String filename,
+	                                         bool               hasExplicitRestart,
+	                                         PsimagLite::String originRestart)
 	{
 		const PsimagLite::String        prefix = recoveryFilePrefix();
 		std::vector<PsimagLite::String> files;
@@ -527,6 +550,10 @@ private:
 
 			RecoveryCandidate candidate;
 			if (!probeRecoveryFile(candidate, files[i]))
+				continue;
+			if (hasExplicitRestart
+			    && (!candidate.hasOrigin || candidate.originOutput != filename
+			        || candidate.originRestart != originRestart))
 				continue;
 
 			if (candidate.generated) {
@@ -583,6 +610,13 @@ private:
 				return false;
 			}
 			candidate.generated = true;
+			try {
+				ioIn.read(candidate.originOutput, "Recovery/originOutput");
+				ioIn.read(candidate.originRestart, "Recovery/originRestart");
+				candidate.hasOrigin = true;
+			} catch (...) {
+				candidate.hasOrigin = false;
+			}
 
 			ioIn.close();
 			candidate.filename = file;

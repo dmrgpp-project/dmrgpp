@@ -434,6 +434,13 @@ endfunction()
 add_recovery_save_test(recovery_auto_resume checkRecoveryAutoResume.cmake)
 add_recovery_save_test(recovery_terminal_rerun checkRecoveryTerminalRerun.cmake)
 add_recovery_save_test(recovery_ring_wrap checkRecoveryRingWrap.cmake)
+add_test(
+  NAME recovery_explicit_restart
+  COMMAND
+    ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg> -DINPUT211_FILE=${PATH_TO_INPUTS}/input211.ain
+    -DINPUT212_FILE=${PATH_TO_INPUTS}/input212.ain -DWORK_ROOT=${_recovery_save_tests_dir}/recovery_explicit_restart -P
+    ${CMAKE_SOURCE_DIR}/TestSuite/checkRecoveryExplicitRestart.cmake)
+set_tests_properties(recovery_explicit_restart PROPERTIES LABELS RecoverySave RUN_SERIAL TRUE)
 
 add_test(NAME input9000 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input9000.ain) # energy -0.472136
 add_test(NAME input9001 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input9001.ain "<P0|n|P0>"
