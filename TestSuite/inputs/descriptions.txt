@@ -144,16 +144,19 @@ Page* where more or less this feature is used: 2230
 106) A^{-}(q,omega) cut at omega=-1.0 Hubbard Model One Orbital (HuStd-1orb) on a chain (CubicStd1d) for U=6 with 8 sites.
 112) Like 2 but measures while growing environ
 113) Like 2 but measures 2 data sets
+#120 to 149 reserved for TargetingExpresion and related
 120) TargetingExpresion: gs
 121) TargetingExpression: sums of products from 120
 122) TargetingExpression: One time evolution from 120
 123) TargetingExpression: Two time evolutions from 120
+124) TargetingExpression with useComplex: restart from 123 and time-evolve P0
 126) TargetingExpresion with useComplex: gs
 127) argetingExpresion with useComplex: from 126
 128) TargetingExpression with useComplex: TimeEvolve from 127, delayed with startLoop=2
 129) TargetingExpression with useComplex: TimeEvolve from 127, held beyond the finite-loop schedule
+130) TargetingExpression: direct restart assignment preserves the mapped P-vector physical times
+131) TargetingExpression: Heisenberg spin-raising target
 132) TargetingExpression: startLoop preserves a restarted source P-vector's time
-#120 to 149 reserved for TargetingExpresion and related
 #150 to 199 reserved for testing the input system
 150) Replacement
 170) FermionSpinless
@@ -181,6 +184,10 @@ Page* where more or less this feature is used: 2230
 ###TD 356) Transverse-Field Ising 2-LegLadder thin: time dynamics reading Schedule From Input File
 ###TD 357) Transverse-Field Ising 2-LegLadder GS using fat geometry
 ###TD 358) Transverse-Field Ising 2-LegLadder fat: time dynamics reading Schedule From Input File
+
+351) Transverse-Field Ising MultiOrb 1
+355) Transverse-Field Ising chain ground state
+356) Transverse-Field Ising ladder time dynamics with a schedule read from input
 
 363) paper63
 InternalControlNumber: 63
@@ -444,6 +451,22 @@ d===> 0.3091
 6700) FindSymmetrySector= awesome predicate
 #7000) Chemical H: Gauge spin
 #7001-7500 reserved for ChemicalH
+8900) Liouvillian Heisenberg NESS with combined physical and ancilla (fat) sites
+8901) Liouvillian Heisenberg NESS with separate physical and ancilla (thin) sites
+8902) Liouvillian Heisenberg fat-site LdaggerL with the Kronecker matrix-vector backend
+8903) Liouvillian Heisenberg thin-site LdaggerL with the Kronecker matrix-vector backend
 9000) Peierls GS
 9001) Peierls time evolution
+
+9100) Anderson-impurity ground state before a U=0 to U=2 interaction quench
+9102) TargetingExpression restart from 9100; prepares c'[0]|GS_i>
+9103) TargetingExpression time evolution after the quench; measures the Green function and overlap
+9104) Restart-mapping preservation of distinct P-vector physical times
+9105) Restart-mapping behavior for skipped destinations and duplicate source vectors
+
+2_batchedgemm) Hubbard ground state using BatchedGemm
+342_batchedgemm) FeAsBasedScExtended performance input using BatchedGemm
+inputManyOmegasDryRun) manyOmegas dry-run configuration
+inputManyOmegasTinyGs) four-site Heisenberg ground state for the tiny manyOmegas test
+inputManyOmegasTiny) tiny manyOmegas correction-vector restart from inputManyOmegasTinyGs
 #TAGEND DO NOT REMOVE THIS TAG

@@ -1,0 +1,34 @@
+##Ainur1.0
+TotalNumberOfSites=16;
+NumberOfTerms=2;
+
+gt0:DegreesOfFreedom=1;
+gt0:GeometryKind="chain";
+gt0:GeometryOptions="ConstantValues";
+gt0:dir0:Connectors=[1.0];
+
+gt1:DegreesOfFreedom=1;
+gt1:GeometryKind="chain";
+gt1:GeometryOptions="ConstantValues";
+gt1:dir0:Connectors=[1.0];
+
+#Model params
+Model="Heisenberg";
+int HeisenbergTwiceS=1;
+SolverOptions="truncationNoSvd,twositedmrg,TargetingExpression,OperatorsChangeAll";
+Version="53725d9b8f22615ccccc782082f4cd6f51a4e374";
+OutputFile="data130";
+InfiniteLoopKeptStates=100;
+FiniteLoops=[[7, 110, 0],
+[-14, 120, 0],
+[ 14, 130, 0],
+[-14, 140, 0],
+[ 14, 150, 0],
+[-14, 160, 0],
+[ 14, 170, 0],
+[-14, 180, 0],
+[ 14, 190, 0]];
+int TargetSzPlusConst=8;
+GsWeight=0.3;
+string P0="splus[8]*|gs>";
+#ci observe arguments="<gs|c';c|gs>,<gs|2.0*sz;2.0*sz|gs>,<gs|n;n|gs>"
