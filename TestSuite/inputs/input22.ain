@@ -30,7 +30,7 @@ gt1:dir0:Connectors=[1.0];
 Model="Heisenberg";
 HeisenbergTwiceS=1;
 
-# restart : we restart from a time evolution run done in input20.ain
+# restart : we restart from the time evolution run done in input21.ain
 # This is what I call a NGST --> NGST run, where
 # NGST = non-ground state target, so here both the previous run
 # and this run are NGSTs.

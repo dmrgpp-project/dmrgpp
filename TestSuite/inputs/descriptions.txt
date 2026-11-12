@@ -145,13 +145,13 @@ Page* where more or less this feature is used: 2230
 112) Like 2 but measures while growing environ
 113) Like 2 but measures 2 data sets
 #120 to 149 reserved for TargetingExpresion and related
-120) TargetingExpresion: gs
+120) TargetingExpression: gs
 121) TargetingExpression: sums of products from 120
 122) TargetingExpression: One time evolution from 120
 123) TargetingExpression: Two time evolutions from 120
 124) TargetingExpression with useComplex: restart from 123 and time-evolve P0
-126) TargetingExpresion with useComplex: gs
-127) argetingExpresion with useComplex: from 126
+126) TargetingExpression with useComplex: gs
+127) TargetingExpression with useComplex: from 126
 128) TargetingExpression with useComplex: TimeEvolve from 127, delayed with startLoop=2
 129) TargetingExpression with useComplex: TimeEvolve from 127, held beyond the finite-loop schedule
 130) TargetingExpression: direct restart assignment preserves the mapped P-vector physical times
@@ -176,12 +176,9 @@ Page* where more or less this feature is used: 2230
 343) Performance input: two-orbital Hubbard 32 sites; m=1000, 1000
 344) Performance input: two-orbital Hubbard 16 sites; m=1000, 1000
 ###TD 350) Transverse-Field Ising MultiOrb (Using Heisenberg, benchmark)
-###TD 351) Transverse-Field Ising MultiOrb 1
 ###TD 352) Transverse-Field Ising MultiOrb 2
 ###TD 353) Transverse-Field Ising MultiOrb 3
 
-###TD 355) Transverse-Field Ising 2-LegLadder GS using thin geometry
-###TD 356) Transverse-Field Ising 2-LegLadder thin: time dynamics reading Schedule From Input File
 ###TD 357) Transverse-Field Ising 2-LegLadder GS using fat geometry
 ###TD 358) Transverse-Field Ising 2-LegLadder fat: time dynamics reading Schedule From Input File
 

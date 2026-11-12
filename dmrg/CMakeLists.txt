@@ -178,7 +178,7 @@ add_test(NAME input2 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input2.ain)
 add_lowest_eigenvalue_check_test(output2 input2 -9.51754 runForinput2.cout)
 
 add_test(NAME input2_batchedgemm COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input2_batchedgemm.ain)
-add_lowest_eigenvalue_check_test(output2_batchedgemm input2_batched_gemm -9.51754 runForinput2_batchedgemm.cout)
+add_lowest_eigenvalue_check_test(output2_batchedgemm input2_batchedgemm -9.51754 runForinput2_batchedgemm.cout)
 
 add_test(NAME input4 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input4.ain) # energy -15.9938
 add_lowest_eigenvalue_check_test(output4 input4 -15.9938 runForinput4.cout)
@@ -209,6 +209,7 @@ add_insitu_gold_check_test(
   TOLERANCE
   2e-5)
 add_test(NAME input22 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input22.ain "<gs|sz|P0>") # none
+set_tests_properties(input22 PROPERTIES DEPENDS input21)
 add_test(NAME input30 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input30.ain) # energy -4.29307
 add_lowest_eigenvalue_check_test(output30 input30 -4.29307 runForinput30.cout)
 add_test(NAME input31 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input31.ain) # energy -3.37493
@@ -228,6 +229,7 @@ add_lowest_eigenvalue_check_test(output61 input61 -5.75007 runForinput61.cout)
 add_test(NAME input62 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input62.ain) # energy -3.73168
 add_lowest_eigenvalue_check_test(output62 input62 -3.73168 runForinput62.cout)
 add_test(NAME input63 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input63.ain) # none
+set_tests_properties(input63 PROPERTIES DEPENDS input62)
 add_test(NAME input70 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input70.ain) # energy -9.28874
 add_lowest_eigenvalue_check_test(output70 input70 -9.28874 runForinput70.cout)
 add_test(NAME input71 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input71.ain) # energy -9.74163
@@ -235,6 +237,7 @@ add_lowest_eigenvalue_check_test(output71 input71 -9.74163 runForinput71.cout)
 add_test(NAME input72 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input72.ain) # energy -4.47214
 add_lowest_eigenvalue_check_test(output72 input72 -4.47214 runForinput72.cout)
 add_test(NAME input73 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input73.ain) # energy -4.47214
+set_tests_properties(input73 PROPERTIES DEPENDS input72)
 add_lowest_eigenvalue_check_test(output73 input73 -4.47214 runForinput73.cout)
 add_test(NAME input74 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input74.ain) # energy -0.707712
 add_lowest_eigenvalue_check_test(output74 input74 -0.707712 runForinput74.cout)
@@ -244,11 +247,13 @@ set_tests_properties(input74_dmrg_version PROPERTIES DEPENDS input74 PASS_REGULA
 add_test(NAME input75 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input75.ain) # energy -2.80627
 add_lowest_eigenvalue_check_test(output75 input75 -2.80627 runForinput75.cout)
 add_test(NAME input76 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input76.ain) # energy -0.707712
+set_tests_properties(input76 PROPERTIES DEPENDS input75)
 # input76 is a restart check only; no g.s. computation
 set_tests_properties(input76 PROPERTIES FAIL_REGULAR_EXPRESSION "FiniteLoopLengths=")
 add_test(NAME input77 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input77.ain) # energy -2.80627
 add_lowest_eigenvalue_check_test(output77 input77 -2.80627 runForinput77.cout)
 add_test(NAME input78 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input78.ain) # energy -0.707712
+set_tests_properties(input78 PROPERTIES DEPENDS input77)
 # input78 is a restart check only; no g.s. computation
 add_test(NAME input80 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input80.ain) # energy -7.37027
 add_lowest_eigenvalue_check_test(output80 input80 -7.37027 runForinput80.cout)
@@ -268,7 +273,9 @@ add_test(NAME output9121_P1cP2 COMMAND sh -c "grep -q '<P1|c|P2>' ${CMAKE_CURREN
 set_tests_properties(output9121_P1cP2 PROPERTIES DEPENDS input9121)
 
 add_test(NAME input121 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input121.ain -p 12 "<gs|P0>") # none
+set_tests_properties(input121 PROPERTIES DEPENDS input120)
 add_test(NAME input122 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input122.ain -p 12 "<gs|P0>,<gs|P1>,<P0|P1>") # none
+set_tests_properties(input122 PROPERTIES DEPENDS input120)
 add_test(NAME input123 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input123.ain -p 12
                                "<gs|P0>,<P0|P1>,<gs|c'|P2>,<gs|c'|P3>,<P2|P3>") # none
 set_tests_properties(input123 PROPERTIES DEPENDS input120)
@@ -327,6 +334,7 @@ add_lowest_eigenvalue_check_test(output351 input351 -0.408019 runForinput351.cou
 add_test(NAME input355 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input355.ain) # energy -37.03
 add_lowest_eigenvalue_check_test(output355 input355 -37.03 runForinput355.cout)
 add_test(NAME input356 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input356.ain) # none
+set_tests_properties(input356 PROPERTIES DEPENDS input355)
 add_test(NAME input501 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input501.ain) # energy -6.77334
 add_lowest_eigenvalue_check_test(output501 input501 -6.77334 runForinput501.cout)
 add_test(NAME input550 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input550.ain) # energy -4.66667
@@ -345,7 +353,9 @@ add_lowest_eigenvalue_check_test(output1600 input1600 -9.51746 runForinput1600.c
 add_test(NAME input1814 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input1814.ain) # energy -6.0
 add_lowest_eigenvalue_check_test(output1814 input1814 -6.0 runForinput1814.cout)
 add_test(NAME input1815 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input1815.ain) # none
+set_tests_properties(input1815 PROPERTIES DEPENDS input1814)
 add_test(NAME input1817 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input1817.ain) # none
+set_tests_properties(input1817 PROPERTIES DEPENDS input1814)
 # input1818 and 1819 --> too slow (disabled)
 # add_test(NAME input1818 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input1818.ain)
 # add_test(NAME input1819 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input1819.ain)
@@ -357,6 +367,7 @@ add_test(NAME input2510 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input2510.ain) # non
 add_test(NAME input3020 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input3020.ain) # energy -1.44244
 add_lowest_eigenvalue_check_test(output3020 input3020 -1.44244 runForinput3020.cout)
 add_test(NAME input3021 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input3021.ain "<gs|c'|P2>") # energy -1.44244
+set_tests_properties(input3021 PROPERTIES DEPENDS input3020)
 add_lowest_eigenvalue_check_test(output3021 input3021 -1.44244 runForinput3021.cout)
 add_test(NAME input3100 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input3100.ain) # energy -13.9973
 add_lowest_eigenvalue_check_test(output3100 input3100 -13.9973 runForinput3100.cout)
@@ -463,6 +474,7 @@ set_tests_properties(recovery_explicit_restart PROPERTIES LABELS RecoverySave RU
 add_test(NAME input9000 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input9000.ain) # energy -0.472136
 add_test(NAME input9001 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input9001.ain "<P0|n|P0>"
 )# in-situ 1 (1.010966,0.000000) 0.500000 <P0|n|P0> (1.000000,0.000000)
+set_tests_properties(input9001 PROPERTIES DEPENDS input9000)
 
 # U=0->U=2 quench unit tests using TargetingExpression + TimeEvolve P.last syntax
 # input9100: GS of H_i (U=0); energy = -sqrt(5) for uniform hopping 0.5

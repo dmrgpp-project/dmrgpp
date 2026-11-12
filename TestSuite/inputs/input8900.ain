@@ -85,7 +85,7 @@ vector BathF=[0.2, 0, 0, 0, 0, 0.2];
 string MatrixSolver="arnoldisai";
 
 # This is where sigma for (A-\sigma * I)^{-1}
-# is specified, so sigma = 0.5 here
+# is specified, so sigma = 0.05 here
 real LanczosB=0.05;
 
 # Maximum dense inversion we allow
