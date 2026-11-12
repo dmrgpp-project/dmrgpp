@@ -43,11 +43,6 @@ DmrgRunner<RealType>::DmrgRunner(const ApplicationType&    app,
 	}
 
 	if (!introspect_only) {
-		if (endDueToClobber(dmrg_solver_params_->options.isSet("noClobber"),
-		                    cmd_line.logfile)) {
-			return;
-		}
-
 		dealWithConsoleOutput(cmd_line.logfile, cmd_line.unbuffered_output);
 
 		if (cmd_line.logfile != "-" && PsimagLite::Concurrency::root()) {
@@ -235,21 +230,6 @@ template <typename RealType> void DmrgRunner<RealType>::setCorrectThreading() co
 
 		ConcurrencyType::setCodeSectionParamsOverride(codeSectionNames[i], threads);
 	}
-}
-
-template <typename RealType>
-bool DmrgRunner<RealType>::endDueToClobber(bool is_no_clobber_set, const std::string& logfile)
-{
-	if (logfile == "-")
-		return false;
-
-	RunFinished runFinished(is_no_clobber_set);
-	if (runFinished.OK(logfile.c_str())) {
-		runFinished.printTermination(logfile.c_str());
-		return true;
-	}
-
-	return false;
 }
 
 template class DmrgRunner<double>;
