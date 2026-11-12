@@ -56,6 +56,7 @@ public:
 
 	const ComplexOrRealType& slowAccess(SizeType ind) const final
 	{
+		assert(ind >= offset_);
 		return v_.fastAccess(sector_, ind - offset_);
 	}
 
