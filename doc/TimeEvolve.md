@@ -46,6 +46,7 @@ keys are:
 | `tau` | `0.1` | Time increment applied when the evolution advances. |
 | `steps` | `3` | Number of equally spaced target vectors used for one time interval. It must be greater than one. Their offsets span 0 through `tau`. |
 | `advanceEach` | number of sites minus 2 | Number of eligible evolution calls between time advances. A positive advance occurs only at a sweep border. Set `0` to disable advancement. `AdvanceEach` and `advanceeach` are accepted aliases. |
+| `startLoop` | `0` | Zero-based finite-loop index before which this evolution does not advance. Its advancement counter begins at the first eligible call in `startLoop`; source availability and `depends` can delay it further. |
 | `algorithm` | `Krylov` | Propagator: `Krylov`, `RungeKutta`, `SuzukiTrotter`, or `Chebyshev:a:b`. The Chebyshev form supplies its two transform parameters. |
 | `EnergyForExp` | current ground-state energy | Energy origin used for the exponential. `energyforexp` is also accepted. |
 | `disposition` | `0` | With `disposition=2`, the source P-vector is destroyed after the first successful time advance. Other values retain it. |
@@ -58,7 +59,18 @@ border.
 
 ## Scheduling and equal-time measurements
 
-Every `TimeEvolve` declaration owns its own clock.  An evolution begins only
+`startLoop` delays an evolution until the requested finite-loop index. Finite
+loops are numbered from zero, so `startLoop=2` allows the first clock tick
+only in the third finite loop or later:
+
+```ainur
+string P1="TimeEvolve{tau=0.1,steps=5,advanceEach=6,startLoop=2}*|P0>";
+```
+
+If the requested loop is beyond the configured finite-loop schedule, the base
+time never advances during that run.
+
+Every `TimeEvolve` declaration owns its own clock. An evolution begins only
 when its source vector is available, so expressions whose sources become
 available at different positions in a sweep can otherwise advance at different
 times.  DMRG++ rejects a braket involving two time-evolved P-vectors if their
