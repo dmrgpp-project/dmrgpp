@@ -312,6 +312,8 @@ public:
 		}
 	}
 
+	PsimagLite::String targetingId() const override { return "Metts"; }
+
 	void read(typename TargetingCommonType::IoInputType& io, PsimagLite::String prefix) override
 	{
 		this->common().readGSandNGSTs(io, prefix, "Metts");

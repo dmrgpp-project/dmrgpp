@@ -258,6 +258,8 @@ public:
 		// taken from end of finiteDmrgLoops
 		checkpoint_.write(pS_, pE_, ioOut);
 		ioOut.createGroup("FinalPsi");
+		ioOut.createGroup("FinalPsi/Provenance");
+		ioOut.write(psi.targetingId(), "FinalPsi/Provenance/TargetingId");
 		psi.write(siteIndices_[stepCurrent], ioOut, "FinalPsi");
 		ioOut.write(lastSign, "LastLoopSign");
 		ioOut.write(PsimagLite::IsComplexNumber<ComplexOrRealType>::True, "IsComplex");

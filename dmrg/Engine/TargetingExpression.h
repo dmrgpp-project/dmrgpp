@@ -238,6 +238,8 @@ public:
 		evolve(energies, direction, block, block, loopNumber);
 	}
 
+	PsimagLite::String targetingId() const override { return "Expression"; }
+
 	void read(typename TargetingCommonType::IoInputType& io, PsimagLite::String prefix) override
 	{
 		VectorRealType pvectorTimes = pvectors_.times(this->common().aoe().tvs());
