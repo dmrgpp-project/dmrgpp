@@ -285,6 +285,19 @@ add_insitu_gold_check_test(
 add_test(NAME input126 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input126.ain) # energy -19.6759
 add_lowest_eigenvalue_check_test(output126 input126 -19.6759 runForinput126.cout)
 add_test(NAME input127 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input127.ain -p 12 "<gs|P0>") # none
+set_tests_properties(input127 PROPERTIES DEPENDS input126)
+add_test(NAME input128 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input128.ain -p 12 "<P0|P1>") # none
+set_tests_properties(input128 PROPERTIES DEPENDS input127)
+add_test(NAME output128_pvector_times
+         COMMAND $<TARGET_FILE:check_hdf5_vector> ${CMAKE_CURRENT_BINARY_DIR}/data128.hd5
+                 FinalPsi/TimeSerializer/PvectorTimes/Values 1e-12 0 0.2 0.225 0.25 0.275 0.3)
+set_tests_properties(output128_pvector_times PROPERTIES DEPENDS input128)
+add_test(NAME input129 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input129.ain -p 12 "<P0|P1>") # none
+set_tests_properties(input129 PROPERTIES DEPENDS input127)
+add_test(NAME output129_pvector_times
+         COMMAND $<TARGET_FILE:check_hdf5_vector> ${CMAKE_CURRENT_BINARY_DIR}/data129.hd5
+                 FinalPsi/TimeSerializer/PvectorTimes/Values 1e-12 0 0 0.025 0.05 0.075 0.1)
+set_tests_properties(output129_pvector_times PROPERTIES DEPENDS input129)
 add_test(NAME input170 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input170.ain) # energy -4.75877
 add_lowest_eigenvalue_check_test(output170 input170 -4.75877 runForinput170.cout)
 add_test(NAME input172 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input172.ain) # energy -7.0
