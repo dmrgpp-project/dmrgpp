@@ -510,15 +510,15 @@ add_test(NAME output9105_pvector_times
 set_tests_properties(output9105_pvector_times PROPERTIES DEPENDS input9105)
 
 add_test(
-  NAME input9106
-  COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input9106.inp
+  NAME input130
+  COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input130.ain
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-set_tests_properties(input9106 PROPERTIES DEPENDS input9103)
+set_tests_properties(input130 PROPERTIES DEPENDS input9103)
 
-add_test(NAME output9106_direct_pvector_time
+add_test(NAME output130_direct_pvector_time
          COMMAND $<TARGET_FILE:check_hdf5_vector> ${CMAKE_CURRENT_BINARY_DIR}/data9106.hd5
                  FinalPsi/TimeSerializer/PvectorTimes/Values 1e-12 0.625 0.625 0.6)
-set_tests_properties(output9106_direct_pvector_time PROPERTIES DEPENDS input9106)
+set_tests_properties(output130_direct_pvector_time PROPERTIES DEPENDS input130)
 
 # Tests for the observe executable
 add_test(NAME observe0002 COMMAND ./observe -l "+r" -f ${PATH_TO_INPUTS}/input2.ain
