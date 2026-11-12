@@ -119,9 +119,6 @@ invocation.
   expected interruption and walltime policy.
 - Treat recovery files as a set. Do not manually rename or partially copy a
   checkpoint if its associated serialized stacks are required.
-- `SolverOptions=noClobber` is not a RecoverySave completion check. It uses
-  the redirected text log's normal-completion marker; it does not inspect HDF5
-  recovery metadata.
 
 The regression fixture is `TestSuite/inputs/input210.ain`. Its tests are
 registered as `recovery_auto_resume`, `recovery_terminal_rerun`, and
