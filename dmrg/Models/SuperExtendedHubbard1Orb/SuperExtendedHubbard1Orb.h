@@ -201,7 +201,7 @@ protected:
 
 		const bool spinOrbit = (superGeometry_.geometry().term(0).orbitals(0) == 2);
 		if (spinOrbit) {
-			ModelTermType& so = ModelBaseType::createTerm("SpinOrbit");
+			ModelTermType& so = ModelBaseType::createTerm("SpinOrbit", true);
 			// spin dependence of the hopping parameter (spin orbit)
 			OpForLinkType cup("c", 0, 0);
 			OpForLinkType cdown("c", 1, 1);
@@ -217,7 +217,7 @@ protected:
 
 		const bool isSu2 = BasisType::useSu2Symmetry();
 
-		ModelTermType& spsm = ModelBaseType::createTerm("SplusSminus");
+		ModelTermType& spsm = ModelBaseType::createTerm("SplusSminus", true);
 		OpForLinkType  splus("splus");
 
 		spsm.push(
@@ -229,7 +229,7 @@ protected:
 		    { value *= (isSu2) ? -0.5 : 0.5; },
 		    typename ModelTermType::Su2Properties(2, -1, 2));
 
-		ModelTermType& szsz = ModelBaseType::createTerm("szsz");
+		ModelTermType& szsz = ModelBaseType::createTerm("szsz", true);
 		OpForLinkType  sz("sz");
 
 		szsz.push(sz,
@@ -242,7 +242,7 @@ protected:
 				          value = -value;
 		          });
 
-		ModelTermType& pp = ModelBaseType::createTerm("PairPair");
+		ModelTermType& pp = ModelBaseType::createTerm("PairPair", true);
 		OpForLinkType  pair("pair");
 
 		pp.push(pair, 'N', pair, 'C', typename ModelTermType::Su2Properties(2, 1, 2));
@@ -258,7 +258,7 @@ private:
 	void addInteractionAssistedHopping()
 	{
 		assert(extension_ == "InteractionAssistedHopping");
-		ModelTermType& iah = ModelBaseType::createTerm("InteractionAssistedHopping");
+		ModelTermType& iah = ModelBaseType::createTerm("InteractionAssistedHopping", true);
 
 		OpForLinkType cdn0("cdn", 0);
 		OpForLinkType cdn1("cdn", 1);

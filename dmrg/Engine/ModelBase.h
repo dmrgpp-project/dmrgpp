@@ -677,8 +677,8 @@ for (SizeType dof = 0; dof < numberOfDofs; ++dof) {
 	}
 
 	static ModelTermType& createTerm(PsimagLite::String name,
-	                                 bool               wantsHermitian = true,
-	                                 PsimagLite::String geometryFrom   = "")
+	                                 bool               wantsHermitian,
+	                                 PsimagLite::String geometryFrom = "")
 	{
 		return modelLinks_.createTerm(name, wantsHermitian, geometryFrom);
 	}
