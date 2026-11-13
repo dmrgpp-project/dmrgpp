@@ -27,12 +27,12 @@ if(NOT seed_result EQUAL 0)
   message(FATAL_ERROR "RecoverySave seed run failed:\n${seed_stdout}${seed_stderr}")
 endif()
 
-set(recovery_file "${WORK_ROOT}/seed/Recovery23data210.hd5")
+set(recovery_file "${WORK_ROOT}/seed/Recovery24data210.hd5")
 if(NOT EXISTS "${recovery_file}")
   message(FATAL_ERROR "Expected retained nonterminal recovery file is missing: ${recovery_file}")
 endif()
 file(COPY "${recovery_file}" DESTINATION "${WORK_ROOT}/resume")
-file(COPY "${recovery_file}" DESTINATION "${WORK_ROOT}/explicit")
+file(COPY "${WORK_ROOT}/seed/Recovery23data210.hd5" DESTINATION "${WORK_ROOT}/explicit")
 file(COPY "${WORK_ROOT}/seed/Recovery24data210.hd5" DESTINATION "${WORK_ROOT}/explicit")
 
 execute_process(
@@ -90,7 +90,7 @@ if(NOT explicit_output MATCHES "Finite loop number 24 with l=6")
 endif()
 
 file(READ "${resume_log}" resume_log_output)
-if(NOT resume_log_output MATCHES "RecoverySave: recovering from Recovery23data210.hd5")
+if(NOT resume_log_output MATCHES "RecoverySave: recovering from Recovery24data210.hd5")
   message(FATAL_ERROR "Automatic RecoverySave resume did not report its recovery file in ${resume_log}")
 endif()
 
