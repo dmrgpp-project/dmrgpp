@@ -9,7 +9,7 @@ manual.tex: manual.ptex ../README.md  $(FILES)
 	find ../dmrg -iname "*.h" -or -iname "*.cpp" |\
               perl ../PsimagLite/scripts/doc.pl manual.ptex
 
-manual.pdf: manual.tex ../README.md ../src/*h ../src/Engine/*h ../src/*cpp
+manual.pdf: manual.tex ../README.md ../dmrg/*h ../dmrg/Engine/*h ../dmrg/*cpp
 	pdflatex manual.tex
 	bibtex manual.aux
 	pdflatex manual.tex
