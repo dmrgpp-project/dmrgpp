@@ -170,6 +170,7 @@ struct ParametersDmrgSolver {
 	SizeType                      gemmRnb;
 	SizeType                      opOnSiteThreshold;
 	bool                          autoRestart;
+	bool                          autoRestartCompleted;
 	TruncationControlType         truncationControl;
 	PsimagLite::String            filename;
 	PsimagLite::String            version;
@@ -239,6 +240,7 @@ struct ParametersDmrgSolver {
 	    , gemmRnb(0)
 	    , opOnSiteThreshold(0)
 	    , autoRestart(false)
+	    , autoRestartCompleted(false)
 	    , options("SolverOptions=", io)
 	    , recoverySave("")
 	    , adjustQuantumNumbers(0, QnType(false, VectorSizeType(), PairSizeType(0, 0), 0))
@@ -622,7 +624,7 @@ struct ParametersDmrgSolver {
 
 	int autoNumberFirst(SizeType numberOfSites, SizeType lastSite) const
 	{
-		bool isRestart   = this->options.isSet("restart");
+		bool isRestart   = this->options.isSet("restart") || autoRestart;
 		bool allinsystem = this->options.isSet("geometryallinsystem");
 		if (isRestart || allinsystem) {
 
