@@ -298,6 +298,11 @@ add_test(NAME output129_pvector_times
          COMMAND $<TARGET_FILE:check_hdf5_vector> ${CMAKE_CURRENT_BINARY_DIR}/data129.hd5
                  FinalPsi/TimeSerializer/PvectorTimes/Values 1e-12 0 0 0.025 0.05 0.075 0.1)
 set_tests_properties(output129_pvector_times PROPERTIES DEPENDS input129)
+add_test(NAME input132 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input132.inp -p 12 "<P1|nup|P1>")
+set_tests_properties(input132 PROPERTIES DEPENDS input123)
+add_test(NAME output132_source_time
+         COMMAND sh -c "grep -q ' 0.500000000000 <P1|nup|P1>' ${CMAKE_CURRENT_BINARY_DIR}/runForinput132.cout")
+set_tests_properties(output132_source_time PROPERTIES DEPENDS input132)
 add_test(NAME input170 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input170.ain) # energy -4.75877
 add_lowest_eigenvalue_check_test(output170 input170 -4.75877 runForinput170.cout)
 add_test(NAME input172 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input172.ain) # energy -7.0
