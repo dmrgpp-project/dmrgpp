@@ -285,6 +285,24 @@ add_insitu_gold_check_test(
 add_test(NAME input126 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input126.ain) # energy -19.6759
 add_lowest_eigenvalue_check_test(output126 input126 -19.6759 runForinput126.cout)
 add_test(NAME input127 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input127.ain -p 12 "<gs|P0>") # none
+set_tests_properties(input127 PROPERTIES DEPENDS input126)
+add_test(NAME input128 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input128.ain -p 12 "<P0|P1>") # none
+set_tests_properties(input128 PROPERTIES DEPENDS input127)
+add_test(NAME output128_pvector_times
+         COMMAND $<TARGET_FILE:check_hdf5_vector> ${CMAKE_CURRENT_BINARY_DIR}/data128.hd5
+                 FinalPsi/TimeSerializer/PvectorTimes/Values 1e-12 0 0.2 0.225 0.25 0.275 0.3)
+set_tests_properties(output128_pvector_times PROPERTIES DEPENDS input128)
+add_test(NAME input129 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input129.ain -p 12 "<P0|P1>") # none
+set_tests_properties(input129 PROPERTIES DEPENDS input127)
+add_test(NAME output129_pvector_times
+         COMMAND $<TARGET_FILE:check_hdf5_vector> ${CMAKE_CURRENT_BINARY_DIR}/data129.hd5
+                 FinalPsi/TimeSerializer/PvectorTimes/Values 1e-12 0 0 0.025 0.05 0.075 0.1)
+set_tests_properties(output129_pvector_times PROPERTIES DEPENDS input129)
+add_test(NAME input132 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input132.inp -p 12 "<P1|nup|P1>")
+set_tests_properties(input132 PROPERTIES DEPENDS input123)
+add_test(NAME output132_source_time
+         COMMAND sh -c "grep -q ' 0.500000000000 <P1|nup|P1>' ${CMAKE_CURRENT_BINARY_DIR}/runForinput132.cout")
+set_tests_properties(output132_source_time PROPERTIES DEPENDS input132)
 add_test(NAME input170 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input170.ain) # energy -4.75877
 add_lowest_eigenvalue_check_test(output170 input170 -4.75877 runForinput170.cout)
 add_test(NAME input172 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input172.ain) # energy -7.0
@@ -418,6 +436,29 @@ foreach(test_name IN LISTS _isolated_dmrg_test_names)
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${test_name})
   set_tests_properties(${test_name} PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${test_name})
 endforeach()
+
+set(_recovery_save_tests_dir ${CMAKE_CURRENT_BINARY_DIR}/recovery_save_tests)
+
+function(add_recovery_save_test name script)
+  add_test(
+    NAME ${name}
+    COMMAND
+      ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg> -DINPUT_FILE=${PATH_TO_INPUTS}/input210.ain
+      -DWORK_ROOT=${_recovery_save_tests_dir}/${name} -DCHECK_VALUE_EXECUTABLE=$<TARGET_FILE:check_value> -P
+      ${CMAKE_SOURCE_DIR}/TestSuite/${script})
+  set_tests_properties(${name} PROPERTIES LABELS RecoverySave RUN_SERIAL TRUE)
+endfunction()
+
+add_recovery_save_test(recovery_auto_resume checkRecoveryAutoResume.cmake)
+add_recovery_save_test(recovery_terminal_rerun checkRecoveryTerminalRerun.cmake)
+add_recovery_save_test(recovery_ring_wrap checkRecoveryRingWrap.cmake)
+add_test(
+  NAME recovery_explicit_restart
+  COMMAND
+    ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg> -DINPUT211_FILE=${PATH_TO_INPUTS}/input211.ain
+    -DINPUT212_FILE=${PATH_TO_INPUTS}/input212.ain -DWORK_ROOT=${_recovery_save_tests_dir}/recovery_explicit_restart -P
+    ${CMAKE_SOURCE_DIR}/TestSuite/checkRecoveryExplicitRestart.cmake)
+set_tests_properties(recovery_explicit_restart PROPERTIES LABELS RecoverySave RUN_SERIAL TRUE)
 
 add_test(NAME input9000 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input9000.ain) # energy -0.472136
 add_test(NAME input9001 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input9001.ain "<P0|n|P0>"

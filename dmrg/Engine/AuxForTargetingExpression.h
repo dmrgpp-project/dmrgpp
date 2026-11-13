@@ -34,12 +34,14 @@ public:
 	                          GroupOfOneTimeEvolutionsType& timeEvolve,
 	                          ProgramGlobals::DirectionEnum dir,
 	                          RealType                      Eg,
-	                          SizeType                      currentCoo)
+	                          SizeType                      currentCoo,
+	                          SizeType                      loopNumber)
 	    : pVectors_(pVectors)
 	    , timeEvolve_(timeEvolve)
 	    , direction_(dir)
 	    , Eg_(Eg)
 	    , currentCoo_(currentCoo)
+	    , loopNumber_(loopNumber)
 	    , pIndexOutput_(0)
 	{ }
 
@@ -54,6 +56,8 @@ public:
 	const RealType& Eg() const { return Eg_; }
 
 	SizeType currentCoO() const { return currentCoo_; }
+
+	SizeType loopNumber() const { return loopNumber_; }
 
 	SizeType pIndexOutput() const { return pIndexOutput_; }
 
@@ -147,6 +151,7 @@ private:
 	ProgramGlobals::DirectionEnum      direction_;
 	RealType                           Eg_;
 	SizeType                           currentCoo_;
+	SizeType                           loopNumber_;
 	SizeType                           pIndexOutput_;
 	mutable VectorVectorWithOffsetType tempVectors_;
 	mutable VectorStringType           tempNames_;
