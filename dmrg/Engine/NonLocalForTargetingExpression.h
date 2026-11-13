@@ -128,6 +128,9 @@ private:
 	                        RealType                     tau,
 	                        SizeType                     loopNumber)
 	{
+		// The propagator needs the source time even while its clock is held.
+		synchronizeCurrentTime(oneTimeEvolution);
+
 		if (loopNumber < startLoop)
 			return false;
 
@@ -152,9 +155,7 @@ private:
 			oneTimeEvolution.incrementTimesWithoutAdvancement();
 		}
 
-		TimeVectorsBaseType* ptr
-		    = const_cast<TimeVectorsBaseType*>(&aux_.pVectors().aoe().timeVectors());
-		ptr->setCurrentTime(oneTimeEvolution.time());
+		synchronizeCurrentTime(oneTimeEvolution);
 
 		PsimagLite::OstringStream msgg2(std::cout.precision());
 		msgg2() << "Steps without advance: " << oneTimeEvolution.timesWithoutAdvancement();
@@ -162,6 +163,13 @@ private:
 		if (oneTimeEvolution.timesWithoutAdvancement() > 0)
 			progress_.printline(msgg2, std::cout);
 		return timeHasAdvanced;
+	}
+
+	void synchronizeCurrentTime(const OneTimeEvolutionType& oneTimeEvolution)
+	{
+		TimeVectorsBaseType* ptr
+		    = const_cast<TimeVectorsBaseType*>(&aux_.pVectors().aoe().timeVectors());
+		ptr->setCurrentTime(oneTimeEvolution.time());
 	}
 
 	bool passDepends(const std::vector<SizeType>& depends)

@@ -152,6 +152,7 @@ Page* where more or less this feature is used: 2230
 127) argetingExpresion with useComplex: from 126
 128) TargetingExpression with useComplex: TimeEvolve from 127, delayed with startLoop=2
 129) TargetingExpression with useComplex: TimeEvolve from 127, held beyond the finite-loop schedule
+132) TargetingExpression: startLoop preserves a restarted source P-vector's time
 #120 to 149 reserved for TargetingExpresion and related
 #150 to 199 reserved for testing the input system
 150) Replacement
