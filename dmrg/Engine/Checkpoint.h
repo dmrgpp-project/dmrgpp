@@ -158,7 +158,7 @@ public:
 			throw PsimagLite::RuntimeError(str);
 		}
 
-		{
+		if (!parameters_.autoRestart || parameters_.options.isSet("restart")) {
 			VectorFiniteLoopType vfl;
 			checkFiniteLoops(
 			    vfl, model.superGeometry().numberOfSites(), hilbertOneSite, ioIn);

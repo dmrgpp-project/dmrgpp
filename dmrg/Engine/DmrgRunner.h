@@ -72,6 +72,7 @@ private:
 	InputNgType::Readable*     io_;
 	ParametersDmrgSolverType*  dmrg_solver_params_;
 	PsimagLite::RedirectOutput redirect_output_;
+	bool                       skipRun_;
 	mutable Timing             timing_;
 };
 }

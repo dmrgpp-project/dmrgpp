@@ -25,48 +25,71 @@ public:
 	{
 		const SizeType len = str_.length();
 		String         tempBuffer;
-		String         status = "closed";
-		char           prev   = '\0';
+		bool           parensOpen = false;
+		SizeType       bracesOpen = 0;
+		char           prev       = '\0';
 		for (SizeType i = 0; i < len; ++i) {
+			const char c = str_[i];
 
-			if (str_[i] == '-' && i > 0) {
+			if (bracesOpen > 0) {
+				mainBuffer_ += c;
+				if (c == '{')
+					++bracesOpen;
+				else if (c == '}')
+					--bracesOpen;
+				continue;
+			}
+
+			if (c == '{') {
+				mainBuffer_ += c;
+				++bracesOpen;
+				continue;
+			}
+
+			if (c == '}')
+				throw RuntimeError("Unbalanced braces, closed\n");
+
+			if (c == '-' && i > 0) {
 				if (prev != '(' && prev != '+') {
 					throw RuntimeError("The - sign must be preceded by "
 					                   "nothing, parens, or +\n");
 				}
 			}
 
-			prev = str_[i];
+			prev = c;
 
-			if (str_[i] == '(') {
-				if (status == "open")
+			if (c == '(') {
+				if (parensOpen)
 					throw RuntimeError("Too many parens levels (one only "
 					                   "supported for now)\n");
-				status = "open";
+				parensOpen = true;
 				continue;
 			}
 
-			if (str_[i] == ')') {
-				if (status == "closed")
+			if (c == ')') {
+				if (!parensOpen)
 					throw RuntimeError("Unbalanced parens, closed\n");
-				status = "closed";
+				parensOpen = false;
 				mainBuffer_ += "@" + ttos(ats_.size()) + "@";
 				ats_.push_back(tempBuffer);
 				tempBuffer = "";
 				continue;
 			}
 
-			if (status == "closed") {
-				mainBuffer_ += str_[i];
+			if (!parensOpen) {
+				mainBuffer_ += c;
 			} else {
-				tempBuffer += str_[i];
+				tempBuffer += c;
 			}
 		}
 
-		if (status == "open")
+		if (bracesOpen > 0)
+			throw RuntimeError("Unbalanced braces, open\n");
+
+		if (parensOpen)
 			throw RuntimeError("Unbalanced parens, open\n");
 
-		split(terms_, mainBuffer_, "+");
+		splitTopLevel(terms_, mainBuffer_, '+');
 
 		const SizeType nscalars = ats_.size();
 		cachedValues_.resize(nscalars);
@@ -76,6 +99,36 @@ public:
 	}
 
 	SizeType numberOfTerms() const { return terms_.size(); }
+
+	static void splitTopLevel(VectorStringType& terms, const String& str, char separator)
+	{
+		terms.clear();
+		String   term;
+		SizeType bracesOpen = 0;
+		for (SizeType i = 0; i < str.length(); ++i) {
+			const char c = str[i];
+			if (c == '{') {
+				++bracesOpen;
+			} else if (c == '}') {
+				if (bracesOpen == 0)
+					throw RuntimeError("Unbalanced braces, closed\n");
+				--bracesOpen;
+			}
+
+			if (c == separator && bracesOpen == 0) {
+				terms.push_back(term);
+				term = "";
+				continue;
+			}
+
+			term += c;
+		}
+
+		if (bracesOpen > 0)
+			throw RuntimeError("Unbalanced braces, open\n");
+
+		terms.push_back(term);
+	}
 
 	const String& term(SizeType i) const
 	{
