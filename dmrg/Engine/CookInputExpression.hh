@@ -161,13 +161,14 @@ private:
 			err("findValueFor(): not a table\n");
 		}
 
+		RealType eps = 1e-6;
 		for (SizeType i = 0; i < rows; ++i) {
-			if (matrix(i, 0) == t) {
+			if (std::fabs(matrix(i, 0) - t) < eps) {
 				return matrix(i, 1);
 			}
 		}
 
-		throw std::runtime_error("Value not found in table\n");
+		throw std::runtime_error("Value for time = " + ttos(t) + " not found in table\n");
 	}
 
 	// The input params object

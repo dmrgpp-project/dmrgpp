@@ -59,6 +59,8 @@ public:
 
 	SizeType advanceEach() const { return timeParams_.advanceEach; }
 
+	SizeType startLoop() const { return timeParams_.startLoop; }
+
 	const std::string& algorithm() const { return timeParams_.algo; }
 
 	const VectorRealType& chebyTransform() const { return timeParams_.chebyTransform; }
@@ -97,6 +99,7 @@ private:
 		    : timeSteps(3)
 		    , tau(0.1)
 		    , advanceEach(nsites - 2)
+		    , startLoop(0)
 		    , algo("Krylov")
 		    , disposition(0)
 		    , Eg(Eg1)
@@ -105,6 +108,7 @@ private:
 		SizeType       timeSteps;
 		RealType       tau = 0.1;
 		SizeType       advanceEach;
+		SizeType       startLoop;
 		std::string    algo;
 		VectorRealType chebyTransform;
 		SizeType       disposition;
@@ -143,6 +147,8 @@ private:
 				continue;
 			if (key == "advanceEach" || key == "AdvanceEach" || key == "advanceeach") {
 				timeParams.advanceEach = std::stoul(value);
+			} else if (key == "startLoop") {
+				timeParams.startLoop = std::stoul(value);
 			} else if (key == "tau") {
 				timeParams.tau = static_cast<RealType>(std::stod(value));
 			} else if (key == "disposition") {
