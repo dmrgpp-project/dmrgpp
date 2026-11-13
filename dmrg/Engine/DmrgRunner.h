@@ -12,7 +12,6 @@
 #include "ParametersDmrgSolver.h"
 #include "ProgramGlobals.h"
 #include "Qn.h"
-#include "RunFinished.h"
 #include "SuperGeometry.h"
 #include <PsimagLite/CrsMatrix.h>
 #include <PsimagLite/PsimagLite.h>
@@ -65,13 +64,12 @@ private:
 
 	void setCorrectThreading() const;
 
-	static bool endDueToClobber(bool is_no_clobber_set, const std::string& logfile);
-
 	const ApplicationType&     application_;
 	InputCheck                 inputCheck_;
 	InputNgType::Readable*     io_;
 	ParametersDmrgSolverType*  dmrg_solver_params_;
 	PsimagLite::RedirectOutput redirect_output_;
+	bool                       skipRun_;
 	mutable Timing             timing_;
 };
 }

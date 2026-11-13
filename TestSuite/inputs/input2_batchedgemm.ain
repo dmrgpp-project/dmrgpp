@@ -13,7 +13,7 @@ Model="HubbardOneBand";
 SolverOptions="BatchedGemm";
 integer DenseSparseThreshold=0;
 Version="53725d9b8f22615ccccc782082f4cd6f51a4e374";
-OutputFile="data2";
+OutputFile="data2_batchedgemm";
 InfiniteLoopKeptStates=50;
 FiniteLoops=[[@auto, 100, 0],
 [@auto, 150, 0],

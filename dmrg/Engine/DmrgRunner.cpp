@@ -14,6 +14,7 @@ DmrgRunner<RealType>::DmrgRunner(const ApplicationType&    app,
     : application_(app)
     , io_(nullptr)
     , dmrg_solver_params_(nullptr)
+    , skipRun_(false)
 {
 	// io_ doesn't need ioWritable past its construction, else
 	// we would have to store it as member data
@@ -35,19 +36,23 @@ DmrgRunner<RealType>::DmrgRunner(const ApplicationType&    app,
 	}
 
 	adjustDmrgSolverParams(insitu, cmd_line.precision, nthreads);
+	if (dmrg_solver_params_->autoRestartCompleted) {
+		std::cout << "RecoverySave: checkpoint already completed; exiting.\n";
+		skipRun_ = true;
+		return;
+	}
 
 	if (!introspect_only) {
-		if (endDueToClobber(dmrg_solver_params_->options.isSet("noClobber"),
-		                    cmd_line.logfile)) {
-			return;
-		}
-
 		dealWithConsoleOutput(cmd_line.logfile, cmd_line.unbuffered_output);
 
 		if (cmd_line.logfile != "-" && PsimagLite::Concurrency::root()) {
 			Provenance provenance;
 			std::cout << provenance;
 		}
+
+		if (dmrg_solver_params_->autoRestart)
+			std::cout << "RecoverySave: recovering from "
+			          << dmrg_solver_params_->checkpoint.filename() << "\n";
 
 		constexpr bool PRINT_HEADER = true;
 		application_.base64encode(std::cout, data, PRINT_HEADER);
@@ -76,6 +81,9 @@ template <typename RealType> void DmrgRunner<RealType>::doOneRun() const
 template <typename RealType>
 void DmrgRunner<RealType>::doOneRun(OptionsForIntrospect& op_options) const
 {
+	if (skipRun_)
+		return;
+
 	const auto start = std::chrono::steady_clock::now();
 
 	assert(dmrg_solver_params_);
@@ -222,21 +230,6 @@ template <typename RealType> void DmrgRunner<RealType>::setCorrectThreading() co
 
 		ConcurrencyType::setCodeSectionParamsOverride(codeSectionNames[i], threads);
 	}
-}
-
-template <typename RealType>
-bool DmrgRunner<RealType>::endDueToClobber(bool is_no_clobber_set, const std::string& logfile)
-{
-	if (logfile == "-")
-		return false;
-
-	RunFinished runFinished(is_no_clobber_set);
-	if (runFinished.OK(logfile.c_str())) {
-		runFinished.printTermination(logfile.c_str());
-		return true;
-	}
-
-	return false;
 }
 
 template class DmrgRunner<double>;

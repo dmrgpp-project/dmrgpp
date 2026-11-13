@@ -178,7 +178,7 @@ add_test(NAME input2 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input2.ain)
 add_lowest_eigenvalue_check_test(output2 input2 -9.51754 runForinput2.cout)
 
 add_test(NAME input2_batchedgemm COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input2_batchedgemm.ain)
-add_lowest_eigenvalue_check_test(output2_batchedgemm input2_batched_gemm -9.51754 runForinput2_batchedgemm.cout)
+add_lowest_eigenvalue_check_test(output2_batchedgemm input2_batchedgemm -9.51754 runForinput2_batchedgemm.cout)
 
 add_test(NAME input4 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input4.ain) # energy -15.9938
 add_lowest_eigenvalue_check_test(output4 input4 -15.9938 runForinput4.cout)
@@ -209,6 +209,7 @@ add_insitu_gold_check_test(
   TOLERANCE
   2e-5)
 add_test(NAME input22 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input22.ain "<gs|sz|P0>") # none
+set_tests_properties(input22 PROPERTIES DEPENDS input21)
 add_test(NAME input30 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input30.ain) # energy -4.29307
 add_lowest_eigenvalue_check_test(output30 input30 -4.29307 runForinput30.cout)
 add_test(NAME input31 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input31.ain) # energy -3.37493
@@ -228,6 +229,7 @@ add_lowest_eigenvalue_check_test(output61 input61 -5.75007 runForinput61.cout)
 add_test(NAME input62 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input62.ain) # energy -3.73168
 add_lowest_eigenvalue_check_test(output62 input62 -3.73168 runForinput62.cout)
 add_test(NAME input63 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input63.ain) # none
+set_tests_properties(input63 PROPERTIES DEPENDS input62)
 add_test(NAME input70 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input70.ain) # energy -9.28874
 add_lowest_eigenvalue_check_test(output70 input70 -9.28874 runForinput70.cout)
 add_test(NAME input71 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input71.ain) # energy -9.74163
@@ -235,6 +237,7 @@ add_lowest_eigenvalue_check_test(output71 input71 -9.74163 runForinput71.cout)
 add_test(NAME input72 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input72.ain) # energy -4.47214
 add_lowest_eigenvalue_check_test(output72 input72 -4.47214 runForinput72.cout)
 add_test(NAME input73 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input73.ain) # energy -4.47214
+set_tests_properties(input73 PROPERTIES DEPENDS input72)
 add_lowest_eigenvalue_check_test(output73 input73 -4.47214 runForinput73.cout)
 add_test(NAME input74 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input74.ain) # energy -0.707712
 add_lowest_eigenvalue_check_test(output74 input74 -0.707712 runForinput74.cout)
@@ -244,11 +247,13 @@ set_tests_properties(input74_dmrg_version PROPERTIES DEPENDS input74 PASS_REGULA
 add_test(NAME input75 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input75.ain) # energy -2.80627
 add_lowest_eigenvalue_check_test(output75 input75 -2.80627 runForinput75.cout)
 add_test(NAME input76 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input76.ain) # energy -0.707712
+set_tests_properties(input76 PROPERTIES DEPENDS input75)
 # input76 is a restart check only; no g.s. computation
 set_tests_properties(input76 PROPERTIES FAIL_REGULAR_EXPRESSION "FiniteLoopLengths=")
 add_test(NAME input77 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input77.ain) # energy -2.80627
 add_lowest_eigenvalue_check_test(output77 input77 -2.80627 runForinput77.cout)
 add_test(NAME input78 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input78.ain) # energy -0.707712
+set_tests_properties(input78 PROPERTIES DEPENDS input77)
 # input78 is a restart check only; no g.s. computation
 add_test(NAME input80 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input80.ain) # energy -7.37027
 add_lowest_eigenvalue_check_test(output80 input80 -7.37027 runForinput80.cout)
@@ -268,7 +273,9 @@ add_test(NAME output9121_P1cP2 COMMAND sh -c "grep -q '<P1|c|P2>' ${CMAKE_CURREN
 set_tests_properties(output9121_P1cP2 PROPERTIES DEPENDS input9121)
 
 add_test(NAME input121 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input121.ain -p 12 "<gs|P0>") # none
+set_tests_properties(input121 PROPERTIES DEPENDS input120)
 add_test(NAME input122 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input122.ain -p 12 "<gs|P0>,<gs|P1>,<P0|P1>") # none
+set_tests_properties(input122 PROPERTIES DEPENDS input120)
 add_test(NAME input123 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input123.ain -p 12
                                "<gs|P0>,<P0|P1>,<gs|c'|P2>,<gs|c'|P3>,<P2|P3>") # none
 set_tests_properties(input123 PROPERTIES DEPENDS input120)
@@ -285,6 +292,24 @@ add_insitu_gold_check_test(
 add_test(NAME input126 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input126.ain) # energy -19.6759
 add_lowest_eigenvalue_check_test(output126 input126 -19.6759 runForinput126.cout)
 add_test(NAME input127 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input127.ain -p 12 "<gs|P0>") # none
+set_tests_properties(input127 PROPERTIES DEPENDS input126)
+add_test(NAME input128 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input128.ain -p 12 "<P0|P1>") # none
+set_tests_properties(input128 PROPERTIES DEPENDS input127)
+add_test(NAME output128_pvector_times
+         COMMAND $<TARGET_FILE:check_hdf5_vector> ${CMAKE_CURRENT_BINARY_DIR}/data128.hd5
+                 FinalPsi/TimeSerializer/PvectorTimes/Values 1e-12 0 0.2 0.225 0.25 0.275 0.3)
+set_tests_properties(output128_pvector_times PROPERTIES DEPENDS input128)
+add_test(NAME input129 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input129.ain -p 12 "<P0|P1>") # none
+set_tests_properties(input129 PROPERTIES DEPENDS input127)
+add_test(NAME output129_pvector_times
+         COMMAND $<TARGET_FILE:check_hdf5_vector> ${CMAKE_CURRENT_BINARY_DIR}/data129.hd5
+                 FinalPsi/TimeSerializer/PvectorTimes/Values 1e-12 0 0 0.025 0.05 0.075 0.1)
+set_tests_properties(output129_pvector_times PROPERTIES DEPENDS input129)
+add_test(NAME input132 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input132.inp -p 12 "<P1|nup|P1>")
+set_tests_properties(input132 PROPERTIES DEPENDS input123)
+add_test(NAME output132_source_time
+         COMMAND sh -c "grep -q ' 0.500000000000 <P1|nup|P1>' ${CMAKE_CURRENT_BINARY_DIR}/runForinput132.cout")
+set_tests_properties(output132_source_time PROPERTIES DEPENDS input132)
 add_test(NAME input170 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input170.ain) # energy -4.75877
 add_lowest_eigenvalue_check_test(output170 input170 -4.75877 runForinput170.cout)
 add_test(NAME input172 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input172.ain) # energy -7.0
@@ -309,6 +334,7 @@ add_lowest_eigenvalue_check_test(output351 input351 -0.408019 runForinput351.cou
 add_test(NAME input355 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input355.ain) # energy -37.03
 add_lowest_eigenvalue_check_test(output355 input355 -37.03 runForinput355.cout)
 add_test(NAME input356 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input356.ain) # none
+set_tests_properties(input356 PROPERTIES DEPENDS input355)
 add_test(NAME input501 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input501.ain) # energy -6.77334
 add_lowest_eigenvalue_check_test(output501 input501 -6.77334 runForinput501.cout)
 add_test(NAME input550 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input550.ain) # energy -4.66667
@@ -327,7 +353,9 @@ add_lowest_eigenvalue_check_test(output1600 input1600 -9.51746 runForinput1600.c
 add_test(NAME input1814 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input1814.ain) # energy -6.0
 add_lowest_eigenvalue_check_test(output1814 input1814 -6.0 runForinput1814.cout)
 add_test(NAME input1815 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input1815.ain) # none
+set_tests_properties(input1815 PROPERTIES DEPENDS input1814)
 add_test(NAME input1817 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input1817.ain) # none
+set_tests_properties(input1817 PROPERTIES DEPENDS input1814)
 # input1818 and 1819 --> too slow (disabled)
 # add_test(NAME input1818 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input1818.ain)
 # add_test(NAME input1819 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input1819.ain)
@@ -339,6 +367,7 @@ add_test(NAME input2510 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input2510.ain) # non
 add_test(NAME input3020 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input3020.ain) # energy -1.44244
 add_lowest_eigenvalue_check_test(output3020 input3020 -1.44244 runForinput3020.cout)
 add_test(NAME input3021 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input3021.ain "<gs|c'|P2>") # energy -1.44244
+set_tests_properties(input3021 PROPERTIES DEPENDS input3020)
 add_lowest_eigenvalue_check_test(output3021 input3021 -1.44244 runForinput3021.cout)
 add_test(NAME input3100 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input3100.ain) # energy -13.9973
 add_lowest_eigenvalue_check_test(output3100 input3100 -13.9973 runForinput3100.cout)
@@ -419,9 +448,33 @@ foreach(test_name IN LISTS _isolated_dmrg_test_names)
   set_tests_properties(${test_name} PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${test_name})
 endforeach()
 
+set(_recovery_save_tests_dir ${CMAKE_CURRENT_BINARY_DIR}/recovery_save_tests)
+
+function(add_recovery_save_test name script)
+  add_test(
+    NAME ${name}
+    COMMAND
+      ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg> -DINPUT_FILE=${PATH_TO_INPUTS}/input210.ain
+      -DWORK_ROOT=${_recovery_save_tests_dir}/${name} -DCHECK_VALUE_EXECUTABLE=$<TARGET_FILE:check_value> -P
+      ${CMAKE_SOURCE_DIR}/TestSuite/${script})
+  set_tests_properties(${name} PROPERTIES LABELS RecoverySave RUN_SERIAL TRUE)
+endfunction()
+
+add_recovery_save_test(recovery_auto_resume checkRecoveryAutoResume.cmake)
+add_recovery_save_test(recovery_terminal_rerun checkRecoveryTerminalRerun.cmake)
+add_recovery_save_test(recovery_ring_wrap checkRecoveryRingWrap.cmake)
+add_test(
+  NAME recovery_explicit_restart
+  COMMAND
+    ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg> -DINPUT211_FILE=${PATH_TO_INPUTS}/input211.ain
+    -DINPUT212_FILE=${PATH_TO_INPUTS}/input212.ain -DWORK_ROOT=${_recovery_save_tests_dir}/recovery_explicit_restart -P
+    ${CMAKE_SOURCE_DIR}/TestSuite/checkRecoveryExplicitRestart.cmake)
+set_tests_properties(recovery_explicit_restart PROPERTIES LABELS RecoverySave RUN_SERIAL TRUE)
+
 add_test(NAME input9000 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input9000.ain) # energy -0.472136
 add_test(NAME input9001 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input9001.ain "<P0|n|P0>"
 )# in-situ 1 (1.010966,0.000000) 0.500000 <P0|n|P0> (1.000000,0.000000)
+set_tests_properties(input9001 PROPERTIES DEPENDS input9000)
 
 # U=0->U=2 quench unit tests using TargetingExpression + TimeEvolve P.last syntax
 # input9100: GS of H_i (U=0); energy = -sqrt(5) for uniform hopping 0.5
@@ -469,15 +522,15 @@ add_test(NAME output9105_pvector_times
 set_tests_properties(output9105_pvector_times PROPERTIES DEPENDS input9105)
 
 add_test(
-  NAME input9106
-  COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input9106.inp
+  NAME input130
+  COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input130.ain
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-set_tests_properties(input9106 PROPERTIES DEPENDS input9103)
+set_tests_properties(input130 PROPERTIES DEPENDS input9103)
 
-add_test(NAME output9106_direct_pvector_time
+add_test(NAME output130_direct_pvector_time
          COMMAND $<TARGET_FILE:check_hdf5_vector> ${CMAKE_CURRENT_BINARY_DIR}/data9106.hd5
                  FinalPsi/TimeSerializer/PvectorTimes/Values 1e-12 0.625 0.625 0.6)
-set_tests_properties(output9106_direct_pvector_time PROPERTIES DEPENDS input9106)
+set_tests_properties(output130_direct_pvector_time PROPERTIES DEPENDS input130)
 
 # Tests for the observe executable
 add_test(NAME observe0002 COMMAND ./observe -l "+r" -f ${PATH_TO_INPUTS}/input2.ain
