@@ -301,7 +301,7 @@ public:
 		     &rightSize_array,
 		     &basis1,
 		     &basis2,
-		     this](SizeType pspe, SizeType)
+		     this](SizeType pspe, SizeType, const Kokkos::DefaultExecutionSpace&)
 		    {
 			    // ----------------------------
 			    // recall  pspe = ps + pe * nps;

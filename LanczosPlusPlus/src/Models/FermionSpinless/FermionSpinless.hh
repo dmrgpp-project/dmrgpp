@@ -112,7 +112,8 @@ public:
 		SizeType nsite = geometry_.numberOfSites();
 
 		// Calculate off-diagonal elements AND store matrix
-		auto lambda = [&basis, nsite, &x, &y, this](SizeType ispace, SizeType)
+		auto lambda = [&basis, nsite, &x, &y, this](
+		                  SizeType ispace, SizeType, const Kokkos::DefaultExecutionSpace&)
 		{
 			SparseRowType sparseRow;
 			WordType      ket = basis(ispace, 0);

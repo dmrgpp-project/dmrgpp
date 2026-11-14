@@ -4,6 +4,9 @@
 #include "LoadBalancerDefault.h"
 #include "TypeToString.h"
 #include "Vector.h"
+
+#include <Kokkos_Core.hpp>
+
 #include <algorithm>
 #include <iostream>
 #include <pthread.h>
@@ -35,13 +38,14 @@ struct PthreadFunctionStruct2 {
 	    , cpu(0)
 	{ }
 
-	const SomeLambdaType*   pfh;
-	const LoadBalancerType* loadBalancer;
-	int                     threadNum;
-	SizeType                nthreads;
-	SizeType                start;
-	SizeType                end;
-	SizeType                cpu;
+	const SomeLambdaType*         pfh;
+	const LoadBalancerType*       loadBalancer;
+	int                           threadNum;
+	SizeType                      nthreads;
+	SizeType                      start;
+	SizeType                      end;
+	SizeType                      cpu;
+	Kokkos::DefaultExecutionSpace exec;
 };
 
 template <typename SomeLambdaType, typename SomeLoadBalancer>
@@ -65,7 +69,7 @@ void* thread_function_wrapper2(void* dummyPtr)
 		SizeType taskNumber = pfs->loadBalancer->taskNumber(pfs->threadNum, p);
 		if (taskNumber + pfs->start >= pfs->end)
 			break;
-		(*pfh)(taskNumber + pfs->start, pfs->threadNum);
+		(*pfh)(taskNumber + pfs->start, pfs->threadNum, pfs->exec);
 	}
 
 	int retval = 0;
@@ -84,7 +88,12 @@ public:
 	Parallelizer2(const CodeSectionParams& codeParams)
 	    : nthreads_(codeParams.npthreads)
 	    , stackSize_(codeParams.stackSize)
-	{ }
+	{
+		std::vector<int> weights(nthreads_);
+		std::fill(weights.begin(), weights.end(), 1);
+		execs_ = Kokkos::Experimental::partition_space(Kokkos::DefaultExecutionSpace {},
+		                                               weights);
+	}
 
 	SizeType numberOfThreads() const { return nthreads_; }
 
@@ -133,6 +142,7 @@ public:
 			pfs[j].start        = start;
 			pfs[j].end          = end;
 			pfs[j].nthreads     = nthreads_;
+			pfs[j].exec         = execs_[j];
 
 			attr[j] = new pthread_attr_t;
 			int ret
@@ -185,8 +195,9 @@ private:
 		std::cerr << "PthreadsNg ERROR: " << strerror(ret) << "\n";
 	}
 
-	SizeType nthreads_;
-	size_t   stackSize_;
+	SizeType                                   nthreads_;
+	size_t                                     stackSize_;
+	std::vector<Kokkos::DefaultExecutionSpace> execs_;
 };
 } // namespace PsimagLite
 #endif // PARALLELIZER2PTHREAD_H
