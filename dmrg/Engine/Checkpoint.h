@@ -158,8 +158,30 @@ public:
 			throw PsimagLite::RuntimeError(str);
 		}
 
-		if (!parameters_.autoRestart || parameters_.options.isSet("restart")) {
-			VectorFiniteLoopType vfl;
+		VectorFiniteLoopType vfl;
+		if (parameters_.autoRestart) {
+			IoType::In ioIn2(parameters_.checkpoint.filename());
+			SizeType   finiteLoopSize = 0;
+			ioIn2.read(finiteLoopSize, "PARAMETERS/finiteLoop/Size");
+			if (finiteLoopSize != parameters_.finiteLoop.size())
+				err("RecoverySave finite-loop schedule differs from input\n");
+			vfl.reserve(finiteLoopSize);
+			for (SizeType i = 0; i < finiteLoopSize; ++i) {
+				const PsimagLite::String root = "PARAMETERS/finiteLoop/" + ttos(i);
+				int                      stepLength;
+				SizeType                 keptStates;
+				SizeType                 saveOption;
+				ioIn2.read(stepLength, root + "/stepLength");
+				ioIn2.read(keptStates, root + "/keptStates");
+				ioIn2.read(saveOption, root + "/saveOption");
+				vfl.emplace_back(stepLength,
+				                 keptStates,
+				                 ttos(saveOption),
+				                 parameters_.finiteLoop[i].truncationControl());
+			}
+			ioIn2.close();
+			parameters.setFiniteLoops(vfl);
+		} else {
 			checkFiniteLoops(
 			    vfl, model.superGeometry().numberOfSites(), hilbertOneSite, ioIn);
 			parameters.setFiniteLoops(vfl);
