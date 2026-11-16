@@ -734,7 +734,8 @@ private:
 
 		using Parallel4PointDsType = typename ObserverType::Parallel4PointDsType;
 		using ParallelizerType     = PsimagLite::Parallelizer<Parallel4PointDsType>;
-		ParallelizerType threaded4PointDs(PsimagLite::Concurrency::codeSectionParams);
+		ParallelizerType threaded4PointDs(
+		    PsimagLite::Concurrency::codeSectionParamsFor("ObservableLibrary"));
 
 		Parallel4PointDsType helper4PointDs(m,
 		                                    observe_.fourpoint(),
@@ -1366,7 +1367,8 @@ private:
 
 		using Parallel4PointDsType = typename ObserverType::Parallel4PointDsType;
 		using ParallelizerType     = PsimagLite::Parallelizer<Parallel4PointDsType>;
-		ParallelizerType threaded4PointDs(PsimagLite::Concurrency::codeSectionParams);
+		ParallelizerType threaded4PointDs(
+		    PsimagLite::Concurrency::codeSectionParamsFor("ObservableLibrary"));
 
 		Parallel4PointDsType helper4PointDs(m,
 		                                    observe_.fourpoint(),

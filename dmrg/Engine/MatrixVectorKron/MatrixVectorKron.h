@@ -108,12 +108,14 @@ public:
 	using FullMatrixType            = PsimagLite::Matrix<ComplexOrRealType>;
 	using value_type                = typename SparseMatrixType::value_type;
 	using HamiltonianConnectionType = typename ModelType::HamiltonianConnectionType;
+	using MatrixSolverEnum          = typename ParametersType::MatrixSolverEnum;
 
 	MatrixVectorKron(const ModelType&                     model,
 	                 const HamiltonianConnectionType&     hc,
 	                 const typename ModelHelperType::Aux& aux)
 	    : BaseType(hc, aux)
-	    , params_(checkedParams(model))
+	    , params_(model.params())
+	    , isLdaggerL_(validatedLdaggerL(model))
 	    , initKron_(model, hc, aux)
 	    , kronMatrix_(initKron_, "Hamiltonian")
 	    , time_(0, 0)
@@ -123,9 +125,13 @@ public:
 			return;
 
 		hc.fullHamiltonian(matrixStored_, aux, model.isHermitian());
-		assert(isHermitian(matrixStored_, true));
+		if (isLdaggerL_)
+			transposeConjugate(transpose_, matrixStored_);
+		else
+			assert(isHermitian(matrixStored_, true));
 
-		checkKron();
+		if (!isLdaggerL_)
+			checkKron();
 	}
 
 	~MatrixVectorKron() override
@@ -138,10 +144,20 @@ public:
 		const PsimagLite::MemoryUsage::TimeHandle time1
 		    = PsimagLite::ProgressIndicator::time();
 
-		if (matrixStored_.rows() > 0)
-			matrixStored_.matrixVectorProduct(x, y);
-		else
-			kronMatrix_.matrixVectorProduct(x, y);
+		if (!isLdaggerL_) {
+			if (matrixStored_.rows() > 0)
+				matrixStored_.matrixVectorProduct(x, y);
+			else
+				kronMatrix_.matrixVectorProduct(x, y);
+		} else if (matrixStored_.rows() > 0) {
+			VectorType intermediate(y.size(), 0.0);
+			matrixStored_.matrixVectorProduct(intermediate, y);
+			transpose_.matrixVectorProduct(x, intermediate);
+		} else {
+			VectorType intermediate(y.size(), 0.0);
+			kronMatrix_.matrixVectorProduct(intermediate, y);
+			kronMatrix_.matrixVectorProductAdjoint(x, intermediate);
+		}
 
 		const PsimagLite::MemoryUsage::TimeHandle time2
 		    = PsimagLite::ProgressIndicator::time();
@@ -151,18 +167,33 @@ public:
 
 	void fullDiag(VectorRealType& eigs, FullMatrixType& fm) const override
 	{
+		if (isLdaggerL_)
+			throw PsimagLite::RuntimeError(
+			    "MatrixVectorKron::fullDiag is unavailable with LdaggerL\n");
+
 		BaseType::fullDiag(eigs, fm, matrixStored_, params_.maxMatrixRankStored);
 	}
 
 private:
 
-	static const ParametersType& checkedParams(const ModelType& model)
+	static bool validatedLdaggerL(const ModelType& model)
 	{
-		if (model.params().options.isSet("LdaggerL"))
-			throw PsimagLite::RuntimeError(
-			    "LdaggerL is not implemented for MatrixVectorKron\n");
+		if (!model.params().options.isSet("LdaggerL"))
+			return false;
 
-		return model.params();
+		switch (model.params().matrix_solver_enum) {
+		case MatrixSolverEnum::LANCZOS:
+			return true;
+		case MatrixSolverEnum::DENSE:
+			throw PsimagLite::RuntimeError(
+			    "LdaggerL with MatrixVectorKron does not support MatrixSolver=Dense\n");
+		case MatrixSolverEnum::ARNOLDISAI:
+			throw PsimagLite::RuntimeError(
+			    "LdaggerL with MatrixVectorKron does not support MatrixSolver=ArnoldiSaI\n");
+		}
+
+		throw PsimagLite::RuntimeError(
+		    "LdaggerL with MatrixVectorKron supports only MatrixSolver=Lanczos\n");
 	}
 
 	void checkKron() const
@@ -194,9 +225,11 @@ private:
 	}
 
 	const ParametersType&                       params_;
+	const bool                                  isLdaggerL_;
 	InitKronType                                initKron_;
 	KronMatrixType                              kronMatrix_;
 	SparseMatrixType                            matrixStored_;
+	SparseMatrixType                            transpose_;
 	mutable PsimagLite::MemoryUsage::TimeHandle time_;
 }; // class MatrixVectorKron
 } // namespace Dmrg

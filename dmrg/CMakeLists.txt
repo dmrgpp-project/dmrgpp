@@ -67,7 +67,10 @@ install(TARGETS dmrg observe toolboxdmrg omegas introspect RUNTIME DESTINATION $
 # Tests below for all executables
 
 set(PATH_TO_INPUTS ${CMAKE_CURRENT_SOURCE_DIR}/../TestSuite/inputs)
-find_program(H5DUMP_EXECUTABLE NAMES h5dump REQUIRED)
+find_program(
+  H5DUMP_EXECUTABLE
+  NAMES h5dump REQUIRED
+  HINTS ${HDF5_DIR}/../../../bin)
 
 if(DMRGPP_USE_MPI)
   function(add_mpi_test name nprocs executable)
@@ -242,6 +245,7 @@ add_test(NAME input75 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input75.ain) # energy 
 add_lowest_eigenvalue_check_test(output75 input75 -2.80627 runForinput75.cout)
 add_test(NAME input76 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input76.ain) # energy -0.707712
 # input76 is a restart check only; no g.s. computation
+set_tests_properties(input76 PROPERTIES FAIL_REGULAR_EXPRESSION "FiniteLoopLengths=")
 add_test(NAME input77 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input77.ain) # energy -2.80627
 add_lowest_eigenvalue_check_test(output77 input77 -2.80627 runForinput77.cout)
 add_test(NAME input78 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input78.ain) # energy -0.707712
@@ -250,6 +254,19 @@ add_test(NAME input80 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input80.ain) # energy 
 add_lowest_eigenvalue_check_test(output80 input80 -7.37027 runForinput80.cout)
 add_test(NAME input120 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input120.ain) # energy -9.51754
 add_lowest_eigenvalue_check_test(output120 input120 -9.51754 runForinput120.cout)
+add_test(
+  NAME time_expression_unsynchronized
+  COMMAND
+    ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg> -DINPUT_FILE=${PATH_TO_INPUTS}/input9120.inp
+    "-DEXPECTED_DIAGNOSTIC=BraTime= 0.1 but ketTime= 0" "-DBRAKET=<P1|c|P2>" -P
+    ${CMAKE_SOURCE_DIR}/TestSuite/expectFailure.cmake)
+set_tests_properties(time_expression_unsynchronized PROPERTIES DEPENDS input120)
+
+add_test(NAME input9121 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input9121.inp -p 12 "<P1|c|P2>")
+set_tests_properties(input9121 PROPERTIES DEPENDS input120)
+add_test(NAME output9121_P1cP2 COMMAND sh -c "grep -q '<P1|c|P2>' ${CMAKE_CURRENT_BINARY_DIR}/runForinput9121.cout")
+set_tests_properties(output9121_P1cP2 PROPERTIES DEPENDS input9121)
+
 add_test(NAME input121 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input121.ain -p 12 "<gs|P0>") # none
 add_test(NAME input122 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input122.ain -p 12 "<gs|P0>,<gs|P1>,<P0|P1>") # none
 add_test(NAME input123 COMMAND ./dmrg -f ${PATH_TO_INPUTS}/input123.ain -p 12
@@ -339,16 +356,40 @@ set_tests_properties(input8901 PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRENT_BINA
 set(_ldaggerl_input_text)
 file(READ ${PATH_TO_INPUTS}/input8902.ain _ldaggerl_input_text)
 
-string(REPLACE "matrixvectorstored," "" _ldaggerl_kron_input "${_ldaggerl_input_text}")
-set(_ldaggerl_kron_input_file ${CMAKE_CURRENT_BINARY_DIR}/input8902_ldaggerl_kron.ain)
-file(WRITE ${_ldaggerl_kron_input_file} "${_ldaggerl_kron_input}")
+string(REPLACE "matrixvectorkron," "" _ldaggerl_default_input "${_ldaggerl_input_text}")
+if(_ldaggerl_default_input STREQUAL _ldaggerl_input_text)
+  message(FATAL_ERROR "input8902.ain must select matrixvectorkron")
+endif()
+string(REPLACE "OutputFile=\"data8902\";" "OutputFile=\"data8902_ldaggerl_default\";" _ldaggerl_default_input
+               "${_ldaggerl_default_input}")
+set(_ldaggerl_default_input_file ${CMAKE_CURRENT_BINARY_DIR}/input8902_ldaggerl_default.ain)
+file(WRITE ${_ldaggerl_default_input_file} "${_ldaggerl_default_input}")
 
-string(REPLACE "matrixvectorstored," "MatrixVectorOnTheFly," _ldaggerl_onthefly_input "${_ldaggerl_input_text}")
+string(REPLACE "matrixvectorkron," "matrixvectorstored," _ldaggerl_stored_input "${_ldaggerl_input_text}")
+if(_ldaggerl_stored_input STREQUAL _ldaggerl_input_text)
+  message(FATAL_ERROR "input8902.ain must select matrixvectorkron")
+endif()
+string(REPLACE "OutputFile=\"data8902\";" "OutputFile=\"data8902_ldaggerl_stored\";" _ldaggerl_stored_input
+               "${_ldaggerl_stored_input}")
+set(_ldaggerl_stored_input_file ${CMAKE_CURRENT_BINARY_DIR}/input8902_ldaggerl_stored.ain)
+file(WRITE ${_ldaggerl_stored_input_file} "${_ldaggerl_stored_input}")
+
+string(REPLACE "matrixvectorkron," "MatrixVectorOnTheFly," _ldaggerl_onthefly_input "${_ldaggerl_input_text}")
 set(_ldaggerl_onthefly_input_file ${CMAKE_CURRENT_BINARY_DIR}/input8902_ldaggerl_onthefly.ain)
 file(WRITE ${_ldaggerl_onthefly_input_file} "${_ldaggerl_onthefly_input}")
 
 add_test(NAME input8902 COMMAND $<TARGET_FILE:dmrg> -f ${PATH_TO_INPUTS}/input8902.ain)
 add_test(NAME input8903 COMMAND $<TARGET_FILE:dmrg> -f ${PATH_TO_INPUTS}/input8903.ain)
+add_test(NAME ldaggerl_default COMMAND $<TARGET_FILE:dmrg> -f ${_ldaggerl_default_input_file})
+add_test(NAME ldaggerl_stored COMMAND $<TARGET_FILE:dmrg> -f ${_ldaggerl_stored_input_file})
+add_test(
+  NAME ldaggerl_kron_vs_stored
+  COMMAND
+    ${CMAKE_COMMAND} -DCHECK_VALUE_EXECUTABLE=$<TARGET_FILE:check_value>
+    -DKRON_OUTPUT_FILE=${CMAKE_CURRENT_BINARY_DIR}/ldaggerl_default/runForinput8902_ldaggerl_default.cout
+    -DSTORED_OUTPUT_FILE=${CMAKE_CURRENT_BINARY_DIR}/ldaggerl_stored/runForinput8902_ldaggerl_stored.cout
+    -DTOLERANCE=2e-5 -P ${CMAKE_SOURCE_DIR}/TestSuite/checkLdaggerLEquivalence.cmake)
+set_tests_properties(ldaggerl_kron_vs_stored PROPERTIES DEPENDS "ldaggerl_default;ldaggerl_stored")
 
 add_test(
   NAME ldaggerl_hermitian_rejected
@@ -358,21 +399,21 @@ add_test(
     ${CMAKE_SOURCE_DIR}/TestSuite/expectFailure.cmake)
 
 add_test(
-  NAME ldaggerl_kron_rejected
-  COMMAND
-    ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg> -DINPUT_FILE=${_ldaggerl_kron_input_file}
-    "-DEXPECTED_DIAGNOSTIC=LdaggerL is not implemented for MatrixVectorKron" -P
-    ${CMAKE_SOURCE_DIR}/TestSuite/expectFailure.cmake)
-
-add_test(
   NAME ldaggerl_onthefly_rejected
   COMMAND
     ${CMAKE_COMMAND} -DDMRG_EXECUTABLE=$<TARGET_FILE:dmrg> -DINPUT_FILE=${_ldaggerl_onthefly_input_file}
     "-DEXPECTED_DIAGNOSTIC=LdaggerL is not implemented for MatrixVectorOnTheFly" -P
     ${CMAKE_SOURCE_DIR}/TestSuite/expectFailure.cmake)
 
-set(_isolated_dmrg_test_names input8901 input8902 input8903 ldaggerl_hermitian_rejected ldaggerl_kron_rejected
-                              ldaggerl_onthefly_rejected)
+set(_isolated_dmrg_test_names
+    input8901
+    input8902
+    input8903
+    ldaggerl_default
+    ldaggerl_stored
+    ldaggerl_kron_vs_stored
+    ldaggerl_hermitian_rejected
+    ldaggerl_onthefly_rejected)
 foreach(test_name IN LISTS _isolated_dmrg_test_names)
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${test_name})
   set_tests_properties(${test_name} PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${test_name})

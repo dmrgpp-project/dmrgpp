@@ -124,9 +124,22 @@ public:
 
 	void matrixVectorProduct(VectorType& vout, const VectorType& vin) const
 	{
+		matrixVectorProductImpl(vout, vin, false);
+	}
+
+	void matrixVectorProductAdjoint(VectorType& vout, const VectorType& vin) const
+	{
+		matrixVectorProductImpl(vout, vin, true);
+	}
+
+private:
+
+	void
+	matrixVectorProductImpl(VectorType& vout, const VectorType& vin, bool applyAdjoint) const
+	{
 		initKron_.copyIn(vout, vin);
 
-		if (batchedGemm_.enabled()) {
+		if (!applyAdjoint && batchedGemm_.enabled()) {
 			VectorType& xout = initKron_.xout();
 			VectorType  xoutTmp(xout.size(), 0.0);
 			batchedGemm_.matrixVector(xoutTmp, initKron_.yin());
@@ -137,9 +150,9 @@ public:
 			return;
 		}
 
-		KronConnectionsType kc(initKron_, kron_logger_);
-		SizeType            threads = PsimagLite::Concurrency::codeSectionParams.npthreads;
-		PsimagLite::CodeSectionParams codeSectionParams(threads);
+		KronConnectionsType           kc(initKron_, kron_logger_, applyAdjoint);
+		PsimagLite::CodeSectionParams codeSectionParams
+		    = PsimagLite::Concurrency::codeSectionParamsFor("KronMatrix");
 
 		if (initKron_.loadBalance()) {
 			PsimagLite::Parallelizer<KronConnectionsType,
@@ -156,8 +169,6 @@ public:
 
 		initKron_.copyOut(vout);
 	}
-
-private:
 
 	KronMatrix(const KronMatrix&);
 

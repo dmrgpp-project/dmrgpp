@@ -18,6 +18,11 @@ target_link_libraries(test_GroupOfOneTimeEvolutions PRIVATE Catch2::Catch2WithMa
 target_include_directories(test_GroupOfOneTimeEvolutions PRIVATE ${CMAKE_SOURCE_DIR}/dmrg/Engine)
 catch_discover_tests(test_GroupOfOneTimeEvolutions)
 
+add_executable(test_OneTimeEvolution test_OneTimeEvolution.cpp)
+target_link_libraries(test_OneTimeEvolution PRIVATE Catch2::Catch2WithMain psimaglite)
+target_include_directories(test_OneTimeEvolution PRIVATE ${CMAKE_SOURCE_DIR}/dmrg/Engine)
+catch_discover_tests(test_OneTimeEvolution)
+
 add_executable(test_TimeSerializer test_TimeSerializer.cpp)
 target_link_libraries(test_TimeSerializer PRIVATE Catch2::Catch2WithMain psimaglite)
 target_include_directories(test_TimeSerializer PRIVATE ${CMAKE_SOURCE_DIR}/dmrg/Engine)
@@ -47,6 +52,12 @@ add_executable(test_MatrixVectorStored test_MatrixVectorStored.cpp)
 target_link_libraries(test_MatrixVectorStored PRIVATE Catch2::Catch2WithMain dmrgpp_utils psimaglite)
 target_include_directories(test_MatrixVectorStored PRIVATE ${CMAKE_SOURCE_DIR}/dmrg/Engine)
 catch_discover_tests(test_MatrixVectorStored)
+
+add_executable(test_KronConnections test_KronConnections.cpp)
+target_link_libraries(test_KronConnections PRIVATE Catch2::Catch2WithMain dmrgpp_utils kronutil psimaglite)
+target_include_directories(test_KronConnections PRIVATE ${CMAKE_SOURCE_DIR}/dmrg/Engine
+                                                        ${CMAKE_SOURCE_DIR}/dmrg/Engine/MatrixVectorKron)
+catch_discover_tests(test_KronConnections)
 
 add_executable(bench_BatchedGemm bench_BatchedGemm.cpp)
 target_link_libraries(bench_BatchedGemm PRIVATE dmrgpp_utils psimaglite)

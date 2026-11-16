@@ -222,16 +222,22 @@ private:
 		                vPrimePreviousPinv,
 		                qnsPrevious);
 		using ParallelizerOneType = PsimagLite::Parallelizer<LoopOne>;
+		PsimagLite::CodeSectionParams codeSectionParams
+		    = PsimagLite::Concurrency::codeSectionParamsFor("WftAccelSvdOne");
 		SizeType threads = std::min(std::max(qnsVeryOld.size(), qnsPrevious.size()),
-		                            PsimagLite::Concurrency::codeSectionParams.npthreads);
-		PsimagLite::CodeSectionParams codeSectionParams(threads);
-		ParallelizerOneType           threadOne(codeSectionParams);
+		                            codeSectionParams.npthreads);
+		codeSectionParams.npthreads = threads;
+		ParallelizerOneType threadOne(codeSectionParams);
 		threadOne.loopCreate(loopOne);
 
 		using ParallelizerTwoType = PsimagLite::Parallelizer<LoopTwo>;
 		LoopTwo loopTwo(
 		    loopOne.uFinal(), loopOne.vPrimeFinal(), loopOne.qns(), sPrevious, qnsPrevious);
-		ParallelizerTwoType threadTwo(codeSectionParams);
+		PsimagLite::CodeSectionParams codeSectionParamsTwo
+		    = PsimagLite::Concurrency::codeSectionParamsFor("WftAccelSvdTwo");
+		codeSectionParamsTwo.npthreads
+		    = std::min(loopOne.qns().size(), codeSectionParamsTwo.npthreads);
+		ParallelizerTwoType threadTwo(codeSectionParamsTwo);
 		threadTwo.loopCreate(loopTwo);
 	}
 

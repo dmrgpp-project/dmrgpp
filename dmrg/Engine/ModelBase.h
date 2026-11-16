@@ -519,7 +519,8 @@ for (SizeType dof = 0; dof < numberOfDofs; ++dof) {
 	                         const typename ModelHelperType::Aux& aux) const
 	{
 		using ParallelizerType = PsimagLite::Parallelizer<ParallelHamConnectionType>;
-		ParallelizerType parallelConnections(PsimagLite::Concurrency::codeSectionParams);
+		ParallelizerType parallelConnections(
+		    PsimagLite::Concurrency::codeSectionParamsFor("ModelBase"));
 
 		ParallelHamConnectionType phc(x, y, hc, aux);
 		parallelConnections.loopCreate(phc);

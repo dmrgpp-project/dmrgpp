@@ -227,7 +227,8 @@ private:
 	{
 		ParallelDensityMatrixType helperDm(
 		    v, pBasis, pBasisSummed, pSE, direction, m, weight, matrixBlock);
-		ParallelizerType threadedDm(ConcurrencyType::codeSectionParams);
+		ParallelizerType threadedDm(
+		    ConcurrencyType::codeSectionParamsFor("DensityMatrixLocal"));
 		threadedDm.loopCreate(helperDm);
 	}
 

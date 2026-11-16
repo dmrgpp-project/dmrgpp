@@ -520,7 +520,8 @@ public:
 
 		using ParallelizerType = PsimagLite::Parallelizer<ParallelSvd>;
 
-		PsimagLite::CodeSectionParams csp = PsimagLite::Concurrency::codeSectionParams;
+		PsimagLite::CodeSectionParams csp
+		    = PsimagLite::Concurrency::codeSectionParamsFor("DensityMatrixSvd");
 
 		if (params_.serialSvd) {
 			csp.npthreads = 1;
@@ -584,7 +585,8 @@ private:
 			const QnType&  qn = super.qnEx(m);
 			GenIjPatchType genIjPatch(lrs_, qn);
 			using ParallelizerType = PsimagLite::Parallelizer<ParallelPsiSplit>;
-			ParallelizerType threaded(PsimagLite::Concurrency::codeSectionParams);
+			ParallelizerType threaded(
+			    PsimagLite::Concurrency::codeSectionParamsFor("DensityMatrixSvd"));
 			ParallelPsiSplit parallelPsiSplit(
 			    lrs_, genIjPatch, v, x, sector, sqrtW, allTargets_);
 			threaded.loopCreate(parallelPsiSplit);

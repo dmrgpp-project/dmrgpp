@@ -2,7 +2,6 @@
 #define KRONLOGGER_HH
 #include "Basis.h"
 #include "BasisWithOperators.h"
-#include "InitKronHamiltonian.h"
 #include "LeftRightSuper.h"
 #include "MatrixMarket.hh"
 #include <PsimagLite/CrsMatrix.h>
@@ -31,10 +30,10 @@ namespace Dmrg {
  * a separate file, with a counter at the end and with a rootname
  * based on the output file of the run; see buildFilename() below.
  */
-template <typename ModelType> class KronLogger {
+template <typename InitKronType_> class KronLogger {
 public:
 
-	using InitKronType            = InitKronHamiltonian<ModelType>;
+	using InitKronType            = InitKronType_;
 	using ArrayOfMatStructType    = typename InitKronType::ArrayOfMatStructType;
 	using MatrixDenseOrSparseType = typename ArrayOfMatStructType::MatrixDenseOrSparseType;
 	using ComplexOrRealType       = typename InitKronType::ComplexOrRealType;
@@ -157,7 +156,7 @@ public:
 	 * \param[in] inPatch The inner patch index
 	 * \param[in] ic The connection index
 	 */
-	void three(SizeType outPatch, SizeType inPatch, SizeType ic)
+	void three(SizeType outPatch, SizeType inPatch, SizeType ic, bool applyAdjoint)
 	{
 		if (!fout_.has_value() || !active_)
 			return;
@@ -165,15 +164,21 @@ public:
 		const ArrayOfMatStructType& xiStruct = init_kron_.xc(ic);
 		const ArrayOfMatStructType& yiStruct = init_kron_.yc(ic);
 
-		const bool performTranspose = (init_kron_.useLowerPart() && (outPatch < inPatch));
+		const bool performTranspose
+		    = (!applyAdjoint && init_kron_.useLowerPart() && (outPatch < inPatch));
+		const SizeType sourceOutPatch = applyAdjoint ? inPatch : outPatch;
+		const SizeType sourceInPatch  = applyAdjoint ? outPatch : inPatch;
 
-		const MatrixDenseOrSparseType* Amat
-		    = performTranspose ? xiStruct(inPatch, outPatch) : xiStruct(outPatch, inPatch);
+		const MatrixDenseOrSparseType* Amat = performTranspose
+		    ? xiStruct(inPatch, outPatch)
+		    : xiStruct(sourceOutPatch, sourceInPatch);
 
-		const MatrixDenseOrSparseType* Bmat
-		    = performTranspose ? yiStruct(inPatch, outPatch) : yiStruct(outPatch, inPatch);
+		const MatrixDenseOrSparseType* Bmat = performTranspose
+		    ? yiStruct(inPatch, outPatch)
+		    : yiStruct(sourceOutPatch, sourceInPatch);
 
 		*fout_ << separationLevel(2) << "ic=" << ic << "\n";
+		*fout_ << separationLevel(2) << "applyAdjoint=" << applyAdjoint << "\n";
 		*fout_ << separationLevel(2) << "performTranspose=" << performTranspose << "\n";
 
 		assert(Amat);
@@ -241,6 +246,6 @@ private:
 	bool                          active_;
 };
 
-template <typename ModelType> SizeType KronLogger<ModelType>::counter_ = 0;
+template <typename InitKronType> SizeType KronLogger<InitKronType>::counter_ = 0;
 }
 #endif // KRONLOGGER_HH

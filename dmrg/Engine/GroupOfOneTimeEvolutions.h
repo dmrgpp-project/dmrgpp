@@ -1,94 +1,16 @@
 #ifndef GROUP_OF_ONE_TIME_EVOLUTIONS_H
 #define GROUP_OF_ONE_TIME_EVOLUTIONS_H
-#include <PsimagLite/GetBraOrKet.h>
-#include <PsimagLite/Vector.h>
+#include "OneTimeEvolution.hpp"
+#include <vector>
 
 namespace Dmrg {
 
 template <typename PvectorsType> class GroupOfOneTimeEvolutions {
-	class OneTimeEvolution {
-
-	public:
-
-		using ThisType                   = OneTimeEvolution;
-		using VectorOneTimeEvolutionType = typename PsimagLite::Vector<ThisType*>::Type;
-		using VectorWithOffsetType       = typename PvectorsType::VectorWithOffsetType;
-		using VectorSizeType             = PsimagLite::Vector<SizeType>::Type;
-		using RealType                   = typename PvectorsType::RealType;
-
-		OneTimeEvolution(SizeType                    firstIndex,
-		                 const VectorWithOffsetType& src,
-		                 PsimagLite::String          srcKet,
-		                 SizeType                    disposition,
-		                 SizeType                    timeSteps,
-		                 RealType                    initialTime,
-		                 PvectorsType&               pVectors)
-		    : indices_(timeSteps)
-		    , srcKet_(srcKet)
-		    , disposition_(disposition)
-		    , timesWithoutAdvancement_(0)
-		    , time_(initialTime)
-		{
-			indices_[0] = firstIndex;
-			for (SizeType i = 1; i < timeSteps; ++i) {
-				auto lambda = [this, i](SizeType ind)
-				{
-					indices_[i] = ind;
-					return "|P" + ttos(ind) + ">";
-				};
-
-				pVectors.createNew(src, initialTime, lambda);
-				if (i == timeSteps - 1)
-					pVectors.registerLastKrylovSlot(firstIndex, indices_[i]);
-			}
-		}
-
-		const VectorSizeType& indices() const { return indices_; }
-
-		SizeType timesWithoutAdvancement() const { return timesWithoutAdvancement_; }
-
-		RealType time() const { return time_; }
-
-		void advanceTime(RealType tau) { time_ += tau; }
-
-		void resetTimesWithoutAdvancement() { timesWithoutAdvancement_ = 1; }
-
-		void incrementTimesWithoutAdvancement() { ++timesWithoutAdvancement_; }
-
-		bool hasKet(SizeType ket) const
-		{
-			const SizeType n = indices_.size();
-			for (SizeType i = 0; i < n; ++i)
-				if (indices_[i] == ket)
-					return true;
-
-			return false;
-		}
-
-		int sourceToDestroy() const
-		{
-			return (disposition_ != 2) ? -1 : getPindexOrMinusOne(srcKet_);
-		}
-
-	private:
-
-		static int getPindexOrMinusOne(PsimagLite::String braOrKet)
-		{
-			PsimagLite::GetBraOrKet getBraOrKet(braOrKet);
-			return (getBraOrKet.isPvector()) ? getBraOrKet.pIndex() : -1;
-		}
-
-		VectorSizeType     indices_;
-		PsimagLite::String srcKet_;
-		SizeType           disposition_;
-		SizeType           timesWithoutAdvancement_;
-		RealType           time_;
-	};
 
 public:
 
-	using OneTimeEvolutionType       = OneTimeEvolution;
-	using VectorOneTimeEvolutionType = typename PsimagLite::Vector<OneTimeEvolution*>::Type;
+	using OneTimeEvolutionType       = OneTimeEvolution<PvectorsType>;
+	using VectorOneTimeEvolutionType = std::vector<OneTimeEvolutionType*>;
 	using RealType                   = typename PvectorsType::RealType;
 
 	GroupOfOneTimeEvolutions() { }
@@ -106,7 +28,7 @@ public:
 		}
 	}
 
-	OneTimeEvolution* findThisEvolution(SizeType firstIndex) const
+	OneTimeEvolutionType* findThisEvolution(SizeType firstIndex) const
 	{
 		const SizeType n = vEvolutions_.size();
 		for (SizeType i = 0; i < n; ++i)
@@ -116,7 +38,7 @@ public:
 		return nullptr;
 	}
 
-	void pushBack(OneTimeEvolution* ptr) { vEvolutions_.push_back(ptr); }
+	void pushBack(OneTimeEvolutionType* ptr) { vEvolutions_.push_back(ptr); }
 
 	int getLastIndex(SizeType firstIndex) const
 	{

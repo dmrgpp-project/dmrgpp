@@ -40,7 +40,8 @@ jobs:
     - name: Set up Spack
       uses: spack/setup-spack@16b756799ede8b28951287f89bcd3fdb32ec1ca3 # v3.0.0
       with:
-        spack_ref: develop # Spack version (examples: develop, releases/v0.23)
+        spack_ref: 3e19345b6e12f5ff1b874f4059622fc6a1fd804a # v1.2.2
+        packages_ref: 91cfb5b973c311f742cd31061fe224d40f1fd830 # v2026.10
         buildcache: true   # Configure oci://ghcr.io/spack/github-actions-buildcache
         color: true        # Force color output (SPACK_COLOR=always)
         spack_path: spack  # Where to clone Spack

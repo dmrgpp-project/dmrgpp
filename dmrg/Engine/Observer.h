@@ -508,7 +508,8 @@ public:
 		}
 
 		using ParallelizerType = PsimagLite::Parallelizer<Parallel4PointDsType>;
-		ParallelizerType threaded4PointDs(PsimagLite::Concurrency::codeSectionParams);
+		ParallelizerType threaded4PointDs(
+		    PsimagLite::Concurrency::codeSectionParamsFor("Observer"));
 
 		Parallel4PointDsType helper4PointDs(
 		    fpd, fourpoint_, model, gammas, pairs, Parallel4PointDsType::MODE_NORMAL);

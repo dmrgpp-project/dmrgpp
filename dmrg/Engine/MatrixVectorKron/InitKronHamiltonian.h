@@ -118,7 +118,9 @@ public:
 	               aux.m(),
 	               hc.modelHelper().quantumNumber(aux.m()),
 	               model.params().denseSparseThreshold,
-	               !model.params().options.isSet("KronNoUseLowerPart")
+	               // A non-Hermitian L cannot be reconstructed from one Hermitian triangle.
+	               !model.params().options.isSet("LdaggerL")
+	                   && !model.params().options.isSet("KronNoUseLowerPart")
 	                   && !model.params().options.isSet("BatchedGemm"))
 	    , model_(model)
 	    , hc_(hc)
