@@ -66,18 +66,20 @@ def main() -> int:
             inp = (directory / "input.ain").read_text()
             u = input_value(inp, "HubbardU")
             eta = input_value(inp, "OmegaDelta")
-            mats = [r for r in table(directory / "gimp_dmrg.txt") if r[0] > 0]
-            real = table(directory / "gimp_dmrg_real.txt")
+            solver_match = re.search(r"^\s*ImpuritySolver\s*=\s*([^;]+);", inp, re.M)
+            solver = solver_match.group(1).strip().strip('"').lower() if solver_match else "dmrg"
+            mats = [r for r in table(directory / f"gimp_{solver}.txt") if r[0] > 0]
+            real = table(directory / f"gimp_{solver}_real.txt")
             if not mats:
                 raise ValueError(f"{directory}: no positive Matsubara frequencies")
             logpath = directory / "cincuenta.log"
             log = logpath.read_text(errors="replace") if logpath.exists() else ""
-            runs.append((directory, u, eta, mats, real, "Converged after" in log))
+            runs.append((directory, u, eta, mats, real, "Converged after" in log, solver))
         if len({r[2] for r in runs}) != 1:
             raise ValueError("runs use different OmegaDelta broadenings")
         eta = runs[0][2]
         # Fixed, readable two-panel canvas; shared vertical scale aids comparison.
-        W, H = 1280, 560
+        W, H = 1280, 600
         panels = [(90, 82, 510, 385), (690, 82, 510, 385)]
         all_y = [-row[2] for r in runs for rows in (r[3], r[4]) for row in rows]
         ymin, ymax = min(0.0, min(all_y)), max(0.0, max(all_y))
@@ -88,7 +90,7 @@ def main() -> int:
                '<rect width="100%" height="100%" fill="white"/>',
                '<style>text{font-family:Arial,sans-serif;fill:#222}.grid{stroke:#ddd;stroke-width:1}.axis{stroke:#333;stroke-width:1.4}.curve{fill:none;stroke-width:2.4}</style>',
                '<text x="640" y="30" text-anchor="middle" font-size="21" font-weight="bold">Impurity Green functions</text>',
-               f'<text x="640" y="53" text-anchor="middle" font-size="14">CPU standard matvec · real-axis broadening η={html.escape(eta)}</text>']
+               f'<text x="640" y="53" text-anchor="middle" font-size="14">CPU impurity solvers · real-axis broadening η={html.escape(eta)}</text>']
         datasets = [([r[3] for r in runs], "Matsubara frequency ωₙ", "-Im G(iωₙ)"),
                     ([r[4] for r in runs], "Real frequency ω", f"-Im G(ω+iη), η={eta}")]
         for pi, (x0, y0, pw, ph) in enumerate(panels):
@@ -111,17 +113,27 @@ def main() -> int:
             out.append(f'<text x="{x0+pw/2}" y="{y0+ph+48}" text-anchor="middle" font-size="14">{datasets[pi][1]}</text>')
             out.append(f'<text transform="translate({x0-58} {y0+ph/2}) rotate(-90)" text-anchor="middle" font-size="14">{datasets[pi][2]}</text>')
             for ri, seq in enumerate(group):
-                _, u, _, _, _, conv = runs[ri]
+                _, u, _, _, _, conv, solver = runs[ri]
                 color=COLORS.get(u, "#7950a1")
                 points=" ".join(f"{X(a):.2f},{Y(-c):.2f}" for a,_,c in seq)
-                dash="" if conv else ' stroke-dasharray="8 5"'
+                is_ed = solver in ("ed", "exactdiag")
+                dash = ' stroke-dasharray="8 5"' if is_ed else ""
+                if not conv:
+                    dash = (' stroke-dasharray="2 4"' if is_ed
+                            else ' stroke-dasharray="8 3 2 3"')
                 out.append(f'<polyline class="curve" stroke="{color}"{dash} points="{points}"/>')
-        # Shared legend below panels.
-        lx, ly = 310, 535
+        # Shared two-row, three-column legend below panels.
+        lx, ly = 250, 550
         for i, r in enumerate(runs):
-            _, u, _, _, _, conv = r; xx=lx+i*220; color=COLORS.get(u,"#7950a1")
-            dash="" if conv else ' stroke-dasharray="8 5"'
-            out.append(f'<line x1="{xx}" y1="{ly-5}" x2="{xx+34}" y2="{ly-5}" stroke="{color}" stroke-width="3"{dash}/><text x="{xx+42}" y="{ly}" font-size="14">U={html.escape(u)}{"" if conv else " (not converged)"}</text>')
+            _, u, _, _, _, conv, solver = r
+            xx=lx+(i%3)*300; yy=ly+(i//3)*28; color=COLORS.get(u,"#7950a1")
+            is_ed = solver in ("ed", "exactdiag")
+            dash = ' stroke-dasharray="8 5"' if is_ed else ""
+            if not conv:
+                dash = (' stroke-dasharray="2 4"' if is_ed
+                        else ' stroke-dasharray="8 3 2 3"')
+            label = f"{'ED' if is_ed else solver.upper()} U={u}" + (" (not converged)" if not conv else "")
+            out.append(f'<line x1="{xx}" y1="{yy-5}" x2="{xx+34}" y2="{yy-5}" stroke="{color}" stroke-width="3"{dash}/><text x="{xx+42}" y="{yy}" font-size="14">{html.escape(label)}</text>')
         out.append('</svg>')
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text("\n".join(out)+"\n")
