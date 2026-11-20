@@ -39,6 +39,28 @@ Publisher = {\url{https://g1257.github.com/dmrgPlusPlus}} }
 Building and Running Lanczos++
 TBW.
 
+## Spectral-function regression checks
+
+The same-site, same-orbital spectral request applies the operator once. For a
+canonical single-spin fermion, its raw particle/hole weights must sum to one,
+without a fitted normalization. The local-vector correction removes an earlier
+factor-four spectral-weight error; it does not change ground-state energies.
+Different-site and same-site/different-orbital requests retain their existing
+four-branch, symmetrized polarization convention. The legacy same-site
+`Tj1Orb.h` exception is also retained.
+
+From the monorepo root, with testing enabled:
+
+```sh
+cmake --build build --target test_EngineSpectral
+ctest --test-dir build --output-on-failure -R '^Engine '
+```
+
+The tests compare raw fermion and density responses on both frequency axes
+against analytic noninteracting references, including a two-orbital case.
+They cover real and complex scalar implementations without Matsubara-tail
+rescaling or DMFT bath fitting.
+
 ## DISCLAIMER
 
 THE SOFTWARE IS SUPPLIED BY THE COPYRIGHT HOLDERS AND
