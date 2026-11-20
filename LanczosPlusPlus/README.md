@@ -48,7 +48,14 @@ factor-four spectral-weight error; it does not change ground-state energies.
 Different-site and same-site/different-orbital requests retain their existing
 four-branch, symmetrized polarization convention.
 
-From the monorepo root, with testing enabled:
+These checks are part of the **standard monorepo CMake/CTest suite** when
+`BUILD_TESTING=ON` (the default). A normal `cmake --build build` builds them,
+and `ctest --test-dir build` runs them automatically. No separate build or
+invocation is required. In MPI-enabled builds they run as the one-rank
+`Engine spectral regression tests` test, also included under the `MPI` label.
+
+To build and run **only this subset**, use these optional commands from the
+monorepo root:
 
 ```sh
 cmake --build build --target test_EngineSpectral
