@@ -177,6 +177,14 @@ nearest zero. Treat it as a broadened finite-bath diagnostic, not a direct
 critical-order parameter. The more robust initial comparison is the low-
 frequency shape of `-Im G(i omega_n)` between `U=2.0`, `2.5`, and `3.5`.
 
+Plot both Green-function axes (the ordinate is `-Im G`, not divided by π):
+
+```bash
+python3 cincuenta/jobs/garcia2004_star/plot_green_functions.py \
+  build_mpi/runs/garcia2004_star_cpu/nb7_* \
+  --output build_mpi/plots/nb7-green-functions.svg
+```
+
 ## Scaling interpretation and stopping criteria
 
 MPI distributes independent correction-vector frequencies. Rank 0 still runs
