@@ -118,6 +118,23 @@ not a determination of the critical interaction. See
 [`CPU_RESULTS.md`](CPU_RESULTS.md) for the local diagnostic results and
 execution-path caveats.
 
+### Exact diagonalization comparison
+
+The `nb7_u1p5_ed`, `nb7_u2p5_ed`, and `nb7_u3p5_ed` inputs match their CPU DMRG
+counterparts except for the solver and output name. Run with the MPI-enabled
+`build_mpi` executable; ED defaults to one rank because it has no distributed
+frequency workload:
+
+```bash
+export CINCUENTA_EXE=/absolute/path/to/build_mpi/cincuenta/src/cincuenta
+cincuenta/jobs/garcia2004_star/run_case.sh nb7_u1p5_ed
+cincuenta/jobs/garcia2004_star/run_case.sh nb7_u2p5_ed
+cincuenta/jobs/garcia2004_star/run_case.sh nb7_u3p5_ed
+```
+
+These matched comparisons retain iteration cap 8, `FicticiousBeta=64`, and
+`Matsubaras=32` (as well as the DMRG-specific input keys) for direct provenance.
+
 ## Slurm batch submission
 
 `slurm_job.sh` contains deliberately minimal portable directives. Supply the
@@ -146,9 +163,12 @@ Important files in each run directory are:
 - `manifest.txt`: provenance, launch command, elapsed time, and status;
 - `cincuenta.log`: rank-zero solver output, final bath parameters, and DMFT
   iteration errors;
-- `gimp_dmrg.txt`: final Matsubara impurity Green function;
-- `latticeG_dmrg.txt`: final Matsubara local lattice Green function;
-- `gimp_dmrg_real.txt`: broadened real-axis impurity Green function;
+- `gimp_<solver>.txt`: final Matsubara impurity Green function;
+- `latticeG_<solver>.txt`: final Matsubara local lattice Green function;
+- `gimp_<solver>_real.txt`: broadened real-axis impurity Green function;
+
+Here `<solver>` is read from `ImpuritySolver` in the run input (`dmrg` is
+assumed for older inputs without that key).
 - `launcher.log`: complete, unfiltered launcher and stderr output.
 
 The interactive launcher suppresses only known high-volume benign DMRG

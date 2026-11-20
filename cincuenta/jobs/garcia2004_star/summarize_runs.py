@@ -42,9 +42,10 @@ def summarize(run_dir: Path) -> tuple[list[str], bool]:
     input_text = (run_dir / "input.ain").read_text() if (run_dir / "input.ain").exists() else ""
     manifest = (run_dir / "manifest.txt").read_text() if (run_dir / "manifest.txt").exists() else ""
     log = (run_dir / "cincuenta.log").read_text(errors="replace") if (run_dir / "cincuenta.log").exists() else ""
-    mats = read_table(run_dir / "gimp_dmrg.txt")
-    lattice = read_table(run_dir / "latticeG_dmrg.txt")
-    real = read_table(run_dir / "gimp_dmrg_real.txt")
+    solver = input_value(input_text, "ImpuritySolver", "dmrg")
+    mats = read_table(run_dir / f"gimp_{solver}.txt")
+    lattice = read_table(run_dir / f"latticeG_{solver}.txt")
+    real = read_table(run_dir / f"gimp_{solver}_real.txt")
 
     expected_mats = 2 * int(input_value(input_text, "Matsubaras"))
     expected_real = int(input_value(input_text, "OmegaTotal"))
@@ -67,6 +68,7 @@ def summarize(run_dir: Path) -> tuple[list[str], bool]:
         str(run_dir),
         input_value(input_text, "NumberOfBathPoints"),
         input_value(input_text, "HubbardU"),
+        solver,
         manifest_value(manifest, "ranks"),
         str(len(iterations)),
         converged,
@@ -102,7 +104,7 @@ def main() -> int:
             parser.error(f"not a run directory or parent: {path}")
 
     headings = [
-        "run", "Nb", "U", "ranks", "iterations", "converged", "final_error",
+        "run", "Nb", "U", "solver", "ranks", "iterations", "converged", "final_error",
         "lowest_wn", "ImG_lowest_wn", "nearest_real_w", "A_nearest_zero",
         "elapsed_s", "status", "complete",
     ]
