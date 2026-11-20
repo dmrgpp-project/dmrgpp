@@ -26,6 +26,7 @@ EOF
 }
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+source_dir=$(cd -- "${script_dir}/../.." && pwd)
 dmrg_executable=${DMRG_EXECUTABLE:-}
 output_dir=${MASSIF_OUTPUT_DIR:-"${script_dir}/massif-results"}
 
@@ -70,9 +71,9 @@ command -v ms_print >/dev/null || { echo "error: ms_print is not installed" >&2;
 
 if [[ -z $dmrg_executable ]]; then
     for candidate in \
-        "${script_dir}/build-callgrind/dmrg/dmrg" \
-        "${script_dir}/build/dmrg/dmrg" \
-        "${script_dir}/dmrg/dmrg"; do
+        "${source_dir}/build-callgrind/dmrg/dmrg" \
+        "${source_dir}/build/dmrg/dmrg" \
+        "${source_dir}/dmrg/dmrg"; do
         if [[ -x $candidate ]]; then
             dmrg_executable=$candidate
             break
