@@ -160,9 +160,11 @@ frequency grid, independently of DMFT fitting and output renormalization.
 
 Commit `4c44045d` changes only the diagonal starting-vector construction in the
 shared spectral engine: after the first accumulation, return for identical site
-and orbital, while preserving the legacy same-site `Tj1Orb.h` exception.
-Different-site and same-site/different-orbital requests keep both contributions.
-No Cincuenta normalization policy was changed.
+and orbital. During review, the stale `Tj1Orb.h` exception was removed from
+this touched conditional; the separate pre-existing check in
+`accModifiedState()` was left untouched. Different-site and same-site/different-
+orbital requests keep both contributions. No Cincuenta normalization policy
+was changed.
 
 New raw-engine regressions in
 `LanczosPlusPlus/src/tests/test_EngineSpectral.cpp` compare with independent
@@ -188,8 +190,7 @@ a Hubbard dimer used `c`, `n`, `sz`, and `splus`: ground energies and branch
 counts are unchanged, local weights are one quarter, and nonlocal weights are
 unchanged. Logs and before/after serialized continued fractions are under
 `build_mpi/spectral-baseline/`, `build_mpi/spectral-fixed/`, and
-`build_mpi/spectral-cli-comparison.log`. The legacy Tj literal exception was
-preserved logically, not tested through a reachable projected-model fixture.
+`build_mpi/spectral-cli-comparison.log`. No projected-model fixture was added.
 Complex scalar storage is tested with real Hamiltonian coefficients; genuinely
 complex hopping and the full model catalog are not covered by these checks.
 

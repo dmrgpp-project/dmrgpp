@@ -520,10 +520,8 @@ private:
 		std::cerr << "isite=" << isite << " type=" << type;
 		std::cerr << " modif=" << (modifVector * modifVector) << "\n";
 		// A diagonal request applies one operator, not its sum with itself.
-		// Keep both contributions for distinct sites or orbitals, and retain
-		// the legacy same-site Tj behavior.
-		if (isite == jsite
-		    && (orbs.first == orbs.second || model_.name() == "Tj1Orb.h"))
+		// Keep both contributions for distinct sites or orbitals.
+		if (isite == jsite && orbs.first == orbs.second)
 			return;
 
 		RealType isign = (type > 1) ? -1.0 : 1.0;

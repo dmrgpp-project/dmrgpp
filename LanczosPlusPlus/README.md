@@ -46,8 +46,7 @@ canonical single-spin fermion, its raw particle/hole weights must sum to one,
 without a fitted normalization. The local-vector correction removes an earlier
 factor-four spectral-weight error; it does not change ground-state energies.
 Different-site and same-site/different-orbital requests retain their existing
-four-branch, symmetrized polarization convention. The legacy same-site
-`Tj1Orb.h` exception is also retained.
+four-branch, symmetrized polarization convention.
 
 From the monorepo root, with testing enabled:
 
