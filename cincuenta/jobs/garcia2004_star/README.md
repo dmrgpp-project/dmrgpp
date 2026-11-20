@@ -114,7 +114,9 @@ cincuenta/jobs/garcia2004_star/run_case.sh nb7_u3p5_cpu
 ```
 
 `U=3.5` supplies a high-interaction control; this three-point comparison is
-not a determination of the critical interaction.
+not a determination of the critical interaction. See
+[`CPU_RESULTS.md`](CPU_RESULTS.md) for the local diagnostic results and
+execution-path caveats.
 
 ## Slurm batch submission
 
