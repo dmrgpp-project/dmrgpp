@@ -90,6 +90,11 @@ public:
 		return operator()(targeting);
 	}
 
+	PsimagLite::String targetingId() const
+	{
+		return canonicalTargetingId(getTargeting(checkPoint_.model().params().options));
+	}
+
 	TargetingBaseType& operator()(PsimagLite::String targeting)
 	{
 		if (psi_)
@@ -136,6 +141,35 @@ public:
 	}
 
 private:
+
+	static PsimagLite::String canonicalTargetingId(const PsimagLite::String& targeting)
+	{
+		if (targeting == "GroundStateTargeting")
+			return "GroundState";
+		if (targeting == "TimeStepTargeting" || targeting == "TargetingAncilla")
+			return "TimeStep";
+		if (targeting == "DynamicTargeting")
+			return "Dynamic";
+		if (targeting == "CorrectionVectorTargeting")
+			return "CorrectionVector";
+		if (targeting == "CorrectionTargeting")
+			return "Correction";
+		if (targeting == "MettsTargeting")
+			return "Metts";
+		if (targeting == "TargetingRixsStatic")
+			return "RixsStatic";
+		if (targeting == "TargetingRixsDynamic")
+			return "RixsDynamic";
+		if (targeting == "TargetingChebyshev")
+			return "Chebyshev";
+		if (targeting == "TargetingExpression")
+			return "Expression";
+		if (targeting == "TargetingCVEvolution")
+			return "CVEvolution";
+
+		err("Unknown targeting " + targeting + "\n");
+		return "";
+	}
 
 	PsimagLite::String getTargeting(const OptionsType& options) const
 	{
