@@ -1,5 +1,10 @@
 # Matched Nb7 ED repeats (2026-11-20)
 
+> The original runs below predate the shared-engine correction. See
+> [Follow-up correction and validation](#follow-up-correction-and-validation)
+> for the fixed-weight reruns. The finite-tail normalization policy remains
+> unchanged and still needs separate treatment.
+
 ## Setup
 
 The three `*_ed.ain` inputs repeat the Nb7 CPU DMRG cases at U=1.5, 2.5,
@@ -16,7 +21,7 @@ among MPI ranks. Run input/launcher commit: `a8c27142`.
 Matsubara-tail normalization is enabled; DMRG's is disabled. This difference
 matters for interpreting the results below.
 
-## Results as produced by the current code
+## Pre-fix results
 
 | U | SCF solves | Final reported error | Meets tolerance? | -Im G(i omega_0), rescaled | A(0), unscaled real-axis output | Seconds |
 |---|---:|---:|---|---:|---:|---:|
@@ -143,9 +148,79 @@ its fix. `de391243` (committed 2026-06-24) replaced the hardcoded factor with
 finite-tail normalization and explicitly opted DMRG out. These latter four
 commits are available on local refs but are not ancestors of the current HEAD;
 they are development-history evidence, not its literal integration sequence.
-The current spectral engine still contains the same-site duplication.
+At the time of that audit, the spectral engine still contained the same-site
+duplication.
 
 Coverage needed to prevent recurrence: check raw particle/hole weights sum to
 one before any correction; compare a known noninteracting/atomic Green function
 on both frequency axes; and compare ED and DMRG on an identical fixed bath and
 frequency grid, independently of DMFT fitting and output renormalization.
+
+## Follow-up correction and validation
+
+Commit `4c44045d` changes only the diagonal starting-vector construction in the
+shared spectral engine: after the first accumulation, return for identical site
+and orbital, while preserving the legacy same-site `Tj1Orb.h` exception.
+Different-site and same-site/different-orbital requests keep both contributions.
+No Cincuenta normalization policy was changed.
+
+New raw-engine regressions in
+`LanczosPlusPlus/src/tests/test_EngineSpectral.cpp` compare with independent
+analytic noninteracting references, without output normalization:
+
+- Local fermion Green functions and their separate particle/hole residues.
+- Existing offsite `G01+G10` polarization convention.
+- Same-site/different-orbital response in a two-orbital FeAs model.
+- Local single-spin density response and the offsite symmetric density response.
+
+All five cover real and complex scalar implementations on real and Matsubara
+axes. Before the correction, only the two local cases failed, with the expected
+factor four (350 failures among 1,254 assertions). After the correction all
+1,254 assertions pass, also in shuffled test order. The MPI-enabled build
+initializes MPI explicitly in the test runner and launches through one rank.
+All 15 focused MPI-build checks passed, including the new suite, existing four
+Lanczos basis/combinatorial tests, eight DMRG/MPI smoke/preflight checks, and
+two ED U=0 checks. This is focused validation, not the entire repository suite;
+the previously identified Nightly DMRG U=0 failure remains separate.
+
+Actual standalone `lanczos` before/after comparisons on all four site pairs of
+a Hubbard dimer used `c`, `n`, `sz`, and `splus`: ground energies and branch
+counts are unchanged, local weights are one quarter, and nonlocal weights are
+unchanged. Logs and before/after serialized continued fractions are under
+`build_mpi/spectral-baseline/`, `build_mpi/spectral-fixed/`, and
+`build_mpi/spectral-cli-comparison.log`. The legacy Tj literal exception was
+preserved logically, not tested through a reachable projected-model fixture.
+Complex scalar storage is tested with real Hamiltonian coefficients; genuinely
+complex hopping and the full model catalog are not covered by these checks.
+
+### Nb7 ED reruns after the correction
+
+Run commit `4c44045d`, parent `build_mpi/runs/garcia2004_star_ed_fixed/`:
+
+| U | Run basename | SCF solves | Final error | Meets tolerance? | -Im G(i omega_0) | A(0) |
+|---|---|---:|---:|---|---:|---:|
+| 1.5 | `nb7_u1p5_ed_20261120T220956Z` | 3 | 2.04972e-6 | yes | 1.91116 | 0.518470 |
+| 2.5 | `nb7_u2p5_ed_20261120T220959Z` | 5 | 3.22427e-5 | yes | 1.74745 | 0.387479 |
+| 3.5 | `nb7_u3p5_ed_20261120T221003Z` | 8 | 2.68789e-3 | **no** | 0.924211 | 0.137405 |
+
+The real-axis integrals over [-4,4] are now 0.983157, 0.981578, and 0.978549,
+consistent with unit weight after accounting for the finite broadened window.
+Last-iteration Matsubara normalization factors are still 1.08632, 1.19296,
+and 1.36131. The constant factor four is gone; finite-tail bias is not.
+
+Full DMFT reruns are not bitwise identical after correcting the uniform factor:
+`Engine::computeAllStatesBelow` calls `fillRandom`, which seeds from wall time,
+and the iterative bath fit is numerically sensitive. Converged U=1.5 and 2.5
+lowest-frequency Matsubara values differ from the old runs by about 0.00018
+and 0.00139. An additional unchanged-binary U=2.5 repeat differs from the first
+fixed run by 0.00078 (maximum Matsubara difference) and 0.03185 (maximum
+real-axis difference). This repeat is under
+`build_mpi/runs/garcia2004_star_ed_fixed_repeat/nb7_u2p5_ed_20261120T221152Z`.
+Use the fixed-Hamiltonian analytic tests and standalone comparisons, not
+bitwise DMFT replay, to isolate the normalization correction. U=3.5 remains
+unconverged in both the old and fixed calculations.
+
+Updated, directly evaluated plots without manual amplitude correction:
+
+- `build_mpi/plots/nb7-ed-fixed-green-functions.svg`
+- `build_mpi/plots/nb7-ed-fixed-vs-dmrg.svg`

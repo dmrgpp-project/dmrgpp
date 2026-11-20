@@ -134,7 +134,9 @@ cincuenta/jobs/garcia2004_star/run_case.sh nb7_u3p5_ed
 
 These matched comparisons retain iteration cap 8, `FicticiousBeta=64`, and
 `Matsubaras=32` (as well as the DMRG-specific input keys) for direct provenance.
-**The repeats exposed ED spectral-weight and normalization defects; see
+**The original repeats exposed ED spectral-weight and normalization defects.
+The shared-engine factor-four defect is now fixed and the cases have been
+rerun, but the finite-tail normalization policy remains unchanged. See
 [`ED_RESULTS.md`](ED_RESULTS.md) before interpreting ED amplitudes or comparing
 these solutions quantitatively with DMRG.**
 
