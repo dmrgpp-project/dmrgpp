@@ -39,6 +39,34 @@ Publisher = {\url{https://g1257.github.com/dmrgPlusPlus}} }
 Building and Running Lanczos++
 TBW.
 
+## Spectral-function regression checks
+
+The same-site, same-orbital spectral request applies the operator once. For a
+canonical single-spin fermion, its raw particle/hole weights must sum to one,
+without a fitted normalization. The local-vector correction removes an earlier
+factor-four spectral-weight error; it does not change ground-state energies.
+Different-site and same-site/different-orbital requests retain their existing
+four-branch, symmetrized polarization convention.
+
+These checks are part of the **standard monorepo CMake/CTest suite** when
+`BUILD_TESTING=ON` (the default). A normal `cmake --build build` builds them,
+and `ctest --test-dir build` runs them automatically. No separate build or
+invocation is required. In MPI-enabled builds they run as the one-rank
+`Engine spectral regression tests` test, also included under the `MPI` label.
+
+To build and run **only this subset**, use these optional commands from the
+monorepo root:
+
+```sh
+cmake --build build --target test_EngineSpectral
+ctest --test-dir build --output-on-failure -R '^Engine '
+```
+
+The tests compare raw fermion and density responses on both frequency axes
+against analytic noninteracting references, including a two-orbital case.
+They cover real and complex scalar implementations without Matsubara-tail
+rescaling or DMFT bath fitting.
+
 ## DISCLAIMER
 
 THE SOFTWARE IS SUPPLIED BY THE COPYRIGHT HOLDERS AND

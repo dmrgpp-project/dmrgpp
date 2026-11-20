@@ -54,7 +54,10 @@ fit is what the neq stage's bath comes from).
 
 **`LatticeGf=` constraint for any neq run:** the neq Bethe-lattice
 self-consistency only supports the semicircular DOS — `LatticeGf=` must be
-exactly `"energy,semicircular,W"`. The equilibrium stage itself supports
+of the form `"energy,semicircular,W"`, where `W` is the **full bandwidth**:
+DOS support `[-W/2,W/2]`, half-bandwidth `D=W/2`, and Bethe hopping `v=W/4`.
+For example, a final value of `2` means `D=1` and `v=0.5`.
+The equilibrium stage itself supports
 more (e.g. `"momentum,1D,Nk"`), Support for other LatticeGf is not on
 the roadmap yet.
 
@@ -85,7 +88,7 @@ All of the following go below the equilibrium block.
 | Keyword | Type | Default | Meaning |
 |---|---|---|---|
 | `NeqDmftIter=` | int | 10 | Fixed corrector iterations at each time step, updating the second bath; it must be positive when specified. |
-| `BandwidthFinal=` | real | 0 (no quench) | Bethe-lattice bandwidth *for t > 0*, i.e. a **hopping** quench on top of (or instead of) the interaction quench. 0 means the lattice bandwidth stays at its equilibrium `LatticeGf=` value for all t. |
+| `BandwidthFinal=` | real | 0 (no quench) | Bethe-lattice **full bandwidth** `W_f=4v_f=2D_f` *for t > 0*, i.e. a **hopping** quench on top of (or instead of) the interaction quench. 0 means the lattice bandwidth stays at its equilibrium `LatticeGf=` value for all t. |
 | `QuenchShape=` | string | `"step"` | Ramp shape for the hopping quench: `"step"`, `"cosine"`, or `"tanh"`. Only matters if `BandwidthFinal=` is nonzero. |
 | `QuenchDuration=` | real | 0 (instantaneous) | Ramp duration t_q for the hopping quench. |
 | `NeqOutputPrefix=` | string | `""` | Prefix prepended to output Green's-function filenames (see [Output files](#output-files)). |
