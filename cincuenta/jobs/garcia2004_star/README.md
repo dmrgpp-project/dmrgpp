@@ -96,9 +96,10 @@ fully expanded launch command is recorded in `manifest.txt`. Keep each run in
 its own directory: DMRG restart and frequency filenames are not safe to share
 between simultaneous cases.
 
-### Local CPU comparison: `U=1.5` vs `U=2.5`
+### Local CPU comparison: `U=1.5`, `U=2.5`, and `U=3.5`
 
-Use the dedicated `nb7_u1p5_cpu` and `nb7_u2p5_cpu` inputs for CPU builds.
+Use the dedicated `nb7_u1p5_cpu`, `nb7_u2p5_cpu`, and `nb7_u3p5_cpu` inputs
+for CPU builds. These differ only in `HubbardU` and `RootOutputname`.
 They retain the original GPU-oriented inputs unchanged and remove only
 `BatchedGemm` from `SolverOptions` (the CPU BatchedGemm path requires dense
 matrices); this execution-only setting selects the standard matvec and does
@@ -109,7 +110,11 @@ export CINCUENTA_EXE=/absolute/path/to/build_mpi/cincuenta/src/cincuenta
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
 cincuenta/jobs/garcia2004_star/run_case.sh nb7_u1p5_cpu
 cincuenta/jobs/garcia2004_star/run_case.sh nb7_u2p5_cpu
+cincuenta/jobs/garcia2004_star/run_case.sh nb7_u3p5_cpu
 ```
+
+`U=3.5` supplies a high-interaction control; this three-point comparison is
+not a determination of the critical interaction.
 
 ## Slurm batch submission
 

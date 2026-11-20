@@ -6,7 +6,7 @@ usage() {
 Usage: run_case.sh CASE [RANKS]
 
 CASE is one of: nb7_u1p5, nb7_u2p5, nb7_u1p5_cpu, nb7_u2p5_cpu,
-               nb11_u2p0, nb11_u2p5, nb11_u3p5, nb15_u2p5
+               nb7_u3p5_cpu, nb11_u2p0, nb11_u2p5, nb11_u3p5, nb15_u2p5
 
 Environment:
   CINCUENTA_EXE  MPI-enabled cincuenta executable (default: <repo>/build/cincuenta/src/cincuenta)
@@ -34,7 +34,7 @@ case_name=${1#input_}
 case_name=${case_name%.ain}
 case "$case_name" in
     nb7_u1p5|nb7_u2p5) default_ranks=16 ;;
-    nb7_u1p5_cpu|nb7_u2p5_cpu) default_ranks=8 ;;
+    nb7_u1p5_cpu|nb7_u2p5_cpu|nb7_u3p5_cpu) default_ranks=8 ;;
     nb11_u2p0|nb11_u2p5|nb11_u3p5) default_ranks=32 ;;
     nb15_u2p5) default_ranks=64 ;;
     *) echo "Unknown case: $case_name" >&2; usage >&2; exit 2 ;;
