@@ -79,7 +79,8 @@ def main() -> int:
             raise ValueError("runs use different OmegaDelta broadenings")
         eta = runs[0][2]
         # Fixed, readable two-panel canvas; shared vertical scale aids comparison.
-        W, H = 1280, 600
+        has_ed = any(r[6] in ("ed", "exactdiag") for r in runs)
+        W, H = 1280, 630 if has_ed else 600
         panels = [(90, 82, 510, 385), (690, 82, 510, 385)]
         all_y = [-row[2] for r in runs for rows in (r[3], r[4]) for row in rows]
         ymin, ymax = min(0.0, min(all_y)), max(0.0, max(all_y))
@@ -134,6 +135,8 @@ def main() -> int:
                         else ' stroke-dasharray="8 3 2 3"')
             label = f"{'ED' if is_ed else solver.upper()} U={u}" + (" (not converged)" if not conv else "")
             out.append(f'<line x1="{xx}" y1="{yy-5}" x2="{xx+34}" y2="{yy-5}" stroke="{color}" stroke-width="3"{dash}/><text x="{xx+42}" y="{yy}" font-size="14">{html.escape(label)}</text>')
+        if has_ed:
+            out.append('<text x="640" y="615" text-anchor="middle" font-size="13" fill="#a33">ED normalization caveat: Matsubara data are tail-rescaled; real-axis data are unscaled solver output.</text>')
         out.append('</svg>')
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text("\n".join(out)+"\n")
