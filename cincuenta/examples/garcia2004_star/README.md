@@ -114,9 +114,8 @@ cincuenta/examples/garcia2004_star/run_case.sh nb7_u3p5_cpu
 ```
 
 `U=3.5` supplies a high-interaction control; this three-point comparison is
-not a determination of the critical interaction. See
-[`CPU_RESULTS.md`](CPU_RESULTS.md) for the local diagnostic results and
-execution-path caveats.
+not a determination of the critical interaction. Check convergence in each
+run's log rather than interpreting successful exit as a converged solution.
 
 ### Exact diagonalization comparison
 
@@ -134,11 +133,10 @@ cincuenta/examples/garcia2004_star/run_case.sh nb7_u3p5_ed
 
 These matched comparisons retain iteration cap 8, `FicticiousBeta=64`, and
 `Matsubaras=32` (as well as the DMRG-specific input keys) for direct provenance.
-**The original repeats exposed ED spectral-weight and normalization defects.
-The shared-engine factor-four defect is now fixed and the cases have been
-rerun, but the finite-tail normalization policy remains unchanged. See
-[`ED_RESULTS.md`](ED_RESULTS.md) before interpreting ED amplitudes or comparing
-these solutions quantitatively with DMRG.**
+ED applies Matsubara frequency-tail normalization, while DMRG opts out. With
+this short frequency grid, the tail estimate need not be asymptotic. Check the
+`SpectralWeight` and `NormalizationFactor` diagnostics before interpreting
+ED/DMRG differences quantitatively; real-axis ED output is not tail-rescaled.
 
 ## Slurm batch submission
 
