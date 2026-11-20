@@ -345,7 +345,7 @@ protected:
 		if (BasisType::useSu2Symmetry())
 			err("SU(2) not supported\n");
 
-		ModelTermType& spsm = ModelBaseType::createTerm("SplusSminus");
+		ModelTermType& spsm = ModelBaseType::createTerm("SplusSminus", true);
 
 		OpForLinkType splus("splus");
 
@@ -353,7 +353,7 @@ protected:
 
 		spsm.push(splus, 'N', splus, 'C', valueModiferTerm0);
 
-		ModelTermType& szsz = ModelBaseType::createTerm("szsz");
+		ModelTermType& szsz = ModelBaseType::createTerm("szsz", true);
 
 		OpForLinkType sz("sz");
 		szsz.push(sz, 'N', sz, 'N');

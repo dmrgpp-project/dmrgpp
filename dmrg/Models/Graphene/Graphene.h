@@ -307,7 +307,7 @@ public:
 	void fillModelLinks() override
 	{
 		const SizeType orbitals = modelParameters_.orbitals;
-		ModelTermType& hopA     = ModelBaseType::createTerm("hoppingA");
+		ModelTermType& hopA     = ModelBaseType::createTerm("hoppingA", true);
 
 		for (SizeType spin = 0; spin < 2; ++spin) {
 			OpForLinkType                         c1("C", 0 + spin * orbitals);
@@ -318,7 +318,7 @@ public:
 			hopA.push(c1, 'N', c2, 'C', su2properties);
 		}
 
-		ModelTermType& hopB = ModelBaseType::createTerm("hoppingB");
+		ModelTermType& hopB = ModelBaseType::createTerm("hoppingB", true);
 
 		for (SizeType spin = 0; spin < 2; ++spin) {
 			OpForLinkType                         c1("C", 1 + spin * orbitals);
@@ -328,21 +328,21 @@ public:
 			hopB.push(c1, 'N', c2, 'C', su2properties);
 		}
 
-		ModelTermType& ninj = ModelBaseType::createTerm("ninj");
+		ModelTermType& ninj = ModelBaseType::createTerm("ninj", true);
 		OpForLinkType  ni("ntotal");
 		ninj.push(ni, 'N', ni, 'N');
 
-		ModelTermType& nana = ModelBaseType::createTerm("nana");
+		ModelTermType& nana = ModelBaseType::createTerm("nana", true);
 		for (SizeType spin = 0; spin < 2; ++spin) {
 			OpForLinkType ni("nn", spin);
 			nana.push(ni, 'N', ni, 'N');
 		}
 
-		ModelTermType& spasma = ModelBaseType::createTerm("spasma");
+		ModelTermType& spasma = ModelBaseType::createTerm("spasma", true);
 		OpForLinkType  sp("splus2");
 		spasma.push(sp, 'N', sp, 'C');
 
-		ModelTermType& yoyo = ModelBaseType::createTerm("yoyo");
+		ModelTermType& yoyo = ModelBaseType::createTerm("yoyo", true);
 		for (SizeType spin1 = 0; spin1 < 2; ++spin1) {
 			for (SizeType spin2 = 0; spin2 < 2; ++spin2) {
 				OpForLinkType yi("yop", spin1 + spin2 * 2);

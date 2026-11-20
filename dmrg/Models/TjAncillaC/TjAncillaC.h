@@ -282,11 +282,11 @@ protected:
 
 		const SizeType orbitals = 1; // like C2 but without hot
 		const bool     isSu2    = BasisType::useSu2Symmetry();
-		ModelTermType& hop      = ModelBaseType::createTerm("hopping");
-		ModelTermType& spsm     = ModelBaseType::createTerm("SplusSminus");
-		ModelTermType& szsz     = ModelBaseType::createTerm("szsz");
-		ModelTermType& ninj     = ModelBaseType::createTerm("ninj");
-		ModelTermType& dd       = ModelBaseType::createTerm("didj");
+		ModelTermType& hop      = ModelBaseType::createTerm("hopping", true);
+		ModelTermType& spsm     = ModelBaseType::createTerm("SplusSminus", true);
+		ModelTermType& szsz     = ModelBaseType::createTerm("szsz", true);
+		ModelTermType& ninj     = ModelBaseType::createTerm("ninj", true);
+		ModelTermType& dd       = ModelBaseType::createTerm("didj", true);
 
 		for (SizeType spin = 0; spin < 2; ++spin) {
 			for (SizeType orb1 = 0; orb1 < orbitals; ++orb1) {

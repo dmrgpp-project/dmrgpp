@@ -240,12 +240,13 @@ protected:
 	{
 		const SizeType orbitals = (helperHubbardAncilla_.isHot()) ? 2 : 1;
 		const bool     isSu2    = BasisType::useSu2Symmetry();
-		ModelTermType& hop  = ModelBaseType::createTerm("hopping"); // diagonal in orbital
-		ModelTermType& spsm = ModelBaseType::createTerm("SplusSminus");
-		ModelTermType& szsz = ModelBaseType::createTerm("szsz");
-		ModelTermType& ninj = ModelBaseType::createTerm("ninj");
-		ModelTermType& ll   = ModelBaseType::createTerm("LambdaLambda");
-		ModelTermType& pp   = ModelBaseType::createTerm("PairPair");
+		ModelTermType& hop
+		    = ModelBaseType::createTerm("hopping", true); // diagonal in orbital
+		ModelTermType& spsm = ModelBaseType::createTerm("SplusSminus", true);
+		ModelTermType& szsz = ModelBaseType::createTerm("szsz", true);
+		ModelTermType& ninj = ModelBaseType::createTerm("ninj", true);
+		ModelTermType& ll   = ModelBaseType::createTerm("LambdaLambda", true);
+		ModelTermType& pp   = ModelBaseType::createTerm("PairPair", true);
 
 		for (SizeType spin = 0; spin < 2; ++spin) {
 			for (SizeType orb = 0; orb < orbitals; ++orb) {
