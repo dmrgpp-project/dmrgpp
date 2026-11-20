@@ -58,4 +58,9 @@ Compile DMRG++; instructions are in the top directory README file.
 perl ../cincuenta/scripts/extract runForinputCincuenta0.cout
 ```
 
+## Manual examples
+
+See [`examples/`](examples/README.md) for literature-inspired workloads.
+Automated regression inputs remain under `TestSuite/`.
+
 

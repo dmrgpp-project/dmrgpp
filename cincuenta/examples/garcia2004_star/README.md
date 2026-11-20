@@ -68,25 +68,25 @@ launcher, environment, elapsed time, and exit status.
 
 ```bash
 # In a 16-rank Slurm allocation:
-cincuenta/jobs/garcia2004_star/run_case.sh nb7_u2p5 16
+cincuenta/examples/garcia2004_star/run_case.sh nb7_u2p5 16
 
 # In a 32-rank allocation, with explicit Frontier CPU placement:
 SRUN_ARGS='--distribution=block:block --cpu-bind=cores' \
-  cincuenta/jobs/garcia2004_star/run_case.sh nb11_u2p5 32
+  cincuenta/examples/garcia2004_star/run_case.sh nb11_u2p5 32
 
 # One rank per Frontier GPU/GCD on a single node:
 SRUN_ARGS='--ntasks-per-node=8 --cpus-per-task=1 --distribution=block:block --cpu-bind=cores --gpus-per-task=1 --gpu-bind=closest' \
-  cincuenta/jobs/garcia2004_star/run_case.sh nb7_u2p5 8
+  cincuenta/examples/garcia2004_star/run_case.sh nb7_u2p5 8
 
 # Non-Slurm MPI, with an out-of-tree executable:
 CINCUENTA_EXE=/path/to/build/cincuenta/src/cincuenta \
-  cincuenta/jobs/garcia2004_star/run_case.sh nb11_u2p0 32
+  cincuenta/examples/garcia2004_star/run_case.sh nb11_u2p0 32
 ```
 
 Useful overrides are documented by:
 
 ```bash
-cincuenta/jobs/garcia2004_star/run_case.sh --help
+cincuenta/examples/garcia2004_star/run_case.sh --help
 ```
 
 In particular, `RUN_ROOT` can point at a large scratch filesystem and
@@ -108,9 +108,9 @@ not change the physics. Run each case with 8 MPI ranks and one thread per rank:
 ```bash
 export CINCUENTA_EXE=/absolute/path/to/build_mpi/cincuenta/src/cincuenta
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
-cincuenta/jobs/garcia2004_star/run_case.sh nb7_u1p5_cpu
-cincuenta/jobs/garcia2004_star/run_case.sh nb7_u2p5_cpu
-cincuenta/jobs/garcia2004_star/run_case.sh nb7_u3p5_cpu
+cincuenta/examples/garcia2004_star/run_case.sh nb7_u1p5_cpu
+cincuenta/examples/garcia2004_star/run_case.sh nb7_u2p5_cpu
+cincuenta/examples/garcia2004_star/run_case.sh nb7_u3p5_cpu
 ```
 
 `U=3.5` supplies a high-interaction control; this three-point comparison is
@@ -127,9 +127,9 @@ frequency workload:
 
 ```bash
 export CINCUENTA_EXE=/absolute/path/to/build_mpi/cincuenta/src/cincuenta
-cincuenta/jobs/garcia2004_star/run_case.sh nb7_u1p5_ed
-cincuenta/jobs/garcia2004_star/run_case.sh nb7_u2p5_ed
-cincuenta/jobs/garcia2004_star/run_case.sh nb7_u3p5_ed
+cincuenta/examples/garcia2004_star/run_case.sh nb7_u1p5_ed
+cincuenta/examples/garcia2004_star/run_case.sh nb7_u2p5_ed
+cincuenta/examples/garcia2004_star/run_case.sh nb7_u3p5_ed
 ```
 
 These matched comparisons retain iteration cap 8, `FicticiousBeta=64`, and
@@ -188,7 +188,7 @@ when diagnosing a failure.
 Summarize one run or every child of the run root:
 
 ```bash
-python3 cincuenta/jobs/garcia2004_star/summarize_runs.py \
+python3 cincuenta/examples/garcia2004_star/summarize_runs.py \
   runs/garcia2004_star
 ```
 
@@ -205,7 +205,7 @@ frequency shape of `-Im G(i omega_n)` between `U=2.0`, `2.5`, and `3.5`.
 Plot both Green-function axes (the ordinate is `-Im G`, not divided by π):
 
 ```bash
-python3 cincuenta/jobs/garcia2004_star/plot_green_functions.py \
+python3 cincuenta/examples/garcia2004_star/plot_green_functions.py \
   build_mpi/runs/garcia2004_star_cpu/nb7_* \
   --output build_mpi/plots/nb7-green-functions.svg
 ```

@@ -83,7 +83,7 @@ Green-function tables. Generated outputs remain untracked under `build_mpi/`.
 A summary can be regenerated with:
 
 ```sh
-python3 cincuenta/jobs/garcia2004_star/summarize_runs.py \
+python3 cincuenta/examples/garcia2004_star/summarize_runs.py \
   build_mpi/runs/garcia2004_star_cpu
 ```
 

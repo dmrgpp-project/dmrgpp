@@ -15,5 +15,5 @@ set -euo pipefail
 export CINCUENTA_EXE=/lustre/orion/cph102/proj-shared/epd/dmrgpp/build_cce21_mpich91_hip/cincuenta/src/cincuenta
 export SRUN_ARGS='--ntasks-per-node=8 --cpus-per-task=7 --threads-per-core=1 --distribution=block:block --cpu-bind=cores --gpus-per-task=1'
 export RUN_ROOT=$(pwd)
-script_dir=$(pwd)/../cincuenta/jobs/garcia2004_star
+script_dir=$(pwd)/../cincuenta/examples/garcia2004_star
 exec "$script_dir/run_case.sh" "$CASE" "$RANKS"
