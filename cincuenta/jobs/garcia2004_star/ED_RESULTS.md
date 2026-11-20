@@ -103,3 +103,49 @@ Plots show `-Im G`, **not** `-Im G/pi`, and explicitly warn that ED Matsubara
 and real-axis normalization differ. Unconverged solutions have distinct line
 styles and labels. The solver-aware summarizer and plotter also continue to
 accept the original DMRG runs.
+
+## Why the existing regressions missed this
+
+An audit and rerun of the current tests found:
+
+- The two `u0_gImpEqGcluster_*_check` tests compare each solver's impurity
+  Matsubara output with its own lattice output, **not ED directly with DMRG**.
+  The ED run uses beta 20 and 200 positive Matsubaras; DMRG uses beta 10 and
+  six positive Matsubaras. Both perform only one DMFT iteration.
+- `DmftSolver` applies ED's sum-rule rescaling before writing the Matsubara
+  file tested by the comparator. Thus the test sees a compensated result,
+  not the raw continued-fraction weight. The real-axis output is not compared.
+- In the local rerun, ED logged `SpectralWeight=3.998990` and
+  `NormalizationFactor=0.250063`. Its post-normalization maximum difference
+  from the lattice was `0.010110`, passing tolerance `0.015`. Undoing the
+  printed normalization factor gives a raw difference of approximately
+  `2.77238`. The test's highest Matsubara frequency is about 62.7, so finite-tail
+  bias is much smaller than in the Nb7 repeats, whose highest frequency is 3.09.
+- The DMRG run completed, but its comparison **failed** locally: maximum
+  difference `0.109934` exceeds tolerance `0.05`. Both its run and check are
+  labeled `Nightly`; `.github/workflows/ci.yml` runs `ctest -LE Nightly`,
+  excluding them from fast CI. This failure was not diagnosed or fixed here.
+- Both `spectralWeight` unit tests passed. They exercise synthetic `1/(i omega)`
+  and `0.7/(i omega)` vectors, not ED or DMRG solver output or real-axis weights.
+- The MPI preflights compare DMRG with itself across rank counts, not with ED.
+  The simple `cincuenta0`/`cincuenta1` run tests do not assert spectral amplitudes.
+
+The local rerun log is `build_mpi/normalization-test-audit.log`; the U=0 outputs
+are under `build_mpi/cincuenta/src/u0ExactDiag/` and `u0Dmrg/`.
+
+In the current branch's ancestry, `7755170a` (2026-06-19) introduced the
+paired U=0 checks and the present tail-normalization/DMRG-opt-out approach.
+Related development-branch history further explains the earlier resolution:
+`2e821f6c` (2026-05-29) introduced a hardcoded quarter factor; `93b90caa`
+(2026-06-03) stopped scaling DMRG. The message for `9a7fcf76` (2026-06-08)
+explicitly reports ED's fourfold mismatch and describes sum-rule rescaling as
+its fix. `de391243` (committed 2026-06-24) replaced the hardcoded factor with
+finite-tail normalization and explicitly opted DMRG out. These latter four
+commits are available on local refs but are not ancestors of the current HEAD;
+they are development-history evidence, not its literal integration sequence.
+The current spectral engine still contains the same-site duplication.
+
+Coverage needed to prevent recurrence: check raw particle/hole weights sum to
+one before any correction; compare a known noninteracting/atomic Green function
+on both frequency axes; and compare ED and DMRG on an identical fixed bath and
+frequency grid, independently of DMFT fitting and output renormalization.
