@@ -114,11 +114,9 @@ public:
 		VectorSizeType discardedTerms;
 
 		VectorStringType newVstr;
-		std::string      reading_buffer;
 		for (SizeType ii = 0; ii < n; ++ii) {
 			const SizeType     i   = n - ii - 1; // read vector backwards
 			PsimagLite::String tmp = ops_[i];
-			reading_buffer += ops_[i] + "*";
 
 			// it's a matrix
 			if (ii != 0) {
@@ -129,8 +127,11 @@ public:
 
 			SiteSplitType siteSplit = OneOperatorSpecType::extractSiteIfAny(tmp);
 			if (isGlobalOperator(tmp)) {
-				nonLocal_.timeEvolve(
-				    tmp, siteSplit, ket_.name(), aux_.currentCoO());
+				const std::string ketName = ket_.name();
+				nonLocal_.timeEvolve(std::string(tmp.begin(), tmp.end()),
+				                     siteSplit,
+				                     ketName,
+				                     aux_.currentCoO());
 				newVstr.push_back(tmp);
 				continue;
 			}
