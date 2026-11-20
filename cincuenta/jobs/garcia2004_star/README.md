@@ -98,17 +98,17 @@ between simultaneous cases.
 
 ### Local CPU comparison: `U=1.5` vs `U=2.5`
 
-The `nb7_u1p5` input is derived identically from `nb7_u2p5`, changing only
-`HubbardU` and `RootOutputname`; all other physics and solver settings are
-unchanged. This provides a matched-input local comparison, not a claim about a
-transition. Run each case with the same explicit 8 MPI ranks and one thread per
-rank, using the MPI-enabled build executable:
+Use the dedicated `nb7_u1p5_cpu` and `nb7_u2p5_cpu` inputs for CPU builds.
+They retain the original GPU-oriented inputs unchanged and remove only
+`BatchedGemm` from `SolverOptions` (the CPU BatchedGemm path requires dense
+matrices); this execution-only setting selects the standard matvec and does
+not change the physics. Run each case with 8 MPI ranks and one thread per rank:
 
 ```bash
 export CINCUENTA_EXE=/absolute/path/to/build_mpi/cincuenta/src/cincuenta
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
-cincuenta/jobs/garcia2004_star/run_case.sh nb7_u1p5 8
-cincuenta/jobs/garcia2004_star/run_case.sh nb7_u2p5 8
+cincuenta/jobs/garcia2004_star/run_case.sh nb7_u1p5_cpu
+cincuenta/jobs/garcia2004_star/run_case.sh nb7_u2p5_cpu
 ```
 
 ## Slurm batch submission
