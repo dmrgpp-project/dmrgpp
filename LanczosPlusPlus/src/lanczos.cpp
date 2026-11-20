@@ -1,18 +1,16 @@
+// SPDX-FileCopyrightText: Copyright (c) 2009-2012, UT-Battelle, LLC
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "LanczosDriver.h"
 
 PsimagLite::String license = "Copyright (c) 2009-2012, UT-Battelle, LLC\n"
-                             "All rights reserved\n"
-                             "\n"
-                             "[Lanczos++, Version 1.0]\n"
                              "\n"
                              "-------------------------------------------------------------\n"
-                             "THE SOFTWARE IS SUPPLIED BY THE COPYRIGHT HOLDERS AND\n"
-                             "CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED\n"
-                             "WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n"
-                             "WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A\n"
-                             "PARTICULAR PURPOSE ARE DISCLAIMED. \n"
+                             "Licensed under GNU GPL version 3 or later (GPL-3.0-or-later).\n"
+                             "This program comes with ABSOLUTELY NO WARRANTY.\n"
                              "\n"
-                             "Please see full open source license included in file LICENSE.\n"
+                             "See LICENSE, NOTICE, and THIRD_PARTY_NOTICES distributed with\n"
+                             "this software.\n"
                              "-------------------------------------------------------------\n"
                              "\n";
 

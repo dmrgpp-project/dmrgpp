@@ -1,14 +1,18 @@
 # Preliminaries
-## Disclaimer and Licensing
+## Licensing
 
-The full software license for DMRG++ version 3
-can be found in file LICENSE in the root directory of the code.
+cincuenta and the other first-party software in this repository are licensed
+under the GNU General Public License, version 3 or, at your option, any later
+version (`GPL-3.0-or-later`). See the root [`LICENSE`](../LICENSE) file. This
+software comes with absolutely no warranty; see the GNU General Public License
+for details. Institutional notices are in [`NOTICE`](../NOTICE), and terms for
+bundled third-party material are in
+[`THIRD_PARTY_NOTICES`](../THIRD_PARTY_NOTICES).
+
 DMRG++ is a free and open source implementation of the
 DMRG algorithm. You are welcomed to use it and publish data
 obtained with DMRG++. If you do,
 <b>please cite this work</b> (see next subsection).
-
-See DISCLAIMERS in the LICENSE file.
 
 ## Please cite this work
 
