@@ -269,12 +269,10 @@ private:
 
 		pVectors_.resize(total);
 		PsimagLite::String tmp;
-		RealType           sum = 0.0;
 		for (SizeType i = 0; i < total; ++i) {
 			io.readline(tmp, "P" + ttos(i) + "=");
 			PvectorType::checkSyntaxOfValue(tmp);
 			pVectors_[i] = new PvectorType(tmp);
-			sum += pVectors_[i]->weight();
 		}
 
 		origPvectors_ = pVectors_.size();

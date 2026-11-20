@@ -504,7 +504,9 @@ public:
 			sum += weight;
 		}
 
-		assert(fabs(sum - 1) < 1e-3);
+		if (!(fabs(sum - 1) < 1e-3))
+			throw PsimagLite::RuntimeError(
+			    "DensityMatrixSvd: target weights don't sum to one\n");
 
 		PsimagLite::OstringStream                     msgg(std::cout.precision());
 		PsimagLite::OstringStream::OstringStreamType& msg = msgg();
