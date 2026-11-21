@@ -1,4 +1,4 @@
-## KronLogger [0.060]: KronLogger: Hello from ctor, counter_=7
+## KronLogger [0.162]: KronLogger: Hello from ctor, counter_=7
 LocalOperator
 OperatorName=sz
 OperatorSite=5
@@ -602,6 +602,7 @@ nC=5 total=4 offsetX=0
  inPatch=0
  offsetY=0
   ic=0
+  applyAdjoint=0
   performTranspose=0
   Matrix A follows in format: dense
 5 5
@@ -614,6 +615,7 @@ nC=5 total=4 offsetX=0
 1 1
 1.000000 
   ic=1
+  applyAdjoint=0
   performTranspose=0
   Matrix A follows in format: dense
 5 5
@@ -626,6 +628,7 @@ nC=5 total=4 offsetX=0
 1 1
 0.500000 
   ic=4
+  applyAdjoint=0
   performTranspose=0
   Matrix A follows in format: dense
 5 5
@@ -640,6 +643,7 @@ nC=5 total=4 offsetX=0
  inPatch=1
  offsetY=5
   ic=3
+  applyAdjoint=0
   performTranspose=1
   Matrix A follows in format: sparse
 %%MatrixMarket matrix coordinate real general
@@ -662,6 +666,7 @@ nC=5 total=4 offsetX=5
  inPatch=0
  offsetY=0
   ic=3
+  applyAdjoint=0
   performTranspose=0
   Matrix A follows in format: sparse
 %%MatrixMarket matrix coordinate real general
@@ -678,6 +683,7 @@ nC=5 total=4 offsetX=5
  inPatch=1
  offsetY=5
   ic=0
+  applyAdjoint=0
   performTranspose=0
   Matrix A follows in format: dense
 10 10
@@ -697,6 +703,7 @@ nC=5 total=4 offsetX=5
 0.000000 1.000000 0.000000 
 0.000000 0.000000 1.000000 
   ic=1
+  applyAdjoint=0
   performTranspose=0
   Matrix A follows in format: sparse
 %%MatrixMarket matrix coordinate real general
@@ -717,6 +724,7 @@ nC=5 total=4 offsetX=5
 -0.250000 0.250000 0.353553 
 0.353553 0.353553 0.000000 
   ic=4
+  applyAdjoint=0
   performTranspose=0
   Matrix A follows in format: sparse
 %%MatrixMarket matrix coordinate real general
@@ -739,6 +747,7 @@ nC=5 total=4 offsetX=5
  inPatch=2
  offsetY=35
   ic=3
+  applyAdjoint=0
   performTranspose=1
   Matrix A follows in format: sparse
 %%MatrixMarket matrix coordinate real general
@@ -763,6 +772,7 @@ nC=5 total=4 offsetX=35
  inPatch=1
  offsetY=5
   ic=3
+  applyAdjoint=0
   performTranspose=0
   Matrix A follows in format: sparse
 %%MatrixMarket matrix coordinate real general
@@ -781,6 +791,7 @@ nC=5 total=4 offsetX=35
  inPatch=2
  offsetY=35
   ic=0
+  applyAdjoint=0
   performTranspose=0
   Matrix A follows in format: dense
 10 10
@@ -800,6 +811,7 @@ nC=5 total=4 offsetX=35
 0.000000 1.000000 0.000000 
 0.000000 0.000000 1.000000 
   ic=1
+  applyAdjoint=0
   performTranspose=0
   Matrix A follows in format: sparse
 %%MatrixMarket matrix coordinate real general
@@ -820,6 +832,7 @@ nC=5 total=4 offsetX=35
 -0.353553 -0.750000 0.250000 
 0.353553 0.250000 0.250000 
   ic=4
+  applyAdjoint=0
   performTranspose=0
   Matrix A follows in format: sparse
 %%MatrixMarket matrix coordinate real general
@@ -842,6 +855,7 @@ nC=5 total=4 offsetX=35
  inPatch=3
  offsetY=65
   ic=3
+  applyAdjoint=0
   performTranspose=1
   Matrix A follows in format: sparse
 %%MatrixMarket matrix coordinate real general
@@ -862,6 +876,7 @@ nC=5 total=4 offsetX=65
  inPatch=2
  offsetY=35
   ic=3
+  applyAdjoint=0
   performTranspose=0
   Matrix A follows in format: sparse
 %%MatrixMarket matrix coordinate real general
@@ -876,6 +891,7 @@ nC=5 total=4 offsetX=65
  inPatch=3
  offsetY=65
   ic=0
+  applyAdjoint=0
   performTranspose=0
   Matrix A follows in format: dense
 5 5
@@ -888,6 +904,7 @@ nC=5 total=4 offsetX=65
 1 1
 1.000000 
   ic=1
+  applyAdjoint=0
   performTranspose=0
   Matrix A follows in format: dense
 5 5
@@ -900,6 +917,7 @@ nC=5 total=4 offsetX=65
 1 1
 0.500000 
   ic=4
+  applyAdjoint=0
   performTranspose=0
   Matrix A follows in format: dense
 5 5
@@ -911,4 +929,4 @@ nC=5 total=4 offsetX=65
   Matrix B follows in format: dense
 1 1
 -0.500000 
-## KronLogger [0.063]: KronLogger: Bye from dtor
+## KronLogger [0.167]: KronLogger: Bye from dtor
