@@ -1,0 +1,24 @@
+##Ainur1.0
+TotalNumberOfSites=8;
+NumberOfTerms=1;
+DegreesOfFreedom=1;
+GeometryKind="chain";
+GeometryOptions="ConstantValues";
+dir0:Connectors=[1.0];
+
+#Model params
+hubbardU=[0.0, ...];
+potentialV=[0.0,...];
+Model="HubbardOneBand";
+SolverOptions=twositedmrg,recoveryenableread;
+Version="53725d9b8f22615ccccc782082f4cd6f51a4e374";
+OutputFile="data211";
+InfiniteLoopKeptStates=50;
+FiniteLoops=[[@auto, 100, 0],
+[@auto, 200, 0]
+];
+
+string RecoverySave="%l%%1,@keep,@M=200";
+TargetElectronsUp=4;
+TargetElectronsDown=4;
+#ci observe arguments="<gs|c';c|gs>,<gs|2.0*sz;2.0*sz|gs>,<gs|n;n|gs>"
