@@ -115,7 +115,7 @@ public:
 			return;
 
 		std::ios_base::fmtflags flags(fout_->flags());
-		*fout_ << std::fixed << std::setprecision(precision<ComplexOrRealType>());
+		*fout_ << std::defaultfloat << std::setprecision(precision<ComplexOrRealType>());
 
 		*fout_ << "Vector\n";
 		*fout_ << v;
@@ -136,7 +136,7 @@ public:
 			return;
 
 		std::ios_base::fmtflags flags(fout_->flags());
-		*fout_ << std::fixed << std::setprecision(precision<ComplexOrRealType>());
+		*fout_ << std::defaultfloat << std::setprecision(precision<ComplexOrRealType>());
 
 		const ArrayOfMatStructType& xiStruct = init_kron_.xc(ic);
 		const ArrayOfMatStructType& yiStruct = init_kron_.yc(ic);
