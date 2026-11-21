@@ -78,6 +78,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #ifndef FEMION_SIGN_H
 #define FEMION_SIGN_H
 #include <PsimagLite/PackIndices.h>
+#include <PsimagLite/PsimagLite.h>
 #include <stdexcept>
 #include <vector>
 

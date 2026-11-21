@@ -74,6 +74,15 @@ struct FakeInitKron {
 	VectorType           yin_;
 };
 
+struct FakeKronLogger {
+
+	void vector(const VectorType&) { }
+	void one(SizeType) { }
+	void two(SizeType) { }
+	void three(SizeType, SizeType, SizeType, bool) { }
+	void sync() { }
+};
+
 BlockType scalarBlock(const ComplexType& value)
 {
 	PsimagLite::Matrix<ComplexType> dense(1, 1);
@@ -142,15 +151,15 @@ TEST_CASE("KronConnections applies a complex non-Hermitian factor and its adjoin
 		                           { ComplexType(5.0, -5.0), ComplexType(-4.0, 0.0) } };
 	const VectorType  input { ComplexType(1.0, 1.0), ComplexType(2.0, -1.0) };
 
-	Dmrg::KronLogger<FakeInitKron>      logger(initKron);
-	Dmrg::KronConnections<FakeInitKron> forward(initKron, logger, false);
+	FakeKronLogger                                      logger;
+	Dmrg::KronConnections<FakeInitKron, FakeKronLogger> forward(initKron, logger, false);
 	initKron.yin_  = input;
 	initKron.xout_ = { ComplexType(3.0, 1.0), ComplexType(-1.0, 2.0) };
 	forward.doTask(0, 0);
 	forward.doTask(1, 0);
 	checkVector(initKron.xout_, { ComplexType(10.0, 15.0), ComplexType(1.0, 6.0) });
 
-	Dmrg::KronConnections<FakeInitKron> adjoint(initKron, logger, true);
+	Dmrg::KronConnections<FakeInitKron, FakeKronLogger> adjoint(initKron, logger, true);
 	initKron.xout_ = { ComplexType(3.0, 1.0), ComplexType(-1.0, 2.0) };
 	adjoint.doTask(0, 0);
 	adjoint.doTask(1, 0);

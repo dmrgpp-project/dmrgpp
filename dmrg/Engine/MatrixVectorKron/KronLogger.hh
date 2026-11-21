@@ -46,7 +46,7 @@ public:
 	using SparseMatrixType        = typename InitKronType::SparseMatrixType;
 	using LeftRightSuperType      = typename InitKronType::LeftRightSuperType;
 	using VectorType              = typename InitKronType::VectorType;
-	using RealType                = typename ModelType::RealType;
+	using RealType                = typename InitKronType::RealType;
 	using VectorWithOffsetType    = VectorWithOffsets<ComplexOrRealType>;
 	using ApplyOperatorType = ApplyOperatorLocal<LeftRightSuperType, VectorWithOffsetType>;
 	using MatrixMarketType  = MatrixMarket<ComplexOrRealType>;
@@ -244,8 +244,8 @@ private:
 		    ? lrs.right().block()[0] - 1
 		    : lrs.right().block()[0];
 
-		const ModelType& model         = init_kron_.model();
-		const SizeType   numberOfSites = model.superGeometry().numberOfSites();
+		const auto&    model         = init_kron_.model();
+		const SizeType numberOfSites = model.superGeometry().numberOfSites();
 		if (localOperatorSite_ >= numberOfSites)
 			err("KronLogger: inferred local-operator site is outside the geometry\n");
 
@@ -257,7 +257,7 @@ private:
 	{
 		const LeftRightSuperType& lrs           = init_kron_.lrs(InitKronType::NEW);
 		const auto                direction     = init_kron_.direction();
-		const ModelType&          model         = init_kron_.model();
+		const auto&               model         = init_kron_.model();
 		const SizeType            numberOfSites = model.superGeometry().numberOfSites();
 		const auto& localOperator = model.naturalOperator(name, localOperatorSite_, 0);
 		typename PsimagLite::Vector<bool>::Type oddElectrons;
@@ -351,7 +351,7 @@ private:
 
 		const LeftRightSuperType& lrs       = init_kron_.lrs(InitKronType::NEW);
 		const auto                direction = init_kron_.direction();
-		const ModelType&          model     = init_kron_.model();
+		const auto&               model     = init_kron_.model();
 		const auto&               localOperator
 		    = model.naturalOperator(localOperatorData.name, localOperatorSite_, 0);
 		typename PsimagLite::Vector<bool>::Type oddElectrons;
