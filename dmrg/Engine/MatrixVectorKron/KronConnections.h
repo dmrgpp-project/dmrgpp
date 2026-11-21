@@ -89,7 +89,8 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 
 namespace Dmrg {
 
-template <typename InitKronType> class KronConnections {
+template <typename InitKronType, typename KronLoggerType_ = KronLogger<InitKronType>>
+class KronConnections {
 
 	using SparseMatrixType        = typename InitKronType::SparseMatrixType;
 	using ComplexOrRealType       = typename SparseMatrixType::value_type;
@@ -101,7 +102,7 @@ template <typename InitKronType> class KronConnections {
 
 public:
 
-	using KronLoggerType   = KronLogger<InitKronType>;
+	using KronLoggerType   = KronLoggerType_;
 	using MatrixType       = PsimagLite::Matrix<ComplexOrRealType>;
 	using VectorType       = typename MatrixDenseOrSparseType::VectorType;
 	using VectorVectorType = typename PsimagLite::Vector<VectorType>::Type;
