@@ -652,7 +652,7 @@ template <typename T> std::ostream& operator<<(std::ostream& os, Matrix<T> const
 	os << A.rows() << " " << A.cols() << "\n";
 	for (i = 0; i < A.rows(); i++) {
 		for (j = 0; j < A.cols(); j++)
-			os << A(i, j) << " ";
+			os << " " << A(i, j);
 		os << "\n";
 	}
 	return os;
