@@ -438,7 +438,7 @@ protected:
 
 	void fillModelLinks() override
 	{
-		ModelTermType& hopf = ModelBaseType::createTerm("HoppingFermionic");
+		ModelTermType& hopf = ModelBaseType::createTerm("HoppingFermionic", true);
 
 		OpForLinkType cup("c", 0);
 		hopf.push(cup, 'C', cup, 'N');
@@ -448,14 +448,14 @@ protected:
 
 		const SizeType phonons = modelParameters_.numberphonons;
 		if (phonons > 0) {
-			ModelTermType& hopb = ModelBaseType::createTerm("HoppingBosonic");
+			ModelTermType& hopb = ModelBaseType::createTerm("HoppingBosonic", true);
 
 			OpForLinkType a("a");
 			hopb.push(a, 'C', a, 'N');
 		}
 
 		if (isSsh_) {
-			ModelTermType& hopSsh = ModelBaseType::createTerm("HoppingSSH");
+			ModelTermType& hopSsh = ModelBaseType::createTerm("HoppingSSH", true);
 
 			OpForLinkType cx0("cx", 0);
 			OpForLinkType cx1("cx", 1);
@@ -471,7 +471,7 @@ protected:
 			hopSsh.push(cx1, 'C', cdown, 'N', modifier);
 
 		} else if (isLrh_) {
-			ModelTermType& hopLrh = ModelBaseType::createTerm("LongRangeH");
+			ModelTermType& hopLrh = ModelBaseType::createTerm("LongRangeH", true);
 
 			OpForLinkType x("disp");
 

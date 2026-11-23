@@ -390,7 +390,7 @@ protected:
 
 	void fillModelLinks() override
 	{
-		ModelTermType& hopf = ModelBaseType::createTerm("HoppingFermionic");
+		ModelTermType& hopf = ModelBaseType::createTerm("HoppingFermionic", true);
 
 		OpForLinkType                         cup("c", 0);
 		typename ModelTermType::Su2Properties su2properties(1, 1, 0);
@@ -401,7 +401,7 @@ protected:
 		hopf.push(cdown, 'C', cdown, 'N', su2properties2);
 
 		if (modelParameters_.numberphonons > 0) {
-			ModelTermType& hopb = ModelBaseType::createTerm("HoppingBosonic");
+			ModelTermType& hopb = ModelBaseType::createTerm("HoppingBosonic", true);
 
 			OpForLinkType a("a");
 			hopb.push(a, 'C', a, 'N');

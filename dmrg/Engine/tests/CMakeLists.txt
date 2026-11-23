@@ -18,6 +18,11 @@ target_link_libraries(test_GroupOfOneTimeEvolutions PRIVATE Catch2::Catch2WithMa
 target_include_directories(test_GroupOfOneTimeEvolutions PRIVATE ${CMAKE_SOURCE_DIR}/dmrg/Engine)
 catch_discover_tests(test_GroupOfOneTimeEvolutions)
 
+add_executable(test_OneTimeEvolution test_OneTimeEvolution.cpp)
+target_link_libraries(test_OneTimeEvolution PRIVATE Catch2::Catch2WithMain psimaglite)
+target_include_directories(test_OneTimeEvolution PRIVATE ${CMAKE_SOURCE_DIR}/dmrg/Engine)
+catch_discover_tests(test_OneTimeEvolution)
+
 add_executable(test_TimeSerializer test_TimeSerializer.cpp)
 target_link_libraries(test_TimeSerializer PRIVATE Catch2::Catch2WithMain psimaglite)
 target_include_directories(test_TimeSerializer PRIVATE ${CMAKE_SOURCE_DIR}/dmrg/Engine)

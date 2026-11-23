@@ -157,7 +157,7 @@ protected:
 
 		const bool isSu2 = BasisType::useSu2Symmetry();
 
-		ModelTermType& spsm = ModelBaseType::createTerm("SplusSminus");
+		ModelTermType& spsm = ModelBaseType::createTerm("SplusSminus", true);
 
 		OpForLinkType splus("splus");
 
@@ -166,7 +166,7 @@ protected:
 
 		spsm.push(splus, 'N', splus, 'C', valueModiferTerm0);
 
-		ModelTermType& szsz = ModelBaseType::createTerm("szsz");
+		ModelTermType& szsz = ModelBaseType::createTerm("szsz", true);
 
 		if (!isSu2) {
 			OpForLinkType sz("sz");

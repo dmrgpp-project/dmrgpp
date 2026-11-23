@@ -385,11 +385,11 @@ protected:
 		//! and similarly for spin down.
 
 		const SizeType orbitals = modelParameters_.orbitals;
-		ModelTermType& hop      = ModelBaseType::createTerm("hopping");
+		ModelTermType& hop      = ModelBaseType::createTerm("hopping", true);
 		bool           isSu2    = BasisType::useSu2Symmetry();
-		ModelTermType& spsm     = ModelBaseType::createTerm("SplusSminus");
-		ModelTermType& szsz     = ModelBaseType::createTerm("szsz");
-		ModelTermType& ninj     = ModelBaseType::createTerm("ninj");
+		ModelTermType& spsm     = ModelBaseType::createTerm("SplusSminus", true);
+		ModelTermType& szsz     = ModelBaseType::createTerm("szsz", true);
+		ModelTermType& ninj     = ModelBaseType::createTerm("ninj", true);
 
 		for (SizeType spin = 0; spin < 2; ++spin) {
 			for (SizeType orb1 = 0; orb1 < orbitals; ++orb1) {

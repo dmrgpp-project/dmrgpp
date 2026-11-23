@@ -306,7 +306,7 @@ protected:
 	{
 		const bool isSu2 = BasisType::useSu2Symmetry();
 
-		ModelTermType& spsm = ModelBaseType::createTerm("SplusSminus");
+		ModelTermType& spsm = ModelBaseType::createTerm("SplusSminus", true);
 		OpForLinkType  splus0("splus");
 
 		auto modifierTerm0
@@ -319,12 +319,12 @@ protected:
 				value = -value;
 		};
 
-		ModelTermType& szsz = ModelBaseType::createTerm("szsz");
+		ModelTermType& szsz = ModelBaseType::createTerm("szsz", true);
 		OpForLinkType  sz0("sz");
 
 		szsz.push(sz0, 'N', sz0, 'C', modifierTerm1);
 
-		ModelTermType& ancilla = ModelBaseType::createTerm("ancilla");
+		ModelTermType& ancilla = ModelBaseType::createTerm("ancilla", true);
 		OpForLinkType  d("d");
 		ancilla.push(d, 'N', d, 'C', typename ModelTermType::Su2Properties(2, 1, 0));
 	}

@@ -280,11 +280,11 @@ protected:
 		} else {
 			// jump operators become connections when phys and anc are separate
 
-			ModelTermType& spsp = ModelBaseType::createTerm("spsp");
+			ModelTermType& spsp = ModelBaseType::createTerm("spsp", true);
 			OpForLinkType  splus("splus");
 			spsp.push(splus, 'N', splus, 'N');
 
-			ModelTermType& smsm = ModelBaseType::createTerm("smsm");
+			ModelTermType& smsm = ModelBaseType::createTerm("smsm", true);
 			smsm.push(splus, 'C', splus, 'C');
 		}
 	}
@@ -342,7 +342,7 @@ private:
 	                    const std::string&       op_name,
 	                    const ComplexOrRealType& factor)
 	{
-		ModelTermType& szsz = ModelBaseType::createTerm(connection_name);
+		ModelTermType& szsz = ModelBaseType::createTerm(connection_name, true);
 
 		OpForLinkType sz(op_name);
 		auto valueModiferTerm0 = [factor](ComplexOrRealType& value) { value *= factor; };

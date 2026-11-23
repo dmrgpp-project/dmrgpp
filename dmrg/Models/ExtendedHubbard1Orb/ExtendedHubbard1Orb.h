@@ -154,7 +154,7 @@ public:
 	{
 		modelHubbard_.fillModelLinks();
 
-		ModelTermType& ninj = ModelBaseType::createTerm("ninj");
+		ModelTermType& ninj = ModelBaseType::createTerm("ninj", true);
 		OpForLinkType  n("n");
 
 		ninj.push(n, 'N', n, 'N');

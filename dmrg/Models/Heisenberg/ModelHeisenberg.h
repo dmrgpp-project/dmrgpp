@@ -325,7 +325,7 @@ protected:
 		if (BasisType::useSu2Symmetry())
 			err("SU(2) no longer supported\n");
 
-		ModelTermType& spsm = ModelBaseType::createTerm("SplusSminus");
+		ModelTermType& spsm = ModelBaseType::createTerm("SplusSminus", true);
 
 		OpForLinkType splus("splus");
 
@@ -337,7 +337,7 @@ protected:
 
 		if (additional_ == "Anisotropic") {
 
-			ModelTermType& sxsx = ModelBaseType::createTerm("sxsx");
+			ModelTermType& sxsx = ModelBaseType::createTerm("sxsx", true);
 
 			OpForLinkType sx("sx");
 
@@ -380,12 +380,12 @@ private:
 
 	void fillModelLinks2()
 	{
-		ModelTermType& sxsx = ModelBaseType::createTerm("sxsx");
+		ModelTermType& sxsx = ModelBaseType::createTerm("sxsx", true);
 		OpForLinkType  sx("sx");
 		sxsx.push(sx, 'N', sx, 'N');
 
 		auto           sybarsybarModifier = [](ComplexOrRealType& value) { value *= -1.0; };
-		ModelTermType& sybarsybar         = ModelBaseType::createTerm("sybarsybar");
+		ModelTermType& sybarsybar         = ModelBaseType::createTerm("sybarsybar", true);
 		OpForLinkType  sybar("sybar");
 		sybarsybar.push(sybar, 'N', sybar, 'N', sybarsybarModifier);
 
@@ -394,7 +394,7 @@ private:
 
 	void connectionSzSz()
 	{
-		ModelTermType& szsz = ModelBaseType::createTerm("szsz");
+		ModelTermType& szsz = ModelBaseType::createTerm("szsz", true);
 
 		OpForLinkType sz("sz");
 		szsz.push(sz, 'N', sz, 'N', typename ModelTermType::Su2Properties(2, 0.5));
