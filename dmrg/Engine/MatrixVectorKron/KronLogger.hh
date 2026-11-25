@@ -127,7 +127,6 @@ public:
 		if (!fout_.has_value() || !active_)
 			return;
 
-		std::ios_base::fmtflags flags(fout_->flags());
 		*fout_ << std::defaultfloat << std::setprecision(precision<ComplexOrRealType>());
 
 		*fout_ << "Vector\n";
@@ -142,9 +141,6 @@ public:
 			       << PsimagLite::imag(expectation) << "\n";
 		}
 		fout_->precision(oldPrecision);
-	}
-
-		fout_->flags(flags);
 	}
 
 	/*!
