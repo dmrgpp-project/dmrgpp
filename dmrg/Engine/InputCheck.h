@@ -197,6 +197,7 @@ public:
 		knownLabels_.push_back("DegeneracyMax");
 		knownLabels_.push_back("KroneckerDumperBegin");
 		knownLabels_.push_back("KroneckerDumperEnd");
+		knownLabels_.push_back("KroneckerDumperOperators");
 		knownLabels_.push_back("LanczosEps");
 		knownLabels_.push_back("LanczosSteps");
 		knownLabels_.push_back("TridiagEps");
@@ -300,6 +301,7 @@ public:
 		str += "string Ancillas;\n";
 		str += "integer RestartMapStages;\n";
 		str += "vectorIntegers RestartMappingTvs;\n";
+		str += "string KroneckerDumperOperators;\n";
 
 		return str;
 	}
