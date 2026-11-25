@@ -6,69 +6,35 @@
 #include <PsimagLite/Io/IoSerializerStub.h>
 #include <PsimagLite/PsimagLite.h>
 #include <PsimagLite/Vector.h>
+#include <array>
 #include <iostream>
-#include <map>
+#include <utility>
 
 namespace Dmrg {
 /* PSIDOC FiniteLoop
-\subsection{Enabling finite loops}
+\subsection{Finite loops}
 
-To enable finite loops make sure that the option `nofiniteloops` is \emph{not}
-present under `SolverOptions=`. Remember that the entry \verb!FiniteLoops!
-in the input file is a series of space-separated numbers. More than one space is allowed.
-The first
-number is the number of finite algorithm ``movements,'' followed by series of three
-numbers for
-each movement. Of the three numbers, the first is the number of sites to go forward
-if positive
-or backward if negative. The second number is the $m$ for this movement and the
-last number
-is a bitwise option described in \S\ref{sec:thirdnumber}.
-The first movement starts from where the infinite loop left off, at the
- middle of the
-lattice.
-
-\subsection{Example of a Finite loops line in the input file}
+To enable finite loops, make sure that `nofiniteloops` is \emph{not} present
+under `SolverOptions=`. In Ainur input, `FiniteLoops` is a matrix with one row
+per finite movement:
 
 \begin{verbatim}
-        FiniteLoops 4 7 200 0 -7 200 0 7 200 1 7 200 1
+FiniteLoops = [[7, 200, 0], [-7, 200, @save]];
 \end{verbatim}
 
-The number 4 implies 4 finite loops. The first fine loop is \verb!7 200 0!, meaning
-go forward 7 steps, use \emph{m=200} for this finite sweep, and 0: do not store
-transformation in disk.
-The next is \verb!-7 200 0!, which goes backwards 7 sites, etc.
-Remember that the finite loops start at the middle of the lattice, where the
-infinite loop left off.
-\todo{ADD FIGURE SHOWING WHAT THIS DOES.}
+For each row, the first entry is the number of sites to move forward if
+positive or backward if negative, and the second entry is the number of kept
+states ($m$). The third entry controls per-sweep options. The first movement
+starts where the infinite loop ends, at the middle of the lattice.
 
-\subsection{The third number in the triplet}\label{sec:thirdnumber}
-The third number in the triplet is a bitwise option where the
-first bit means save or don't save, the second bit
-compute the g.s. or WFT it without eigenvalue or eigenvector updates,
-and the third bit compute the g.s. of WFT it updating eigenvalue and eigenvector.
-It is a fatal error to have both bits 1 and 2 set.
-If bit 5 is set then so must bit 3.
-\begin{table}
-\begin{tabular}{ll}\toprule
-Bit & What Happens if Set\\
-0       & Saves state for the observe code\\
-1       & WFTs the ground state in a fast way instead of computing it\\
-2       & WFTs the ground state slowly  instead of computing it\\
-3       & Forces random guess for ground state\\
-4       & MultiSitePush (whatever that means)\\
-5       & OneSiteTruncation\\
-\end{tabular}
-\caption{Meaning of each bit of the third number in the
-finite loop triplet. It is a fatal error to have both bits 1 and 2 set.}
-\end{table}
+\subsection{The third entry in the triplet}
+See \texttt{doc/FiniteLoopThirdEntry.md} for the current syntax, options,
+constraints, and examples.
 \subsection{Caveats and Troubleshooting}
 
-If `nofiniteloops` is an option in the options line of the input file then
-the \verb!FiniteLoops! line in the input file is ignored, and no finite loops are done.
-In this case, DMRG++ stops when the infinite algorithm has finished.
-
-Make sure the first number is the number of triplets that follow.
+If `nofiniteloops` is an option in the options line of the input file, then
+the \verb!FiniteLoops! line is ignored and no finite loops are done. In this
+case, DMRG++ stops when the infinite algorithm has finished.
 
 Make sure you don't fall off the lattice, by going forward or backwards too much.
 Remember that at least one site must remain for the system part of the lattice.
@@ -96,8 +62,6 @@ public:
 	{
 		str = removeCharsAtStart(str, "\"");
 		str = removeCharsAtEnd(str, "\"");
-
-		setMap();
 
 		VectorStringType tokens;
 		PsimagLite::split(tokens, str, ":");
@@ -133,8 +97,9 @@ public:
 	bool wants(PsimagLite::String what) const
 	{
 		PsimagLite::String whatLower = ProgramGlobals::toLower(what);
-		assert(mapNameBit_.find(whatLower) != mapNameBit_.end());
-		return (bitField_ & mapNameBit_.at(whatLower));
+		const OptionType*  option    = findOption(whatLower);
+		assert(option != nullptr);
+		return (bitField_ & option->second);
 	}
 
 	void print(std::ostream& os) const
@@ -144,17 +109,29 @@ public:
 
 private:
 
-	void setMap()
-	{
-		const VectorStringType str
-		    = { "save",        "onlyfastwft",   "onlyslowwft",
-			"randomguess", "multisitepush", "onesitetruncation" };
+	using OptionType  = std::pair<const char*, SizeType>;
+	using OptionsType = std::array<OptionType, 6>;
 
-		SizeType bit = 1;
-		for (SizeType i = 0; i < str.size(); ++i) {
-			mapNameBit_[str[i]] = bit;
-			bit <<= 1;
+	static const OptionsType& options()
+	{
+		static const OptionsType values = { { { "save", 1 },
+			                              { "onlyfastwft", 2 },
+			                              { "onlyslowwft", 4 },
+			                              { "randomguess", 8 },
+			                              { "multisitepush", 16 },
+			                              { "onesitetruncation", 32 } } };
+		return values;
+	}
+
+	static const OptionType* findOption(const PsimagLite::String& what)
+	{
+		const OptionsType& values = options();
+		for (const OptionType& option : values) {
+			if (what == option.first)
+				return &option;
 		}
+
+		return nullptr;
 	}
 
 	// either @something or
@@ -189,8 +166,18 @@ private:
 
 	void procAtValue(PsimagLite::String what)
 	{
-		assert(mapNameBit_.find(what) != mapNameBit_.end());
-		bitField_ |= mapNameBit_.at(what);
+		const OptionType* option = findOption(what);
+		if (option == nullptr) {
+			err("Unknown finite-loop option @" + what
+			    + ". Valid lowercase options are: @save, @onlyfastwft, @onlyslowwft, "
+			      "@randomguess, @multisitepush, @onesitetruncation\n");
+			return;
+		}
+
+		if (bitField_ & option->second)
+			err("Finite-loop option @" + what + " already set\n");
+
+		bitField_ |= option->second;
 	}
 
 	void warnIfFiniteMlessThanMin() const
@@ -235,11 +222,14 @@ private:
 	{
 		if (!b)
 			return;
-		std::cout << msg;
+		err(msg);
 	}
 
 	static bool isAdigit(PsimagLite::String str)
 	{
+		if (str.empty())
+			return false;
+
 		for (SizeType i = 0; i < str.length(); ++i)
 			if (!std::isdigit(str[i]))
 				return false;
@@ -259,14 +249,12 @@ private:
 		return (end == PsimagLite::String::npos) ? "" : str.substr(0, end + 1);
 	}
 
-	static std::map<PsimagLite::String, SizeType> mapNameBit_;
 	const int             stepLength_; // how much to go right (+) or left (-)
 	const SizeType        keptStates_; // kept states
 	SizeType              bitField_;
 	TruncationControlType truncationControl_;
 };
 
-template <typename T> std::map<PsimagLite::String, SizeType> FiniteLoop<T>::mapNameBit_;
 } // namespace Dmrg
 
 #endif // DMRG_FINITELOOP_H
