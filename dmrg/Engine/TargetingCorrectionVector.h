@@ -227,6 +227,8 @@ public:
 		this->common().writeNGSTs(io, prefix, block, "CorrectionVector");
 	}
 
+	PsimagLite::String targetingId() const override { return "CorrectionVector"; }
+
 	void read(typename TargetingCommonType::IoInputType& io, PsimagLite::String prefix) override
 	{
 		this->common().readGSandNGSTs(io, prefix, "CorrectionVector");

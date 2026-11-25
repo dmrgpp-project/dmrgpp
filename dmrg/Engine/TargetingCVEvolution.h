@@ -221,6 +221,8 @@ public:
 
 	bool end() const override { return (almostDone_ >= 2); }
 
+	PsimagLite::String targetingId() const override { return "CVEvolution"; }
+
 	void read(typename TargetingCommonType::IoInputType& io, PsimagLite::String prefix) override
 	{
 		this->common().readGSandNGSTs(io, prefix, "CVEvolution");
@@ -236,7 +238,7 @@ public:
 		progress_.printline(msgg, std::cout);
 
 		this->common().write(io, block, prefix);
-		this->common().writeNGSTs(io, prefix, block, "TimeStep");
+		this->common().writeNGSTs(io, prefix, block, "CVEvolution");
 	}
 
 private:

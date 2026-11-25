@@ -163,6 +163,8 @@ public:
 		return 1.0 / sum;
 	}
 
+	PsimagLite::String targetingId() const override { return "GroundState"; }
+
 	SizeType size() const override { return 0; }
 
 	void evolve(const VectorRealType&,
