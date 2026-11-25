@@ -23,6 +23,10 @@ add_executable(test_GetBraOrKet test_GetBraOrKet.cpp)
 target_link_libraries(test_GetBraOrKet PRIVATE Catch2::Catch2WithMain psimaglite)
 catch_discover_tests(test_GetBraOrKet)
 
+add_executable(test_CanonicalExpression test_CanonicalExpression.cpp)
+target_link_libraries(test_CanonicalExpression PRIVATE Catch2::Catch2WithMain psimaglite)
+catch_discover_tests(test_CanonicalExpression)
+
 add_executable(test_Matrix test_Matrix.cpp)
 target_link_libraries(test_Matrix PRIVATE Catch2::Catch2WithMain psimaglite)
 catch_discover_tests(test_Matrix)
