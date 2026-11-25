@@ -126,7 +126,7 @@ private:
 		String            termCanonical = quasiCanonical.term(ind);
 		ComplexOrRealType factor        = 1.0;
 		VectorStringType  vecStr;
-		split(vecStr, termCanonical, "*");
+		QuasiCanonicalType::splitTopLevel(vecStr, termCanonical, '*');
 
 		for (SizeType i = 0; i < vecStr.size(); ++i) {
 			procCanonicalFactor(
