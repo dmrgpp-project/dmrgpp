@@ -71,11 +71,15 @@ TEST_CASE("Concurrency resolves named code section parameters", "[Parallelizer][
 
 TEST_CASE("Parallelizer completes independent GEMM tasks", "[Parallelizer]")
 {
-	MatrixMatrix                           work;
+	MatrixMatrix                work;
 	PsimagLite::Parallelizer2<> parallelizer(PsimagLite::CodeSectionParams(1));
 
 	REQUIRE(work.tasks() == 4);
-	parallelizer.parallelFor(0, work.tasks(), [&work](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&) { work.doTask(t, tid); });
+	parallelizer.parallelFor(
+	    0,
+	    work.tasks(),
+	    [&work](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&)
+	    { work.doTask(t, tid); });
 
 	checkOutputs(work);
 }
@@ -83,10 +87,14 @@ TEST_CASE("Parallelizer completes independent GEMM tasks", "[Parallelizer]")
 #ifdef USE_PTHREADS
 TEST_CASE("Parallelizer concurrently completes independent GEMM tasks", "[Parallelizer][pthread]")
 {
-	MatrixMatrix                           work;
+	MatrixMatrix                work;
 	PsimagLite::Parallelizer2<> parallelizer(PsimagLite::CodeSectionParams(4));
 
-	parallelizer.parallelFor(0, work.tasks(), [&work](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&) { work.doTask(t, tid); });
+	parallelizer.parallelFor(
+	    0,
+	    work.tasks(),
+	    [&work](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&)
+	    { work.doTask(t, tid); });
 
 	checkOutputs(work);
 }

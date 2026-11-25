@@ -262,7 +262,7 @@ public:
 	                         const BasisBaseType& basis) const override
 	{
 		// Calculate off-diagonal elements AND store matrix
-		typedef MatrixVectorHelper                   HelperType;
+		typedef MatrixVectorHelper          HelperType;
 		typedef PsimagLite::Parallelizer2<> ParallelizerType;
 		ParallelizerType threadObject(PsimagLite::Concurrency::codeSectionParams);
 		HelperType       helper(
@@ -271,7 +271,11 @@ public:
 		std::cout << "Using " << threadObject.name();
 		std::cout << " with " << PsimagLite::Concurrency::codeSectionParams.npthreads
 		          << " threads.\n";
-		threadObject.parallelFor(0, helper.tasks(), [&helper](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace &) { helper.doTask(t, tid); });
+		threadObject.parallelFor(
+		    0,
+		    helper.tasks(),
+		    [&helper](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&)
+		    { helper.doTask(t, tid); });
 	}
 
 	const BasisType& basis() const override { return basis_; }

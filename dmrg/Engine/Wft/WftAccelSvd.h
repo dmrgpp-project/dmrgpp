@@ -228,7 +228,10 @@ private:
 		                            codeSectionParams.npthreads);
 		codeSectionParams.npthreads = threads;
 		ParallelizerOneType threadOne(codeSectionParams);
-		threadOne.parallelFor(0, loopOne.tasks(), [&loopOne](SizeType t, SizeType tid) { loopOne.doTask(t, tid); });
+		threadOne.parallelFor(0,
+		                      loopOne.tasks(),
+		                      [&loopOne](SizeType t, SizeType tid)
+		                      { loopOne.doTask(t, tid); });
 
 		using ParallelizerTwoType = PsimagLite::Parallelizer2<>;
 		LoopTwo loopTwo(
@@ -238,7 +241,10 @@ private:
 		codeSectionParamsTwo.npthreads
 		    = std::min(loopOne.qns().size(), codeSectionParamsTwo.npthreads);
 		ParallelizerTwoType threadTwo(codeSectionParamsTwo);
-		threadTwo.parallelFor(0, loopTwo.tasks(), [&loopTwo](SizeType t, SizeType tid) { loopTwo.doTask(t, tid); });
+		threadTwo.parallelFor(0,
+		                      loopTwo.tasks(),
+		                      [&loopTwo](SizeType t, SizeType tid)
+		                      { loopTwo.doTask(t, tid); });
 	}
 
 	static void pinv(VectorMatrixType& dest, const VectorMatrixType& src)

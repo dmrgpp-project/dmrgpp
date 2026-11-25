@@ -523,7 +523,11 @@ for (SizeType dof = 0; dof < numberOfDofs; ++dof) {
 		    PsimagLite::Concurrency::codeSectionParamsFor("ModelBase"));
 
 		ParallelHamConnectionType phc(x, y, hc, aux);
-		parallelConnections.parallelFor(0, phc.tasks(), [&phc](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&) { phc.doTask(t, tid); });
+		parallelConnections.parallelFor(
+		    0,
+		    phc.tasks(),
+		    [&phc](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&)
+		    { phc.doTask(t, tid); });
 
 		phc.sync();
 	}

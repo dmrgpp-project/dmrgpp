@@ -38,13 +38,19 @@ public:
 	// weights and balancers only matter for the pthread backend; accepted
 	// here so that callers compile unchanged with any backend
 	template <typename SomeLambdaType>
-	void parallelFor(SizeType start, SizeType end, const SomeLambdaType& lambda, const LoadBalancerDefault::VectorSizeType&)
+	void parallelFor(SizeType              start,
+	                 SizeType              end,
+	                 const SomeLambdaType& lambda,
+	                 const LoadBalancerDefault::VectorSizeType&)
 	{
 		parallelFor(start, end, lambda);
 	}
 
 	template <typename SomeLambdaType, typename SomeLoadBalancer>
-	void parallelFor(SizeType start, SizeType end, const SomeLambdaType& lambda, const SomeLoadBalancer&)
+	void parallelFor(SizeType              start,
+	                 SizeType              end,
+	                 const SomeLambdaType& lambda,
+	                 const SomeLoadBalancer&)
 	{
 		parallelFor(start, end, lambda);
 	}

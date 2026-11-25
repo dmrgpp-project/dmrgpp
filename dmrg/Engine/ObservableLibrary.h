@@ -744,7 +744,12 @@ private:
 		                                    pairs,
 		                                    Parallel4PointDsType::MODE_THINupdn);
 
-		threaded4PointDs.parallelFor(0, helper4PointDs.tasks(), [&helper4PointDs](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&) { helper4PointDs.doTask(t, tid); });
+		threaded4PointDs.parallelFor(0,
+		                             helper4PointDs.tasks(),
+		                             [&helper4PointDs](SizeType t,
+		                                               SizeType tid,
+		                                               const Kokkos::DefaultExecutionSpace&)
+		                             { helper4PointDs.doTask(t, tid); });
 
 		MatrixType mup(rows, cols);
 		MatrixType mdown(rows, cols);
@@ -1377,7 +1382,11 @@ private:
 		                                    pairs,
 		                                    Parallel4PointDsType::MODE_THIN);
 
-		threaded4PointDs.parallelFor(0, helper4PointDs.tasks(), [&helper4PointDs](SizeType t, SizeType tid, Kokkos::DefaultExecutionSpace&) { helper4PointDs.doTask(t, tid); });
+		threaded4PointDs.parallelFor(
+		    0,
+		    helper4PointDs.tasks(),
+		    [&helper4PointDs](SizeType t, SizeType tid, Kokkos::DefaultExecutionSpace&)
+		    { helper4PointDs.doTask(t, tid); });
 
 		MatrixType mTriplet(rows, cols);
 		MatrixType mSinglet(rows, cols);

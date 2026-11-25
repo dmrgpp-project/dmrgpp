@@ -331,7 +331,11 @@ private:
 		ParallelTriDiagType helperTriDiag(
 		    phi, T, V, steps, lrs_, this->time(), model_, ioIn_);
 
-		threadedTriDiag.parallelFor(0, helperTriDiag.tasks(), [&helperTriDiag](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&) { helperTriDiag.doTask(t, tid); });
+		threadedTriDiag.parallelFor(
+		    0,
+		    helperTriDiag.tasks(),
+		    [&helperTriDiag](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&)
+		    { helperTriDiag.doTask(t, tid); });
 	}
 
 	const TargetParamsType&       tstStruct_;

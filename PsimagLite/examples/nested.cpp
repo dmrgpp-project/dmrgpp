@@ -80,10 +80,14 @@ public:
 	void doTask(SizeType taskNumber, SizeType threadNum)
 	{
 		typedef PsimagLite::Parallelizer2<> ParallelizerType;
-		PsimagLite::CodeSectionParams                 cs(nthreadsInner_);
-		ParallelizerType                              threadObject(cs);
+		PsimagLite::CodeSectionParams       cs(nthreadsInner_);
+		ParallelizerType                    threadObject(cs);
 		InnerHelper helper(ntasksInner_, nthreadsInner_, taskNumber);
-		threadObject.parallelFor(0, helper.tasks(), [&helper](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&) { helper.doTask(t, tid); });
+		threadObject.parallelFor(
+		    0,
+		    helper.tasks(),
+		    [&helper](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&)
+		    { helper.doTask(t, tid); });
 		helper.sync();
 		x_[threadNum] += helper.result();
 	}
@@ -121,16 +125,20 @@ int main(int argc, char* argv[])
 
 	ConcurrencyType concurrency(&argc, &argv, 1);
 
-	typedef MyHelper                             HelperType;
+	typedef MyHelper                    HelperType;
 	typedef PsimagLite::Parallelizer2<> ParallelizerType;
-	PsimagLite::CodeSectionParams                cs(nthreadsOuter);
-	ParallelizerType                             threadObject(cs);
+	PsimagLite::CodeSectionParams       cs(nthreadsOuter);
+	ParallelizerType                    threadObject(cs);
 
 	HelperType helper(ntasks, nthreadsOuter, ntasksInner, nthreadsInner);
 
 	std::cout << "Using " << threadObject.name();
 	std::cout << " with " << nthreadsOuter << " threads.\n";
-	threadObject.parallelFor(0, helper.tasks(), [&helper](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&) { helper.doTask(t, tid); });
+	threadObject.parallelFor(
+	    0,
+	    helper.tasks(),
+	    [&helper](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&)
+	    { helper.doTask(t, tid); });
 	helper.sync();
 	std::cout << "Sum of all tasks= " << helper.result() << "\n";
 }

@@ -80,7 +80,6 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #ifndef CORRECTION_VECTOR_SKEL_H
 #define CORRECTION_VECTOR_SKEL_H
 
-#include <PsimagLite/Parallelizer2.h>
 #include "CorrectionVectorAction.h"
 #include "CorrectionVectorFunction.h"
 #include "KrylovHelper.h"
@@ -88,6 +87,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include "TridiagRixsStatic.h"
 #include "VectorWithOffsets.h"
 #include <PsimagLite/FreqEnum.h>
+#include <PsimagLite/Parallelizer2.h>
 #include <PsimagLite/ParametersForSolver.h>
 #include <PsimagLite/ProgressIndicator.h>
 
@@ -345,7 +345,11 @@ private:
 
 		ParallelTriDiagType helperTriDiag(phi, T, V, steps, lrs_, fakeTime, model_, ioIn_);
 
-		threadedTriDiag.parallelFor(0, helperTriDiag.tasks(), [&helperTriDiag](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&) { helperTriDiag.doTask(t, tid); });
+		threadedTriDiag.parallelFor(
+		    0,
+		    helperTriDiag.tasks(),
+		    [&helperTriDiag](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&)
+		    { helperTriDiag.doTask(t, tid); });
 	}
 
 	RealType dynWeightOf(VectorType& v, const VectorType& w) const
