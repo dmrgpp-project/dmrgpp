@@ -2,17 +2,17 @@
 #define PARALLELIZER2SERIAL_H
 #include "CodeSectionParams.h"
 #include "LoadBalancerDefault.h"
-#include "Parallelizer2Invoke.h"
+#include "ParallelizerInvoke.h"
 #include "Vector.h"
 #include <Kokkos_Core.hpp>
 
 namespace PsimagLite {
 
-template <typename = int> class Parallelizer2 {
+template <typename = int> class Parallelizer {
 
 public:
 
-	Parallelizer2(const CodeSectionParams& codeParams)
+	Parallelizer(const CodeSectionParams& codeParams)
 	{
 		if (codeParams.npthreads != 1)
 			throw RuntimeError("Please compile with -DUSE_PTHREADS\n");

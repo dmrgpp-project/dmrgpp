@@ -518,7 +518,7 @@ for (SizeType dof = 0; dof < numberOfDofs; ++dof) {
 	                         const HamiltonianConnectionType&     hc,
 	                         const typename ModelHelperType::Aux& aux) const
 	{
-		using ParallelizerType = PsimagLite::Parallelizer2<>;
+		using ParallelizerType = PsimagLite::Parallelizer<>;
 		ParallelizerType parallelConnections(
 		    PsimagLite::Concurrency::codeSectionParamsFor("ModelBase"));
 

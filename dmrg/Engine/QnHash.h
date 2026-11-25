@@ -3,7 +3,7 @@
 #include "Array.h"
 #include "Qn.h"
 #include <PsimagLite/Concurrency.h>
-#include <PsimagLite/Parallelizer2.h>
+#include <PsimagLite/Parallelizer.h>
 #include <PsimagLite/Sort.h>
 #include <PsimagLite/Vector.h>
 #include <numeric>

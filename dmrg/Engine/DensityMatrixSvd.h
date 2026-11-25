@@ -518,7 +518,7 @@ public:
 	{
 		PsimagLite::Profiling profiling("DensityMatrixSvdDiag", std::cout);
 
-		using ParallelizerType = PsimagLite::Parallelizer2<>;
+		using ParallelizerType = PsimagLite::Parallelizer<>;
 
 		PsimagLite::CodeSectionParams csp
 		    = PsimagLite::Concurrency::codeSectionParamsFor("DensityMatrixSvd");
@@ -588,7 +588,7 @@ private:
 			SizeType       m  = v.sector(sector);
 			const QnType&  qn = super.qnEx(m);
 			GenIjPatchType genIjPatch(lrs_, qn);
-			using ParallelizerType = PsimagLite::Parallelizer2<>;
+			using ParallelizerType = PsimagLite::Parallelizer<>;
 			ParallelizerType threaded(
 			    PsimagLite::Concurrency::codeSectionParamsFor("DensityMatrixSvd"));
 			ParallelPsiSplit parallelPsiSplit(

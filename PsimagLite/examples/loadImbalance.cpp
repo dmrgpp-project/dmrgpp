@@ -17,7 +17,7 @@ Please see full open source license included in file LICENSE.
 */
 #include <PsimagLite/Concurrency.h>
 #include <PsimagLite/LoadBalancerWeights.h>
-#include <PsimagLite/Parallelizer2.h>
+#include <PsimagLite/Parallelizer.h>
 
 #include <cstdlib>
 #include <iostream>
@@ -83,8 +83,8 @@ int main(int argc, char* argv[])
 
 	ConcurrencyType concurrency(&argc, &argv, nthreads);
 
-	typedef MyHelper                                                   HelperType;
-	typedef PsimagLite::Parallelizer2<PsimagLite::LoadBalancerWeights> ParallelizerType;
+	typedef MyHelper                                                  HelperType;
+	typedef PsimagLite::Parallelizer<PsimagLite::LoadBalancerWeights> ParallelizerType;
 	ParallelizerType threadObject(ConcurrencyType::codeSectionParams);
 
 	HelperType helper(ntasks, nthreads);

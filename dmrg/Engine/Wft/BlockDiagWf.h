@@ -503,7 +503,7 @@ public:
 		PsimagLite::CodeSectionParams codeSectionParams
 		    = PsimagLite::Concurrency::codeSectionParamsFor("BlockDiagWfCtor");
 		SizeType threads            = std::min(npatches, codeSectionParams.npthreads);
-		using ParallelizerType      = PsimagLite::Parallelizer2<>;
+		using ParallelizerType      = PsimagLite::Parallelizer<>;
 		codeSectionParams.npthreads = threads;
 		ParallelizerType threadedCtor(codeSectionParams);
 
@@ -537,7 +537,7 @@ public:
 		PsimagLite::CodeSectionParams codeSectionParams
 		    = PsimagLite::Concurrency::codeSectionParamsFor("BlockDiagWfTransform");
 		SizeType threads            = std::min(npatches, codeSectionParams.npthreads);
-		using ParallelizerType      = PsimagLite::Parallelizer2<>;
+		using ParallelizerType      = PsimagLite::Parallelizer<>;
 		codeSectionParams.npthreads = threads;
 		ParallelizerType threadedTransform(codeSectionParams);
 

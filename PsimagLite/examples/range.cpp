@@ -23,7 +23,7 @@
  */
 
 #include <PsimagLite/Concurrency.h>
-#include <PsimagLite/Parallelizer2.h>
+#include <PsimagLite/Parallelizer.h>
 
 #include <iostream>
 #include <unistd.h>
@@ -95,9 +95,9 @@ int main(int argc, char* argv[])
 	SizeType nthreads = atoi(argv[2]);
 	ConcurrencyType(&argc, &argv, nthreads);
 
-	typedef MyLoop                      HelperType;
-	typedef PsimagLite::Parallelizer2<> ParallelizerType;
-	ParallelizerType                    threadObject(ConcurrencyType::codeSectionParams);
+	typedef MyLoop                     HelperType;
+	typedef PsimagLite::Parallelizer<> ParallelizerType;
+	ParallelizerType                   threadObject(ConcurrencyType::codeSectionParams);
 
 	HelperType helper(nthreads, total);
 

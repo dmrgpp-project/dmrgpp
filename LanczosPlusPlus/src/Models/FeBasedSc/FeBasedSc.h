@@ -24,7 +24,7 @@ Please see full open source license included in file LICENSE.
 #include "LanczosModelBase.hpp"
 #include "ParametersModelFeAs.h"
 #include <PsimagLite/Geometry/GeometryDca.h>
-#include <PsimagLite/Parallelizer2.h>
+#include <PsimagLite/Parallelizer.h>
 #include <PsimagLite/SparseRow.h>
 
 namespace LanczosPlusPlus {
@@ -262,8 +262,8 @@ public:
 	                         const BasisBaseType& basis) const override
 	{
 		// Calculate off-diagonal elements AND store matrix
-		typedef MatrixVectorHelper          HelperType;
-		typedef PsimagLite::Parallelizer2<> ParallelizerType;
+		typedef MatrixVectorHelper         HelperType;
+		typedef PsimagLite::Parallelizer<> ParallelizerType;
 		ParallelizerType threadObject(PsimagLite::Concurrency::codeSectionParams);
 		HelperType       helper(
                     PsimagLite::Concurrency::codeSectionParams.npthreads, x, y, basis, *this);

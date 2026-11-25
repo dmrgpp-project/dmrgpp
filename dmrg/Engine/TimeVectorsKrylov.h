@@ -82,7 +82,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include "KrylovHelper.h"
 #include "ParallelTriDiag.h"
 #include "TimeVectorsBase.h"
-#include <PsimagLite/Parallelizer2.h>
+#include <PsimagLite/Parallelizer.h>
 #include <iostream>
 #include <vector>
 
@@ -325,7 +325,7 @@ private:
 	             VectorMatrixFieldType&                       V,
 	             typename PsimagLite::Vector<SizeType>::Type& steps)
 	{
-		using ParallelizerType = PsimagLite::Parallelizer2<>;
+		using ParallelizerType = PsimagLite::Parallelizer<>;
 		ParallelizerType threadedTriDiag(PsimagLite::CodeSectionParams(1));
 
 		ParallelTriDiagType helperTriDiag(

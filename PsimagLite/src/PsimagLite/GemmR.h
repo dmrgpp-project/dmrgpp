@@ -1,7 +1,7 @@
 #ifndef PSI_GEMMR_H
 #define PSI_GEMMR_H
 #include "BLAS.h"
-#include "Parallelizer2.h"
+#include "Parallelizer.h"
 #include "Vector.h"
 #include <cstdlib>
 
@@ -176,7 +176,7 @@ private:
 		const SizeType    tasks = nblocks_i * nblocks_j;
 		CodeSectionParams csp   = Concurrency::codeSectionParams;
 		csp.npthreads           = std::min(tasks, nthreads_);
-		Parallelizer2<> parallelizer2(csp);
+		Parallelizer<> parallelizer2(csp);
 		parallelizer2.parallelFor(0, tasks, lambda);
 	}
 

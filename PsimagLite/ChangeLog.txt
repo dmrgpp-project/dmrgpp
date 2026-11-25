@@ -196,7 +196,7 @@ new features and interfaces
 
 * PredicateAwesome supports constants
 
-* Parallelizer2 replaces Parallelizer
+* Parallelizer replaces Parallelizer
 
 * sfinae examples started
 

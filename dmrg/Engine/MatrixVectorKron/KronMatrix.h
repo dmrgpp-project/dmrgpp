@@ -84,7 +84,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include <PsimagLite/Concurrency.h>
 #include <PsimagLite/LoadBalancerWeights.h>
 #include <PsimagLite/Matrix.h>
-#include <PsimagLite/Parallelizer2.h>
+#include <PsimagLite/Parallelizer.h>
 #include <PsimagLite/ProgressIndicator.h>
 #include <PsimagLite/PsimagLite.h>
 
@@ -155,7 +155,7 @@ private:
 		    = PsimagLite::Concurrency::codeSectionParamsFor("KronMatrix");
 
 		if (initKron_.loadBalance()) {
-			PsimagLite::Parallelizer2<PsimagLite::LoadBalancerWeights>
+			PsimagLite::Parallelizer<PsimagLite::LoadBalancerWeights>
 			    parallelConnections(codeSectionParams);
 			parallelConnections.parallelFor(
 			    0,
@@ -164,7 +164,7 @@ private:
 			    { kc.doTask(t, tid); },
 			    initKron_.weightsOfPatchesNew());
 		} else {
-			PsimagLite::Parallelizer2<> parallelConnections(codeSectionParams);
+			PsimagLite::Parallelizer<> parallelConnections(codeSectionParams);
 			parallelConnections.parallelFor(
 			    0,
 			    kc.tasks(),

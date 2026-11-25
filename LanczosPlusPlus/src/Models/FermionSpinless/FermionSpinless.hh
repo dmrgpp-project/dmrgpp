@@ -9,7 +9,7 @@
 #include "LanczosModelBase.hpp"
 #include "ParametersFermionSpinless.hh"
 #include <PsimagLite/BitManip.h>
-#include <PsimagLite/Parallelizer2.h>
+#include <PsimagLite/Parallelizer.h>
 #include <PsimagLite/SparseRow.h>
 #include <PsimagLite/TypeToString.h>
 
@@ -124,7 +124,7 @@ public:
 			x[ispace] += sparseRow.finalize(y);
 		};
 
-		PsimagLite::Parallelizer2<> parallelizer2(
+		PsimagLite::Parallelizer<> parallelizer2(
 		    PsimagLite::Concurrency::codeSectionParams);
 
 		parallelizer2.parallelFor(0, hilbert, lambda);

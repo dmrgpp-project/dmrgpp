@@ -90,7 +90,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include "Utils.h"
 #include "VectorWithOffsets.h" // for operator*
 #include <PsimagLite/Concurrency.h>
-#include <PsimagLite/Parallelizer2.h>
+#include <PsimagLite/Parallelizer.h>
 #include <PsimagLite/PredicateAwesome.h>
 
 namespace Dmrg {
@@ -507,7 +507,7 @@ public:
 			}
 		}
 
-		using ParallelizerType = PsimagLite::Parallelizer2<>;
+		using ParallelizerType = PsimagLite::Parallelizer<>;
 		ParallelizerType threaded4PointDs(
 		    PsimagLite::Concurrency::codeSectionParamsFor("Observer"));
 

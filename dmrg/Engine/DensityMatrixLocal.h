@@ -77,7 +77,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include "ParallelDensityMatrix.h"
 #include <PsimagLite/Concurrency.h>
 #include <PsimagLite/NoPthreads.h>
-#include <PsimagLite/Parallelizer2.h>
+#include <PsimagLite/Parallelizer.h>
 #include <PsimagLite/ProgressIndicator.h>
 #include <PsimagLite/TypeToString.h>
 
@@ -105,7 +105,7 @@ public:
 	using ParallelDensityMatrixType = ParallelDensityMatrix<BlockDiagonalMatrixType,
 	                                                        BasisWithOperatorsType,
 	                                                        TargetVectorType>;
-	using ParallelizerType          = PsimagLite::Parallelizer2<>;
+	using ParallelizerType          = PsimagLite::Parallelizer<>;
 	using VectorVectorVectorWithOffsetType =
 	    typename TargetingType::VectorVectorVectorWithOffsetType;
 

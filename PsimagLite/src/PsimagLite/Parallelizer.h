@@ -4,13 +4,13 @@
 #include "Vector.h"
 
 #ifdef USE_PTHREADS
-#include "Parallelizer2Pthread.h"
+#include "ParallelizerPthread.h"
 #else
 
 #ifdef _OPENMP
-#include "Parallelizer2OpenMP.h"
+#include "ParallelizerOpenMP.h"
 #else
-#include "Parallelizer2Serial.h"
+#include "ParallelizerSerial.h"
 #endif
 
 #endif

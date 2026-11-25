@@ -16,7 +16,7 @@ Please see full open source license included in file LICENSE.
 
 */
 #include <PsimagLite/Concurrency.h>
-#include <PsimagLite/Parallelizer2.h>
+#include <PsimagLite/Parallelizer.h>
 
 #include <cstdlib>
 #include <iostream>
@@ -79,10 +79,10 @@ public:
 
 	void doTask(SizeType taskNumber, SizeType threadNum)
 	{
-		typedef PsimagLite::Parallelizer2<> ParallelizerType;
-		PsimagLite::CodeSectionParams       cs(nthreadsInner_);
-		ParallelizerType                    threadObject(cs);
-		InnerHelper helper(ntasksInner_, nthreadsInner_, taskNumber);
+		typedef PsimagLite::Parallelizer<> ParallelizerType;
+		PsimagLite::CodeSectionParams      cs(nthreadsInner_);
+		ParallelizerType                   threadObject(cs);
+		InnerHelper                        helper(ntasksInner_, nthreadsInner_, taskNumber);
 		threadObject.parallelFor(
 		    0,
 		    helper.tasks(),
@@ -125,10 +125,10 @@ int main(int argc, char* argv[])
 
 	ConcurrencyType concurrency(&argc, &argv, 1);
 
-	typedef MyHelper                    HelperType;
-	typedef PsimagLite::Parallelizer2<> ParallelizerType;
-	PsimagLite::CodeSectionParams       cs(nthreadsOuter);
-	ParallelizerType                    threadObject(cs);
+	typedef MyHelper                   HelperType;
+	typedef PsimagLite::Parallelizer<> ParallelizerType;
+	PsimagLite::CodeSectionParams      cs(nthreadsOuter);
+	ParallelizerType                   threadObject(cs);
 
 	HelperType helper(ntasks, nthreadsOuter, ntasksInner, nthreadsInner);
 

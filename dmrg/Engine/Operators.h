@@ -85,7 +85,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include <PsimagLite/Complex.h>
 #include <PsimagLite/Concurrency.h>
 #include <PsimagLite/Matrix.h>
-#include <PsimagLite/Parallelizer2.h>
+#include <PsimagLite/Parallelizer.h>
 #include <PsimagLite/ProgressIndicator.h>
 #include <cassert>
 
@@ -336,7 +336,7 @@ public:
 	                 SizeType                       opsPerSite,
 	                 SizeType                       opOnSiteThreshold)
 	{
-		using ParallelizerType = PsimagLite::Parallelizer2<>;
+		using ParallelizerType = PsimagLite::Parallelizer<>;
 		ParallelizerType threadObject(
 		    PsimagLite::Concurrency::codeSectionParamsFor("Operators"));
 

@@ -88,7 +88,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include <PsimagLite/Concurrency.h>
 #include <PsimagLite/CrsMatrix.h>
 #include <PsimagLite/GetBraOrKet.h>
-#include <PsimagLite/Parallelizer2.h>
+#include <PsimagLite/Parallelizer.h>
 
 namespace Dmrg {
 
@@ -136,7 +136,7 @@ public:
 			}
 		}
 
-		using ParallelizerType = PsimagLite::Parallelizer2<>;
+		using ParallelizerType = PsimagLite::Parallelizer<>;
 		ParallelizerType threaded2Points(
 		    PsimagLite::Concurrency::codeSectionParamsFor("TwoPointCorrelations"));
 

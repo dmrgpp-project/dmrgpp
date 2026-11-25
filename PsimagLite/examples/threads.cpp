@@ -16,7 +16,7 @@ Please see full open source license included in file LICENSE.
 
 */
 #include <PsimagLite/Concurrency.h>
-#include <PsimagLite/Parallelizer2.h>
+#include <PsimagLite/Parallelizer.h>
 
 #include <cstdlib>
 #include <iostream>
@@ -67,9 +67,9 @@ int main(int argc, char* argv[])
 
 	ConcurrencyType concurrency(&argc, &argv, nthreads);
 
-	typedef MyHelper                    HelperType;
-	typedef PsimagLite::Parallelizer2<> ParallelizerType;
-	ParallelizerType                    threadObject(ConcurrencyType::codeSectionParams);
+	typedef MyHelper                   HelperType;
+	typedef PsimagLite::Parallelizer<> ParallelizerType;
+	ParallelizerType                   threadObject(ConcurrencyType::codeSectionParams);
 
 	HelperType helper(ntasks, nthreads);
 

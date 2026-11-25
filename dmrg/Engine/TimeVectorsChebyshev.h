@@ -82,7 +82,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include "ParallelTriDiag.h"
 #include "ScaledHamiltonian.h"
 #include "TimeVectorsBase.h"
-#include <PsimagLite/Parallelizer2.h>
+#include <PsimagLite/Parallelizer.h>
 #include <PsimagLite/PredicateAwesome.h>
 #include <PsimagLite/Sort.h>
 #include <iostream>
@@ -499,7 +499,7 @@ private:
 		ScaledMatrixType lanczosHelper2(lanczosHelper, tstStruct_, Eg, verbose);
 
 		const RealType fakeTime = 0;
-		using ParallelizerType  = PsimagLite::Parallelizer2<>;
+		using ParallelizerType  = PsimagLite::Parallelizer<>;
 		ParallelizerType threadedTriDiag(PsimagLite::CodeSectionParams(1));
 
 		//		VectorMatrixFieldType T(phi.sectors());

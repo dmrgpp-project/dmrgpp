@@ -1,7 +1,7 @@
 #include <Kokkos_Core.hpp>
 #include <PsimagLite/BLAS.h>
 #include <PsimagLite/CodeSectionParams.h>
-#include <PsimagLite/Parallelizer2.h>
+#include <PsimagLite/Parallelizer.h>
 #include <array>
 #include <atomic>
 #include <cassert>
@@ -100,10 +100,10 @@ void checkOutputs(const MatrixData& work)
 
 } // namespace
 
-TEST_CASE("Parallelizer2 completes independent GEMM tasks", "[Parallelizer2]")
+TEST_CASE("Parallelizer completes independent GEMM tasks", "[Parallelizer]")
 {
-	MatrixData                  work;
-	PsimagLite::Parallelizer2<> parallelizer(PsimagLite::CodeSectionParams(1));
+	MatrixData                 work;
+	PsimagLite::Parallelizer<> parallelizer(PsimagLite::CodeSectionParams(1));
 
 	parallelizer.parallelFor(FirstTask, FirstTask + Tasks, lambdaFor(work));
 
@@ -111,11 +111,10 @@ TEST_CASE("Parallelizer2 completes independent GEMM tasks", "[Parallelizer2]")
 }
 
 #if defined(USE_PTHREADS) || defined(_OPENMP)
-TEST_CASE("Parallelizer2 concurrently completes independent GEMM tasks",
-          "[Parallelizer2][threaded]")
+TEST_CASE("Parallelizer concurrently completes independent GEMM tasks", "[Parallelizer][threaded]")
 {
-	MatrixData                  work;
-	PsimagLite::Parallelizer2<> parallelizer(PsimagLite::CodeSectionParams(4));
+	MatrixData                 work;
+	PsimagLite::Parallelizer<> parallelizer(PsimagLite::CodeSectionParams(4));
 
 	parallelizer.parallelFor(FirstTask, FirstTask + Tasks, lambdaFor(work));
 

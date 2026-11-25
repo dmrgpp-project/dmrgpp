@@ -31,13 +31,9 @@ add_executable(test_CrsMatrixMultiply test_CrsMatrixMultiply.cpp)
 target_link_libraries(test_CrsMatrixMultiply PRIVATE Catch2::Catch2WithMain psimaglite)
 catch_discover_tests(test_CrsMatrixMultiply)
 
-add_executable(testParallelizer testParallelizer.cpp)
-target_link_libraries(testParallelizer PRIVATE Catch2::Catch2 psimaglite)
-catch_discover_tests(testParallelizer)
-
-add_executable(test_Parallelizer2 testParallelizer2.cpp)
-target_link_libraries(test_Parallelizer2 PRIVATE Catch2::Catch2 psimaglite)
-catch_discover_tests(test_Parallelizer2)
+add_executable(test_Parallelizer testParallelizer2.cpp)
+target_link_libraries(test_Parallelizer PRIVATE Catch2::Catch2 psimaglite)
+catch_discover_tests(test_Parallelizer)
 
 add_executable(testAinur testAinur.cpp)
 target_link_libraries(testAinur PRIVATE Catch2::Catch2WithMain psimaglite)

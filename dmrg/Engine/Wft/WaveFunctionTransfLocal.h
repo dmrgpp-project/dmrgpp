@@ -90,7 +90,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include "WftAccelPatches.h"
 #include "WftAccelSvd.h"
 #include "WftSparseTwoSite.h"
-#include <PsimagLite/Parallelizer2.h>
+#include <PsimagLite/Parallelizer.h>
 #include <PsimagLite/Profiling.h>
 #include <PsimagLite/ProgressIndicator.h>
 
@@ -214,7 +214,7 @@ private:
 		}
 
 		SizeType i0            = psiDest.sector(iNew);
-		using ParallelizerType = PsimagLite::Parallelizer2<>;
+		using ParallelizerType = PsimagLite::Parallelizer<>;
 
 		ParallelizerType threadedWft(
 		    PsimagLite::Concurrency::codeSectionParamsFor("WaveFunctionTransfLocal"));
@@ -252,7 +252,7 @@ private:
 			return wftAccelBlocks_.environFromInfinite(
 			    psiDest, i0, psiSrc, iOld, lrs, oneSiteSpaces);
 
-		using ParallelizerType = PsimagLite::Parallelizer2<>;
+		using ParallelizerType = PsimagLite::Parallelizer<>;
 
 		SparseMatrixType ws;
 		dmrgWaveStruct_.getTransform(ProgramGlobals::SysOrEnvEnum::SYSTEM).toSparse(ws);
@@ -307,7 +307,7 @@ private:
 	                                  const LeftRightSuperType&   lrs,
 	                                  const OneSiteSpacesType&    oneSiteSpaces) const
 	{
-		using ParallelizerType = PsimagLite::Parallelizer2<>;
+		using ParallelizerType = PsimagLite::Parallelizer<>;
 
 		assert(dmrgWaveStruct_.lrs().super().permutationInverse().size() == psiSrc.size());
 

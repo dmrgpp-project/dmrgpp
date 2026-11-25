@@ -1,6 +1,6 @@
 #include <PsimagLite/BLAS.h>
 #include <PsimagLite/Matrix.h>
-#include <PsimagLite/Parallelizer2.h>
+#include <PsimagLite/Parallelizer.h>
 #include <PsimagLite/Random48.h>
 #include <cstdlib> // for atoi
 
@@ -106,7 +106,7 @@ int main(int argc, char** argv)
 	SizeType threads = atoi(argv[5]);
 
 	PsimagLite::CodeSectionParams codeSections(threads);
-	PsimagLite::Parallelizer2<>   parallel(codeSections);
+	PsimagLite::Parallelizer<>    parallel(codeSections);
 	MyBlasWrapper                 myblasWrapper(m, n, k, total);
 
 	parallel.parallelFor(

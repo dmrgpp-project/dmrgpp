@@ -85,7 +85,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include "Qn.h"
 #include "QnHash.h"
 #include "Utils.h"
-#include <PsimagLite/Parallelizer2.h>
+#include <PsimagLite/Parallelizer.h>
 #include <PsimagLite/Profiling.h>
 #include <PsimagLite/Sort.h> // in PsimagLite
 
@@ -290,7 +290,7 @@ public:
 		    = PsimagLite::Concurrency::codeSectionParams;
 		codeParams.npthreads
 		    = std::min(nps * npe, PsimagLite::Concurrency::codeSectionParams.npthreads);
-		PsimagLite::Parallelizer2<> parallelizer2(codeParams);
+		PsimagLite::Parallelizer<> parallelizer2(codeParams);
 		parallelizer2.parallelFor(
 		    0,
 		    nps * npe,

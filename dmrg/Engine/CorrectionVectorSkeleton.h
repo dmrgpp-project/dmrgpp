@@ -87,7 +87,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include "TridiagRixsStatic.h"
 #include "VectorWithOffsets.h"
 #include <PsimagLite/FreqEnum.h>
-#include <PsimagLite/Parallelizer2.h>
+#include <PsimagLite/Parallelizer.h>
 #include <PsimagLite/ParametersForSolver.h>
 #include <PsimagLite/ProgressIndicator.h>
 
@@ -340,7 +340,7 @@ private:
 	             VectorSizeType&             steps)
 	{
 		RealType fakeTime      = 0;
-		using ParallelizerType = PsimagLite::Parallelizer2<>;
+		using ParallelizerType = PsimagLite::Parallelizer<>;
 		ParallelizerType threadedTriDiag(PsimagLite::CodeSectionParams(1));
 
 		ParallelTriDiagType helperTriDiag(phi, T, V, steps, lrs_, fakeTime, model_, ioIn_);
