@@ -1,34 +1,30 @@
 ##Ainur1.0
-TotalNumberOfSites=16;
-NumberOfTerms=2;
 
-gt0:DegreesOfFreedom=1;
-gt0:GeometryKind="chain";
-gt0:GeometryOptions="ConstantValues";
-gt0:dir0:Connectors=[1.0];
+# Direct P-vector assignment after restart must copy physical time with the
+# numerical vector. P0 starts from source slot 10 (time 0.7), then becomes P1
+# (source slot 3, time 0.625).
 
-gt1:DegreesOfFreedom=1;
-gt1:GeometryKind="chain";
-gt1:GeometryOptions="ConstantValues";
-gt1:dir0:Connectors=[1.0];
-
-#Model params
-Model="Heisenberg";
-int HeisenbergTwiceS=1;
-SolverOptions="truncationNoSvd,twositedmrg,TargetingExpression,OperatorsChangeAll";
-Version="53725d9b8f22615ccccc782082f4cd6f51a4e374";
-OutputFile="data130";
-InfiniteLoopKeptStates=100;
-FiniteLoops=[[7, 110, 0],
-[-14, 120, 0],
-[ 14, 130, 0],
-[-14, 140, 0],
-[ 14, 150, 0],
-[-14, 160, 0],
-[ 14, 170, 0],
-[-14, 180, 0],
-[ 14, 190, 0]];
-int TargetSzPlusConst=8;
-GsWeight=0.3;
-string P0="splus[8]*|gs>";
-#ci observe arguments="<gs|c';c|gs>,<gs|2.0*sz;2.0*sz|gs>,<gs|n;n|gs>"
+TotalNumberOfSites=6;
+NumberOfTerms=1;
+DegreesOfFreedom=1;
+GeometryKind=star;
+GeometryOptions=none;
+hubbardU=[2, 0., 0., 0., 0., 0.];
+Model=HubbardOneBand;
+SolverOptions=twositedmrg,geometryallinsystem,TargetingExpression,restart,usecomplex;
+Version=GSquench-unit-test;
+OutputFile=data9106;
+InfiniteLoopKeptStates=50;
+FiniteLoops=[
+    [@auto, 50, 2], [@auto, 50, 2]];
+TargetElectronsUp=3;
+TargetElectronsDown=3;
+dir0:Connectors=[0.5, 0.5, 0.5, 0.5, 0.5];
+potentialV=[0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0];
+RestartFilename=data9103;
+RestartMappingTvs=[10, 3, 1];
+string P0=|P1>;
+string P1=|P1>;
+string P2=|P2>;
+GsWeight=0.1;
