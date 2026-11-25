@@ -4,9 +4,6 @@
 set(INPUTS_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 # affiniteTest needs -DUSE_PTHREADS
-add_executable(affinityTest affinityTest.cpp)
-target_link_libraries(affinityTest psimaglite)
-# add_test(NAME affinityTest COMMAND affinityTest 4 14)
 
 add_executable(akimaSpline akimaSpline.cpp)
 target_link_libraries(akimaSpline psimaglite)

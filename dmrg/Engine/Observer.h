@@ -90,7 +90,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include "Utils.h"
 #include "VectorWithOffsets.h" // for operator*
 #include <PsimagLite/Concurrency.h>
-#include <PsimagLite/Parallelizer.h>
+#include <PsimagLite/Parallelizer2.h>
 #include <PsimagLite/PredicateAwesome.h>
 
 namespace Dmrg {
@@ -507,14 +507,14 @@ public:
 			}
 		}
 
-		using ParallelizerType = PsimagLite::Parallelizer<Parallel4PointDsType>;
+		using ParallelizerType = PsimagLite::Parallelizer2<>;
 		ParallelizerType threaded4PointDs(
 		    PsimagLite::Concurrency::codeSectionParamsFor("Observer"));
 
 		Parallel4PointDsType helper4PointDs(
 		    fpd, fourpoint_, model, gammas, pairs, Parallel4PointDsType::MODE_NORMAL);
 
-		threaded4PointDs.loopCreate(helper4PointDs);
+		threaded4PointDs.parallelFor(0, helper4PointDs.tasks(), [&helper4PointDs](SizeType t, SizeType tid) { helper4PointDs.doTask(t, tid); });
 	}
 
 	template <typename ApplyOperatorType>

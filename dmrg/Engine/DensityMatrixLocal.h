@@ -77,7 +77,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include "ParallelDensityMatrix.h"
 #include <PsimagLite/Concurrency.h>
 #include <PsimagLite/NoPthreads.h>
-#include <PsimagLite/Parallelizer.h>
+#include <PsimagLite/Parallelizer2.h>
 #include <PsimagLite/ProgressIndicator.h>
 #include <PsimagLite/TypeToString.h>
 
@@ -105,7 +105,7 @@ public:
 	using ParallelDensityMatrixType = ParallelDensityMatrix<BlockDiagonalMatrixType,
 	                                                        BasisWithOperatorsType,
 	                                                        TargetVectorType>;
-	using ParallelizerType          = PsimagLite::Parallelizer<ParallelDensityMatrixType>;
+	using ParallelizerType          = PsimagLite::Parallelizer2<>;
 	using VectorVectorVectorWithOffsetType =
 	    typename TargetingType::VectorVectorVectorWithOffsetType;
 
@@ -229,7 +229,7 @@ private:
 		    v, pBasis, pBasisSummed, pSE, direction, m, weight, matrixBlock);
 		ParallelizerType threadedDm(
 		    ConcurrencyType::codeSectionParamsFor("DensityMatrixLocal"));
-		threadedDm.loopCreate(helperDm);
+		threadedDm.parallelFor(0, helperDm.tasks(), [&helperDm](SizeType t, SizeType tid) { helperDm.doTask(t, tid); });
 	}
 
 	ProgressIndicatorType         progress_;

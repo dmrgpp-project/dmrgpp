@@ -518,12 +518,12 @@ for (SizeType dof = 0; dof < numberOfDofs; ++dof) {
 	                         const HamiltonianConnectionType&     hc,
 	                         const typename ModelHelperType::Aux& aux) const
 	{
-		using ParallelizerType = PsimagLite::Parallelizer<ParallelHamConnectionType>;
+		using ParallelizerType = PsimagLite::Parallelizer2<>;
 		ParallelizerType parallelConnections(
 		    PsimagLite::Concurrency::codeSectionParamsFor("ModelBase"));
 
 		ParallelHamConnectionType phc(x, y, hc, aux);
-		parallelConnections.loopCreate(phc);
+		parallelConnections.parallelFor(0, phc.tasks(), [&phc](SizeType t, SizeType tid) { phc.doTask(t, tid); });
 
 		phc.sync();
 	}

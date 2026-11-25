@@ -84,7 +84,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include <PsimagLite/Concurrency.h>
 #include <PsimagLite/LoadBalancerWeights.h>
 #include <PsimagLite/Matrix.h>
-#include <PsimagLite/Parallelizer.h>
+#include <PsimagLite/Parallelizer2.h>
 #include <PsimagLite/ProgressIndicator.h>
 #include <PsimagLite/PsimagLite.h>
 
@@ -155,14 +155,13 @@ private:
 		    = PsimagLite::Concurrency::codeSectionParamsFor("KronMatrix");
 
 		if (initKron_.loadBalance()) {
-			PsimagLite::Parallelizer<KronConnectionsType,
-			                         PsimagLite::LoadBalancerWeights>
+			PsimagLite::Parallelizer2<PsimagLite::LoadBalancerWeights>
 			    parallelConnections(codeSectionParams);
-			parallelConnections.loopCreate(kc, initKron_.weightsOfPatchesNew());
+			parallelConnections.parallelFor(0, kc.tasks(), [&kc](SizeType t, SizeType tid) { kc.doTask(t, tid); }, initKron_.weightsOfPatchesNew());
 		} else {
-			PsimagLite::Parallelizer<KronConnectionsType> parallelConnections(
+			PsimagLite::Parallelizer2<> parallelConnections(
 			    codeSectionParams);
-			parallelConnections.loopCreate(kc);
+			parallelConnections.parallelFor(0, kc.tasks(), [&kc](SizeType t, SizeType tid) { kc.doTask(t, tid); });
 		}
 
 		kc.sync();

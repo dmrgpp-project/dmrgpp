@@ -82,8 +82,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include "ParallelTriDiag.h"
 #include "ScaledHamiltonian.h"
 #include "TimeVectorsBase.h"
-#include <PsimagLite/NoPthreadsNg.h>
-#include <PsimagLite/Parallelizer.h>
+#include <PsimagLite/Parallelizer2.h>
 #include <PsimagLite/PredicateAwesome.h>
 #include <PsimagLite/Sort.h>
 #include <iostream>
@@ -500,7 +499,7 @@ private:
 		ScaledMatrixType lanczosHelper2(lanczosHelper, tstStruct_, Eg, verbose);
 
 		const RealType fakeTime = 0;
-		using ParallelizerType  = PsimagLite::NoPthreadsNg<ParallelTriDiagType>;
+		using ParallelizerType  = PsimagLite::Parallelizer2<>;
 		ParallelizerType threadedTriDiag(PsimagLite::CodeSectionParams(1));
 
 		//		VectorMatrixFieldType T(phi.sectors());
@@ -508,7 +507,7 @@ private:
 
 		ParallelTriDiagType helperTriDiag(phi, T, V, steps, lrs_, fakeTime, model_, ioIn_);
 
-		threadedTriDiag.loopCreate(helperTriDiag);
+		threadedTriDiag.parallelFor(0, helperTriDiag.tasks(), [&helperTriDiag](SizeType t, SizeType tid) { helperTriDiag.doTask(t, tid); });
 
 		VectorVectorRealType eigs(phi.sectors());
 

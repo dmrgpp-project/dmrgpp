@@ -503,14 +503,14 @@ public:
 		PsimagLite::CodeSectionParams codeSectionParams
 		    = PsimagLite::Concurrency::codeSectionParamsFor("BlockDiagWfCtor");
 		SizeType threads            = std::min(npatches, codeSectionParams.npthreads);
-		using ParallelizerType      = PsimagLite::Parallelizer<ParallelBlockCtor>;
+		using ParallelizerType      = PsimagLite::Parallelizer2<>;
 		codeSectionParams.npthreads = threads;
 		ParallelizerType threadedCtor(codeSectionParams);
 
 		ParallelBlockCtor helper(
 		    patchesLeft, patchesRight, lrs, src, iSrc, patches_, data_);
 
-		threadedCtor.loopCreate(helper);
+		threadedCtor.parallelFor(0, helper.tasks(), [&helper](SizeType t, SizeType tid) { helper.doTask(t, tid); });
 	}
 
 	~BlockDiagWf()
@@ -533,7 +533,7 @@ public:
 		PsimagLite::CodeSectionParams codeSectionParams
 		    = PsimagLite::Concurrency::codeSectionParamsFor("BlockDiagWfTransform");
 		SizeType threads            = std::min(npatches, codeSectionParams.npthreads);
-		using ParallelizerType      = PsimagLite::Parallelizer<ParallelBlockTransform>;
+		using ParallelizerType      = PsimagLite::Parallelizer2<>;
 		codeSectionParams.npthreads = threads;
 		ParallelizerType threadedTransform(codeSectionParams);
 
@@ -549,7 +549,7 @@ public:
 		                              gemmRnb,
 		                              threadsForGemmR);
 
-		threadedTransform.loopCreate(helper);
+		threadedTransform.parallelFor(0, helper.tasks(), [&helper](SizeType t, SizeType tid) { helper.doTask(t, tid); });
 
 		rows_ = (charLeft == 'N') ? tLeft.rows() : tLeft.cols();
 		cols_ = (charRight == 'N') ? tRight.cols() : tRight.rows();

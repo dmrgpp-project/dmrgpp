@@ -221,16 +221,16 @@ private:
 		                uPreviousPinv,
 		                vPrimePreviousPinv,
 		                qnsPrevious);
-		using ParallelizerOneType = PsimagLite::Parallelizer<LoopOne>;
+		using ParallelizerOneType = PsimagLite::Parallelizer2<>;
 		PsimagLite::CodeSectionParams codeSectionParams
 		    = PsimagLite::Concurrency::codeSectionParamsFor("WftAccelSvdOne");
 		SizeType threads = std::min(std::max(qnsVeryOld.size(), qnsPrevious.size()),
 		                            codeSectionParams.npthreads);
 		codeSectionParams.npthreads = threads;
 		ParallelizerOneType threadOne(codeSectionParams);
-		threadOne.loopCreate(loopOne);
+		threadOne.parallelFor(0, loopOne.tasks(), [&loopOne](SizeType t, SizeType tid) { loopOne.doTask(t, tid); });
 
-		using ParallelizerTwoType = PsimagLite::Parallelizer<LoopTwo>;
+		using ParallelizerTwoType = PsimagLite::Parallelizer2<>;
 		LoopTwo loopTwo(
 		    loopOne.uFinal(), loopOne.vPrimeFinal(), loopOne.qns(), sPrevious, qnsPrevious);
 		PsimagLite::CodeSectionParams codeSectionParamsTwo
@@ -238,7 +238,7 @@ private:
 		codeSectionParamsTwo.npthreads
 		    = std::min(loopOne.qns().size(), codeSectionParamsTwo.npthreads);
 		ParallelizerTwoType threadTwo(codeSectionParamsTwo);
-		threadTwo.loopCreate(loopTwo);
+		threadTwo.parallelFor(0, loopTwo.tasks(), [&loopTwo](SizeType t, SizeType tid) { loopTwo.doTask(t, tid); });
 	}
 
 	static void pinv(VectorMatrixType& dest, const VectorMatrixType& src)

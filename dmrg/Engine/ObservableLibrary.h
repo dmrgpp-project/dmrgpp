@@ -733,7 +733,7 @@ private:
 		}
 
 		using Parallel4PointDsType = typename ObserverType::Parallel4PointDsType;
-		using ParallelizerType     = PsimagLite::Parallelizer<Parallel4PointDsType>;
+		using ParallelizerType     = PsimagLite::Parallelizer2<>;
 		ParallelizerType threaded4PointDs(
 		    PsimagLite::Concurrency::codeSectionParamsFor("ObservableLibrary"));
 
@@ -744,7 +744,7 @@ private:
 		                                    pairs,
 		                                    Parallel4PointDsType::MODE_THINupdn);
 
-		threaded4PointDs.loopCreate(helper4PointDs);
+		threaded4PointDs.parallelFor(0, helper4PointDs.tasks(), [&helper4PointDs](SizeType t, SizeType tid) { helper4PointDs.doTask(t, tid); });
 
 		MatrixType mup(rows, cols);
 		MatrixType mdown(rows, cols);
@@ -1366,7 +1366,7 @@ private:
 		}
 
 		using Parallel4PointDsType = typename ObserverType::Parallel4PointDsType;
-		using ParallelizerType     = PsimagLite::Parallelizer<Parallel4PointDsType>;
+		using ParallelizerType     = PsimagLite::Parallelizer2<>;
 		ParallelizerType threaded4PointDs(
 		    PsimagLite::Concurrency::codeSectionParamsFor("ObservableLibrary"));
 
@@ -1377,7 +1377,7 @@ private:
 		                                    pairs,
 		                                    Parallel4PointDsType::MODE_THIN);
 
-		threaded4PointDs.loopCreate(helper4PointDs);
+		threaded4PointDs.parallelFor(0, helper4PointDs.tasks(), [&helper4PointDs](SizeType t, SizeType tid) { helper4PointDs.doTask(t, tid); });
 
 		MatrixType mTriplet(rows, cols);
 		MatrixType mSinglet(rows, cols);

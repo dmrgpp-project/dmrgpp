@@ -90,7 +90,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include "WftAccelPatches.h"
 #include "WftAccelSvd.h"
 #include "WftSparseTwoSite.h"
-#include <PsimagLite/Parallelizer.h>
+#include <PsimagLite/Parallelizer2.h>
 #include <PsimagLite/Profiling.h>
 #include <PsimagLite/ProgressIndicator.h>
 
@@ -214,13 +214,13 @@ private:
 		}
 
 		SizeType i0            = psiDest.sector(iNew);
-		using ParallelizerType = PsimagLite::Parallelizer<ParallelWftType>;
+		using ParallelizerType = PsimagLite::Parallelizer2<>;
 
 		ParallelizerType threadedWft(
 		    PsimagLite::Concurrency::codeSectionParamsFor("WaveFunctionTransfLocal"));
 		ParallelWftType helperWft(psiDest, psiSrc, lrs, i0, oneSiteSpaces, dmrgWaveStruct_);
 
-		threadedWft.loopCreate(helperWft);
+		threadedWft.parallelFor(0, helperWft.tasks(), [&helperWft](SizeType t, SizeType tid) { helperWft.doTask(t, tid); });
 	}
 
 	void transformVector1FromInfinite(VectorWithOffsetType&       psiDest,
@@ -248,7 +248,7 @@ private:
 			return wftAccelBlocks_.environFromInfinite(
 			    psiDest, i0, psiSrc, iOld, lrs, oneSiteSpaces);
 
-		using ParallelizerType = PsimagLite::Parallelizer<WftSparseTwoSiteType>;
+		using ParallelizerType = PsimagLite::Parallelizer2<>;
 
 		SparseMatrixType ws;
 		dmrgWaveStruct_.getTransform(ProgramGlobals::SysOrEnvEnum::SYSTEM).toSparse(ws);
@@ -272,7 +272,7 @@ private:
 		                               weT,
 		                               ProgramGlobals::SysOrEnvEnum::ENVIRON);
 
-		threadedWft.loopCreate(helperWft);
+		threadedWft.parallelFor(0, helperWft.tasks(), [&helperWft](SizeType t, SizeType tid) { helperWft.doTask(t, tid); });
 	}
 
 	// --------------------------
@@ -299,7 +299,7 @@ private:
 	                                  const LeftRightSuperType&   lrs,
 	                                  const OneSiteSpacesType&    oneSiteSpaces) const
 	{
-		using ParallelizerType = PsimagLite::Parallelizer<WftSparseTwoSiteType>;
+		using ParallelizerType = PsimagLite::Parallelizer2<>;
 
 		assert(dmrgWaveStruct_.lrs().super().permutationInverse().size() == psiSrc.size());
 
@@ -344,7 +344,7 @@ private:
 					    we,
 					    ProgramGlobals::SysOrEnvEnum::SYSTEM);
 
-					threadedWft.loopCreate(helperWft);
+					threadedWft.parallelFor(0, helperWft.tasks(), [&helperWft](SizeType t, SizeType tid) { helperWft.doTask(t, tid); });
 				}
 			}
 		}

@@ -82,8 +82,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include "KrylovHelper.h"
 #include "ParallelTriDiag.h"
 #include "TimeVectorsBase.h"
-#include <PsimagLite/NoPthreadsNg.h>
-#include <PsimagLite/Parallelizer.h>
+#include <PsimagLite/Parallelizer2.h>
 #include <iostream>
 #include <vector>
 
@@ -326,13 +325,13 @@ private:
 	             VectorMatrixFieldType&                       V,
 	             typename PsimagLite::Vector<SizeType>::Type& steps)
 	{
-		using ParallelizerType = PsimagLite::NoPthreadsNg<ParallelTriDiagType>;
+		using ParallelizerType = PsimagLite::Parallelizer2<>;
 		ParallelizerType threadedTriDiag(PsimagLite::CodeSectionParams(1));
 
 		ParallelTriDiagType helperTriDiag(
 		    phi, T, V, steps, lrs_, this->time(), model_, ioIn_);
 
-		threadedTriDiag.loopCreate(helperTriDiag);
+		threadedTriDiag.parallelFor(0, helperTriDiag.tasks(), [&helperTriDiag](SizeType t, SizeType tid) { helperTriDiag.doTask(t, tid); });
 	}
 
 	const TargetParamsType&       tstStruct_;

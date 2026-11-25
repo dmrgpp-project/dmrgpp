@@ -17,7 +17,7 @@ Please see full open source license included in file LICENSE.
 */
 #include <PsimagLite/Concurrency.h>
 #include <PsimagLite/LoadBalancerWeights.h>
-#include <PsimagLite/Parallelizer.h>
+#include <PsimagLite/Parallelizer2.h>
 
 #include <cstdlib>
 #include <iostream>
@@ -69,6 +69,8 @@ private:
 
 int main(int argc, char* argv[])
 {
+	Kokkos::ScopeGuard kokkosScopeGuard(argc, argv);
+
 	typedef PsimagLite::Concurrency ConcurrencyType;
 
 	if (argc != 3) {
@@ -82,7 +84,7 @@ int main(int argc, char* argv[])
 	ConcurrencyType concurrency(&argc, &argv, nthreads);
 
 	typedef MyHelper HelperType;
-	typedef PsimagLite::Parallelizer<HelperType, PsimagLite::LoadBalancerWeights>
+	typedef PsimagLite::Parallelizer2<PsimagLite::LoadBalancerWeights>
 	                 ParallelizerType;
 	ParallelizerType threadObject(ConcurrencyType::codeSectionParams);
 
@@ -90,7 +92,7 @@ int main(int argc, char* argv[])
 
 	std::cout << "Using " << threadObject.name();
 	std::cout << " with " << nthreads << " threads.\n";
-	threadObject.loopCreate(helper, helper.weights());
+	threadObject.parallelFor(0, helper.tasks(), [&helper](SizeType t, SizeType tid) { helper.doTask(t, tid); }, helper.weights());
 	helper.sync();
 	std::cout << "Sum of all tasks= " << helper.result() << "\n";
 }

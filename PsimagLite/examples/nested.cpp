@@ -16,7 +16,7 @@ Please see full open source license included in file LICENSE.
 
 */
 #include <PsimagLite/Concurrency.h>
-#include <PsimagLite/Parallelizer.h>
+#include <PsimagLite/Parallelizer2.h>
 
 #include <cstdlib>
 #include <iostream>
@@ -79,11 +79,11 @@ public:
 
 	void doTask(SizeType taskNumber, SizeType threadNum)
 	{
-		typedef PsimagLite::Parallelizer<InnerHelper> ParallelizerType;
+		typedef PsimagLite::Parallelizer2<> ParallelizerType;
 		PsimagLite::CodeSectionParams                 cs(nthreadsInner_);
 		ParallelizerType                              threadObject(cs);
 		InnerHelper helper(ntasksInner_, nthreadsInner_, taskNumber);
-		threadObject.loopCreate(helper);
+		threadObject.parallelFor(0, helper.tasks(), [&helper](SizeType t, SizeType tid) { helper.doTask(t, tid); });
 		helper.sync();
 		x_[threadNum] += helper.result();
 	}
@@ -104,6 +104,8 @@ private:
 
 int main(int argc, char* argv[])
 {
+	Kokkos::ScopeGuard kokkosScopeGuard(argc, argv);
+
 	typedef PsimagLite::Concurrency ConcurrencyType;
 
 	if (argc != 5) {
@@ -120,7 +122,7 @@ int main(int argc, char* argv[])
 	ConcurrencyType concurrency(&argc, &argv, 1);
 
 	typedef MyHelper                             HelperType;
-	typedef PsimagLite::Parallelizer<HelperType> ParallelizerType;
+	typedef PsimagLite::Parallelizer2<> ParallelizerType;
 	PsimagLite::CodeSectionParams                cs(nthreadsOuter);
 	ParallelizerType                             threadObject(cs);
 
@@ -128,7 +130,7 @@ int main(int argc, char* argv[])
 
 	std::cout << "Using " << threadObject.name();
 	std::cout << " with " << nthreadsOuter << " threads.\n";
-	threadObject.loopCreate(helper);
+	threadObject.parallelFor(0, helper.tasks(), [&helper](SizeType t, SizeType tid) { helper.doTask(t, tid); });
 	helper.sync();
 	std::cout << "Sum of all tasks= " << helper.result() << "\n";
 }

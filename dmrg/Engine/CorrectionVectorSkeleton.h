@@ -80,6 +80,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #ifndef CORRECTION_VECTOR_SKEL_H
 #define CORRECTION_VECTOR_SKEL_H
 
+#include <PsimagLite/Parallelizer2.h>
 #include "CorrectionVectorAction.h"
 #include "CorrectionVectorFunction.h"
 #include "KrylovHelper.h"
@@ -87,7 +88,6 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include "TridiagRixsStatic.h"
 #include "VectorWithOffsets.h"
 #include <PsimagLite/FreqEnum.h>
-#include <PsimagLite/NoPthreadsNg.h>
 #include <PsimagLite/ParametersForSolver.h>
 #include <PsimagLite/ProgressIndicator.h>
 
@@ -340,12 +340,12 @@ private:
 	             VectorSizeType&             steps)
 	{
 		RealType fakeTime      = 0;
-		using ParallelizerType = PsimagLite::NoPthreadsNg<ParallelTriDiagType>;
+		using ParallelizerType = PsimagLite::Parallelizer2<>;
 		ParallelizerType threadedTriDiag(PsimagLite::CodeSectionParams(1));
 
 		ParallelTriDiagType helperTriDiag(phi, T, V, steps, lrs_, fakeTime, model_, ioIn_);
 
-		threadedTriDiag.loopCreate(helperTriDiag);
+		threadedTriDiag.parallelFor(0, helperTriDiag.tasks(), [&helperTriDiag](SizeType t, SizeType tid) { helperTriDiag.doTask(t, tid); });
 	}
 
 	RealType dynWeightOf(VectorType& v, const VectorType& w) const

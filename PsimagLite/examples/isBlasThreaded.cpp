@@ -1,6 +1,6 @@
 #include <PsimagLite/BLAS.h>
 #include <PsimagLite/Matrix.h>
-#include <PsimagLite/Parallelizer.h>
+#include <PsimagLite/Parallelizer2.h>
 #include <PsimagLite/Random48.h>
 #include <cstdlib> // for atoi
 
@@ -92,6 +92,8 @@ private:
 
 int main(int argc, char** argv)
 {
+	Kokkos::ScopeGuard kokkosScopeGuard(argc, argv);
+
 	if (argc < 6) {
 		std::cerr << "USAGE: " << argv[0] << " m k n total threads\n";
 		return 1;
@@ -104,8 +106,8 @@ int main(int argc, char** argv)
 	SizeType threads = atoi(argv[5]);
 
 	PsimagLite::CodeSectionParams           codeSections(threads);
-	PsimagLite::Parallelizer<MyBlasWrapper> parallel(codeSections);
+	PsimagLite::Parallelizer2<> parallel(codeSections);
 	MyBlasWrapper                           myblasWrapper(m, n, k, total);
 
-	parallel.loopCreate(myblasWrapper);
+	parallel.parallelFor(0, myblasWrapper.tasks(), [&myblasWrapper](SizeType t, SizeType tid) { myblasWrapper.doTask(t, tid); });
 }

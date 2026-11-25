@@ -2,6 +2,7 @@
 #define PARALLELIZER2PTHREAD_H
 #include "CodeSectionParams.h"
 #include "LoadBalancerDefault.h"
+#include "Parallelizer2Invoke.h"
 #include "TypeToString.h"
 #include "Vector.h"
 
@@ -69,7 +70,7 @@ void* thread_function_wrapper2(void* dummyPtr)
 		SizeType taskNumber = pfs->loadBalancer->taskNumber(pfs->threadNum, p);
 		if (taskNumber + pfs->start >= pfs->end)
 			break;
-		(*pfh)(taskNumber + pfs->start, pfs->threadNum, pfs->exec);
+		PsimagLite::parallelizer2Invoke(*pfh, taskNumber + pfs->start, pfs->threadNum, pfs->exec);
 	}
 
 	int retval = 0;
@@ -117,11 +118,10 @@ public:
 	                 const SomeLambdaType& lambda,
 	                 const VectorSizeType& weights)
 	{
-		LoadBalancerType* loadBalancer = new LoadBalancerType(weights.size(), nthreads_);
-		loadBalancer->setWeights(weights);
+		LoadBalancerType* loadBalancer = new LoadBalancerType(weights, nthreads_);
 		parallelFor(start, end, lambda, *loadBalancer);
 		delete loadBalancer;
-		loadBalancer = 0;
+		loadBalancer = nullptr;
 	}
 
 	template <typename SomeLambdaType>

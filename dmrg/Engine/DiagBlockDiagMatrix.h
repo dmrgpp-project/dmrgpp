@@ -1,5 +1,6 @@
 #ifndef DIAGBLOCKDIAGMATRIX_H
 #define DIAGBLOCKDIAGMATRIX_H
+#include <PsimagLite/Parallelizer2.h>
 #include "EnforcePhase.h"
 
 namespace Dmrg {
@@ -72,7 +73,7 @@ public:
 	// This function is NOT called by useSvd
 	static void diagonalise(BlockDiagonalMatrixType& C, VectorRealType& eigs, char option)
 	{
-		using ParallelizerType  = PsimagLite::NoPthreadsNg<LoopForDiag>;
+		using ParallelizerType  = PsimagLite::Parallelizer2<>;
 		using ConcurrencyType   = PsimagLite::Concurrency;
 		SizeType savedNpthreads = ConcurrencyType::codeSectionParams.npthreads;
 		ConcurrencyType::codeSectionParams.npthreads = 1;
@@ -80,7 +81,7 @@ public:
 
 		LoopForDiag helper(C, eigs, option);
 
-		threadObject.loopCreate(helper); // FIXME: needs weights
+		threadObject.parallelFor(0, helper.tasks(), [&helper](SizeType t, SizeType tid) { helper.doTask(t, tid); }); // FIXME: needs weights
 
 		helper.gather();
 

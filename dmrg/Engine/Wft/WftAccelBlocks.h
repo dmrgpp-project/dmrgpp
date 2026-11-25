@@ -628,7 +628,7 @@ public:
 		PsimagLite::CodeSectionParams codeSectionParams
 		    = PsimagLite::Concurrency::codeSectionParamsFor("WftAccelBlocks");
 		SizeType threads            = std::min(volumeOfNk, codeSectionParams.npthreads);
-		using ParallelizerType      = PsimagLite::Parallelizer<ParallelWftInBlocks>;
+		using ParallelizerType      = PsimagLite::Parallelizer2<>;
 		codeSectionParams.npthreads = threads;
 		ParallelizerType threadedWft(codeSectionParams);
 
@@ -642,7 +642,7 @@ public:
 		                              wftOptions_.gemmRnb,
 		                              wftOptions_.threadsForGemmR);
 
-		threadedWft.loopCreate(helperWft);
+		threadedWft.parallelFor(0, helperWft.tasks(), [&helperWft](SizeType t, SizeType tid) { helperWft.doTask(t, tid); });
 
 		environCopyOut(psiDest, i0, result, lrs, volumeOfNk);
 	}
@@ -680,7 +680,7 @@ public:
 		PsimagLite::CodeSectionParams codeSectionParams
 		    = PsimagLite::Concurrency::codeSectionParamsFor("WftAccelBlocks");
 		SizeType threads            = std::min(volumeOfNk, codeSectionParams.npthreads);
-		using ParallelizerType      = PsimagLite::Parallelizer<ParallelWftInBlocks>;
+		using ParallelizerType      = PsimagLite::Parallelizer2<>;
 		codeSectionParams.npthreads = threads;
 		ParallelizerType threadedWft(codeSectionParams);
 
@@ -694,7 +694,7 @@ public:
 		                              wftOptions_.gemmRnb,
 		                              wftOptions_.threadsForGemmR);
 
-		threadedWft.loopCreate(helperWft);
+		threadedWft.parallelFor(0, helperWft.tasks(), [&helperWft](SizeType t, SizeType tid) { helperWft.doTask(t, tid); });
 
 		systemCopyOut(psiDest, i0, result, lrs, volumeOfNk);
 	}

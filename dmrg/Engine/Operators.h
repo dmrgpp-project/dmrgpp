@@ -85,7 +85,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include <PsimagLite/Complex.h>
 #include <PsimagLite/Concurrency.h>
 #include <PsimagLite/Matrix.h>
-#include <PsimagLite/Parallelizer.h>
+#include <PsimagLite/Parallelizer2.h>
 #include <PsimagLite/ProgressIndicator.h>
 #include <cassert>
 
@@ -336,7 +336,7 @@ public:
 	                 SizeType                       opsPerSite,
 	                 SizeType                       opOnSiteThreshold)
 	{
-		using ParallelizerType = PsimagLite::Parallelizer<MyLoop>;
+		using ParallelizerType = PsimagLite::Parallelizer2<>;
 		ParallelizerType threadObject(
 		    PsimagLite::Concurrency::codeSectionParamsFor("Operators"));
 
@@ -350,7 +350,7 @@ public:
 		              opsPerSite,
 		              opOnSiteThreshold);
 
-		threadObject.loopCreate(helper); // FIXME: needs weights
+		threadObject.parallelFor(0, helper.tasks(), [&helper](SizeType t, SizeType tid) { helper.doTask(t, tid); }); // FIXME: needs weights
 
 		PsimagLite::OstringStream                     msgg(std::cout.precision());
 		PsimagLite::OstringStream::OstringStreamType& msg = msgg();

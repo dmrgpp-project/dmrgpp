@@ -518,7 +518,7 @@ public:
 	{
 		PsimagLite::Profiling profiling("DensityMatrixSvdDiag", std::cout);
 
-		using ParallelizerType = PsimagLite::Parallelizer<ParallelSvd>;
+		using ParallelizerType = PsimagLite::Parallelizer2<>;
 
 		PsimagLite::CodeSectionParams csp
 		    = PsimagLite::Concurrency::codeSectionParamsFor("DensityMatrixSvd");
@@ -532,7 +532,7 @@ public:
 
 		ParallelSvd parallelSvd(data_, allTargets_, eigs, persistentSvd_);
 
-		threaded.loopCreate(parallelSvd);
+		threaded.parallelFor(0, parallelSvd.tasks(), [&parallelSvd](SizeType t, SizeType tid) { parallelSvd.doTask(t, tid); });
 
 		for (SizeType i = 0; i < data_.blocks(); ++i) {
 			SizeType n = data_(i).rows();
@@ -584,12 +584,12 @@ private:
 			SizeType       m  = v.sector(sector);
 			const QnType&  qn = super.qnEx(m);
 			GenIjPatchType genIjPatch(lrs_, qn);
-			using ParallelizerType = PsimagLite::Parallelizer<ParallelPsiSplit>;
+			using ParallelizerType = PsimagLite::Parallelizer2<>;
 			ParallelizerType threaded(
 			    PsimagLite::Concurrency::codeSectionParamsFor("DensityMatrixSvd"));
 			ParallelPsiSplit parallelPsiSplit(
 			    lrs_, genIjPatch, v, x, sector, sqrtW, allTargets_);
-			threaded.loopCreate(parallelPsiSplit);
+			threaded.parallelFor(0, parallelPsiSplit.tasks(), [&parallelPsiSplit](SizeType t, SizeType tid) { parallelPsiSplit.doTask(t, tid); });
 		}
 	}
 

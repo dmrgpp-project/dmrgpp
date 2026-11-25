@@ -23,7 +23,7 @@
  */
 
 #include <PsimagLite/Concurrency.h>
-#include <PsimagLite/Parallelizer.h>
+#include <PsimagLite/Parallelizer2.h>
 
 #include <iostream>
 #include <unistd.h>
@@ -82,6 +82,8 @@ private:
 
 int main(int argc, char* argv[])
 {
+	Kokkos::ScopeGuard kokkosScopeGuard(argc, argv);
+
 
 	using ConcurrencyType = PsimagLite::Concurrency;
 
@@ -95,12 +97,12 @@ int main(int argc, char* argv[])
 	ConcurrencyType(&argc, &argv, nthreads);
 
 	typedef MyLoop                               HelperType;
-	typedef PsimagLite::Parallelizer<HelperType> ParallelizerType;
+	typedef PsimagLite::Parallelizer2<> ParallelizerType;
 	ParallelizerType threadObject(ConcurrencyType::codeSectionParams);
 
 	HelperType helper(nthreads, total);
 
-	threadObject.loopCreate(helper);
+	threadObject.parallelFor(0, helper.tasks(), [&helper](SizeType t, SizeType tid) { helper.doTask(t, tid); });
 
 	helper.sync();
 

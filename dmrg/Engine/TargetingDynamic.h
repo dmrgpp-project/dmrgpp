@@ -88,7 +88,7 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include "TargetingBase.h"
 #include "VectorWithOffsets.h"
 #include <PsimagLite/Concurrency.h>
-#include <PsimagLite/Parallelizer.h>
+#include <PsimagLite/Parallelizer2.h>
 #include <PsimagLite/ParametersForSolver.h>
 #include <PsimagLite/ProgressIndicator.h>
 #include <cassert>

@@ -2,7 +2,7 @@
 #include <Kokkos_Core.hpp>
 #include <PsimagLite/CodeSectionParams.h>
 #include <PsimagLite/Concurrency.h>
-#include <PsimagLite/Parallelizer.h>
+#include <PsimagLite/Parallelizer2.h>
 #include <catch2/catch_session.hpp>
 #include <catch2/catch_test_macros.hpp>
 
@@ -72,10 +72,10 @@ TEST_CASE("Concurrency resolves named code section parameters", "[Parallelizer][
 TEST_CASE("Parallelizer completes independent GEMM tasks", "[Parallelizer]")
 {
 	MatrixMatrix                           work;
-	PsimagLite::Parallelizer<MatrixMatrix> parallelizer(PsimagLite::CodeSectionParams(1));
+	PsimagLite::Parallelizer2<> parallelizer(PsimagLite::CodeSectionParams(1));
 
 	REQUIRE(work.tasks() == 4);
-	parallelizer.loopCreate(work);
+	parallelizer.parallelFor(0, work.tasks(), [&work](SizeType t, SizeType tid) { work.doTask(t, tid); });
 
 	checkOutputs(work);
 }
@@ -84,9 +84,9 @@ TEST_CASE("Parallelizer completes independent GEMM tasks", "[Parallelizer]")
 TEST_CASE("Parallelizer concurrently completes independent GEMM tasks", "[Parallelizer][pthread]")
 {
 	MatrixMatrix                           work;
-	PsimagLite::Parallelizer<MatrixMatrix> parallelizer(PsimagLite::CodeSectionParams(4));
+	PsimagLite::Parallelizer2<> parallelizer(PsimagLite::CodeSectionParams(4));
 
-	parallelizer.loopCreate(work);
+	parallelizer.parallelFor(0, work.tasks(), [&work](SizeType t, SizeType tid) { work.doTask(t, tid); });
 
 	checkOutputs(work);
 }
