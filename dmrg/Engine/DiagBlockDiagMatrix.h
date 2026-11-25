@@ -81,7 +81,7 @@ public:
 
 		LoopForDiag helper(C, eigs, option);
 
-		threadObject.parallelFor(0, helper.tasks(), [&helper](SizeType t, SizeType tid) { helper.doTask(t, tid); }); // FIXME: needs weights
+		threadObject.parallelFor(0, helper.tasks(), [&helper](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&) { helper.doTask(t, tid); }); // FIXME: needs weights
 
 		helper.gather();
 

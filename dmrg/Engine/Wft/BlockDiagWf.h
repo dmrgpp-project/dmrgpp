@@ -510,7 +510,7 @@ public:
 		ParallelBlockCtor helper(
 		    patchesLeft, patchesRight, lrs, src, iSrc, patches_, data_);
 
-		threadedCtor.parallelFor(0, helper.tasks(), [&helper](SizeType t, SizeType tid) { helper.doTask(t, tid); });
+		threadedCtor.parallelFor(0, helper.tasks(), [&helper](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&) { helper.doTask(t, tid); });
 	}
 
 	~BlockDiagWf()
@@ -549,7 +549,7 @@ public:
 		                              gemmRnb,
 		                              threadsForGemmR);
 
-		threadedTransform.parallelFor(0, helper.tasks(), [&helper](SizeType t, SizeType tid) { helper.doTask(t, tid); });
+		threadedTransform.parallelFor(0, helper.tasks(), [&helper](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&) { helper.doTask(t, tid); });
 
 		rows_ = (charLeft == 'N') ? tLeft.rows() : tLeft.cols();
 		cols_ = (charRight == 'N') ? tRight.cols() : tRight.rows();

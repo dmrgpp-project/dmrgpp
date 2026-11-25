@@ -532,7 +532,7 @@ public:
 
 		ParallelSvd parallelSvd(data_, allTargets_, eigs, persistentSvd_);
 
-		threaded.parallelFor(0, parallelSvd.tasks(), [&parallelSvd](SizeType t, SizeType tid) { parallelSvd.doTask(t, tid); });
+		threaded.parallelFor(0, parallelSvd.tasks(), [&parallelSvd](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&) { parallelSvd.doTask(t, tid); });
 
 		for (SizeType i = 0; i < data_.blocks(); ++i) {
 			SizeType n = data_(i).rows();
@@ -589,7 +589,7 @@ private:
 			    PsimagLite::Concurrency::codeSectionParamsFor("DensityMatrixSvd"));
 			ParallelPsiSplit parallelPsiSplit(
 			    lrs_, genIjPatch, v, x, sector, sqrtW, allTargets_);
-			threaded.parallelFor(0, parallelPsiSplit.tasks(), [&parallelPsiSplit](SizeType t, SizeType tid) { parallelPsiSplit.doTask(t, tid); });
+			threaded.parallelFor(0, parallelPsiSplit.tasks(), [&parallelPsiSplit](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&) { parallelPsiSplit.doTask(t, tid); });
 		}
 	}
 

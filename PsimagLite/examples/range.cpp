@@ -102,7 +102,7 @@ int main(int argc, char* argv[])
 
 	HelperType helper(nthreads, total);
 
-	threadObject.parallelFor(0, helper.tasks(), [&helper](SizeType t, SizeType tid) { helper.doTask(t, tid); });
+	threadObject.parallelFor(0, helper.tasks(), [&helper](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&) { helper.doTask(t, tid); });
 
 	helper.sync();
 

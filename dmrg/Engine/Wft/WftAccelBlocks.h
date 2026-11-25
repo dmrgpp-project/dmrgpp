@@ -642,7 +642,7 @@ public:
 		                              wftOptions_.gemmRnb,
 		                              wftOptions_.threadsForGemmR);
 
-		threadedWft.parallelFor(0, helperWft.tasks(), [&helperWft](SizeType t, SizeType tid) { helperWft.doTask(t, tid); });
+		threadedWft.parallelFor(0, helperWft.tasks(), [&helperWft](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&) { helperWft.doTask(t, tid); });
 
 		environCopyOut(psiDest, i0, result, lrs, volumeOfNk);
 	}
@@ -694,7 +694,7 @@ public:
 		                              wftOptions_.gemmRnb,
 		                              wftOptions_.threadsForGemmR);
 
-		threadedWft.parallelFor(0, helperWft.tasks(), [&helperWft](SizeType t, SizeType tid) { helperWft.doTask(t, tid); });
+		threadedWft.parallelFor(0, helperWft.tasks(), [&helperWft](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&) { helperWft.doTask(t, tid); });
 
 		systemCopyOut(psiDest, i0, result, lrs, volumeOfNk);
 	}

@@ -229,7 +229,7 @@ private:
 		    v, pBasis, pBasisSummed, pSE, direction, m, weight, matrixBlock);
 		ParallelizerType threadedDm(
 		    ConcurrencyType::codeSectionParamsFor("DensityMatrixLocal"));
-		threadedDm.parallelFor(0, helperDm.tasks(), [&helperDm](SizeType t, SizeType tid) { helperDm.doTask(t, tid); });
+		threadedDm.parallelFor(0, helperDm.tasks(), [&helperDm](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&) { helperDm.doTask(t, tid); });
 	}
 
 	ProgressIndicatorType         progress_;

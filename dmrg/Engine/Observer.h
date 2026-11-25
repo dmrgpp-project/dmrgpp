@@ -514,7 +514,7 @@ public:
 		Parallel4PointDsType helper4PointDs(
 		    fpd, fourpoint_, model, gammas, pairs, Parallel4PointDsType::MODE_NORMAL);
 
-		threaded4PointDs.parallelFor(0, helper4PointDs.tasks(), [&helper4PointDs](SizeType t, SizeType tid) { helper4PointDs.doTask(t, tid); });
+		threaded4PointDs.parallelFor(0, helper4PointDs.tasks(), [&helper4PointDs](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&) { helper4PointDs.doTask(t, tid); });
 	}
 
 	template <typename ApplyOperatorType>

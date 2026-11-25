@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
 
 	std::cout << "Using " << threadObject.name();
 	std::cout << " with " << nthreads << " threads.\n";
-	threadObject.parallelFor(0, helper.tasks(), [&helper](SizeType t, SizeType tid) { helper.doTask(t, tid); });
+	threadObject.parallelFor(0, helper.tasks(), [&helper](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace &) { helper.doTask(t, tid); });
 	helper.sync();
 	std::cout << "Sum of all tasks= " << helper.result() << "\n";
 }

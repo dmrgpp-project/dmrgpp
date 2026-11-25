@@ -220,7 +220,7 @@ private:
 		    PsimagLite::Concurrency::codeSectionParamsFor("WaveFunctionTransfLocal"));
 		ParallelWftType helperWft(psiDest, psiSrc, lrs, i0, oneSiteSpaces, dmrgWaveStruct_);
 
-		threadedWft.parallelFor(0, helperWft.tasks(), [&helperWft](SizeType t, SizeType tid) { helperWft.doTask(t, tid); });
+		threadedWft.parallelFor(0, helperWft.tasks(), [&helperWft](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&) { helperWft.doTask(t, tid); });
 	}
 
 	void transformVector1FromInfinite(VectorWithOffsetType&       psiDest,
@@ -272,7 +272,7 @@ private:
 		                               weT,
 		                               ProgramGlobals::SysOrEnvEnum::ENVIRON);
 
-		threadedWft.parallelFor(0, helperWft.tasks(), [&helperWft](SizeType t, SizeType tid) { helperWft.doTask(t, tid); });
+		threadedWft.parallelFor(0, helperWft.tasks(), [&helperWft](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&) { helperWft.doTask(t, tid); });
 	}
 
 	// --------------------------
@@ -344,7 +344,7 @@ private:
 					    we,
 					    ProgramGlobals::SysOrEnvEnum::SYSTEM);
 
-					threadedWft.parallelFor(0, helperWft.tasks(), [&helperWft](SizeType t, SizeType tid) { helperWft.doTask(t, tid); });
+					threadedWft.parallelFor(0, helperWft.tasks(), [&helperWft](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&) { helperWft.doTask(t, tid); });
 				}
 			}
 		}

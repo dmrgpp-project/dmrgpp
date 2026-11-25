@@ -2,7 +2,6 @@
 #define PARALLELIZER2PTHREAD_H
 #include "CodeSectionParams.h"
 #include "LoadBalancerDefault.h"
-#include "Parallelizer2Invoke.h"
 #include "TypeToString.h"
 #include "Vector.h"
 
@@ -70,7 +69,7 @@ void* thread_function_wrapper2(void* dummyPtr)
 		SizeType taskNumber = pfs->loadBalancer->taskNumber(pfs->threadNum, p);
 		if (taskNumber + pfs->start >= pfs->end)
 			break;
-		PsimagLite::parallelizer2Invoke(*pfh, taskNumber + pfs->start, pfs->threadNum, pfs->exec);
+		(*pfh)(taskNumber + pfs->start, pfs->threadNum, pfs->exec);
 	}
 
 	int retval = 0;

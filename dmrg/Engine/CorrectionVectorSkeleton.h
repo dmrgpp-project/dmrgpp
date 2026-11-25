@@ -345,7 +345,7 @@ private:
 
 		ParallelTriDiagType helperTriDiag(phi, T, V, steps, lrs_, fakeTime, model_, ioIn_);
 
-		threadedTriDiag.parallelFor(0, helperTriDiag.tasks(), [&helperTriDiag](SizeType t, SizeType tid) { helperTriDiag.doTask(t, tid); });
+		threadedTriDiag.parallelFor(0, helperTriDiag.tasks(), [&helperTriDiag](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&) { helperTriDiag.doTask(t, tid); });
 	}
 
 	RealType dynWeightOf(VectorType& v, const VectorType& w) const

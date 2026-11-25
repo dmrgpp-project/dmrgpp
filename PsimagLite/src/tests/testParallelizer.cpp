@@ -75,7 +75,7 @@ TEST_CASE("Parallelizer completes independent GEMM tasks", "[Parallelizer]")
 	PsimagLite::Parallelizer2<> parallelizer(PsimagLite::CodeSectionParams(1));
 
 	REQUIRE(work.tasks() == 4);
-	parallelizer.parallelFor(0, work.tasks(), [&work](SizeType t, SizeType tid) { work.doTask(t, tid); });
+	parallelizer.parallelFor(0, work.tasks(), [&work](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&) { work.doTask(t, tid); });
 
 	checkOutputs(work);
 }
@@ -86,7 +86,7 @@ TEST_CASE("Parallelizer concurrently completes independent GEMM tasks", "[Parall
 	MatrixMatrix                           work;
 	PsimagLite::Parallelizer2<> parallelizer(PsimagLite::CodeSectionParams(4));
 
-	parallelizer.parallelFor(0, work.tasks(), [&work](SizeType t, SizeType tid) { work.doTask(t, tid); });
+	parallelizer.parallelFor(0, work.tasks(), [&work](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&) { work.doTask(t, tid); });
 
 	checkOutputs(work);
 }

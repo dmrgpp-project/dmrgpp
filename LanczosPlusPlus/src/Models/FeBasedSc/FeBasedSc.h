@@ -271,7 +271,7 @@ public:
 		std::cout << "Using " << threadObject.name();
 		std::cout << " with " << PsimagLite::Concurrency::codeSectionParams.npthreads
 		          << " threads.\n";
-		threadObject.parallelFor(0, helper.tasks(), [&helper](SizeType t, SizeType tid) { helper.doTask(t, tid); });
+		threadObject.parallelFor(0, helper.tasks(), [&helper](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace &) { helper.doTask(t, tid); });
 	}
 
 	const BasisType& basis() const override { return basis_; }
