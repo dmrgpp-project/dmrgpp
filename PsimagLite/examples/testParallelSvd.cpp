@@ -38,6 +38,8 @@ int main(int argc, char** argv)
 		throw PsimagLite::RuntimeError("USAGE: " + PsimagLite::String(argv[0])
 		                               + " total nthreadsOuter\n");
 
+	Kokkos::ScopeGuard scope_guard(argc, argv);
+
 	int total         = atoi(argv[1]);
 	int nthreadsOuter = atoi(argv[2]);
 
@@ -45,7 +47,7 @@ int main(int argc, char** argv)
 
 	PsimagLite::Random48<RealType> rng(1234);
 
-	auto lambda = [&rng](SizeType, SizeType)
+	auto lambda = [&rng](SizeType, SizeType, const Kokkos::DefaultExecutionSpace&)
 	{
 		SizeType                     lda = static_cast<SizeType>(rng() * 500) + 10;
 		SizeType                     cda = lda;

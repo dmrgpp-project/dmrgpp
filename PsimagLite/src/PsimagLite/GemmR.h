@@ -34,8 +34,20 @@ public:
 	                int const      ldC)
 	{
 		if (isSmall(m, n)) {
-			psimag::BLAS::GEMM(
-			    transA, transB, m, n, k, alpha, A, ldA, B, ldB, beta, C, ldC);
+			PsimagLite::kokkos_gemm(Kokkos::DefaultExecutionSpace {},
+			                        transA,
+			                        transB,
+			                        m,
+			                        n,
+			                        k,
+			                        alpha,
+			                        A,
+			                        ldA,
+			                        B,
+			                        ldB,
+			                        beta,
+			                        C,
+			                        ldC);
 			return;
 		}
 
@@ -88,24 +100,26 @@ private:
 			          << nblocks_i << " nblocks_j " << nblocks_j << "\n";
 		}
 
-		auto lambda = [transA,
-		               transB,
-		               m,
-		               n,
-		               k,
-		               alpha,
-		               &A,
-		               ldA,
-		               &B,
-		               ldB,
-		               beta,
-		               &C,
-		               ldC,
-		               nblocks_i,
-		               nb_i,
-		               nb_j,
-		               is_notransA,
-		               is_notransB](SizeType ij_block, SizeType)
+		auto lambda
+		    = [transA,
+		       transB,
+		       m,
+		       n,
+		       k,
+		       alpha,
+		       &A,
+		       ldA,
+		       &B,
+		       ldB,
+		       beta,
+		       &C,
+		       ldC,
+		       nblocks_i,
+		       nb_i,
+		       nb_j,
+		       is_notransA,
+		       is_notransB](
+		          SizeType ij_block, SizeType, const Kokkos::DefaultExecutionSpace& exec)
 		{
 			const SizeType i_block = (ij_block % nblocks_i);
 			const SizeType j_block = (ij_block - i_block) / nblocks_i;
@@ -143,8 +157,20 @@ private:
 			T const* const pB = &(B[ib - 1 + (jb - 1) * ldB]);
 			T* const       pC = &(C[ic - 1 + (jc - 1) * ldC]);
 
-			psimag::BLAS::GEMM(
-			    transA, transB, mm, nn, kk, alpha, pA, ldA, pB, ldB, beta, pC, ldC);
+			PsimagLite::kokkos_gemm(exec,
+			                        transA,
+			                        transB,
+			                        mm,
+			                        nn,
+			                        kk,
+			                        alpha,
+			                        pA,
+			                        ldA,
+			                        pB,
+			                        ldB,
+			                        beta,
+			                        pC,
+			                        ldC);
 		};
 
 		const SizeType    tasks = nblocks_i * nblocks_j;

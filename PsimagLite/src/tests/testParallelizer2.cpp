@@ -61,7 +61,7 @@ MatrixData::OutputMatrix referenceProduct(const MatrixData::LeftMatrix&  left,
 
 auto lambdaFor(MatrixData& work)
 {
-	return [&work](SizeType taskNumber, SizeType)
+	return [&work](SizeType taskNumber, SizeType, const Kokkos::DefaultExecutionSpace&)
 	{
 		assert(taskNumber >= FirstTask);
 		assert(taskNumber < FirstTask + Tasks);

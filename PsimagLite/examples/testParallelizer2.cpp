@@ -5,6 +5,8 @@
 
 int main(int argc, char** argv)
 {
+	Kokkos::ScopeGuard scope_guard(argc, argv);
+
 	constexpr unsigned int nthreads = 1;
 	PsimagLite::Concurrency(&argc, &argv, nthreads);
 
@@ -22,7 +24,10 @@ int main(int argc, char** argv)
 
 	std::cout << "Testing Parallelizer2 with " << parallelizer.name();
 	std::cout << " and " << parallelizer.numberOfThreads() << " threads.\n";
-	parallelizer.parallelFor(0, n, [&v](SizeType i, SizeType) { v[i] = i + 42; });
+	parallelizer.parallelFor(0,
+	                         n,
+	                         [&v](SizeType i, SizeType, const Kokkos::DefaultExecutionSpace&)
+	                         { v[i] = i + 42; });
 
 	/*
 	for (SizeType i = 0; i < n; ++i) {
