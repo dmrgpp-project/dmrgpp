@@ -1,3 +1,8 @@
+add_executable(test_LatticeGf test_LatticeGf.cpp)
+target_link_libraries(test_LatticeGf PRIVATE Catch2::Catch2WithMain psimaglite)
+target_include_directories(test_LatticeGf PRIVATE ${CMAKE_SOURCE_DIR}/cincuenta/src)
+catch_discover_tests(test_LatticeGf)
+
 add_executable(test_Fit test_Fit.cpp)
 target_link_libraries(test_Fit PRIVATE Catch2::Catch2WithMain dmrgpp_utils psimaglite)
 target_include_directories(test_Fit PRIVATE ${CMAKE_SOURCE_DIR}/cincuenta/src ${CMAKE_SOURCE_DIR}/dmrg/Engine)

@@ -116,7 +116,21 @@ G_latt(iωₙ) = ∫ dε  ρ(ε) / (iωₙ − ε + μ − Σ(iωₙ))
 ```
 `DensityOfStates` provides ρ(ε); currently only the semicircular DOS is
 implemented.  `PsimagLite::Integrator` (GSL adaptive quadrature) evaluates
-the integral numerically.
+the integral numerically. Here `W` is the **full bandwidth**, not the
+half-bandwidth or the Bethe hopping:
+```
+D = W/2,  t_* = W/4
+ρ(ε) = 2 sqrt(D² − ε²) / (π D²),  −D ≤ ε ≤ D
+∫ ρ(ε) dε = 1,  ∫ ε² ρ(ε) dε = t_*²
+```
+For example, `LatticeGf="energy,semicircular,2.0"` means support `[-1,1]`,
+`D=1`, and `t_*=0.5`. At particle-hole symmetry (`ChemicalPotential=0`
+for the centered equilibrium interaction), the Bethe self-consistency is
+`Δ(iωₙ) = t_*² G_latt(iωₙ) = G_latt(iωₙ)/4` for this input.
+Compare energy scales by their definitions: another reference may use `W`
+for the **half**-bandwidth instead. García, Hallberg, and Rozenberg (2004)
+set the half-bandwidth to unity (`t=1/2`), corresponding to this input's
+full bandwidth `W=2`.
 
 After G_latt is known, the γ-function is formed:
 ```
