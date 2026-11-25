@@ -202,6 +202,8 @@ public:
 		ProgramGlobals::init(maxElectronsOneSpin());
 	}
 
+	const VectorQnType& qns() const { return qns_; }
+
 	// START OF VIRTUAL FUNCTIONS
 
 	virtual ~ModelBase()
