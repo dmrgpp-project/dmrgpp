@@ -4,9 +4,6 @@
 set(INPUTS_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 # affiniteTest needs -DUSE_PTHREADS
-add_executable(affinityTest affinityTest.cpp)
-target_link_libraries(affinityTest psimaglite)
-# add_test(NAME affinityTest COMMAND affinityTest 4 14)
 
 add_executable(akimaSpline akimaSpline.cpp)
 target_link_libraries(akimaSpline psimaglite)
@@ -178,14 +175,14 @@ add_test(NAME testLapack COMMAND testLapack)
 # I leave this test on for now but it really needs -DUSE_PTHREADS
 # the first number (4) is the matrix rank and the next number (1) is the
 # number of pthreads to use
-# The same is true for testParallelizer2
+# The same is true for testParallelizer
 add_executable(testParallelSvd testParallelSvd.cpp)
 target_link_libraries(testParallelSvd psimaglite)
 add_test(NAME testParallelSvd COMMAND testParallelSvd 4 1)
 
-add_executable(testParallelizer2 testParallelizer2.cpp)
-target_link_libraries(testParallelizer2 psimaglite)
-add_test(NAME testParallelizer2 COMMAND testParallelizer2 10 1)
+add_executable(testParallelizer testParallelizer.cpp)
+target_link_libraries(testParallelizer psimaglite)
+add_test(NAME testParallelizer COMMAND testParallelizer 10 1)
 
 add_executable(testPredicate testPredicate.cpp)
 target_link_libraries(testPredicate psimaglite)

@@ -105,7 +105,7 @@ public:
 	using ParallelDensityMatrixType = ParallelDensityMatrix<BlockDiagonalMatrixType,
 	                                                        BasisWithOperatorsType,
 	                                                        TargetVectorType>;
-	using ParallelizerType          = PsimagLite::Parallelizer<ParallelDensityMatrixType>;
+	using ParallelizerType          = PsimagLite::Parallelizer<>;
 	using VectorVectorVectorWithOffsetType =
 	    typename TargetingType::VectorVectorVectorWithOffsetType;
 
@@ -229,7 +229,11 @@ private:
 		    v, pBasis, pBasisSummed, pSE, direction, m, weight, matrixBlock);
 		ParallelizerType threadedDm(
 		    ConcurrencyType::codeSectionParamsFor("DensityMatrixLocal"));
-		threadedDm.loopCreate(helperDm);
+		threadedDm.parallelFor(
+		    0,
+		    helperDm.tasks(),
+		    [&helperDm](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&)
+		    { helperDm.doTask(t, tid); });
 	}
 
 	ProgressIndicatorType         progress_;

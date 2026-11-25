@@ -84,7 +84,6 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include <PsimagLite/CrsMatrix.h>
 #include <PsimagLite/Io/IoSelector.h>
 #include <PsimagLite/Matrix.h> // in PsimagLite
-#include <PsimagLite/NoPthreadsNg.h>
 #include <PsimagLite/PsimagLite.h>
 #include <iostream>
 #include <vector>

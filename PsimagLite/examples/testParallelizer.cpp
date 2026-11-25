@@ -1,6 +1,6 @@
 #include <PsimagLite/Concurrency.h>
 #include <PsimagLite/LoadBalancerWeights.h>
-#include <PsimagLite/Parallelizer2.h>
+#include <PsimagLite/Parallelizer.h>
 #include <PsimagLite/Vector.h>
 
 int main(int argc, char** argv)
@@ -20,9 +20,9 @@ int main(int argc, char** argv)
 
 	PsimagLite::Vector<double>::Type v(n);
 
-	PsimagLite::Parallelizer2<> parallelizer(threads);
+	PsimagLite::Parallelizer<> parallelizer(threads);
 
-	std::cout << "Testing Parallelizer2 with " << parallelizer.name();
+	std::cout << "Testing Parallelizer with " << parallelizer.name();
 	std::cout << " and " << parallelizer.numberOfThreads() << " threads.\n";
 	parallelizer.parallelFor(0,
 	                         n,

@@ -155,14 +155,21 @@ private:
 		    = PsimagLite::Concurrency::codeSectionParamsFor("KronMatrix");
 
 		if (initKron_.loadBalance()) {
-			PsimagLite::Parallelizer<KronConnectionsType,
-			                         PsimagLite::LoadBalancerWeights>
+			PsimagLite::Parallelizer<PsimagLite::LoadBalancerWeights>
 			    parallelConnections(codeSectionParams);
-			parallelConnections.loopCreate(kc, initKron_.weightsOfPatchesNew());
+			parallelConnections.parallelFor(
+			    0,
+			    kc.tasks(),
+			    [&kc](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&)
+			    { kc.doTask(t, tid); },
+			    initKron_.weightsOfPatchesNew());
 		} else {
-			PsimagLite::Parallelizer<KronConnectionsType> parallelConnections(
-			    codeSectionParams);
-			parallelConnections.loopCreate(kc);
+			PsimagLite::Parallelizer<> parallelConnections(codeSectionParams);
+			parallelConnections.parallelFor(
+			    0,
+			    kc.tasks(),
+			    [&kc](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&)
+			    { kc.doTask(t, tid); });
 		}
 
 		kc.sync();

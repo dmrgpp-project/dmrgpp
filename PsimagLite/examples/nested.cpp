@@ -79,11 +79,15 @@ public:
 
 	void doTask(SizeType taskNumber, SizeType threadNum)
 	{
-		typedef PsimagLite::Parallelizer<InnerHelper> ParallelizerType;
-		PsimagLite::CodeSectionParams                 cs(nthreadsInner_);
-		ParallelizerType                              threadObject(cs);
-		InnerHelper helper(ntasksInner_, nthreadsInner_, taskNumber);
-		threadObject.loopCreate(helper);
+		typedef PsimagLite::Parallelizer<> ParallelizerType;
+		PsimagLite::CodeSectionParams      cs(nthreadsInner_);
+		ParallelizerType                   threadObject(cs);
+		InnerHelper                        helper(ntasksInner_, nthreadsInner_, taskNumber);
+		threadObject.parallelFor(
+		    0,
+		    helper.tasks(),
+		    [&helper](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&)
+		    { helper.doTask(t, tid); });
 		helper.sync();
 		x_[threadNum] += helper.result();
 	}
@@ -104,6 +108,8 @@ private:
 
 int main(int argc, char* argv[])
 {
+	Kokkos::ScopeGuard kokkosScopeGuard(argc, argv);
+
 	typedef PsimagLite::Concurrency ConcurrencyType;
 
 	if (argc != 5) {
@@ -119,16 +125,20 @@ int main(int argc, char* argv[])
 
 	ConcurrencyType concurrency(&argc, &argv, 1);
 
-	typedef MyHelper                             HelperType;
-	typedef PsimagLite::Parallelizer<HelperType> ParallelizerType;
-	PsimagLite::CodeSectionParams                cs(nthreadsOuter);
-	ParallelizerType                             threadObject(cs);
+	typedef MyHelper                   HelperType;
+	typedef PsimagLite::Parallelizer<> ParallelizerType;
+	PsimagLite::CodeSectionParams      cs(nthreadsOuter);
+	ParallelizerType                   threadObject(cs);
 
 	HelperType helper(ntasks, nthreadsOuter, ntasksInner, nthreadsInner);
 
 	std::cout << "Using " << threadObject.name();
 	std::cout << " with " << nthreadsOuter << " threads.\n";
-	threadObject.loopCreate(helper);
+	threadObject.parallelFor(
+	    0,
+	    helper.tasks(),
+	    [&helper](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&)
+	    { helper.doTask(t, tid); });
 	helper.sync();
 	std::cout << "Sum of all tasks= " << helper.result() << "\n";
 }

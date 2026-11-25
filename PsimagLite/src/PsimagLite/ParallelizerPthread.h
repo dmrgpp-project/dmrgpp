@@ -79,13 +79,13 @@ void* thread_function_wrapper2(void* dummyPtr)
 
 namespace PsimagLite {
 
-template <typename LoadBalancerType = LoadBalancerDefault> class Parallelizer2 {
+template <typename LoadBalancerType = LoadBalancerDefault> class Parallelizer {
 
 public:
 
 	using VectorSizeType = LoadBalancerDefault::VectorSizeType;
 
-	Parallelizer2(const CodeSectionParams& codeParams)
+	Parallelizer(const CodeSectionParams& codeParams)
 	    : nthreads_(codeParams.npthreads)
 	    , stackSize_(codeParams.stackSize)
 	{
@@ -117,11 +117,10 @@ public:
 	                 const SomeLambdaType& lambda,
 	                 const VectorSizeType& weights)
 	{
-		LoadBalancerType* loadBalancer = new LoadBalancerType(weights.size(), nthreads_);
-		loadBalancer->setWeights(weights);
+		LoadBalancerType* loadBalancer = new LoadBalancerType(weights, nthreads_);
 		parallelFor(start, end, lambda, *loadBalancer);
 		delete loadBalancer;
-		loadBalancer = 0;
+		loadBalancer = nullptr;
 	}
 
 	template <typename SomeLambdaType>

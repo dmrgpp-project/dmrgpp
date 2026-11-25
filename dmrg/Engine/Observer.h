@@ -507,14 +507,19 @@ public:
 			}
 		}
 
-		using ParallelizerType = PsimagLite::Parallelizer<Parallel4PointDsType>;
+		using ParallelizerType = PsimagLite::Parallelizer<>;
 		ParallelizerType threaded4PointDs(
 		    PsimagLite::Concurrency::codeSectionParamsFor("Observer"));
 
 		Parallel4PointDsType helper4PointDs(
 		    fpd, fourpoint_, model, gammas, pairs, Parallel4PointDsType::MODE_NORMAL);
 
-		threaded4PointDs.loopCreate(helper4PointDs);
+		threaded4PointDs.parallelFor(0,
+		                             helper4PointDs.tasks(),
+		                             [&helper4PointDs](SizeType t,
+		                                               SizeType tid,
+		                                               const Kokkos::DefaultExecutionSpace&)
+		                             { helper4PointDs.doTask(t, tid); });
 	}
 
 	template <typename ApplyOperatorType>

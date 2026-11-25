@@ -92,6 +92,8 @@ private:
 
 int main(int argc, char** argv)
 {
+	Kokkos::ScopeGuard kokkosScopeGuard(argc, argv);
+
 	if (argc < 6) {
 		std::cerr << "USAGE: " << argv[0] << " m k n total threads\n";
 		return 1;
@@ -103,9 +105,13 @@ int main(int argc, char** argv)
 	SizeType total   = atoi(argv[4]);
 	SizeType threads = atoi(argv[5]);
 
-	PsimagLite::CodeSectionParams           codeSections(threads);
-	PsimagLite::Parallelizer<MyBlasWrapper> parallel(codeSections);
-	MyBlasWrapper                           myblasWrapper(m, n, k, total);
+	PsimagLite::CodeSectionParams codeSections(threads);
+	PsimagLite::Parallelizer<>    parallel(codeSections);
+	MyBlasWrapper                 myblasWrapper(m, n, k, total);
 
-	parallel.loopCreate(myblasWrapper);
+	parallel.parallelFor(
+	    0,
+	    myblasWrapper.tasks(),
+	    [&myblasWrapper](SizeType t, SizeType tid, Kokkos::DefaultExecutionSpace&)
+	    { myblasWrapper.doTask(t, tid); });
 }

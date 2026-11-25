@@ -88,7 +88,6 @@ DISCLOSED WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.
 #include "TargetingBase.h"
 #include "VectorWithOffsets.h"
 #include <PsimagLite/FreqEnum.h>
-#include <PsimagLite/NoPthreadsNg.h>
 #include <PsimagLite/ParametersForSolver.h>
 #include <PsimagLite/ProgressIndicator.h>
 

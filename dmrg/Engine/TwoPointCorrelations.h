@@ -136,14 +136,18 @@ public:
 			}
 		}
 
-		using ParallelizerType = PsimagLite::Parallelizer<Parallel2PointCorrelationsType>;
+		using ParallelizerType = PsimagLite::Parallelizer<>;
 		ParallelizerType threaded2Points(
 		    PsimagLite::Concurrency::codeSectionParamsFor("TwoPointCorrelations"));
 
 		Parallel2PointCorrelationsType helper2Points(
 		    w, *this, pairs, braket, fermionicSign, bra, ket);
 
-		threaded2Points.loopCreate(helper2Points);
+		threaded2Points.parallelFor(
+		    0,
+		    helper2Points.tasks(),
+		    [&helper2Points](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&)
+		    { helper2Points.doTask(t, tid); });
 	}
 
 	// Return the vector: O1 * O2 |psi>

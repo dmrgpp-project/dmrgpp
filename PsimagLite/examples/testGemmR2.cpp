@@ -1,7 +1,7 @@
 #include <PsimagLite/BLAS.h>
 #include <PsimagLite/GemmR.h>
 #include <PsimagLite/Matrix.h>
-#include <PsimagLite/Parallelizer2.h>
+#include <PsimagLite/Parallelizer.h>
 #include <PsimagLite/Random48.h>
 
 typedef double RealType;
@@ -88,6 +88,6 @@ int main(int argc, char** argv)
 	PsimagLite::CodeSectionParams csp = PsimagLite::Concurrency::codeSectionParams;
 	csp.npthreads                     = nthreadsOuter;
 
-	PsimagLite::Parallelizer2<> parallelizer2(csp);
+	PsimagLite::Parallelizer<> parallelizer2(csp);
 	parallelizer2.parallelFor(0, total, lambda);
 }

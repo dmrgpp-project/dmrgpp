@@ -82,6 +82,7 @@ private:
 
 int main(int argc, char* argv[])
 {
+	Kokkos::ScopeGuard kokkosScopeGuard(argc, argv);
 
 	using ConcurrencyType = PsimagLite::Concurrency;
 
@@ -94,13 +95,17 @@ int main(int argc, char* argv[])
 	SizeType nthreads = atoi(argv[2]);
 	ConcurrencyType(&argc, &argv, nthreads);
 
-	typedef MyLoop                               HelperType;
-	typedef PsimagLite::Parallelizer<HelperType> ParallelizerType;
-	ParallelizerType threadObject(ConcurrencyType::codeSectionParams);
+	typedef MyLoop                     HelperType;
+	typedef PsimagLite::Parallelizer<> ParallelizerType;
+	ParallelizerType                   threadObject(ConcurrencyType::codeSectionParams);
 
 	HelperType helper(nthreads, total);
 
-	threadObject.loopCreate(helper);
+	threadObject.parallelFor(
+	    0,
+	    helper.tasks(),
+	    [&helper](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&)
+	    { helper.doTask(t, tid); });
 
 	helper.sync();
 

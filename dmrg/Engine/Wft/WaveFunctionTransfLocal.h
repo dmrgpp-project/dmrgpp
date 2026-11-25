@@ -214,13 +214,17 @@ private:
 		}
 
 		SizeType i0            = psiDest.sector(iNew);
-		using ParallelizerType = PsimagLite::Parallelizer<ParallelWftType>;
+		using ParallelizerType = PsimagLite::Parallelizer<>;
 
 		ParallelizerType threadedWft(
 		    PsimagLite::Concurrency::codeSectionParamsFor("WaveFunctionTransfLocal"));
 		ParallelWftType helperWft(psiDest, psiSrc, lrs, i0, oneSiteSpaces, dmrgWaveStruct_);
 
-		threadedWft.loopCreate(helperWft);
+		threadedWft.parallelFor(
+		    0,
+		    helperWft.tasks(),
+		    [&helperWft](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&)
+		    { helperWft.doTask(t, tid); });
 	}
 
 	void transformVector1FromInfinite(VectorWithOffsetType&       psiDest,
@@ -248,7 +252,7 @@ private:
 			return wftAccelBlocks_.environFromInfinite(
 			    psiDest, i0, psiSrc, iOld, lrs, oneSiteSpaces);
 
-		using ParallelizerType = PsimagLite::Parallelizer<WftSparseTwoSiteType>;
+		using ParallelizerType = PsimagLite::Parallelizer<>;
 
 		SparseMatrixType ws;
 		dmrgWaveStruct_.getTransform(ProgramGlobals::SysOrEnvEnum::SYSTEM).toSparse(ws);
@@ -272,7 +276,11 @@ private:
 		                               weT,
 		                               ProgramGlobals::SysOrEnvEnum::ENVIRON);
 
-		threadedWft.loopCreate(helperWft);
+		threadedWft.parallelFor(
+		    0,
+		    helperWft.tasks(),
+		    [&helperWft](SizeType t, SizeType tid, const Kokkos::DefaultExecutionSpace&)
+		    { helperWft.doTask(t, tid); });
 	}
 
 	// --------------------------
@@ -299,7 +307,7 @@ private:
 	                                  const LeftRightSuperType&   lrs,
 	                                  const OneSiteSpacesType&    oneSiteSpaces) const
 	{
-		using ParallelizerType = PsimagLite::Parallelizer<WftSparseTwoSiteType>;
+		using ParallelizerType = PsimagLite::Parallelizer<>;
 
 		assert(dmrgWaveStruct_.lrs().super().permutationInverse().size() == psiSrc.size());
 
@@ -344,7 +352,13 @@ private:
 					    we,
 					    ProgramGlobals::SysOrEnvEnum::SYSTEM);
 
-					threadedWft.loopCreate(helperWft);
+					threadedWft.parallelFor(
+					    0,
+					    helperWft.tasks(),
+					    [&helperWft](SizeType t,
+					                 SizeType tid,
+					                 const Kokkos::DefaultExecutionSpace&)
+					    { helperWft.doTask(t, tid); });
 				}
 			}
 		}
